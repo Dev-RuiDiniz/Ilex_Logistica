@@ -9,11 +9,11 @@ RUN apt-get update \
     && apt-get install -y --no-install-recommends netcat-openbsd \
     && rm -rf /var/lib/apt/lists/*
 
-COPY pyproject.toml ./
-COPY app ./app
-COPY migrations ./migrations
-COPY alembic.ini ./
-COPY ../Infra/docker/api/api-entrypoint.sh /usr/local/bin/api-entrypoint.sh
+COPY Api/pyproject.toml ./
+COPY Api/app ./app
+COPY Api/migrations ./migrations
+COPY Api/alembic.ini ./
+COPY Infra/docker/api/api-entrypoint.sh /usr/local/bin/api-entrypoint.sh
 
 RUN python -m pip install --no-cache-dir --upgrade pip \
     && python -m pip install --no-cache-dir -e .

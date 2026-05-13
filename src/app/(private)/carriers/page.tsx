@@ -24,6 +24,7 @@ export default function CarriersPage() {
   const [query, setQuery] = useState("");
   const [form, setForm] = useState<FormState>(initialForm);
   const [saving, setSaving] = useState(false);
+  const [formError, setFormError] = useState("");
 
   const editable = canEditCarriers(session?.role ?? "auditoria");
 
@@ -57,7 +58,11 @@ export default function CarriersPage() {
     if (!session || !editable) return;
     setSaving(true);
     setError("");
+    setFormError("");
     try {
+      if (form.name.trim().length < 2) {
+        throw new Error("Nome inválido");
+      }
       const parsed = JSON.parse(form.metadata_json || "{}") as Record<string, unknown>;
       if (form.id) {
         await updateCarrier(session.accessToken, form.id, {
@@ -75,7 +80,7 @@ export default function CarriersPage() {
       setForm(initialForm);
       await load();
     } catch {
-      setError("Falha ao salvar transportadora. Verifique os dados.");
+      setFormError("Falha ao salvar transportadora. Verifique nome e metadados JSON.");
     } finally {
       setSaving(false);
     }
@@ -191,6 +196,7 @@ export default function CarriersPage() {
             onChange={(e) => setForm((f) => ({ ...f, metadata_json: e.target.value }))}
             className="md:col-span-2 min-h-24 rounded border px-3 py-2 font-mono text-sm"
           />
+          {formError && <p className="md:col-span-2 rounded bg-red-50 px-3 py-2 text-sm text-red-700">{formError}</p>}
           <div className="md:col-span-2 flex gap-2">
             <button type="submit" disabled={saving} className="rounded bg-slate-900 px-4 py-2 text-white">
               {saving ? "Salvando..." : form.id ? "Atualizar" : "Cadastrar"}

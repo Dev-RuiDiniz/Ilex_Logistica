@@ -74,6 +74,11 @@ alembic downgrade base
 pytest -q
 ```
 
+Suite mínima da fundação:
+- `tests/test_auth.py`
+- `tests/test_rbac.py`
+- `tests/test_carriers.py`
+
 ## Contrato técnico (A-09)
 
 Documentado em `Docs/sprints/2026-05-11_2026-05-21/CONTRATO_API_FUNDACIONAL_A09.md`.

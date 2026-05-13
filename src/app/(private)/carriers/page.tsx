@@ -24,6 +24,7 @@ export default function CarriersPage() {
   const [query, setQuery] = useState("");
   const [form, setForm] = useState<FormState>(initialForm);
   const [saving, setSaving] = useState(false);
+  const [inactivatingId, setInactivatingId] = useState<number | null>(null);
   const [formError, setFormError] = useState("");
 
   const editable = canEditCarriers(session?.role ?? "auditoria");
@@ -98,11 +99,14 @@ export default function CarriersPage() {
   const onInactivate = async (item: Carrier) => {
     if (!session || !editable) return;
     if (!window.confirm(`Deseja inativar a transportadora ${item.name}?`)) return;
+    setInactivatingId(item.id);
     try {
       await inactivateCarrier(session.accessToken, item.id);
       setItems((prev) => prev.filter((x) => x.id !== item.id));
     } catch {
       setError("Falha ao inativar transportadora.");
+    } finally {
+      setInactivatingId(null);
     }
   };
 
@@ -159,8 +163,12 @@ export default function CarriersPage() {
                         <button onClick={() => onEdit(item)} className="rounded border px-2 py-1">
                           Editar
                         </button>
-                        <button onClick={() => onInactivate(item)} className="rounded border px-2 py-1 text-red-700">
-                          Inativar
+                        <button
+                          onClick={() => onInactivate(item)}
+                          className="rounded border px-2 py-1 text-red-700"
+                          disabled={inactivatingId === item.id}
+                        >
+                          {inactivatingId === item.id ? "Inativando..." : "Inativar"}
                         </button>
                       </div>
                     </td>

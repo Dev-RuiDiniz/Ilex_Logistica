@@ -17,10 +17,15 @@ Centralizar escopo funcional, planejamento de sprint, padrões técnicos e mater
 
 ```text
 sprints/
+adr/
 arquitetura/
 operacao/
 atas/
 ```
+
+## Decisões arquiteturais
+
+- `adr/ADR-001.md` - Arquitetura fundacional do Ilex Logística
 
 ## Sprint planning oficial
 

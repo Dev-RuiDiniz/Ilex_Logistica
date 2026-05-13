@@ -1,77 +1,83 @@
-﻿# Api
+# Api
 
-Camada de backend do Ilex Logística responsável por autenticação, regras de prazo/SLA, processamento de entregas e geração de relatórios operacionais.
+Camada de backend fundacional do Ilex Logistica para autenticação, perfis e cadastro de transportadoras.
 
-## Objetivo no MVP
+## Sprint A (11/05/2026 a 21/05/2026) - Entregas
 
-Entregar a API central da operação logística, preparada para ingestão de dados (importação/API/bots), cálculo de atraso, classificação de criticidade e auditoria.
+- A-01: estrutura FastAPI modular + `/health`
+- A-02: configuração de banco e sessão SQLAlchemy
+- A-03: migrations iniciais (`users`, `roles`, `user_roles`, `carriers`)
+- A-04: autenticação JWT (`/auth/login` e `/auth/refresh`)
+- A-05: RBAC por perfil (`admin`, `logistica`, `gestor`, `auditoria`)
+- A-06: CRUD de transportadoras com inativação lógica
+- A-07: validações Pydantic e erro 422 padronizado
+- A-08: suíte mínima automatizada para auth e carriers
 
-## Responsabilidades do repositório
+## Stack
 
-- Autenticação e autorização por perfil
-- CRUD de transportadoras e parâmetros
-- Importação e validação de entregas (Excel/CSV)
-- Persistência de entregas, eventos e histórico
-- Cálculo de atraso, SLA e criticidade
-- Painel de exceções (fonte de dados)
-- Relatório diário e alertas
-- Logs e auditoria operacional
-
-## Stack prevista
-
-- Python
+- Python 3.11+
 - FastAPI
 - SQLAlchemy
-- Pydantic
-- PostgreSQL
-- Celery/RQ (jobs assíncronos)
+- Alembic
+- PostgreSQL (produção/local), SQLite (testes)
+- PyJWT
 
-## Estrutura sugerida
+## Estrutura
 
 ```text
 app/
-  modules/
-    auth/
-    users/
-    carriers/
-    shipments/
-    imports/
-    tracking/
-    exceptions/
-    reports/
-    alerts/
-    audit/
   core/
   database/
-  jobs/
+  modules/
+    auth/
+    carriers/
+    health/
+    users/
   main.py
 migrations/
 tests/
 ```
 
-## Backlog prioritário (LOG-*)
+## Configuração
 
-- LOG-002: Configurar banco PostgreSQL e migrations
-- LOG-003: Criar autenticação JWT
-- LOG-004: Criar perfis de acesso
-- LOG-007: Validar colunas obrigatórias
-- LOG-009: Persistir entregas
-- LOG-014: Criar regras de prazo/SLA
-- LOG-015: Calcular atraso automaticamente
-- LOG-016: Classificar criticidade
-- LOG-019: Criar relatório diário
-- LOG-024: Criar auditoria de alterações
+Variáveis (prefixo `ILEX_`):
 
-## Critérios de aceite iniciais
+- `ILEX_DATABASE_URL` (ex.: `postgresql+psycopg2://postgres:postgres@localhost:5432/ilex`)
+- `ILEX_JWT_SECRET`
+- `ILEX_JWT_ALGORITHM` (default `HS256`)
+- `ILEX_JWT_ACCESS_MINUTES` (default `30`)
+- `ILEX_JWT_REFRESH_MINUTES` (default `1440`)
 
-- API sobe localmente com conexão ao banco
-- Endpoints protegidos por perfil
-- Importação válida persiste dados sem duplicidade indevida
-- Regra de SLA impacta status de atraso e criticidade
-- Logs/auditoria registram ações sensíveis
+## Como executar
+
+```bash
+python -m pip install -e .[dev]
+uvicorn app.main:app --reload
+```
+
+Healthcheck:
+
+```bash
+curl http://127.0.0.1:8000/health
+```
+
+## Banco e migrations
+
+```bash
+alembic upgrade head
+alembic downgrade base
+```
+
+## Testes
+
+```bash
+pytest -q
+```
+
+## Contrato técnico (A-09)
+
+Documentado em `Docs/sprints/2026-05-11_2026-05-21/CONTRATO_API_FUNDACIONAL_A09.md`.
 
 ## Convenção de commits
 
-`<tipo>(api): <ID> <resumo em pt-BR>`
-
-Exemplo: `docs(api): LOG-001 define responsabilidade do repositorio`
+`<tipo>(api): A-0X resumo em pt-BR`

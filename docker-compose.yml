@@ -24,6 +24,8 @@ services:
       dockerfile: Infra/docker/api/Dockerfile
     container_name: ilex-api
     environment:
+      ILEX_APP_NAME: ${ILEX_APP_NAME:-Ilex API}
+      ILEX_ENVIRONMENT: ${ILEX_ENVIRONMENT:-dev}
       ILEX_DATABASE_URL: ${ILEX_DATABASE_URL:-postgresql+psycopg2://ilex:ilex_local_password@db:5432/ilex}
       ILEX_JWT_SECRET: ${ILEX_JWT_SECRET:-change-me-local-only}
       ILEX_JWT_ALGORITHM: ${ILEX_JWT_ALGORITHM:-HS256}

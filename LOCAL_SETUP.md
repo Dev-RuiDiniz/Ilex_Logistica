@@ -43,11 +43,67 @@ cp .env.example .env
 docker compose up --build
 ```
 
+## Parada do ambiente
+
+```bash
+docker compose down
+```
+
+## Limpeza de ambiente local
+
+```bash
+docker compose down --volumes --remove-orphans
+```
+
 ## Validação prevista
 
 ```bash
 curl http://127.0.0.1:8000/health
 curl http://127.0.0.1:8000/api/v1/health
+```
+
+Verificação dos serviços:
+
+```bash
+docker compose ps
+docker compose logs api
+docker compose logs db
+```
+
+Verificação de acesso do banco para migrations:
+
+```bash
+docker compose exec api alembic current
+docker compose exec api alembic upgrade head
+```
+
+## Troubleshooting
+
+Se a API não subir:
+
+```bash
+docker compose logs api
+```
+
+Se o banco estiver indisponível:
+
+```bash
+docker compose logs db
+docker compose ps
+```
+
+Se migrations falharem:
+
+```bash
+docker compose exec api alembic current
+docker compose exec api alembic upgrade head
+```
+
+Se precisar reiniciar tudo sem preservar dados locais:
+
+```bash
+docker compose down --volumes --remove-orphans
+docker compose up --build
 ```
 
 ## Segurança

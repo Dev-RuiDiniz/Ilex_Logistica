@@ -1,0 +1,39 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: ilex-db
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-ilex}
+      POSTGRES_USER: ${POSTGRES_USER:-ilex}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-ilex_local_password}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - ilex-postgres-data:/var/lib/postgresql/data
+    networks:
+      - ilex-network
+
+  api:
+    build:
+      context: ..
+      dockerfile: Infra/docker/api/Dockerfile
+    container_name: ilex-api
+    environment:
+      ILEX_DATABASE_URL: ${ILEX_DATABASE_URL:-postgresql+psycopg2://ilex:ilex_local_password@db:5432/ilex}
+      ILEX_JWT_SECRET: ${ILEX_JWT_SECRET:-change-me-local-only}
+      ILEX_JWT_ALGORITHM: ${ILEX_JWT_ALGORITHM:-HS256}
+      ILEX_JWT_ACCESS_MINUTES: ${ILEX_JWT_ACCESS_MINUTES:-30}
+      ILEX_JWT_REFRESH_MINUTES: ${ILEX_JWT_REFRESH_MINUTES:-1440}
+    ports:
+      - "${API_PORT:-8000}:8000"
+    depends_on:
+      - db
+    networks:
+      - ilex-network
+
+volumes:
+  ilex-postgres-data:
+
+networks:
+  ilex-network:
+    driver: bridge

@@ -5,11 +5,19 @@ on:
   push:
     branches:
       - main
-      - sprint-c-infra-qa-governanca
 
 jobs:
-  test:
+  lint-and-test:
     runs-on: ubuntu-latest
+
+    env:
+      ILEX_APP_NAME: Ilex API
+      ILEX_ENVIRONMENT: ci
+      ILEX_DATABASE_URL: sqlite:///./ilex_ci.db
+      ILEX_JWT_SECRET: ci-only-secret-change-me
+      ILEX_JWT_ALGORITHM: HS256
+      ILEX_JWT_ACCESS_MINUTES: 30
+      ILEX_JWT_REFRESH_MINUTES: 1440
 
     steps:
       - name: Checkout
@@ -24,7 +32,8 @@ jobs:
       - name: Install dependencies
         run: python -m pip install -e .[dev]
 
+      - name: Run lint
+        run: python -m ruff check .
+
       - name: Run tests
-        env:
-          ILEX_JWT_SECRET: ci-only-secret
         run: python -m pytest -q

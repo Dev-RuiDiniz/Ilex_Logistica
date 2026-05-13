@@ -47,6 +47,7 @@ Semana Sprint 1 (`2026-05-11_2026-05-21`):
 - Índice: `sprints/2026-05-11_2026-05-21/INDEX_SPRINT1_2026-05-11_2026-05-21.md`
 - Riscos técnicos: `sprints/riscos-s1.md`
 - Plano QA mínimo: `qa/plano-s1.md`
+- Cerimônias Scrum: `atas/README.md`
 - Backlogs: 
   - `BACKLOG_A_PRODUTO_API_2026-05-11_2026-05-21.md`
   - `BACKLOG_B_FRONTEND_ADMIN_2026-05-11_2026-05-21.md`

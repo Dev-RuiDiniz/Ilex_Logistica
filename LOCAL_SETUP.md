@@ -80,9 +80,12 @@ Verificação dos serviços:
 
 ```bash
 docker compose ps
+docker compose logs --tail=100 api db
 docker compose logs api
 docker compose logs db
 ```
+
+Diagnóstico detalhado de saúde, logs e falha simulada do DB está em `OBSERVABILITY.md`.
 
 Verificação de acesso do banco para migrations:
 

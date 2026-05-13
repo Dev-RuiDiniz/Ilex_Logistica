@@ -1,71 +1,59 @@
-﻿# Web
+# Web
 
-Camada frontend do Ilex Logística para operação diária, acompanhamento gerencial e tratamento de exceções logísticas.
+Aplicação administrativa da Ilex Logística para autenticação, controle por perfil e gestão de transportadoras.
 
-## Objetivo no MVP
+## Sprint B (11/05/2026 a 21/05/2026)
 
-Entregar uma aplicação web responsiva com visão executiva e operacional, priorizando ações sobre entregas críticas.
+- B-01: scaffold Next.js + TypeScript + lint
+- B-02: layout autenticado responsivo
+- B-03: tela de login integrada à API
+- B-04: proteção de rotas privadas
+- B-05: visibilidade de ações por perfil
+- B-06: listagem de transportadoras com filtro
+- B-07: formulário de cadastro/edição
+- B-08: inativação com confirmação
 
-## Responsabilidades do repositório
+## Stack
 
-- Login e controle de sessão no frontend
-- Dashboard logístico com KPIs
-- Fluxo de importação e validação de dados
-- Listagem e detalhe de entregas
-- Painel de exceções com priorização
-- Registro de tratativas
-- Consulta de relatórios e auditoria
-
-## Stack prevista
-
-- Next.js
+- Next.js (App Router)
 - TypeScript
 - Tailwind CSS
-- shadcn/ui
-- Recharts
+- Vitest + Testing Library
 
-## Estrutura sugerida
+## Estrutura principal
 
 ```text
 src/
   app/
+    (private)/
+    login/
   components/
-  features/
-    auth/
-    dashboard/
-    carriers/
-    imports/
-    shipments/
-    exceptions/
-    reports/
-    settings/
-    audit/
-lib/
-services/
-public/
+  features/auth/
+  lib/
 ```
 
-## Backlog prioritário (LOG-*)
+## Configuração
 
-- LOG-003: Criar autenticação JWT (integração front)
-- LOG-004: Criar perfis de acesso
-- LOG-006: Criar importador Excel/CSV
-- LOG-008: Criar prévia de importação
-- LOG-011: Criar listagem de entregas
-- LOG-012: Criar detalhe da entrega
-- LOG-017: Criar painel de exceções
-- LOG-018: Criar registro de tratativas
-- LOG-023: Criar dashboard logístico final
+Variáveis de ambiente:
 
-## Critérios de aceite iniciais
+- `NEXT_PUBLIC_API_URL` (default: `http://127.0.0.1:8000/api/v1`)
 
-- Acesso protegido por perfil
-- Telas principais com filtros operacionais
-- Painel de exceções destacando criticidade
-- Fluxo de tratativa auditável na interface
+## Comandos
+
+```bash
+npm install
+npm run dev
+npm run lint
+npm run test
+```
+
+## Fluxo de acesso
+
+1. Login em `/login`.
+2. Sessão salva localmente + cookie de autenticação.
+3. Rotas privadas protegidas por middleware.
+4. Controle de ações por perfil em `carriers`.
 
 ## Convenção de commits
 
-`<tipo>(web): <ID> <resumo em pt-BR>`
-
-Exemplo: `docs(web): LOG-001 define escopo funcional do frontend`
+`<tipo>(web): B-0X resumo em pt-BR`

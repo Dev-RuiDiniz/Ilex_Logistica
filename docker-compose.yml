@@ -12,6 +12,11 @@ services:
       - ilex-postgres-data:/var/lib/postgresql/data
     networks:
       - ilex-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-ilex} -d ${POSTGRES_DB:-ilex}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   api:
     build:
@@ -27,9 +32,15 @@ services:
     ports:
       - "${API_PORT:-8000}:8000"
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     networks:
       - ilex-network
+    healthcheck:
+      test: ["CMD-SHELL", "python -c \"import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health', timeout=5)\""]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
 volumes:
   ilex-postgres-data:

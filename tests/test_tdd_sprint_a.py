@@ -1,13 +1,16 @@
-﻿from fastapi.testclient import TestClient
-import importlib
+﻿import importlib
 import os
 from pathlib import Path
-from sqlalchemy import create_engine, inspect
-from sqlalchemy.exc import OperationalError
+
 from alembic import command
 from alembic.config import Config
+from fastapi.testclient import TestClient
+from sqlalchemy import create_engine, inspect
+from sqlalchemy.exc import OperationalError
+from sqlalchemy.orm import Session
 
 from app.main import app
+from conftest import create_user_with_roles
 
 
 def test_a01_health_endpoint_foundation() -> None:
@@ -59,3 +62,14 @@ def test_a03_migration_upgrade_downgrade_flow() -> None:
 
     engine.dispose()
     os.remove(db_path)
+
+
+def _login_token(client: TestClient, email: str, password: str) -> str:
+    response = client.post('/api/v1/auth/login', json={'email': email, 'password': password})
+    return response.json()['access_token']
+
+
+def test_a04_login_invalid_credentials(client: TestClient, db_session: Session, seed_roles: None) -> None:
+    create_user_with_roles(db_session, 'admin@ilex.com', '123456', ['admin'])
+    response = client.post('/api/v1/auth/login', json={'email': 'admin@ilex.com', 'password': 'senha_errada'})
+    assert response.status_code == 401

@@ -1,10 +1,14 @@
-"use client";
+﻿"use client";
 
 import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import { apiLogin } from "@/lib/api";
 import { parseRoleFromEmail, saveSession } from "@/lib/session";
+
+export function getLoginErrorMessage(): string {
+  return "Credenciais invalidas. Verifique e tente novamente.";
+}
 
 export default function LoginPage() {
   const router = useRouter();
@@ -27,7 +31,7 @@ export default function LoginPage() {
       });
       router.push("/");
     } catch {
-      setError("Credenciais inválidas. Verifique e tente novamente.");
+      setError(getLoginErrorMessage());
     } finally {
       setLoading(false);
     }
@@ -37,7 +41,7 @@ export default function LoginPage() {
     <main className="flex min-h-screen items-center justify-center bg-slate-100 px-4">
       <form onSubmit={onSubmit} className="w-full max-w-sm rounded border bg-white p-6 shadow-sm">
         <h1 className="text-xl font-semibold">Entrar no painel</h1>
-        <p className="mt-1 text-sm text-slate-600">Use suas credenciais para acessar a área privada.</p>
+        <p className="mt-1 text-sm text-slate-600">Use suas credenciais para acessar a area privada.</p>
 
         <label className="mt-4 block text-sm font-medium">E-mail</label>
         <input

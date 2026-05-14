@@ -113,3 +113,13 @@
 - Commit Docs: `docs(docs): B-09 publica fluxo oficial de navegacao e permissoes`.
 - Issue Docs: https://github.com/ilex-logistica/Docs/issues/34
 - Issue Execucao Web: https://github.com/ilex-logistica/Web/issues/16
+
+### B-10
+- TDD documental:
+  - Primeiro: criterios UAT verificaveis (feliz/erro/perfil).
+  - Depois: preenchimento das evidencias executadas.
+- Artefato oficial:
+  - `sprints/2026-05-12_2026-05-23/CHECKLIST_UAT_WEB_B10_2026-05-12_2026-05-23.md`
+- Commit Docs: `docs(docs): B-10 publica checklist UAT oficial da trilha web`.
+- Issue Docs: https://github.com/ilex-logistica/Docs/issues/35
+- Issue Execucao Web: https://github.com/ilex-logistica/Web/issues/17

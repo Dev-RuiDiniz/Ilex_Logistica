@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { FormEvent, useEffect, useMemo, useState } from "react";
 
@@ -15,6 +15,22 @@ type FormState = {
 };
 
 const initialForm: FormState = { name: "", external_code: "", metadata_json: "{}" };
+
+export function filterCarriersByQuery(items: Carrier[], query: string): Carrier[] {
+  return items.filter((item) => item.name.toLowerCase().includes(query.toLowerCase()));
+}
+
+export function validateCarrierName(name: string): boolean {
+  return name.trim().length >= 2;
+}
+
+export function parseIntegrationMetadata(metadataJson: string): Record<string, unknown> {
+  return JSON.parse(metadataJson || "{}") as Record<string, unknown>;
+}
+
+export function removeCarrierById(items: Carrier[], id: number): Carrier[] {
+  return items.filter((item) => item.id !== id);
+}
 
 export default function CarriersPage() {
   const { session } = useAuth();
@@ -37,22 +53,18 @@ export default function CarriersPage() {
       const data = await listCarriers(session.accessToken);
       setItems(data);
     } catch {
-      setError("Não foi possível carregar transportadoras.");
+      setError("Nao foi possivel carregar transportadoras.");
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     void load();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session?.accessToken]);
 
-  const filtered = useMemo(
-    () => items.filter((item) => item.name.toLowerCase().includes(query.toLowerCase())),
-    [items, query],
-  );
+  const filtered = useMemo(() => filterCarriersByQuery(items, query), [items, query]);
 
   const onSubmit = async (event: FormEvent) => {
     event.preventDefault();
@@ -61,10 +73,10 @@ export default function CarriersPage() {
     setError("");
     setFormError("");
     try {
-      if (form.name.trim().length < 2) {
-        throw new Error("Nome inválido");
+      if (!validateCarrierName(form.name)) {
+        throw new Error("Nome invalido");
       }
-      const parsed = JSON.parse(form.metadata_json || "{}") as Record<string, unknown>;
+      const parsed = parseIntegrationMetadata(form.metadata_json);
       if (form.id) {
         await updateCarrier(session.accessToken, form.id, {
           name: form.name,
@@ -102,7 +114,7 @@ export default function CarriersPage() {
     setInactivatingId(item.id);
     try {
       await inactivateCarrier(session.accessToken, item.id);
-      setItems((prev) => prev.filter((x) => x.id !== item.id));
+      setItems((prev) => removeCarrierById(prev, item.id));
     } catch {
       setError("Falha ao inativar transportadora.");
     } finally {
@@ -115,7 +127,7 @@ export default function CarriersPage() {
       <header className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
         <div>
           <h2 className="text-xl font-semibold">Transportadoras</h2>
-          <p className="text-sm text-slate-600">Listagem com filtro, cadastro, edição e inativação.</p>
+          <p className="text-sm text-slate-600">Listagem com filtro, cadastro, edicao e inativacao.</p>
         </div>
         <input
           value={query}
@@ -126,16 +138,18 @@ export default function CarriersPage() {
       </header>
 
       {error && <p className="rounded bg-red-50 px-3 py-2 text-sm text-red-700">{error}</p>}
-      {!editable && <p className="rounded bg-amber-50 px-3 py-2 text-sm text-amber-700">Perfil com permissão somente leitura.</p>}
+      {!editable && (
+        <p className="rounded bg-amber-50 px-3 py-2 text-sm text-amber-700">Perfil com permissao somente leitura.</p>
+      )}
 
       <div className="overflow-hidden rounded border">
         <table className="w-full text-sm">
           <thead className="bg-slate-100 text-left">
             <tr>
               <th className="px-3 py-2">Nome</th>
-              <th className="px-3 py-2">Código</th>
+              <th className="px-3 py-2">Codigo</th>
               <th className="px-3 py-2">Status</th>
-              {editable && <th className="px-3 py-2">Ações</th>}
+              {editable && <th className="px-3 py-2">Acoes</th>}
             </tr>
           </thead>
           <tbody>
@@ -182,7 +196,7 @@ export default function CarriersPage() {
 
       {editable && (
         <form onSubmit={onSubmit} className="grid gap-3 rounded border p-4 md:grid-cols-2">
-          <h3 className="md:col-span-2 text-base font-semibold">
+          <h3 className="text-base font-semibold md:col-span-2">
             {form.id ? "Editar transportadora" : "Nova transportadora"}
           </h3>
           <input
@@ -196,24 +210,20 @@ export default function CarriersPage() {
           <input
             value={form.external_code}
             onChange={(e) => setForm((f) => ({ ...f, external_code: e.target.value }))}
-            placeholder="Código externo"
+            placeholder="Codigo externo"
             className="rounded border px-3 py-2"
           />
           <textarea
             value={form.metadata_json}
             onChange={(e) => setForm((f) => ({ ...f, metadata_json: e.target.value }))}
-            className="md:col-span-2 min-h-24 rounded border px-3 py-2 font-mono text-sm"
+            className="min-h-24 rounded border px-3 py-2 font-mono text-sm md:col-span-2"
           />
-          {formError && <p className="md:col-span-2 rounded bg-red-50 px-3 py-2 text-sm text-red-700">{formError}</p>}
-          <div className="md:col-span-2 flex gap-2">
+          {formError && <p className="rounded bg-red-50 px-3 py-2 text-sm text-red-700 md:col-span-2">{formError}</p>}
+          <div className="flex gap-2 md:col-span-2">
             <button type="submit" disabled={saving} className="rounded bg-slate-900 px-4 py-2 text-white">
               {saving ? "Salvando..." : form.id ? "Atualizar" : "Cadastrar"}
             </button>
-            <button
-              type="button"
-              onClick={() => setForm(initialForm)}
-              className="rounded border px-4 py-2"
-            >
+            <button type="button" onClick={() => setForm(initialForm)} className="rounded border px-4 py-2">
               Limpar
             </button>
           </div>

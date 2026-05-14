@@ -26,8 +26,11 @@ def parse_uploaded_file(upload: UploadFile) -> tuple[list[str], list[dict[str, s
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="arquivo vazio")
 
     if ext == ".csv":
-        return _parse_csv(raw)
-    return _parse_xlsx(raw)
+        columns, rows = _parse_csv(raw)
+    else:
+        columns, rows = _parse_xlsx(raw)
+    _validate_duplicate_nf(rows)
+    return columns, rows
 
 
 def _parse_csv(raw: bytes) -> tuple[list[str], list[dict[str, str]]]:
@@ -97,4 +100,23 @@ def _validate_required_columns(columns: list[str]) -> None:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=f"colunas obrigatorias ausentes: {', '.join(missing)}",
+        )
+
+
+def _validate_duplicate_nf(rows: list[dict[str, str]]) -> None:
+    seen: set[str] = set()
+    duplicates: set[str] = set()
+    for row in rows:
+        nf = (row.get("nf") or "").strip()
+        if not nf:
+            continue
+        if nf in seen:
+            duplicates.add(nf)
+        else:
+            seen.add(nf)
+    if duplicates:
+        ordered = ", ".join(sorted(duplicates))
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"duplicidades detectadas para nf: {ordered}",
         )

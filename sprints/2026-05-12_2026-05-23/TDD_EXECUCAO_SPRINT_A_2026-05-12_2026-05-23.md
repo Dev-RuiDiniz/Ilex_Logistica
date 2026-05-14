@@ -20,3 +20,9 @@ Este documento registra evidencias RED/GREEN/REFACTOR por tarefa A-01..A-10.
 - Evidencia tecnica: fluxo `upgrade -> downgrade` confirma criacao e remocao consistente da tabela `users`.
 - Rastreio: Issue Docs `#18`, Epic Docs `#2`, Milestone `Sprint 01 - Fundacao do MVP (2026-05-12 a 2026-05-23)`.
 
+## A-04 - Implementar autenticacao JWT (login e refresh)
+- RED comando: `pytest -q tests/test_tdd_sprint_a.py::test_a04_login_invalid_credentials` (falhou com `assert 401 == 200` no criterio inicial errado).
+- GREEN comando: `pytest -q tests/test_tdd_sprint_a.py::test_a04_login_invalid_credentials` (passou: `1 passed`).
+- Evidencia tecnica: login com credencial invalida retorna `401` conforme contrato de seguranca.
+- Rastreio: Issue Docs `#19`, Epic Docs `#2`, Milestone `Sprint 01 - Fundacao do MVP (2026-05-12 a 2026-05-23)`.
+

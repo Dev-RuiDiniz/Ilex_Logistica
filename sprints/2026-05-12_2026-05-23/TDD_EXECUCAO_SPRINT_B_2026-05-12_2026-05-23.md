@@ -103,3 +103,13 @@
 - Commit Web: `feat(web): B-06 B-07 B-08 extrai helpers e valida fluxo de carriers`.
 - Issue Docs: https://github.com/ilex-logistica/Docs/issues/33
 - Issue Execucao Web: https://github.com/ilex-logistica/Web/issues/15
+
+### B-09
+- TDD documental:
+  - Primeiro: checklist de criterios verificaveis de fluxo/permissoes.
+  - Depois: consolidacao de evidencias reais de testes executados.
+- Artefato oficial:
+  - `sprints/2026-05-12_2026-05-23/FLUXO_WEB_PERMISSOES_B09_2026-05-12_2026-05-23.md`
+- Commit Docs: `docs(docs): B-09 publica fluxo oficial de navegacao e permissoes`.
+- Issue Docs: https://github.com/ilex-logistica/Docs/issues/34
+- Issue Execucao Web: https://github.com/ilex-logistica/Web/issues/16

@@ -55,3 +55,15 @@
 - Commit Web: `test(web): B-04 valida regras de guardas de rota`.
 - Issue Docs: https://github.com/ilex-logistica/Docs/issues/29
 - Issue Execucao Web: https://github.com/ilex-logistica/Web/issues/11
+
+### B-05
+- RED:
+  - Comando: `npm run test -- src/lib/permissions.test.ts`
+  - Falha observada: `getCarriersAccessMode is not a function`.
+- GREEN:
+  - Implementado modo de acesso textual (`edit`/`read`) para RBAC de UI.
+  - Comando: `npm run test -- src/lib/permissions.test.ts`
+  - Resultado GREEN: passando.
+- Commit Web: `test(web): B-05 valida modo de acesso por perfil`.
+- Issue Docs: https://github.com/ilex-logistica/Docs/issues/30
+- Issue Execucao Web: https://github.com/ilex-logistica/Web/issues/12

@@ -60,3 +60,13 @@ def workflow_step_names(path: Path) -> list[str]:
         if line.startswith("- name:"):
             steps.append(line.split(":", 1)[1].strip())
     return steps
+
+
+def observability_has_minimum_sections(path: Path) -> bool:
+    text = path.read_text(encoding="utf-8").lower()
+    required = [
+        "healthcheck da api",
+        "logs em comando",
+        "simular falha do db",
+    ]
+    return all(item in text for item in required)

@@ -73,3 +73,13 @@ def test_a04_login_invalid_credentials(client: TestClient, db_session: Session, 
     create_user_with_roles(db_session, 'admin@ilex.com', '123456', ['admin'])
     response = client.post('/api/v1/auth/login', json={'email': 'admin@ilex.com', 'password': 'senha_errada'})
     assert response.status_code == 401
+
+def test_a05_rbac_blocks_write_for_auditor(client: TestClient, db_session: Session, seed_roles: None) -> None:
+    create_user_with_roles(db_session, 'audit@ilex.com', '123456', ['auditoria'])
+    token = _login_token(client, 'audit@ilex.com', '123456')
+    response = client.post(
+        '/api/v1/carriers',
+        headers={'Authorization': f'Bearer {token}'},
+        json={'name': 'Transportes A', 'external_code': 'TPA-1', 'integration_metadata': {}},
+    )
+    assert response.status_code == 403

@@ -1,54 +1,36 @@
 ﻿# Integrations
 
-Camada de integrações externas do Ilex Logística para coleta de status de entrega por API, importação e bots controlados.
+Camada de integracoes externas do Ilex Logistica para conectores de transportadoras e normalizacao de dados.
 
-## Objetivo no MVP
+## Sprint 1 oficial (12/05/2026 a 23/05/2026)
 
-Criar base segura e extensível para conectar transportadoras sem acoplar o core a uma única fonte de dados.
+Objetivo da trilha C (frente de integracoes): preparar contratos de integracao e base para coleta futura.
 
-## Responsabilidades do repositório
+### Backlog relacionado
 
-- Clientes de API por transportadora
-- Adaptadores e mapeadores de payload
-- Fluxos de coleta controlada por bots/scraping
-- Normalização de dados para consumo da API central
-- Testes de contratos e conectores
+- C-07, C-08, C-09 (governanca e contrato)
+- preparacao para LOG-020+ nas proximas sprints
 
-## Stack prevista
+### Evidencias de execucao
 
-- Python workers
-- Clients HTTP de APIs
-- Playwright (quando necessário para portais)
-- Suporte a filas/jobs para execução agendada
+- Issues de execucao: `#1` e `#2`
+- Milestones oficiais aplicadas: Sprint 01..Sprint 05
 
-## Estrutura sugerida
+## Responsabilidades
 
-```text
-connectors/
-  api_clients/
-  bots/
-parsers/
-mappers/
-tests/
-docs/
-examples/
-```
+- clientes de API por transportadora
+- adaptadores/mapeadores de payload
+- normalizacao de dados para API central
+- testes de contratos de conectores
 
-## Backlog prioritário (LOG-*)
+## Regra de rastreio obrigatoria
 
-- LOG-020: Criar logs de coleta
-- LOG-021: Preparar conectores de API
-- LOG-022: Preparar bots/scraping controlado
-- LOG-025: Testes integrados e QA
+Toda issue/PR deve informar:
 
-## Critérios de aceite iniciais
+- Epic (Docs)
+- Issue de origem (Docs)
+- Sprint/Milestone
 
-- Interface base de conector padronizada
-- Conector de exemplo testável em ambiente controlado
-- Logs de sucesso/falha por fonte de dados
-
-## Convenção de commits
+## Convencao de commits
 
 `<tipo>(integrations): <ID> <resumo em pt-BR>`
-
-Exemplo: `docs(integrations): LOG-021 documenta interface base de conectores`

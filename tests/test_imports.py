@@ -2,7 +2,7 @@ from io import BytesIO
 from zipfile import ZIP_DEFLATED, ZipFile
 
 
-def build_xlsx_bytes() -> bytes:
+def build_xlsx_bytes(duplicate_nf: bool = False) -> bytes:
     content_types = """<?xml version="1.0" encoding="UTF-8"?>
 <Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">
   <Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>
@@ -29,7 +29,15 @@ def build_xlsx_bytes() -> bytes:
   <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/>
 </Relationships>
 """
-    sheet = """<?xml version="1.0" encoding="UTF-8"?>
+    extra_row = ""
+    if duplicate_nf:
+        extra_row = """
+    <row r="3">
+      <c r="A3" t="inlineStr"><is><t>123</t></is></c>
+      <c r="B3" t="inlineStr"><is><t>XPTO2</t></is></c>
+    </row>"""
+
+    sheet = f"""<?xml version="1.0" encoding="UTF-8"?>
 <worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
   <sheetData>
     <row r="1">
@@ -40,6 +48,7 @@ def build_xlsx_bytes() -> bytes:
       <c r="A2" t="inlineStr"><is><t>123</t></is></c>
       <c r="B2" t="inlineStr"><is><t>XPTO</t></is></c>
     </row>
+    {extra_row}
   </sheetData>
 </worksheet>
 """
@@ -138,3 +147,33 @@ def test_upload_rejeita_sem_transportadora(client) -> None:
     )
     assert response.status_code == 400
     assert "transportadora" in response.json()["detail"].lower()
+
+
+def test_upload_rejeita_csv_com_nf_duplicado(client) -> None:
+    csv_bytes = b"nf,transportadora\n123,XPTO\n123,XPTO2\n"
+    response = client.post(
+        "/api/v1/imports/upload",
+        files={"file": ("entregas.csv", csv_bytes, "text/csv")},
+    )
+    assert response.status_code == 400
+    detail = response.json()["detail"].lower()
+    assert "duplicidade" in detail
+    assert "123" in detail
+
+
+def test_upload_rejeita_xlsx_com_nf_duplicado(client) -> None:
+    xlsx = build_xlsx_bytes(duplicate_nf=True)
+    response = client.post(
+        "/api/v1/imports/upload",
+        files={
+            "file": (
+                "entregas.xlsx",
+                xlsx,
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            )
+        },
+    )
+    assert response.status_code == 400
+    detail = response.json()["detail"].lower()
+    assert "duplicidade" in detail
+    assert "123" in detail

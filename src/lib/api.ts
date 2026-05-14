@@ -1,9 +1,18 @@
 import type { Carrier } from "@/lib/types";
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://127.0.0.1:8000/api/v1";
+export function getApiBaseUrl(envValue = process.env.NEXT_PUBLIC_API_URL): string {
+  const fallback = "http://127.0.0.1:8000/api/v1";
+  const raw = (envValue ?? fallback).trim();
+  return raw.endsWith("/") ? raw.slice(0, -1) : raw;
+}
+
+export function buildApiUrl(path: string, envValue = process.env.NEXT_PUBLIC_API_URL): string {
+  const normalizedPath = path.startsWith("/") ? path : `/${path}`;
+  return `${getApiBaseUrl(envValue)}${normalizedPath}`;
+}
 
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
-  const response = await fetch(`${API_BASE}${path}`, {
+  const response = await fetch(buildApiUrl(path), {
     ...init,
     headers: {
       "Content-Type": "application/json",

@@ -7,3 +7,7 @@ export function canEditCarriers(role: UserRole): boolean {
 export function canViewCarriers(role: UserRole): boolean {
   return canEditCarriers(role) || role === "auditoria";
 }
+
+export function getCarriersAccessMode(role: UserRole): "edit" | "read" {
+  return canEditCarriers(role) ? "edit" : "read";
+}

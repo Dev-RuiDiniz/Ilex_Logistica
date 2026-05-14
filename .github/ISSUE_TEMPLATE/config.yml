@@ -1,0 +1,6 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Planejamento central (Docs)
+    url: https://github.com/ilex-logistica/Docs/issues
+    about: Consulte epicos, sprints e backlog oficial antes de abrir nova issue.
+

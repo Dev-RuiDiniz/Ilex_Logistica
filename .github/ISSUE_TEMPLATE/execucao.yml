@@ -1,0 +1,59 @@
+name: Execucao de Trabalho
+description: Abrir atividade de execucao vinculada ao planejamento central.
+title: "[Execucao]: "
+labels:
+  - enhancement
+body:
+  - type: input
+    id: epic_docs
+    attributes:
+      label: Epic (Docs)
+      description: URL do epico no repositorio ilex-logistica/Docs.
+      placeholder: https://github.com/ilex-logistica/Docs/issues/2
+    validations:
+      required: true
+  - type: input
+    id: source_docs_issue
+    attributes:
+      label: Issue de Origem (Docs)
+      description: URL da issue de planejamento no repositorio ilex-logistica/Docs.
+      placeholder: https://github.com/ilex-logistica/Docs/issues/7
+    validations:
+      required: true
+  - type: dropdown
+    id: sprint
+    attributes:
+      label: Sprint/Milestone
+      description: Sprint alvo desta entrega.
+      options:
+        - Sprint 01 - Fundacao do MVP (2026-05-12 a 2026-05-23)
+        - Sprint 02 - Coleta e Monitoramento (2026-05-26 a 2026-06-06)
+        - Sprint 03 - Operacao e Eficiencia (2026-06-09 a 2026-06-20)
+        - Sprint 04 - Relatorios e Integracoes (2026-06-23 a 2026-07-04)
+        - Sprint 05 - Cotacao e Go-Live (2026-07-07 a 2026-07-11)
+    validations:
+      required: true
+  - type: dropdown
+    id: prioridade
+    attributes:
+      label: Prioridade
+      options:
+        - prioridade:alta
+        - prioridade:media
+    validations:
+      required: true
+  - type: textarea
+    id: escopo
+    attributes:
+      label: Escopo
+      description: Descreva o que deve ser entregue.
+    validations:
+      required: true
+  - type: textarea
+    id: criterios
+    attributes:
+      label: Criterios de aceite
+      description: Liste criterios objetivos de conclusao.
+    validations:
+      required: true
+

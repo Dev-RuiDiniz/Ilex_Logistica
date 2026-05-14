@@ -43,3 +43,15 @@
 - Commit Web: `test(web): B-03 valida mensagem de erro de autenticacao`.
 - Issue Docs: https://github.com/ilex-logistica/Docs/issues/28
 - Issue Execucao Web: https://github.com/ilex-logistica/Web/issues/10
+
+### B-04
+- RED:
+  - Comando: `npm run test -- middleware.test.ts`
+  - Falha observada: `isPrivatePath/shouldRedirect... is not a function`.
+- GREEN:
+  - Implementados helpers puros de guarda no `middleware.ts`.
+  - Comando: `npm run test -- middleware.test.ts`
+  - Resultado GREEN: passando.
+- Commit Web: `test(web): B-04 valida regras de guardas de rota`.
+- Issue Docs: https://github.com/ilex-logistica/Docs/issues/29
+- Issue Execucao Web: https://github.com/ilex-logistica/Web/issues/11

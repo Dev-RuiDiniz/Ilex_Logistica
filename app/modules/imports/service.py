@@ -1,4 +1,5 @@
 import csv
+import unicodedata
 from io import BytesIO
 from io import StringIO
 from pathlib import Path
@@ -8,6 +9,7 @@ from zipfile import BadZipFile, ZipFile
 from fastapi import HTTPException, UploadFile, status
 
 SUPPORTED_EXTENSIONS = {".csv", ".xlsx"}
+REQUIRED_COLUMNS = {"nf", "transportadora"}
 XML_NS = {"s": "http://schemas.openxmlformats.org/spreadsheetml/2006/main"}
 
 
@@ -37,8 +39,12 @@ def _parse_csv(raw: bytes) -> tuple[list[str], list[dict[str, str]]]:
     reader = csv.DictReader(StringIO(text))
     if not reader.fieldnames:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="csv sem cabecalho")
-    columns = [c.strip() for c in reader.fieldnames if c and c.strip()]
-    rows = [{k.strip(): (v or "").strip() for k, v in row.items() if k and k.strip()} for row in reader]
+    columns = [_normalize_header(c) for c in reader.fieldnames if c and c.strip()]
+    _validate_required_columns(columns)
+    rows = [
+        {_normalize_header(k): (v or "").strip() for k, v in row.items() if k and k.strip()}
+        for row in reader
+    ]
     return columns, rows
 
 
@@ -69,7 +75,8 @@ def _parse_xlsx(raw: bytes) -> tuple[list[str], list[dict[str, str]]]:
     if not rows:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="xlsx vazio")
 
-    columns = [c.strip() for c in rows[0] if c.strip()]
+    columns = [_normalize_header(c) for c in rows[0] if c.strip()]
+    _validate_required_columns(columns)
     data_rows: list[dict[str, str]] = []
     for values in rows[1:]:
         row_map: dict[str, str] = {}
@@ -77,3 +84,17 @@ def _parse_xlsx(raw: bytes) -> tuple[list[str], list[dict[str, str]]]:
             row_map[col] = values[idx].strip() if idx < len(values) else ""
         data_rows.append(row_map)
     return columns, data_rows
+
+
+def _normalize_header(value: str) -> str:
+    normalized = unicodedata.normalize("NFD", value.strip().lower())
+    return "".join(ch for ch in normalized if unicodedata.category(ch) != "Mn")
+
+
+def _validate_required_columns(columns: list[str]) -> None:
+    missing = sorted(REQUIRED_COLUMNS - set(columns))
+    if missing:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"colunas obrigatorias ausentes: {', '.join(missing)}",
+        )

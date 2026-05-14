@@ -1,4 +1,5 @@
 import csv
+import hashlib
 import unicodedata
 from io import BytesIO
 from io import StringIO
@@ -7,13 +8,18 @@ from xml.etree import ElementTree
 from zipfile import BadZipFile, ZipFile
 
 from fastapi import HTTPException, UploadFile, status
+from sqlalchemy.orm import Session
+
+from app.modules.imports.models import ImportHistory
 
 SUPPORTED_EXTENSIONS = {".csv", ".xlsx"}
 REQUIRED_COLUMNS = {"nf", "transportadora"}
 XML_NS = {"s": "http://schemas.openxmlformats.org/spreadsheetml/2006/main"}
 
 
-def parse_uploaded_file(upload: UploadFile) -> tuple[list[str], list[dict[str, str]]]:
+def parse_uploaded_file(
+    upload: UploadFile,
+) -> tuple[list[str], list[dict[str, str]], str, str]:
     ext = Path(upload.filename or "").suffix.lower()
     if ext not in SUPPORTED_EXTENSIONS:
         raise HTTPException(
@@ -30,7 +36,29 @@ def parse_uploaded_file(upload: UploadFile) -> tuple[list[str], list[dict[str, s
     else:
         columns, rows = _parse_xlsx(raw)
     _validate_duplicate_nf(rows)
-    return columns, rows
+    return columns, rows, ext.replace(".", ""), _hash_bytes(raw)
+
+
+def persist_import_history(
+    db: Session,
+    *,
+    filename: str,
+    file_type: str,
+    file_hash: str,
+    rows_received: int,
+) -> ImportHistory:
+    history = ImportHistory(
+        filename=filename,
+        file_type=file_type,
+        file_hash=file_hash,
+        rows_received=rows_received,
+        duplicates_count=0,
+        status="SUCCESS",
+    )
+    db.add(history)
+    db.commit()
+    db.refresh(history)
+    return history
 
 
 def _parse_csv(raw: bytes) -> tuple[list[str], list[dict[str, str]]]:
@@ -120,3 +148,7 @@ def _validate_duplicate_nf(rows: list[dict[str, str]]) -> None:
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=f"duplicidades detectadas para nf: {ordered}",
         )
+
+
+def _hash_bytes(raw: bytes) -> str:
+    return hashlib.sha256(raw).hexdigest()

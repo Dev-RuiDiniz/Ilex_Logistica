@@ -45,7 +45,20 @@ npm install
 npm run dev
 npm run lint
 npm run test
+npm run build
 ```
+
+## CI local
+
+Comandos equivalentes ao workflow `Web CI`:
+
+```bash
+npm ci
+npm run lint
+npm run build
+```
+
+O workflow executa em `pull_request` e em `push` para `main`.
 
 ## Fluxo de acesso
 

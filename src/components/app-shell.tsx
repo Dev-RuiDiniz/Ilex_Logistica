@@ -1,10 +1,15 @@
-"use client";
+﻿"use client";
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 
 import { canEditCarriers } from "@/lib/permissions";
+import type { UserRole } from "@/lib/types";
 import { useAuth } from "@/features/auth/auth-provider";
+
+export function getRoleUiLabel(role: UserRole): string {
+  return canEditCarriers(role) ? "(edicao)" : "(somente leitura)";
+}
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const { session, logout } = useAuth();
@@ -20,7 +25,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     <div className="min-h-screen bg-slate-50 text-slate-900">
       <header className="border-b bg-white px-6 py-4">
         <div className="mx-auto flex max-w-6xl items-center justify-between">
-          <h1 className="text-lg font-semibold">Ilex Logística Admin</h1>
+          <h1 className="text-lg font-semibold">Ilex Logistica Admin</h1>
           <div className="flex items-center gap-4">
             <span className="text-sm text-slate-600">{session?.email}</span>
             <button
@@ -48,7 +53,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               Transportadoras
             </Link>
             <p className="pt-2 text-xs text-slate-500">
-              Perfil: {session?.role} {canEditCarriers(session?.role ?? "auditoria") ? "(edição)" : "(somente leitura)"}
+              Perfil: {session?.role} {getRoleUiLabel(session?.role ?? "auditoria")}
             </p>
           </nav>
         </aside>

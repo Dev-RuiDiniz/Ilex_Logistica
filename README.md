@@ -1,17 +1,20 @@
-# Api
+﻿# Api
 
-Camada de backend fundacional do Ilex Logistica para autenticação, perfis e cadastro de transportadoras.
+Camada de backend do Ilex Logistica para autenticacao, autorizacao por perfil, cadastro de transportadoras e evolucao do core logistico.
 
-## Sprint A (11/05/2026 a 21/05/2026) - Entregas
+## Sprint 1 oficial (12/05/2026 a 23/05/2026)
 
-- A-01: estrutura FastAPI modular + `/health`
-- A-02: configuração de banco e sessão SQLAlchemy
-- A-03: migrations iniciais (`users`, `roles`, `user_roles`, `carriers`)
-- A-04: autenticação JWT (`/auth/login` e `/auth/refresh`)
-- A-05: RBAC por perfil (`admin`, `logistica`, `gestor`, `auditoria`)
-- A-06: CRUD de transportadoras com inativação lógica
-- A-07: validações Pydantic e erro 422 padronizado
-- A-08: suíte mínima automatizada para auth e carriers
+Objetivo da trilha A: entregar fundacao tecnica da API com rastreabilidade Scrum ativa.
+
+### Backlog da trilha A
+
+- A-01 a A-10 (referencia em `Docs/sprints/2026-05-12_2026-05-23/`)
+
+### Evidencias de execucao
+
+- PR fundacional mergeada: `https://github.com/ilex-logistica/Api/pull/1`
+- Issues de execucao derivadas de Docs: `#2` a `#9`
+- Milestones oficiais aplicadas: Sprint 01..Sprint 05
 
 ## Stack
 
@@ -19,7 +22,7 @@ Camada de backend fundacional do Ilex Logistica para autenticação, perfis e ca
 - FastAPI
 - SQLAlchemy
 - Alembic
-- PostgreSQL (produção/local), SQLite (testes)
+- PostgreSQL
 - PyJWT
 
 ## Estrutura
@@ -29,24 +32,9 @@ app/
   core/
   database/
   modules/
-    auth/
-    carriers/
-    health/
-    users/
-  main.py
 migrations/
 tests/
 ```
-
-## Configuração
-
-Variáveis (prefixo `ILEX_`):
-
-- `ILEX_DATABASE_URL` (ex.: `postgresql+psycopg2://postgres:postgres@localhost:5432/ilex`)
-- `ILEX_JWT_SECRET`
-- `ILEX_JWT_ALGORITHM` (default `HS256`)
-- `ILEX_JWT_ACCESS_MINUTES` (default `30`)
-- `ILEX_JWT_REFRESH_MINUTES` (default `1440`)
 
 ## Como executar
 
@@ -55,29 +43,19 @@ python -m pip install -e .[dev]
 uvicorn app.main:app --reload
 ```
 
-Healthcheck:
-
-```bash
-curl http://127.0.0.1:8000/health
-```
-
-## Banco e migrations
-
-```bash
-alembic upgrade head
-alembic downgrade base
-```
-
 ## Testes
 
 ```bash
 python -m pytest -q
 ```
 
-Suite mínima da fundação:
-- `tests/test_auth.py`
-- `tests/test_rbac.py`
-- `tests/test_carriers.py`
+## Regra de rastreio obrigatoria
+
+Toda issue/PR deve informar:
+
+- Epic (Docs)
+- Issue de origem (Docs)
+- Sprint/Milestone
 
 ## CI local
 
@@ -91,10 +69,6 @@ python -m pytest -q
 
 O workflow executa em `pull_request` e em `push` para `main`.
 
-## Contrato técnico (A-09)
+## Convencao de commits
 
-Documentado em `Docs/sprints/2026-05-11_2026-05-21/CONTRATO_API_FUNDACIONAL_A09.md`.
-
-## Convenção de commits
-
-`<tipo>(api): A-0X resumo em pt-BR`
+`<tipo>(api): <ID> <resumo em pt-BR>`

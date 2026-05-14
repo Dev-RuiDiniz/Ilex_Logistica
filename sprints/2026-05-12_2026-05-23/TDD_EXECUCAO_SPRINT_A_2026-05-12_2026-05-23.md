@@ -44,3 +44,9 @@ Este documento registra evidencias RED/GREEN/REFACTOR por tarefa A-01..A-10.
 - Evidencia tecnica: payload invalido retorna `422` com codigo `VALIDATION_ERROR`.
 - Rastreio: Issue Docs `#22`, Epic Docs `#2`, Milestone `Sprint 01 - Fundacao do MVP (2026-05-12 a 2026-05-23)`.
 
+## A-08 - Consolidar suite minima automatizada
+- RED comando: `pytest -q tests/test_tdd_sprint_a.py::test_a08_suite_minima_sprint_a` (falhou no primeiro ciclo de especificacao da suite minima).
+- GREEN comando: `pytest -q tests/test_tdd_sprint_a.py::test_a08_suite_minima_sprint_a` (passou: `1 passed`).
+- Evidencia tecnica: suite TDD da trilha A consolidada com 8 testes de regressao (`test_a01`..`test_a08`).
+- Rastreio: Issue Docs `#23`, Epic Docs `#2`, Milestone `Sprint 01 - Fundacao do MVP (2026-05-12 a 2026-05-23)`.
+

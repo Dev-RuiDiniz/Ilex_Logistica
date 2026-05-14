@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from app.database.session import get_db
 from app.modules.imports.models import ImportHistory
 from app.modules.imports.schemas import ImportHistoryResponse, ImportPreviewResponse
-from app.modules.imports.service import parse_uploaded_file, persist_import_history
+from app.modules.imports.service import parse_uploaded_file, persist_deliveries, persist_import_history
 
 router = APIRouter(prefix="/imports", tags=["imports"])
 
@@ -12,6 +12,7 @@ router = APIRouter(prefix="/imports", tags=["imports"])
 @router.post("/upload", response_model=ImportPreviewResponse)
 def upload_import_file(file: UploadFile = File(...), db: Session = Depends(get_db)) -> ImportPreviewResponse:
     columns, rows, file_type, file_hash = parse_uploaded_file(file)
+    persist_deliveries(db, rows)
     persist_import_history(
         db,
         filename=file.filename or "unknown",

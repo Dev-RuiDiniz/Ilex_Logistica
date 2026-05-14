@@ -1,6 +1,8 @@
 import csv
 import hashlib
 import unicodedata
+from datetime import datetime
+from decimal import Decimal, InvalidOperation
 from io import BytesIO
 from io import StringIO
 from pathlib import Path
@@ -10,10 +12,10 @@ from zipfile import BadZipFile, ZipFile
 from fastapi import HTTPException, UploadFile, status
 from sqlalchemy.orm import Session
 
-from app.modules.imports.models import ImportHistory
+from app.modules.imports.models import Delivery, ImportHistory
 
 SUPPORTED_EXTENSIONS = {".csv", ".xlsx"}
-REQUIRED_COLUMNS = {"nf", "transportadora"}
+REQUIRED_COLUMNS = {"nf", "transportadora", "data_coleta", "valor_frete", "percentual_frete"}
 XML_NS = {"s": "http://schemas.openxmlformats.org/spreadsheetml/2006/main"}
 
 
@@ -36,6 +38,7 @@ def parse_uploaded_file(
     else:
         columns, rows = _parse_xlsx(raw)
     _validate_duplicate_nf(rows)
+    _validate_financial_fields(rows)
     return columns, rows, ext.replace(".", ""), _hash_bytes(raw)
 
 
@@ -59,6 +62,20 @@ def persist_import_history(
     db.commit()
     db.refresh(history)
     return history
+
+
+def persist_deliveries(db: Session, rows: list[dict[str, str]]) -> None:
+    for row in rows:
+        db.add(
+            Delivery(
+                nf=(row.get("nf") or "").strip(),
+                transportadora=(row.get("transportadora") or "").strip(),
+                data_coleta=_parse_date(row.get("data_coleta")),
+                valor_frete=_parse_decimal(row.get("valor_frete"), field="valor_frete"),
+                percentual_frete=_parse_decimal(row.get("percentual_frete"), field="percentual_frete"),
+            )
+        )
+    db.commit()
 
 
 def _parse_csv(raw: bytes) -> tuple[list[str], list[dict[str, str]]]:
@@ -119,7 +136,8 @@ def _parse_xlsx(raw: bytes) -> tuple[list[str], list[dict[str, str]]]:
 
 def _normalize_header(value: str) -> str:
     normalized = unicodedata.normalize("NFD", value.strip().lower())
-    return "".join(ch for ch in normalized if unicodedata.category(ch) != "Mn")
+    without_accents = "".join(ch for ch in normalized if unicodedata.category(ch) != "Mn")
+    return without_accents.replace(" ", "_")
 
 
 def _validate_required_columns(columns: list[str]) -> None:
@@ -148,6 +166,46 @@ def _validate_duplicate_nf(rows: list[dict[str, str]]) -> None:
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=f"duplicidades detectadas para nf: {ordered}",
         )
+
+
+def _validate_financial_fields(rows: list[dict[str, str]]) -> None:
+    for row in rows:
+        valor_frete = _parse_decimal(row.get("valor_frete"), field="valor_frete")
+        if valor_frete < Decimal("0"):
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="valor_frete deve ser maior ou igual a 0",
+            )
+
+        percentual_frete = _parse_decimal(row.get("percentual_frete"), field="percentual_frete")
+        if percentual_frete < Decimal("0") or percentual_frete > Decimal("100"):
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="percentual_frete deve estar entre 0 e 100",
+            )
+
+        _parse_date(row.get("data_coleta"))
+
+
+def _parse_decimal(value: str | None, *, field: str) -> Decimal:
+    raw = (value or "").strip()
+    if not raw:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"{field} obrigatorio")
+    normalized = raw.replace(",", ".")
+    try:
+        return Decimal(normalized)
+    except InvalidOperation as exc:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"{field} invalido") from exc
+
+
+def _parse_date(value: str | None):
+    raw = (value or "").strip()
+    if not raw:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="data_coleta obrigatoria")
+    try:
+        return datetime.strptime(raw, "%Y-%m-%d").date()
+    except ValueError as exc:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="data_coleta invalida") from exc
 
 
 def _hash_bytes(raw: bytes) -> str:

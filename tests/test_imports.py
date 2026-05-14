@@ -107,3 +107,34 @@ def test_upload_xlsx_retorna_resumo(client) -> None:
     assert data["filename"] == "entregas.xlsx"
     assert data["rows_received"] == 1
     assert data["columns_detected"] == ["nf", "transportadora"]
+
+
+def test_upload_csv_normaliza_cabecalho_com_acento_e_espacos(client) -> None:
+    csv_bytes = " NF , Trânsportádora \n123,XPTO\n".encode("utf-8")
+    response = client.post(
+        "/api/v1/imports/upload",
+        files={"file": ("entregas.csv", csv_bytes, "text/csv")},
+    )
+    assert response.status_code == 200
+    data = response.json()
+    assert data["columns_detected"] == ["nf", "transportadora"]
+
+
+def test_upload_rejeita_sem_nf(client) -> None:
+    csv_bytes = b"transportadora\nXPTO\n"
+    response = client.post(
+        "/api/v1/imports/upload",
+        files={"file": ("entregas.csv", csv_bytes, "text/csv")},
+    )
+    assert response.status_code == 400
+    assert "nf" in response.json()["detail"].lower()
+
+
+def test_upload_rejeita_sem_transportadora(client) -> None:
+    csv_bytes = b"nf\n123\n"
+    response = client.post(
+        "/api/v1/imports/upload",
+        files={"file": ("entregas.csv", csv_bytes, "text/csv")},
+    )
+    assert response.status_code == 400
+    assert "transportadora" in response.json()["detail"].lower()

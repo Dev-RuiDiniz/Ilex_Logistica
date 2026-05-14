@@ -19,3 +19,15 @@
 - Commit Web: `test(web): B-01 valida sessao e configuracao base da API`.
 - Issue Docs: https://github.com/ilex-logistica/Docs/issues/26
 - Issue Execucao Web: https://github.com/ilex-logistica/Web/issues/8
+
+### B-02
+- RED:
+  - Comando: `npm run test -- src/components/app-shell.test.tsx`
+  - Falha observada: `getRoleUiLabel is not a function`.
+- GREEN:
+  - Implementado helper de rotulo de perfil no shell autenticado.
+  - Comando: `npm run test -- src/components/app-shell.test.tsx`
+  - Resultado GREEN: passando.
+- Commit Web: `test(web): B-02 valida shell autenticado e estado por perfil`.
+- Issue Docs: https://github.com/ilex-logistica/Docs/issues/27
+- Issue Execucao Web: https://github.com/ilex-logistica/Web/issues/9

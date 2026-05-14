@@ -79,3 +79,15 @@
 - Commit Web: `feat(web): B-06 B-07 B-08 extrai helpers e valida fluxo de carriers`.
 - Issue Docs: https://github.com/ilex-logistica/Docs/issues/31
 - Issue Execucao Web: https://github.com/ilex-logistica/Web/issues/13
+
+### B-07
+- RED:
+  - Comando: `npm run test -- src/app/(private)/carriers/page.helpers.test.ts`
+  - Falha observada: `validateCarrierName/parseIntegrationMetadata is not a function`.
+- GREEN:
+  - Implementadas validacoes minimas de nome e parse de metadata JSON.
+  - Comando: `npm run test -- src/app/(private)/carriers/page.helpers.test.ts`
+  - Resultado GREEN: passando.
+- Commit Web: `feat(web): B-06 B-07 B-08 extrai helpers e valida fluxo de carriers`.
+- Issue Docs: https://github.com/ilex-logistica/Docs/issues/32
+- Issue Execucao Web: https://github.com/ilex-logistica/Web/issues/14

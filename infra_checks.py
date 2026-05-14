@@ -31,3 +31,23 @@ def compose_services_summary(path: Path) -> dict[str, dict[str, bool]]:
             out[current_service]["has_healthcheck"] = True
 
     return out
+
+
+def _read_env_keys(path: Path) -> set[str]:
+    keys: set[str] = set()
+    for raw in path.read_text(encoding="utf-8").splitlines():
+        line = raw.strip()
+        if not line or line.startswith("#") or "=" not in line:
+            continue
+        key = line.split("=", 1)[0].strip()
+        if key:
+            keys.add(key)
+    return keys
+
+
+def env_template_keys(root_env: Path, api_env: Path, web_env: Path) -> dict[str, set[str]]:
+    return {
+        "root": _read_env_keys(root_env),
+        "api": _read_env_keys(api_env),
+        "web": _read_env_keys(web_env),
+    }

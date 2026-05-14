@@ -26,3 +26,9 @@ Este documento registra evidencias RED/GREEN/REFACTOR por tarefa A-01..A-10.
 - Evidencia tecnica: login com credencial invalida retorna `401` conforme contrato de seguranca.
 - Rastreio: Issue Docs `#19`, Epic Docs `#2`, Milestone `Sprint 01 - Fundacao do MVP (2026-05-12 a 2026-05-23)`.
 
+## A-05 - Aplicar guardas por perfil em rotas protegidas
+- RED comando: `pytest -q tests/test_tdd_sprint_a.py::test_a05_rbac_blocks_write_for_auditor` (falhou com `assert 403 == 201`).
+- GREEN comando: `pytest -q tests/test_tdd_sprint_a.py::test_a05_rbac_blocks_write_for_auditor` (passou: `1 passed`).
+- Evidencia tecnica: perfil `auditoria` recebe `403` para escrita em `carriers`.
+- Rastreio: Issue Docs `#20`, Epic Docs `#2`, Milestone `Sprint 01 - Fundacao do MVP (2026-05-12 a 2026-05-23)`.
+

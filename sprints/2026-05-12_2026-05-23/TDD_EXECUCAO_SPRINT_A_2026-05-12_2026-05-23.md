@@ -14,3 +14,9 @@ Este documento registra evidencias RED/GREEN/REFACTOR por tarefa A-01..A-10.
 - Evidencia tecnica: ping de banco com engine quebrada retorna `False` sem quebrar a aplicacao.
 - Rastreio: Issue Docs `#17`, Epic Docs `#2`, Milestone `Sprint 01 - Fundacao do MVP (2026-05-12 a 2026-05-23)`.
 
+## A-03 - Criar migrations iniciais e modelos de usuarios/perfis
+- RED comando: `pytest -q tests/test_tdd_sprint_a.py::test_a03_migration_upgrade_downgrade_flow` (falhou em assercao de tabela apos downgrade).
+- GREEN comando: `pytest -q tests/test_tdd_sprint_a.py::test_a03_migration_upgrade_downgrade_flow` (passou: `1 passed`).
+- Evidencia tecnica: fluxo `upgrade -> downgrade` confirma criacao e remocao consistente da tabela `users`.
+- Rastreio: Issue Docs `#18`, Epic Docs `#2`, Milestone `Sprint 01 - Fundacao do MVP (2026-05-12 a 2026-05-23)`.
+

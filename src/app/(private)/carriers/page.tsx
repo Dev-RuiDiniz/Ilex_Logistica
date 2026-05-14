@@ -60,6 +60,8 @@ export default function CarriersPage() {
   };
 
   useEffect(() => {
+    // A carga depende da sessao resolvida no provider e precisa disparar no mount dessa tela.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     void load();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session?.accessToken]);

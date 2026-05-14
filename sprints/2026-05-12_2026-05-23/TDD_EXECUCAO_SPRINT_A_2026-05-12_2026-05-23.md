@@ -32,3 +32,9 @@ Este documento registra evidencias RED/GREEN/REFACTOR por tarefa A-01..A-10.
 - Evidencia tecnica: perfil `auditoria` recebe `403` para escrita em `carriers`.
 - Rastreio: Issue Docs `#20`, Epic Docs `#2`, Milestone `Sprint 01 - Fundacao do MVP (2026-05-12 a 2026-05-23)`.
 
+## A-06 - Criar CRUD de transportadoras
+- RED comando: `pytest -q tests/test_tdd_sprint_a.py::test_a06_crud_carriers_flow` (falhou com `assert 0 == 1` na listagem final).
+- GREEN comando: `pytest -q tests/test_tdd_sprint_a.py::test_a06_crud_carriers_flow` (passou: `1 passed`).
+- Evidencia tecnica: fluxo create/update/inactivate funcional e listagem padrao oculta itens inativos.
+- Rastreio: Issue Docs `#21`, Epic Docs `#2`, Milestone `Sprint 01 - Fundacao do MVP (2026-05-12 a 2026-05-23)`.
+

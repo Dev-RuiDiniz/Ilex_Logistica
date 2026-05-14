@@ -71,13 +71,25 @@ alembic downgrade base
 ## Testes
 
 ```bash
-pytest -q
+python -m pytest -q
 ```
 
 Suite mínima da fundação:
 - `tests/test_auth.py`
 - `tests/test_rbac.py`
 - `tests/test_carriers.py`
+
+## CI local
+
+Comandos equivalentes ao workflow `API CI`:
+
+```bash
+python -m pip install -e .[dev]
+python -m ruff check .
+python -m pytest -q
+```
+
+O workflow executa em `pull_request` e em `push` para `main`.
 
 ## Contrato técnico (A-09)
 

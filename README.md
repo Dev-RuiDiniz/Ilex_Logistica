@@ -1,19 +1,28 @@
 ﻿# Docs
 
-Repositório oficial de documentação do Ilex Logística.
+Repositorio oficial de documentacao do Ilex Logistica.
 
-## Objetivo no MVP
+## Objetivo
 
-Centralizar escopo funcional, planejamento de sprint, padrões técnicos e materiais de operação para equipe interna e stakeholders.
+Centralizar escopo funcional, planejamento de sprint, governanca Scrum, criterios de aceite e evidencias de execucao.
 
-## Conteúdos principais
+## Janela oficial da Sprint 1
+
+- Sprint 1 oficial: **12/05/2026 a 23/05/2026**.
+- Pasta oficial da sprint: `sprints/2026-05-12_2026-05-23/`.
+
+## Nota de reconciliacao historica
+
+Arquivos anteriores com janela `2026-05-11_2026-05-21` sao mantidos como historico auditavel. A partir desta revisao, toda operacao e rastreio passam a usar a janela oficial `12/05/2026 a 23/05/2026`.
+
+## Conteudos principais
 
 - Escopo do projeto e backlog LOG-*
-- Planejamento e acompanhamento das sprints
-- Guias de arquitetura e decisões técnicas
-- Manual de operação e referências de entrega
+- Planejamento e acompanhamento de sprints
+- Guias de arquitetura e decisoes tecnicas
+- Manual de operacao e referencias de entrega
 
-## Estrutura sugerida
+## Estrutura principal
 
 ```text
 sprints/
@@ -30,15 +39,22 @@ atas/
 
 ## Sprint planning oficial
 
-Documento inicial:
-
 - `sprints/SPRINTS_2026-05-11.md`
 
-## Convenção de commits
+## Trilha de Sprint 1 (oficial)
+
+- Documento mestre: `sprints/2026-05-12_2026-05-23/SPRINT1_MESTRE_2026-05-12_2026-05-23.md`
+- Matriz de rastreio: `sprints/2026-05-12_2026-05-23/MATRIZ_RASTREIO_SPRINT1_2026-05-12_2026-05-23.md`
+- PDFs operacionais:
+  - `sprints/pdf/Sprint_1_A_Produto_API_2026-05-12_2026-05-23.pdf`
+  - `sprints/pdf/Sprint_1_B_Frontend_Admin_2026-05-12_2026-05-23.pdf`
+  - `sprints/pdf/Sprint_1_C_Infra_QA_Governanca_2026-05-12_2026-05-23.pdf`
+
+## Convencao de commits
 
 `tipo(docs): ID resumo-em-pt-BR`
 
-Exemplo: `docs(docs): LOG-026 publica planejamento inicial de sprints`
+Exemplo: `docs(docs): A-10 consolida checklist e pacote final da sprint A`
 
 ## Trilha de Sprints Semanais
 
@@ -48,7 +64,7 @@ Semana Sprint 1 (`2026-05-11_2026-05-21`):
 - Riscos técnicos: `sprints/riscos-s1.md`
 - Plano QA mínimo: `qa/plano-s1.md`
 - Cerimônias Scrum: `atas/README.md`
-- Backlogs: 
+- Backlogs:
   - `BACKLOG_A_PRODUTO_API_2026-05-11_2026-05-21.md`
   - `BACKLOG_B_FRONTEND_ADMIN_2026-05-11_2026-05-21.md`
   - `BACKLOG_C_INFRA_QA_GOVERNANCA_2026-05-11_2026-05-21.md`

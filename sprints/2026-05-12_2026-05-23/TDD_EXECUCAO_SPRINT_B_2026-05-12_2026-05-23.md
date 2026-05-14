@@ -1,0 +1,21 @@
+﻿# TDD Execucao Sprint B (2026-05-12 a 2026-05-23)
+
+## Calendario oficial
+- Sprint 1 oficial: 12/05/2026 a 23/05/2026.
+- Nota de reconciliacao: artefatos legados em 2026-05-11_2026-05-21 sao mantidos para historico.
+
+## Evidencias por tarefa
+
+### B-01
+- RED:
+  - Testes adicionados para sessao e base de API.
+  - Comando: `npm run test -- src/lib/session.test.ts src/lib/api.test.ts`
+  - Resultado RED inicial: cobertura inexistente para os novos cenarios antes da implementacao.
+- GREEN:
+  - Implementado `getApiBaseUrl`/`buildApiUrl` em `src/lib/api.ts`.
+  - Validado ciclo de `save/get/clear` em sessao.
+  - Comando: `npm run test -- src/lib/session.test.ts src/lib/api.test.ts`
+  - Resultado GREEN: passando.
+- Commit Web: `test(web): B-01 valida sessao e configuracao base da API`.
+- Issue Docs: https://github.com/ilex-logistica/Docs/issues/26
+- Issue Execucao Web: https://github.com/ilex-logistica/Web/issues/8

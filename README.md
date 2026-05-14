@@ -1,51 +1,36 @@
 ﻿# Infra
 
-Camada de infraestrutura do Ilex Logística para garantir ambientes consistentes, deploy seguro e operação monitorável.
+Camada de infraestrutura do Ilex Logistica para ambientes consistentes, CI/CD e operacao monitoravel.
 
-## Objetivo no MVP
+## Sprint 1 oficial (12/05/2026 a 23/05/2026)
 
-Padronizar execução local/homologação, CI/CD e configurações de ambiente para API, Web e serviços de suporte.
+Objetivo da trilha C: garantir ambiente reproduzivel, CI minimo e governanca de execucao.
 
-## Responsabilidades do repositório
+### Backlog da trilha C
 
-- Dockerfiles e orquestração de serviços
-- Configuração de Nginx/reverse proxy
-- Pipelines de CI/CD no GitHub Actions
-- Gestão de variáveis e segredos por ambiente
-- Estratégia de deploy e rollback
-- Base de observabilidade e saúde do sistema
+- C-01 a C-10 (referencia em `Docs/sprints/2026-05-12_2026-05-23/`)
 
-## Stack prevista
+### Evidencias de execucao
 
-- Docker
-- Nginx
-- GitHub Actions
-- VPS/AWS/Render/Railway (conforme ambiente)
+- PR fundacional mergeada: `https://github.com/ilex-logistica/Infra/pull/1`
+- Issues de execucao: `#2`, `#3`, `#4`
+- Milestones oficiais aplicadas: Sprint 01..Sprint 05
 
-## Estrutura sugerida
+## Responsabilidades
 
-```text
-docker/
-nginx/
-.github/workflows/
-envs/
-scripts/
-```
+- ambiente local/homologacao
+- padrao de variaveis e secrets
+- pipelines GitHub Actions
+- observabilidade inicial e healthchecks
 
-## Backlog prioritário (LOG-*)
+## Regra de rastreio obrigatoria
 
-- LOG-001: Criar arquitetura inicial dos repositórios
-- LOG-025: Testes integrados e QA (suporte de ambiente)
-- LOG-026: Documentação final e guia operacional de deploy
+Toda issue/PR deve informar:
 
-## Critérios de aceite iniciais
+- Epic (Docs)
+- Issue de origem (Docs)
+- Sprint/Milestone
 
-- Ambiente local sobe com dependências principais
-- Pipeline valida build e testes básicos
-- Deploy de homologação documentado e repetível
-
-## Convenção de commits
+## Convencao de commits
 
 `<tipo>(infra): <ID> <resumo em pt-BR>`
-
-Exemplo: `docs(infra): LOG-001 descreve padrao inicial de ambiente`

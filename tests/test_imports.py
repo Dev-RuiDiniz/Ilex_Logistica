@@ -1,52 +1,61 @@
-from io import BytesIO
+﻿from io import BytesIO
 from zipfile import ZIP_DEFLATED, ZipFile
 
 
 def build_xlsx_bytes(duplicate_nf: bool = False) -> bytes:
-    content_types = """<?xml version="1.0" encoding="UTF-8"?>
-<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">
-  <Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>
-  <Default Extension="xml" ContentType="application/xml"/>
-  <Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/>
-  <Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>
+    content_types = """<?xml version=\"1.0\" encoding=\"UTF-8\"?>
+<Types xmlns=\"http://schemas.openxmlformats.org/package/2006/content-types\">
+  <Default Extension=\"rels\" ContentType=\"application/vnd.openxmlformats-package.relationships+xml\"/>
+  <Default Extension=\"xml\" ContentType=\"application/xml\"/>
+  <Override PartName=\"/xl/workbook.xml\" ContentType=\"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml\"/>
+  <Override PartName=\"/xl/worksheets/sheet1.xml\" ContentType=\"application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml\"/>
 </Types>
 """
-    rels = """<?xml version="1.0" encoding="UTF-8"?>
-<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
-  <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/>
+    rels = """<?xml version=\"1.0\" encoding=\"UTF-8\"?>
+<Relationships xmlns=\"http://schemas.openxmlformats.org/package/2006/relationships\">
+  <Relationship Id=\"rId1\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument\" Target=\"xl/workbook.xml\"/>
 </Relationships>
 """
-    workbook = """<?xml version="1.0" encoding="UTF-8"?>
-<workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"
- xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
+    workbook = """<?xml version=\"1.0\" encoding=\"UTF-8\"?>
+<workbook xmlns=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\"
+ xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\">
   <sheets>
-    <sheet name="Sheet1" sheetId="1" r:id="rId1"/>
+    <sheet name=\"Sheet1\" sheetId=\"1\" r:id=\"rId1\"/>
   </sheets>
 </workbook>
 """
-    workbook_rels = """<?xml version="1.0" encoding="UTF-8"?>
-<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
-  <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/>
+    workbook_rels = """<?xml version=\"1.0\" encoding=\"UTF-8\"?>
+<Relationships xmlns=\"http://schemas.openxmlformats.org/package/2006/relationships\">
+  <Relationship Id=\"rId1\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet\" Target=\"worksheets/sheet1.xml\"/>
 </Relationships>
 """
     extra_row = ""
     if duplicate_nf:
         extra_row = """
-    <row r="3">
-      <c r="A3" t="inlineStr"><is><t>123</t></is></c>
-      <c r="B3" t="inlineStr"><is><t>XPTO2</t></is></c>
+    <row r=\"3\">
+      <c r=\"A3\" t=\"inlineStr\"><is><t>123</t></is></c>
+      <c r=\"B3\" t=\"inlineStr\"><is><t>XPTO2</t></is></c>
+      <c r=\"C3\" t=\"inlineStr\"><is><t>2026-05-14</t></is></c>
+      <c r=\"D3\" t=\"inlineStr\"><is><t>11.00</t></is></c>
+      <c r=\"E3\" t=\"inlineStr\"><is><t>5.00</t></is></c>
     </row>"""
 
-    sheet = f"""<?xml version="1.0" encoding="UTF-8"?>
-<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+    sheet = f"""<?xml version=\"1.0\" encoding=\"UTF-8\"?>
+<worksheet xmlns=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\">
   <sheetData>
-    <row r="1">
-      <c r="A1" t="inlineStr"><is><t>nf</t></is></c>
-      <c r="B1" t="inlineStr"><is><t>transportadora</t></is></c>
+    <row r=\"1\">
+      <c r=\"A1\" t=\"inlineStr\"><is><t>nf</t></is></c>
+      <c r=\"B1\" t=\"inlineStr\"><is><t>transportadora</t></is></c>
+      <c r=\"C1\" t=\"inlineStr\"><is><t>data_coleta</t></is></c>
+      <c r=\"D1\" t=\"inlineStr\"><is><t>valor_frete</t></is></c>
+      <c r=\"E1\" t=\"inlineStr\"><is><t>percentual_frete</t></is></c>
     </row>
-    <row r="2">
-      <c r="A2" t="inlineStr"><is><t>123</t></is></c>
-      <c r="B2" t="inlineStr"><is><t>XPTO</t></is></c>
+    <row r=\"2\">
+      <c r=\"A2\" t=\"inlineStr\"><is><t>123</t></is></c>
+      <c r=\"B2\" t=\"inlineStr\"><is><t>XPTO</t></is></c>
+      <c r=\"C2\" t=\"inlineStr\"><is><t>2026-05-14</t></is></c>
+      <c r=\"D2\" t=\"inlineStr\"><is><t>10.50</t></is></c>
+      <c r=\"E2\" t=\"inlineStr\"><is><t>5.00</t></is></c>
     </row>
     {extra_row}
   </sheetData>
@@ -62,17 +71,26 @@ def build_xlsx_bytes(duplicate_nf: bool = False) -> bytes:
     return out.getvalue()
 
 
+def _valid_csv(nf: str = "123") -> bytes:
+    return f"nf,transportadora,data_coleta,valor_frete,percentual_frete\n{nf},XPTO,2026-05-14,10.50,5.00\n".encode("utf-8")
+
+
 def test_upload_csv_retorna_resumo(client) -> None:
-    csv_bytes = b"nf,transportadora\n123,XPTO\n"
     response = client.post(
         "/api/v1/imports/upload",
-        files={"file": ("entregas.csv", csv_bytes, "text/csv")},
+        files={"file": ("entregas.csv", _valid_csv(), "text/csv")},
     )
     assert response.status_code == 200
     data = response.json()
     assert data["filename"] == "entregas.csv"
     assert data["rows_received"] == 1
-    assert data["columns_detected"] == ["nf", "transportadora"]
+    assert data["columns_detected"] == [
+        "nf",
+        "transportadora",
+        "data_coleta",
+        "valor_frete",
+        "percentual_frete",
+    ]
     assert len(data["preview"]) == 1
 
 
@@ -115,22 +133,37 @@ def test_upload_xlsx_retorna_resumo(client) -> None:
     data = response.json()
     assert data["filename"] == "entregas.xlsx"
     assert data["rows_received"] == 1
-    assert data["columns_detected"] == ["nf", "transportadora"]
+    assert data["columns_detected"] == [
+        "nf",
+        "transportadora",
+        "data_coleta",
+        "valor_frete",
+        "percentual_frete",
+    ]
 
 
 def test_upload_csv_normaliza_cabecalho_com_acento_e_espacos(client) -> None:
-    csv_bytes = " NF , Trânsportádora \n123,XPTO\n".encode("utf-8")
+    csv_bytes = (
+        " NF , Trânsportádora , Data Coleta , Valor Frete , Percentual Frete \n"
+        "123,XPTO,2026-05-14,10.50,5.00\n"
+    ).encode("utf-8")
     response = client.post(
         "/api/v1/imports/upload",
         files={"file": ("entregas.csv", csv_bytes, "text/csv")},
     )
     assert response.status_code == 200
     data = response.json()
-    assert data["columns_detected"] == ["nf", "transportadora"]
+    assert data["columns_detected"] == [
+        "nf",
+        "transportadora",
+        "data_coleta",
+        "valor_frete",
+        "percentual_frete",
+    ]
 
 
 def test_upload_rejeita_sem_nf(client) -> None:
-    csv_bytes = b"transportadora\nXPTO\n"
+    csv_bytes = b"transportadora,data_coleta,valor_frete,percentual_frete\nXPTO,2026-05-14,10.50,5.00\n"
     response = client.post(
         "/api/v1/imports/upload",
         files={"file": ("entregas.csv", csv_bytes, "text/csv")},
@@ -140,7 +173,7 @@ def test_upload_rejeita_sem_nf(client) -> None:
 
 
 def test_upload_rejeita_sem_transportadora(client) -> None:
-    csv_bytes = b"nf\n123\n"
+    csv_bytes = b"nf,data_coleta,valor_frete,percentual_frete\n123,2026-05-14,10.50,5.00\n"
     response = client.post(
         "/api/v1/imports/upload",
         files={"file": ("entregas.csv", csv_bytes, "text/csv")},
@@ -150,7 +183,11 @@ def test_upload_rejeita_sem_transportadora(client) -> None:
 
 
 def test_upload_rejeita_csv_com_nf_duplicado(client) -> None:
-    csv_bytes = b"nf,transportadora\n123,XPTO\n123,XPTO2\n"
+    csv_bytes = (
+        b"nf,transportadora,data_coleta,valor_frete,percentual_frete\n"
+        b"123,XPTO,2026-05-14,10.50,5.00\n"
+        b"123,XPTO2,2026-05-14,11.00,5.00\n"
+    )
     response = client.post(
         "/api/v1/imports/upload",
         files={"file": ("entregas.csv", csv_bytes, "text/csv")},
@@ -180,10 +217,9 @@ def test_upload_rejeita_xlsx_com_nf_duplicado(client) -> None:
 
 
 def test_upload_valido_persiste_historico_success(client) -> None:
-    csv_bytes = b"nf,transportadora\n123,XPTO\n"
     response = client.post(
         "/api/v1/imports/upload",
-        files={"file": ("entregas.csv", csv_bytes, "text/csv")},
+        files={"file": ("entregas.csv", _valid_csv(), "text/csv")},
     )
     assert response.status_code == 200
 
@@ -222,14 +258,13 @@ def test_upload_xlsx_persiste_historico_com_file_type_xlsx(client) -> None:
 
 
 def test_file_hash_consistente_para_mesmo_conteudo(client) -> None:
-    csv_bytes = b"nf,transportadora\n123,XPTO\n"
     response1 = client.post(
         "/api/v1/imports/upload",
-        files={"file": ("a.csv", csv_bytes, "text/csv")},
+        files={"file": ("a.csv", _valid_csv(), "text/csv")},
     )
     response2 = client.post(
         "/api/v1/imports/upload",
-        files={"file": ("b.csv", csv_bytes, "text/csv")},
+        files={"file": ("b.csv", _valid_csv(), "text/csv")},
     )
     assert response1.status_code == 200
     assert response2.status_code == 200
@@ -242,11 +277,12 @@ def test_file_hash_consistente_para_mesmo_conteudo(client) -> None:
 
 
 def test_history_retorna_ordenado_desc_por_criacao(client) -> None:
-    first = b"nf,transportadora\n111,XPTO\n"
-    second = b"nf,transportadora\n222,XPTO\n"
+    first = _valid_csv("111")
+    second = _valid_csv("222")
     assert client.post("/api/v1/imports/upload", files={"file": ("f1.csv", first, "text/csv")}).status_code == 200
     assert (
-        client.post("/api/v1/imports/upload", files={"file": ("f2.csv", second, "text/csv")}).status_code == 200
+        client.post("/api/v1/imports/upload", files={"file": ("f2.csv", second, "text/csv")}).status_code
+        == 200
     )
 
     history = client.get("/api/v1/imports/history")
@@ -255,3 +291,41 @@ def test_history_retorna_ordenado_desc_por_criacao(client) -> None:
     assert len(items) == 2
     assert items[0]["filename"] == "f2.csv"
     assert items[1]["filename"] == "f1.csv"
+
+
+def test_upload_persiste_entrega_campos_fiscais_financeiros(client, db_session) -> None:
+    from app.modules.imports.models import Delivery
+
+    csv_bytes = b"nf,transportadora,data_coleta,valor_frete,percentual_frete\n555,XPTO,2026-05-14,123.45,12.34\n"
+    response = client.post(
+        "/api/v1/imports/upload",
+        files={"file": ("entregas.csv", csv_bytes, "text/csv")},
+    )
+    assert response.status_code == 200
+
+    delivery = db_session.query(Delivery).filter(Delivery.nf == "555").first()
+    assert delivery is not None
+    assert delivery.transportadora == "XPTO"
+    assert str(delivery.data_coleta) == "2026-05-14"
+    assert float(delivery.valor_frete) == 123.45
+    assert float(delivery.percentual_frete) == 12.34
+
+
+def test_upload_rejeita_valor_frete_negativo(client) -> None:
+    csv_bytes = b"nf,transportadora,data_coleta,valor_frete,percentual_frete\n555,XPTO,2026-05-14,-1.00,12.34\n"
+    response = client.post(
+        "/api/v1/imports/upload",
+        files={"file": ("entregas.csv", csv_bytes, "text/csv")},
+    )
+    assert response.status_code == 400
+    assert "valor_frete" in response.json()["detail"].lower()
+
+
+def test_upload_rejeita_percentual_fora_da_faixa(client) -> None:
+    csv_bytes = b"nf,transportadora,data_coleta,valor_frete,percentual_frete\n555,XPTO,2026-05-14,10.00,101.00\n"
+    response = client.post(
+        "/api/v1/imports/upload",
+        files={"file": ("entregas.csv", csv_bytes, "text/csv")},
+    )
+    assert response.status_code == 400
+    assert "percentual_frete" in response.json()["detail"].lower()

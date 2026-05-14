@@ -83,3 +83,25 @@ def test_a05_rbac_blocks_write_for_auditor(client: TestClient, db_session: Sessi
         json={'name': 'Transportes A', 'external_code': 'TPA-1', 'integration_metadata': {}},
     )
     assert response.status_code == 403
+
+def test_a06_crud_carriers_flow(client: TestClient, db_session: Session, seed_roles: None) -> None:
+    create_user_with_roles(db_session, 'admin2@ilex.com', '123456', ['admin'])
+    token = _login_token(client, 'admin2@ilex.com', '123456')
+    headers = {'Authorization': f'Bearer {token}'}
+
+    created = client.post(
+        '/api/v1/carriers',
+        headers=headers,
+        json={'name': 'Transportes B', 'external_code': 'TPB', 'integration_metadata': {'erp': 'totvs'}},
+    )
+    assert created.status_code == 201
+
+    updated = client.put('/api/v1/carriers/1', headers=headers, json={'external_code': 'TPB-2'})
+    assert updated.status_code == 200
+
+    inactivated = client.post('/api/v1/carriers/1/inactivate', headers=headers)
+    assert inactivated.status_code == 200
+
+    listed = client.get('/api/v1/carriers', headers=headers)
+    assert listed.status_code == 200
+    assert len(listed.json()) == 0

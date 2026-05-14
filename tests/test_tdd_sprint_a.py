@@ -74,6 +74,7 @@ def test_a04_login_invalid_credentials(client: TestClient, db_session: Session, 
     response = client.post('/api/v1/auth/login', json={'email': 'admin@ilex.com', 'password': 'senha_errada'})
     assert response.status_code == 401
 
+
 def test_a05_rbac_blocks_write_for_auditor(client: TestClient, db_session: Session, seed_roles: None) -> None:
     create_user_with_roles(db_session, 'audit@ilex.com', '123456', ['auditoria'])
     token = _login_token(client, 'audit@ilex.com', '123456')
@@ -83,6 +84,7 @@ def test_a05_rbac_blocks_write_for_auditor(client: TestClient, db_session: Sessi
         json={'name': 'Transportes A', 'external_code': 'TPA-1', 'integration_metadata': {}},
     )
     assert response.status_code == 403
+
 
 def test_a06_crud_carriers_flow(client: TestClient, db_session: Session, seed_roles: None) -> None:
     create_user_with_roles(db_session, 'admin2@ilex.com', '123456', ['admin'])
@@ -105,3 +107,15 @@ def test_a06_crud_carriers_flow(client: TestClient, db_session: Session, seed_ro
     listed = client.get('/api/v1/carriers', headers=headers)
     assert listed.status_code == 200
     assert len(listed.json()) == 0
+
+
+def test_a07_validation_error_contract(client: TestClient, db_session: Session, seed_roles: None) -> None:
+    create_user_with_roles(db_session, 'admin3@ilex.com', '123456', ['admin'])
+    token = _login_token(client, 'admin3@ilex.com', '123456')
+    response = client.post(
+        '/api/v1/carriers',
+        headers={'Authorization': f'Bearer {token}'},
+        json={'name': 'A'},
+    )
+    assert response.status_code == 422
+    assert response.json()['error']['code'] == 'VALIDATION_ERROR'

@@ -31,3 +31,15 @@
 - Commit Web: `test(web): B-02 valida shell autenticado e estado por perfil`.
 - Issue Docs: https://github.com/ilex-logistica/Docs/issues/27
 - Issue Execucao Web: https://github.com/ilex-logistica/Web/issues/9
+
+### B-03
+- RED:
+  - Comando: `npm run test -- src/app/login/page.test.tsx`
+  - Falha observada: `getLoginErrorMessage is not a function`.
+- GREEN:
+  - Implementado helper de mensagem de erro de login e uso no handler.
+  - Comando: `npm run test -- src/app/login/page.test.tsx`
+  - Resultado GREEN: passando.
+- Commit Web: `test(web): B-03 valida mensagem de erro de autenticacao`.
+- Issue Docs: https://github.com/ilex-logistica/Docs/issues/28
+- Issue Execucao Web: https://github.com/ilex-logistica/Web/issues/10

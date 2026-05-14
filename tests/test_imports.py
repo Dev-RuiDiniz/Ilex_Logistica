@@ -177,3 +177,81 @@ def test_upload_rejeita_xlsx_com_nf_duplicado(client) -> None:
     detail = response.json()["detail"].lower()
     assert "duplicidade" in detail
     assert "123" in detail
+
+
+def test_upload_valido_persiste_historico_success(client) -> None:
+    csv_bytes = b"nf,transportadora\n123,XPTO\n"
+    response = client.post(
+        "/api/v1/imports/upload",
+        files={"file": ("entregas.csv", csv_bytes, "text/csv")},
+    )
+    assert response.status_code == 200
+
+    history = client.get("/api/v1/imports/history")
+    assert history.status_code == 200
+    items = history.json()
+    assert len(items) == 1
+    item = items[0]
+    assert item["filename"] == "entregas.csv"
+    assert item["file_type"] == "csv"
+    assert item["rows_received"] == 1
+    assert item["duplicates_count"] == 0
+    assert item["status"] == "SUCCESS"
+    assert item["file_hash"]
+    assert item["created_at"]
+
+
+def test_upload_xlsx_persiste_historico_com_file_type_xlsx(client) -> None:
+    response = client.post(
+        "/api/v1/imports/upload",
+        files={
+            "file": (
+                "entregas.xlsx",
+                build_xlsx_bytes(),
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            )
+        },
+    )
+    assert response.status_code == 200
+
+    history = client.get("/api/v1/imports/history")
+    assert history.status_code == 200
+    item = history.json()[0]
+    assert item["file_type"] == "xlsx"
+    assert item["rows_received"] == 1
+
+
+def test_file_hash_consistente_para_mesmo_conteudo(client) -> None:
+    csv_bytes = b"nf,transportadora\n123,XPTO\n"
+    response1 = client.post(
+        "/api/v1/imports/upload",
+        files={"file": ("a.csv", csv_bytes, "text/csv")},
+    )
+    response2 = client.post(
+        "/api/v1/imports/upload",
+        files={"file": ("b.csv", csv_bytes, "text/csv")},
+    )
+    assert response1.status_code == 200
+    assert response2.status_code == 200
+
+    history = client.get("/api/v1/imports/history")
+    assert history.status_code == 200
+    items = history.json()
+    assert len(items) == 2
+    assert items[0]["file_hash"] == items[1]["file_hash"]
+
+
+def test_history_retorna_ordenado_desc_por_criacao(client) -> None:
+    first = b"nf,transportadora\n111,XPTO\n"
+    second = b"nf,transportadora\n222,XPTO\n"
+    assert client.post("/api/v1/imports/upload", files={"file": ("f1.csv", first, "text/csv")}).status_code == 200
+    assert (
+        client.post("/api/v1/imports/upload", files={"file": ("f2.csv", second, "text/csv")}).status_code == 200
+    )
+
+    history = client.get("/api/v1/imports/history")
+    assert history.status_code == 200
+    items = history.json()
+    assert len(items) == 2
+    assert items[0]["filename"] == "f2.csv"
+    assert items[1]["filename"] == "f1.csv"

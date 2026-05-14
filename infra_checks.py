@@ -51,3 +51,12 @@ def env_template_keys(root_env: Path, api_env: Path, web_env: Path) -> dict[str,
         "api": _read_env_keys(api_env),
         "web": _read_env_keys(web_env),
     }
+
+
+def workflow_step_names(path: Path) -> list[str]:
+    steps: list[str] = []
+    for raw in path.read_text(encoding="utf-8").splitlines():
+        line = raw.strip()
+        if line.startswith("- name:"):
+            steps.append(line.split(":", 1)[1].strip())
+    return steps

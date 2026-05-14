@@ -5,7 +5,7 @@
 | S2-A-01 | https://github.com/ilex-logistica/Docs/issues/46 | https://github.com/ilex-logistica/Api/issues/20 | Done |
 | S2-A-02 | https://github.com/ilex-logistica/Docs/issues/47 | https://github.com/ilex-logistica/Api/issues/21 | Done |
 | S2-A-03 | https://github.com/ilex-logistica/Docs/issues/48 | https://github.com/ilex-logistica/Api/issues/22 | Done |
-| S2-A-04 | https://github.com/ilex-logistica/Docs/issues/49 | https://github.com/ilex-logistica/Api/issues/23 | Todo |
+| S2-A-04 | https://github.com/ilex-logistica/Docs/issues/49 | https://github.com/ilex-logistica/Api/issues/23 | Done |
 | S2-A-05 | https://github.com/ilex-logistica/Docs/issues/50 | https://github.com/ilex-logistica/Api/issues/24 | Todo |
 | S2-A-06 | https://github.com/ilex-logistica/Docs/issues/51 | https://github.com/ilex-logistica/Api/issues/25 | Todo |
 | S2-A-07 | https://github.com/ilex-logistica/Docs/issues/52 | https://github.com/ilex-logistica/Api/issues/26 | Todo |
@@ -32,5 +32,6 @@
 | S2-C-08 | https://github.com/ilex-logistica/Docs/issues/73 | https://github.com/ilex-logistica/.github/issues/3 | Todo |
 | S2-C-09 | https://github.com/ilex-logistica/Docs/issues/74 | https://github.com/ilex-logistica/Docs/issues/74 | Todo |
 | S2-C-10 | https://github.com/ilex-logistica/Docs/issues/75 | https://github.com/ilex-logistica/Docs/issues/75 | Todo |
+
 
 

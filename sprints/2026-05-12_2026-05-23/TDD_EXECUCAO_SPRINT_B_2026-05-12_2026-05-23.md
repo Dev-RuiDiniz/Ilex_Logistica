@@ -67,3 +67,15 @@
 - Commit Web: `test(web): B-05 valida modo de acesso por perfil`.
 - Issue Docs: https://github.com/ilex-logistica/Docs/issues/30
 - Issue Execucao Web: https://github.com/ilex-logistica/Web/issues/12
+
+### B-06
+- RED:
+  - Comando: `npm run test -- src/app/(private)/carriers/page.helpers.test.ts`
+  - Falha observada: `filterCarriersByQuery is not a function`.
+- GREEN:
+  - Extraido helper de filtro por nome em `carriers/page.tsx`.
+  - Comando: `npm run test -- src/app/(private)/carriers/page.helpers.test.ts`
+  - Resultado GREEN: passando.
+- Commit Web: `feat(web): B-06 B-07 B-08 extrai helpers e valida fluxo de carriers`.
+- Issue Docs: https://github.com/ilex-logistica/Docs/issues/31
+- Issue Execucao Web: https://github.com/ilex-logistica/Web/issues/13

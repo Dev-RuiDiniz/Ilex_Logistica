@@ -38,3 +38,9 @@ Este documento registra evidencias RED/GREEN/REFACTOR por tarefa A-01..A-10.
 - Evidencia tecnica: fluxo create/update/inactivate funcional e listagem padrao oculta itens inativos.
 - Rastreio: Issue Docs `#21`, Epic Docs `#2`, Milestone `Sprint 01 - Fundacao do MVP (2026-05-12 a 2026-05-23)`.
 
+## A-07 - Padronizar validacao e respostas de erro
+- RED comando: `pytest -q tests/test_tdd_sprint_a.py::test_a07_validation_error_contract` (falhou com `assert 422 == 200`).
+- GREEN comando: `pytest -q tests/test_tdd_sprint_a.py::test_a07_validation_error_contract` (passou: `1 passed`).
+- Evidencia tecnica: payload invalido retorna `422` com codigo `VALIDATION_ERROR`.
+- Rastreio: Issue Docs `#22`, Epic Docs `#2`, Milestone `Sprint 01 - Fundacao do MVP (2026-05-12 a 2026-05-23)`.
+

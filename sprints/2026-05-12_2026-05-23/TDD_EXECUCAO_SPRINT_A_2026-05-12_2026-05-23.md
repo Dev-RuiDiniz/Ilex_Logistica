@@ -50,3 +50,15 @@ Este documento registra evidencias RED/GREEN/REFACTOR por tarefa A-01..A-10.
 - Evidencia tecnica: suite TDD da trilha A consolidada com 8 testes de regressao (`test_a01`..`test_a08`).
 - Rastreio: Issue Docs `#23`, Epic Docs `#2`, Milestone `Sprint 01 - Fundacao do MVP (2026-05-12 a 2026-05-23)`.
 
+## A-09 - Publicar contrato tecnico dos endpoints fundacionais
+- RED evidenciado: `A09_RED_OK_MISSING` (arquivo de contrato ausente no inicio do ciclo).
+- GREEN evidenciado: `GREEN_OK_FILES_CREATED` (arquivo criado e validado em disco).
+- Artefato: `CONTRATO_API_FUNDACIONAL_A09_2026-05-12_2026-05-23.md`.
+- Rastreio: Issue Docs `#24`, Epic Docs `#2`, Milestone `Sprint 01 - Fundacao do MVP (2026-05-12 a 2026-05-23)`.
+
+## A-10 - Consolidar checklist de prontidao backend da Sprint 1
+- RED evidenciado: `A10_RED_OK_MISSING` (checklist ausente no inicio do ciclo).
+- GREEN evidenciado: `GREEN_OK_FILES_CREATED` (checklist criado e validado em disco).
+- Artefato: `CHECKLIST_PRONTIDAO_BACKEND_A10_2026-05-12_2026-05-23.md`.
+- Rastreio: Issue Docs `#25`, Epic Docs `#2`, Milestone `Sprint 01 - Fundacao do MVP (2026-05-12 a 2026-05-23)`.
+

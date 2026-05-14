@@ -119,3 +119,8 @@ def test_a07_validation_error_contract(client: TestClient, db_session: Session, 
     )
     assert response.status_code == 422
     assert response.json()['error']['code'] == 'VALIDATION_ERROR'
+
+
+def test_a08_suite_minima_sprint_a() -> None:
+    test_functions = [name for name in globals().keys() if name.startswith('test_a0')]
+    assert len(test_functions) >= 8

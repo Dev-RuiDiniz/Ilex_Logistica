@@ -28,8 +28,8 @@ def reset_database() -> Generator[None, None, None]:
 def db_session() -> Generator[Session, None, None]:
     db = TestingSessionLocal()
     try:
-        yield db
         db.commit()
+        yield db
     finally:
         db.close()
 
@@ -49,16 +49,16 @@ def client(db_session: Session) -> Generator[TestClient, None, None]:
 def seed_roles(db_session: Session) -> None:
     for role_name in ["admin", "logistica", "gestor", "auditoria"]:
         db_session.add(Role(name=role_name))
-    db_session.flush()
+    db_session.commit()
 
 
 def create_user_with_roles(db: Session, email: str, password: str, roles: list[str]) -> User:
     user = User(email=email, full_name=email.split("@")[0], password_hash=hash_password(password), is_active=True)
     db.add(user)
-    db.flush()
+    db.commit()
     for role_name in roles:
         role = db.query(Role).filter(Role.name == role_name).first()
         user.roles.append(role)
-    db.flush()
+    db.commit()
     db.refresh(user)
     return user

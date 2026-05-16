@@ -52,6 +52,18 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             >
               Transportadoras
             </Link>
+            <Link
+              href="/shipments"
+              className={`block rounded px-3 py-2 text-sm ${pathname.startsWith("/shipments") ? "bg-slate-900 text-white" : "hover:bg-slate-100"}`}
+            >
+              Envios
+            </Link>
+            <Link
+              href="/shipments/import"
+              className={`block rounded px-3 py-2 text-sm ${pathname === "/shipments/import" ? "bg-slate-900 text-white" : "hover:bg-slate-100"}`}
+            >
+              Importar Envios
+            </Link>
             <p className="pt-2 text-xs text-slate-500">
               Perfil: {session?.role} {getRoleUiLabel(session?.role ?? "auditoria")}
             </p>

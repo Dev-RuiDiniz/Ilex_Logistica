@@ -14,3 +14,86 @@ export interface Carrier {
   integration_metadata: Record<string, unknown>;
   is_active: boolean;
 }
+
+// Shipment types
+export interface Shipment {
+  id: number;
+  tracking_code: string;
+  carrier_id: number;
+  status: string;
+  estimated_delivery: string;
+  actual_delivery: string | null;
+  recipient_name: string;
+  recipient_phone: string;
+  origin_address: string;
+  destination_address: string;
+  meta_data: Record<string, unknown>;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+  invoice_number: string | null;
+  invoice_key: string | null;
+  fiscal_document: string | null;
+  amount: number | null;
+  due_date: string | null;
+  delay_days: number;
+  criticality: string;
+}
+
+export interface CSVRowError {
+  row_number: number;
+  field: string;
+  message: string;
+  value?: string;
+}
+
+export interface UploadResponse {
+  import_id: number | null;
+  status: "validated" | "failed";
+  total_rows: number;
+  valid_rows: number;
+  invalid_rows: number;
+  errors: CSVRowError[];
+}
+
+export interface ImportConfirmRequest {
+  import_id: number;
+  confirm: boolean;
+}
+
+export interface ImportConfirmResponse {
+  import_id: number;
+  status: "completed" | "failed";
+  total_rows: number;
+  valid_rows: number;
+  invalid_rows: number;
+  imported_count: number;
+  rejected_count: number;
+  errors: CSVRowError[];
+}
+
+// Shipment list types
+export interface ShipmentListParams {
+  page?: number;
+  page_size?: number;
+  status?: string;
+  carrier_id?: number;
+  tracking_code?: string;
+  invoice_number?: string;
+  fiscal_document?: string;
+  criticality?: string;
+  estimated_delivery_from?: string;
+  estimated_delivery_to?: string;
+  due_date_from?: string;
+  due_date_to?: string;
+  sort_by?: string;
+  sort_order?: string;
+}
+
+export interface ShipmentListResponse {
+  items: Shipment[];
+  total: number;
+  page: number;
+  page_size: number;
+  total_pages: number;
+}

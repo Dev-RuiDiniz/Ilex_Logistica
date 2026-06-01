@@ -14,24 +14,27 @@ def authenticate_user(db: Session, email: str, password: str) -> User | None:
     return user
 
 
-def build_tokens(user: User) -> dict[str, str]:
+def build_tokens(user: User) -> dict:
     roles = [role.name for role in user.roles]
     return {
         "access_token": create_token(str(user.id), roles, settings.jwt_access_minutes, "access"),
         "refresh_token": create_token(str(user.id), roles, settings.jwt_refresh_minutes, "refresh"),
+        "roles": roles,
     }
 
 
-def refresh_access_token(refresh_token: str) -> dict[str, str] | None:
+def refresh_access_token(refresh_token: str) -> dict | None:
     payload = decode_token(refresh_token)
     if payload.get("type") != "refresh":
         return None
+    roles = payload.get("roles", [])
     return {
         "access_token": create_token(
             payload["sub"],
-            payload.get("roles", []),
+            roles,
             settings.jwt_access_minutes,
             "access",
         ),
         "refresh_token": refresh_token,
+        "roles": roles,
     }

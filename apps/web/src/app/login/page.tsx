@@ -4,7 +4,7 @@ import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import { apiLogin } from "@/lib/api";
-import { parseRoleFromEmail, saveSession } from "@/lib/session";
+import { getPrimaryRole, saveSession } from "@/lib/session";
 
 export function getLoginErrorMessage(): string {
   return "Credenciais invalidas. Verifique e tente novamente.";
@@ -27,7 +27,7 @@ export default function LoginPage() {
         email,
         accessToken: result.access_token,
         refreshToken: result.refresh_token,
-        role: parseRoleFromEmail(email),
+        role: getPrimaryRole(result.roles),
       });
       router.push("/");
     } catch {

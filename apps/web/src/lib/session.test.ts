@@ -1,18 +1,14 @@
 import { beforeEach, describe, expect, it } from "vitest";
 
-import { clearSession, getSession, parseRoleFromEmail, saveSession } from "@/lib/session";
+import { clearSession, getPrimaryRole, getSession, saveSession } from "@/lib/session";
 
-describe("parseRoleFromEmail", () => {
-  it("define admin por e-mail admin", () => {
-    expect(parseRoleFromEmail("admin@ilex.com")).toBe("admin");
+describe("getPrimaryRole", () => {
+  it("retorna primeiro role vindo do backend", () => {
+    expect(getPrimaryRole(["admin"])).toBe("admin");
   });
 
-  it("define auditoria por e-mail audit", () => {
-    expect(parseRoleFromEmail("audit@ilex.com")).toBe("auditoria");
-  });
-
-  it("usa logistica como padrao", () => {
-    expect(parseRoleFromEmail("operador@ilex.com")).toBe("logistica");
+  it("usa logistica como fallback", () => {
+    expect(getPrimaryRole([])).toBe("logistica");
   });
 });
 

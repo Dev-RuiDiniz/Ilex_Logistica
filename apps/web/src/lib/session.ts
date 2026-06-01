@@ -2,11 +2,8 @@ import type { SessionData, UserRole } from "@/lib/types";
 
 const SESSION_KEY = "ilex.session";
 
-export function parseRoleFromEmail(email: string): UserRole {
-  if (email.includes("admin")) return "admin";
-  if (email.includes("audit")) return "auditoria";
-  if (email.includes("gestor")) return "gestor";
-  return "logistica";
+export function getPrimaryRole(roles: UserRole[]): UserRole {
+  return roles[0] ?? "logistica";
 }
 
 export function saveSession(data: SessionData): void {

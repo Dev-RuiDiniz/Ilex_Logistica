@@ -99,3 +99,21 @@ class ShipmentListResponse(BaseModel):
     total: int
     page: int
     page_size: int
+
+
+class ShipmentDetailResponse(ShipmentListItem):
+    pass
+
+
+class ShipmentTreatmentCreate(BaseModel):
+    status: str = Field(min_length=1, max_length=50)
+    comment: str = Field(min_length=1)
+
+
+class ShipmentTreatmentResponse(BaseModel):
+    id: int
+    shipment_id: int
+    status: str
+    comment: str
+    created_by: int
+    created_at: datetime

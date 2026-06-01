@@ -47,3 +47,14 @@ class ImportHistory(Base):
     error_details: Mapped[dict] = mapped_column(Text, default=lambda: "{}")
     created_by: Mapped[int] = mapped_column(Integer, ForeignKey("users.id"), nullable=False)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(UTC), nullable=False)
+
+
+class ShipmentTreatment(Base):
+    __tablename__ = "shipment_treatments"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    shipment_id: Mapped[int] = mapped_column(Integer, ForeignKey("shipments.id"), nullable=False, index=True)
+    status: Mapped[str] = mapped_column(String(50), nullable=False)
+    comment: Mapped[str] = mapped_column(Text, nullable=False)
+    created_by: Mapped[int] = mapped_column(Integer, ForeignKey("users.id"), nullable=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(UTC), nullable=False)

@@ -469,7 +469,12 @@ export default function ShipmentsPage() {
             ) : (
               items.map((item) => (
                 <tr key={item.id} className="border-t">
-                  <td className="px-3 py-2">{item.tracking_code}</td>
+                  <td className="px-3 py-2">
+                    <a href={`/shipments/${item.id}`} className="text-blue-700 hover:underline">
+                      {item.tracking_code}
+                    </a>
+                  </td>
+                  
                   <td className="px-3 py-2">{item.carrier_id}</td>
                   <td className="px-3 py-2">{item.status}</td>
                   <td className="px-3 py-2">{formatDate(item.estimated_delivery)}</td>

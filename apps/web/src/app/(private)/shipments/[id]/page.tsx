@@ -1,0 +1,106 @@
+"use client";
+
+import { FormEvent, useEffect, useState } from "react";
+
+import { createShipmentTreatment, getShipmentDetail, listShipmentTreatments } from "@/lib/api";
+import { canEditShipments } from "@/lib/permissions";
+import { useAuth } from "@/features/auth/auth-provider";
+import type { ShipmentDetail, ShipmentTreatment } from "@/lib/types";
+
+export default function ShipmentDetailPage({ params }: { params: { id: string } }) {
+  const { session } = useAuth();
+  const [detail, setDetail] = useState<ShipmentDetail | null>(null);
+  const [treatments, setTreatments] = useState<ShipmentTreatment[]>([]);
+  const [status, setStatus] = useState("em_tratativa");
+  const [comment, setComment] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(true);
+  const shipmentId = Number(params.id);
+  const editable = canEditShipments(session?.role ?? "auditoria");
+
+  const load = async () => {
+    if (!session || Number.isNaN(shipmentId)) return;
+    setLoading(true);
+    setError("");
+    try {
+      const [shipment, timeline] = await Promise.all([
+        getShipmentDetail(session.accessToken, shipmentId),
+        listShipmentTreatments(session.accessToken, shipmentId),
+      ]);
+      setDetail(shipment);
+      setTreatments(timeline);
+    } catch {
+      setError("Falha ao carregar detalhe da entrega.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    void load();
+  }, [session?.accessToken, shipmentId]);
+
+  const onSubmit = async (event: FormEvent) => {
+    event.preventDefault();
+    if (!session || !editable || !comment.trim()) return;
+    try {
+      await createShipmentTreatment(session.accessToken, shipmentId, { status, comment });
+      setComment("");
+      await load();
+    } catch {
+      setError("Falha ao registrar tratativa.");
+    }
+  };
+
+  if (loading) return <p>Carregando...</p>;
+  if (!detail) return <p>Entrega não encontrada.</p>;
+
+  return (
+    <section className="space-y-4">
+      <header>
+        <h2 className="text-xl font-semibold">Detalhe da Entrega</h2>
+        <p className="text-sm text-slate-600">{detail.tracking_code}</p>
+      </header>
+      {error && <p className="rounded bg-red-50 px-3 py-2 text-sm text-red-700">{error}</p>}
+      <div className="grid gap-3 rounded border p-4 md:grid-cols-2">
+        <div><strong>Status:</strong> {detail.status}</div>
+        <div><strong>Criticidade:</strong> {detail.criticality}</div>
+        <div><strong>Atraso:</strong> {detail.delay_days} dias</div>
+        <div><strong>Valor:</strong> {detail.amount ?? "-"}</div>
+        <div><strong>NF:</strong> {detail.invoice_number ?? "-"}</div>
+        <div><strong>Documento:</strong> {detail.fiscal_document ?? "-"}</div>
+        <div className="md:col-span-2"><strong>Origem:</strong> {detail.origin_address}</div>
+        <div className="md:col-span-2"><strong>Destino:</strong> {detail.destination_address}</div>
+      </div>
+
+      <section className="space-y-3 rounded border p-4">
+        <h3 className="text-base font-semibold">Tratativas</h3>
+        {editable && (
+          <form onSubmit={onSubmit} className="grid gap-2 md:grid-cols-[180px_1fr_auto]">
+            <select value={status} onChange={(e) => setStatus(e.target.value)} className="rounded border px-3 py-2 text-sm">
+              <option value="em_tratativa">Em tratativa</option>
+              <option value="resolvido">Resolvido</option>
+              <option value="escalado">Escalado</option>
+            </select>
+            <input
+              value={comment}
+              onChange={(e) => setComment(e.target.value)}
+              placeholder="Descreva a ação realizada"
+              className="rounded border px-3 py-2 text-sm"
+            />
+            <button className="rounded bg-slate-900 px-4 py-2 text-sm text-white" type="submit">Registrar</button>
+          </form>
+        )}
+        <ul className="space-y-2">
+          {treatments.length === 0 && <li className="text-sm text-slate-500">Sem tratativas registradas.</li>}
+          {treatments.map((item) => (
+            <li key={item.id} className="rounded border px-3 py-2 text-sm">
+              <div className="font-medium">{item.status}</div>
+              <div>{item.comment}</div>
+            </li>
+          ))}
+        </ul>
+      </section>
+    </section>
+  );
+}

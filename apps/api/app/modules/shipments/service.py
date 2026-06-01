@@ -7,7 +7,7 @@ from typing import Any
 from sqlalchemy.orm import Session
 
 from app.modules.carriers.models import Carrier
-from app.modules.shipments.models import ImportHistory, Shipment
+from app.modules.shipments.models import ImportHistory, Shipment, ShipmentTreatment
 from app.modules.shipments.schemas import CSVRowError
 
 
@@ -135,6 +135,88 @@ def list_shipments(
 
     return {
         "items": items_data,
+        "total": total,
+        "page": page,
+        "page_size": page_size,
+    }
+
+
+def list_exception_shipments(
+    db: Session,
+    page: int = 1,
+    page_size: int = 20,
+    status: str | None = None,
+    criticality: str | None = None,
+    estimated_delivery_from: str | None = None,
+    estimated_delivery_to: str | None = None,
+    due_date_from: str | None = None,
+    due_date_to: str | None = None,
+    sort_by: str = "delay_days",
+    sort_order: str = "desc",
+) -> dict[str, Any]:
+    from app.modules.shipments.models import Shipment
+
+    query = db.query(Shipment).filter((Shipment.delay_days > 0) | (Shipment.criticality != "normal"))
+
+    if status:
+        query = query.filter(Shipment.status == status)
+    if criticality:
+        query = query.filter(Shipment.criticality == criticality)
+    if estimated_delivery_from:
+        try:
+            from_date = datetime.fromisoformat(estimated_delivery_from.replace("Z", "+00:00"))
+            query = query.filter(Shipment.estimated_delivery >= from_date)
+        except (ValueError, AttributeError):
+            pass
+    if estimated_delivery_to:
+        try:
+            to_date = datetime.fromisoformat(estimated_delivery_to.replace("Z", "+00:00"))
+            query = query.filter(Shipment.estimated_delivery <= to_date)
+        except (ValueError, AttributeError):
+            pass
+    if due_date_from:
+        try:
+            from_date = datetime.fromisoformat(due_date_from.replace("Z", "+00:00"))
+            query = query.filter(Shipment.due_date >= from_date)
+        except (ValueError, AttributeError):
+            pass
+    if due_date_to:
+        try:
+            to_date = datetime.fromisoformat(due_date_to.replace("Z", "+00:00"))
+            query = query.filter(Shipment.due_date <= to_date)
+        except (ValueError, AttributeError):
+            pass
+
+    total = query.count()
+    sort_column = getattr(Shipment, sort_by, Shipment.delay_days)
+    query = query.order_by(sort_column.desc() if sort_order.lower() == "desc" else sort_column.asc())
+    offset = (page - 1) * page_size
+    items = query.offset(offset).limit(page_size).all()
+
+    return {
+        "items": [
+            {
+                "id": item.id,
+                "tracking_code": item.tracking_code,
+                "carrier_id": item.carrier_id,
+                "status": item.status,
+                "estimated_delivery": item.estimated_delivery,
+                "recipient_name": item.recipient_name,
+                "recipient_phone": item.recipient_phone,
+                "origin_address": item.origin_address,
+                "destination_address": item.destination_address,
+                "invoice_number": item.invoice_number,
+                "invoice_key": item.invoice_key,
+                "fiscal_document": item.fiscal_document,
+                "amount": float(item.amount) if item.amount else None,
+                "due_date": item.due_date,
+                "delay_days": item.delay_days,
+                "criticality": item.criticality,
+                "created_at": item.created_at,
+                "updated_at": item.updated_at,
+            }
+            for item in items
+        ],
         "total": total,
         "page": page,
         "page_size": page_size,
@@ -507,4 +589,91 @@ def process_import(
         "imported_count": imported_count,
         "rejected_count": rejected_count,
         "errors": errors,
+    }
+
+
+def get_shipment_detail(db: Session, shipment_id: int) -> dict[str, Any] | None:
+    item = db.get(Shipment, shipment_id)
+    if item is None:
+        return None
+    return {
+        "id": item.id,
+        "tracking_code": item.tracking_code,
+        "carrier_id": item.carrier_id,
+        "status": item.status,
+        "estimated_delivery": item.estimated_delivery,
+        "recipient_name": item.recipient_name,
+        "recipient_phone": item.recipient_phone,
+        "origin_address": item.origin_address,
+        "destination_address": item.destination_address,
+        "invoice_number": item.invoice_number,
+        "invoice_key": item.invoice_key,
+        "fiscal_document": item.fiscal_document,
+        "amount": float(item.amount) if item.amount else None,
+        "due_date": item.due_date,
+        "delay_days": item.delay_days,
+        "criticality": item.criticality,
+        "created_at": item.created_at,
+        "updated_at": item.updated_at,
+    }
+
+
+def list_treatments(db: Session, shipment_id: int) -> list[dict[str, Any]]:
+    rows = (
+        db.query(ShipmentTreatment)
+        .filter(ShipmentTreatment.shipment_id == shipment_id)
+        .order_by(ShipmentTreatment.created_at.desc())
+        .all()
+    )
+    return [
+        {
+            "id": row.id,
+            "shipment_id": row.shipment_id,
+            "status": row.status,
+            "comment": row.comment,
+            "created_by": row.created_by,
+            "created_at": row.created_at,
+        }
+        for row in rows
+    ]
+
+
+def create_treatment(db: Session, shipment_id: int, created_by: int, status: str, comment: str) -> dict[str, Any] | None:
+    shipment = db.get(Shipment, shipment_id)
+    if shipment is None:
+        return None
+    row = ShipmentTreatment(
+        shipment_id=shipment_id,
+        status=status,
+        comment=comment,
+        created_by=created_by,
+    )
+    db.add(row)
+    db.commit()
+    db.refresh(row)
+    return {
+        "id": row.id,
+        "shipment_id": row.shipment_id,
+        "status": row.status,
+        "comment": row.comment,
+        "created_by": row.created_by,
+        "created_at": row.created_at,
+    }
+
+
+def build_daily_report(db: Session) -> dict[str, Any]:
+    shipments = db.query(Shipment).all()
+    total = len(shipments)
+    total_exceptions = len([s for s in shipments if s.delay_days > 0 or s.criticality != "normal"])
+    by_criticality: dict[str, int] = {"normal": 0, "baixa": 0, "media": 0, "alta": 0}
+    by_carrier: dict[int, int] = {}
+    for row in shipments:
+        by_criticality[row.criticality] = by_criticality.get(row.criticality, 0) + 1
+        by_carrier[row.carrier_id] = by_carrier.get(row.carrier_id, 0) + 1
+    return {
+        "report_date": datetime.now(UTC).date().isoformat(),
+        "total_shipments": total,
+        "total_exceptions": total_exceptions,
+        "by_criticality": by_criticality,
+        "by_carrier": [{"carrier_id": k, "count": v} for k, v in sorted(by_carrier.items())],
     }

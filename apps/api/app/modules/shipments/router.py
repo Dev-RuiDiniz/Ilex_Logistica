@@ -4,10 +4,26 @@ from fastapi import APIRouter, Depends, HTTPException, Query, UploadFile, status
 from sqlalchemy.orm import Session
 
 from app.database.session import get_db
-from app.modules.auth.dependencies import get_current_user
+from app.modules.auth.dependencies import get_current_user, require_roles
 from app.modules.users.models import User
-from app.modules.shipments.schemas import ImportConfirmRequest, ImportConfirmResponse, ShipmentListResponse, UploadResponse
-from app.modules.shipments.service import list_shipments, parse_csv_file, process_import
+from app.modules.shipments.schemas import (
+    ImportConfirmRequest,
+    ImportConfirmResponse,
+    ShipmentDetailResponse,
+    ShipmentListResponse,
+    ShipmentTreatmentCreate,
+    ShipmentTreatmentResponse,
+    UploadResponse,
+)
+from app.modules.shipments.service import (
+    create_treatment,
+    get_shipment_detail,
+    list_exception_shipments,
+    list_shipments,
+    list_treatments,
+    parse_csv_file,
+    process_import,
+)
 
 router = APIRouter(prefix="/shipments", tags=["shipments"])
 
@@ -30,7 +46,7 @@ def list_shipments_endpoint(
     sort_order: Annotated[str, Query()] = "desc",
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
-) -> ShipmentListResponse:
+    ) -> ShipmentListResponse:
     return list_shipments(
         db=db,
         page=page,
@@ -40,6 +56,36 @@ def list_shipments_endpoint(
         tracking_code=tracking_code,
         invoice_number=invoice_number,
         fiscal_document=fiscal_document,
+        criticality=criticality,
+        estimated_delivery_from=estimated_delivery_from,
+        estimated_delivery_to=estimated_delivery_to,
+        due_date_from=due_date_from,
+        due_date_to=due_date_to,
+        sort_by=sort_by,
+        sort_order=sort_order,
+    )
+
+
+@router.get("/exceptions", response_model=ShipmentListResponse)
+def list_exceptions_endpoint(
+    page: Annotated[int, Query(ge=1)] = 1,
+    page_size: Annotated[int, Query(ge=1, le=100)] = 20,
+    status: Annotated[str | None, Query()] = None,
+    criticality: Annotated[str | None, Query()] = None,
+    estimated_delivery_from: Annotated[str | None, Query()] = None,
+    estimated_delivery_to: Annotated[str | None, Query()] = None,
+    due_date_from: Annotated[str | None, Query()] = None,
+    due_date_to: Annotated[str | None, Query()] = None,
+    sort_by: Annotated[str, Query()] = "delay_days",
+    sort_order: Annotated[str, Query()] = "desc",
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+) -> ShipmentListResponse:
+    return list_exception_shipments(
+        db=db,
+        page=page,
+        page_size=page_size,
+        status=status,
         criticality=criticality,
         estimated_delivery_from=estimated_delivery_from,
         estimated_delivery_to=estimated_delivery_to,
@@ -84,3 +130,37 @@ def confirm_import(
         raise HTTPException(status_code=400, detail=result["errors"][0].message if result["errors"] else "erro ao processar importacao")
 
     return ImportConfirmResponse(**result)
+
+
+@router.get("/{shipment_id}", response_model=ShipmentDetailResponse)
+def get_shipment_detail_endpoint(
+    shipment_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+) -> ShipmentDetailResponse:
+    detail = get_shipment_detail(db, shipment_id)
+    if detail is None:
+        raise HTTPException(status_code=404, detail="shipment nao encontrado")
+    return ShipmentDetailResponse(**detail)
+
+
+@router.get("/{shipment_id}/treatments", response_model=list[ShipmentTreatmentResponse])
+def list_shipment_treatments(
+    shipment_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_roles("admin", "logistica", "gestor", "auditoria")),
+) -> list[ShipmentTreatmentResponse]:
+    return [ShipmentTreatmentResponse(**item) for item in list_treatments(db, shipment_id)]
+
+
+@router.post("/{shipment_id}/treatments", response_model=ShipmentTreatmentResponse, status_code=status.HTTP_201_CREATED)
+def create_shipment_treatment(
+    shipment_id: int,
+    payload: ShipmentTreatmentCreate,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_roles("admin", "logistica", "gestor")),
+) -> ShipmentTreatmentResponse:
+    created = create_treatment(db, shipment_id, current_user.id, payload.status, payload.comment)
+    if created is None:
+        raise HTTPException(status_code=404, detail="shipment nao encontrado")
+    return ShipmentTreatmentResponse(**created)

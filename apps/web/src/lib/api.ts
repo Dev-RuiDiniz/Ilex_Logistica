@@ -1,4 +1,17 @@
-import type { Carrier, ImportConfirmResponse, ShipmentListParams, ShipmentListResponse, UploadResponse } from "@/lib/types";
+import type {
+  Carrier,
+  CreateShipmentTreatmentRequest,
+  DailyReportResponse,
+  ExceptionShipmentListResponse,
+  ImportConfirmResponse,
+  ShipmentDetail,
+  ShipmentListParams,
+  ShipmentListResponse,
+  ShipmentTreatment,
+  UploadResponse,
+  UserListItem,
+  UserRole,
+} from "@/lib/types";
 
 export function getApiBaseUrl(envValue = process.env.NEXT_PUBLIC_API_URL): string {
   const fallback = "http://127.0.0.1:8000/api/v1";
@@ -46,7 +59,7 @@ async function requestMultipart<T>(path: string, formData: FormData, token: stri
 }
 
 export async function apiLogin(email: string, password: string) {
-  return request<{ access_token: string; refresh_token: string; token_type: string }>("/auth/login", {
+  return request<{ access_token: string; refresh_token: string; token_type: string; roles: UserRole[] }>("/auth/login", {
     method: "POST",
     body: JSON.stringify({ email, password }),
   });
@@ -122,6 +135,90 @@ export async function listShipments(token: string, params: ShipmentListParams = 
 
   const query = searchParams.toString();
   return request<ShipmentListResponse>(`/shipments${query ? `?${query}` : ""}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+}
+
+export async function listExceptionShipments(token: string, params: ShipmentListParams = {}): Promise<ExceptionShipmentListResponse> {
+  const searchParams = new URLSearchParams();
+  if (params.page) searchParams.append("page", params.page.toString());
+  if (params.page_size) searchParams.append("page_size", params.page_size.toString());
+  if (params.status) searchParams.append("status", params.status);
+  if (params.criticality) searchParams.append("criticality", params.criticality);
+  if (params.estimated_delivery_from) searchParams.append("estimated_delivery_from", params.estimated_delivery_from);
+  if (params.estimated_delivery_to) searchParams.append("estimated_delivery_to", params.estimated_delivery_to);
+  if (params.due_date_from) searchParams.append("due_date_from", params.due_date_from);
+  if (params.due_date_to) searchParams.append("due_date_to", params.due_date_to);
+  if (params.sort_by) searchParams.append("sort_by", params.sort_by);
+  if (params.sort_order) searchParams.append("sort_order", params.sort_order);
+  const query = searchParams.toString();
+  return request<ExceptionShipmentListResponse>(`/shipments/exceptions${query ? `?${query}` : ""}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+}
+
+export async function getShipmentDetail(token: string, shipmentId: number): Promise<ShipmentDetail> {
+  return request<ShipmentDetail>(`/shipments/${shipmentId}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+}
+
+export async function listShipmentTreatments(token: string, shipmentId: number): Promise<ShipmentTreatment[]> {
+  return request<ShipmentTreatment[]>(`/shipments/${shipmentId}/treatments`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+}
+
+export async function createShipmentTreatment(
+  token: string,
+  shipmentId: number,
+  payload: CreateShipmentTreatmentRequest,
+): Promise<ShipmentTreatment> {
+  return request<ShipmentTreatment>(`/shipments/${shipmentId}/treatments`, {
+    method: "POST",
+    headers: { Authorization: `Bearer ${token}` },
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function getDailyReport(token: string): Promise<DailyReportResponse> {
+  return request<DailyReportResponse>("/reports/daily", {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+}
+
+export async function listUsers(token: string): Promise<UserListItem[]> {
+  return request<UserListItem[]>("/users", {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+}
+
+export async function createUser(
+  token: string,
+  payload: { email: string; full_name: string; password: string; roles: UserRole[] },
+): Promise<UserListItem> {
+  return request<UserListItem>("/users", {
+    method: "POST",
+    headers: { Authorization: `Bearer ${token}` },
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function updateUser(
+  token: string,
+  userId: number,
+  payload: { full_name?: string; roles?: UserRole[]; is_active?: boolean },
+): Promise<UserListItem> {
+  return request<UserListItem>(`/users/${userId}`, {
+    method: "PUT",
+    headers: { Authorization: `Bearer ${token}` },
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function inactivateUser(token: string, userId: number): Promise<UserListItem> {
+  return request<UserListItem>(`/users/${userId}/inactivate`, {
+    method: "POST",
     headers: { Authorization: `Bearer ${token}` },
   });
 }

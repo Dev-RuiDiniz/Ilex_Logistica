@@ -64,6 +64,24 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             >
               Importar Envios
             </Link>
+            <Link
+              href="/exceptions"
+              className={`block rounded px-3 py-2 text-sm ${pathname.startsWith("/exceptions") ? "bg-slate-900 text-white" : "hover:bg-slate-100"}`}
+            >
+              Exceções
+            </Link>
+            <Link
+              href="/reports/daily"
+              className={`block rounded px-3 py-2 text-sm ${pathname.startsWith("/reports") ? "bg-slate-900 text-white" : "hover:bg-slate-100"}`}
+            >
+              Relatório Diário
+            </Link>
+            <Link
+              href="/users"
+              className={`block rounded px-3 py-2 text-sm ${pathname.startsWith("/users") ? "bg-slate-900 text-white" : "hover:bg-slate-100"}`}
+            >
+              Usuários
+            </Link>
             <p className="pt-2 text-xs text-slate-500">
               Perfil: {session?.role} {getRoleUiLabel(session?.role ?? "auditoria")}
             </p>

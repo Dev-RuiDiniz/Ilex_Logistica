@@ -97,3 +97,36 @@ export interface ShipmentListResponse {
   page_size: number;
   total_pages: number;
 }
+
+export type ExceptionShipmentListResponse = ShipmentListResponse;
+export type ShipmentDetail = Shipment;
+
+export interface ShipmentTreatment {
+  id: number;
+  shipment_id: number;
+  status: string;
+  comment: string;
+  created_by: number;
+  created_at: string;
+}
+
+export interface CreateShipmentTreatmentRequest {
+  status: string;
+  comment: string;
+}
+
+export interface DailyReportResponse {
+  report_date: string;
+  total_shipments: number;
+  total_exceptions: number;
+  by_criticality: Record<string, number>;
+  by_carrier: Array<{ carrier_id: number; count: number }>;
+}
+
+export interface UserListItem {
+  id: number;
+  email: string;
+  full_name: string;
+  is_active: boolean;
+  roles: UserRole[];
+}

@@ -8,6 +8,8 @@ from app.modules.carriers.router import router as carriers_router
 from app.modules.health.router import router as health_router
 from app.modules.shipments.router import router as shipments_router
 from app.modules.imports.router import router as imports_router
+from app.modules.reports.router import router as reports_router
+from app.modules.users.router import router as users_router
 
 
 def create_app() -> FastAPI:
@@ -36,6 +38,8 @@ def create_app() -> FastAPI:
     app.include_router(carriers_router, prefix="/api/v1")
     app.include_router(shipments_router, prefix="/api/v1")
     app.include_router(imports_router, prefix="/api/v1")
+    app.include_router(reports_router, prefix="/api/v1")
+    app.include_router(users_router, prefix="/api/v1")
     app.include_router(health_router)
     return app
 

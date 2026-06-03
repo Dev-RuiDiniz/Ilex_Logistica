@@ -50,14 +50,20 @@ def persist_import_history(
     file_type: str,
     file_hash: str,
     rows_received: int,
+    imported_count: int = 0,
+    rejected_count: int = 0,
+    duplicates_count: int = 0,
+    status: str = "SUCCESS",
 ) -> ImportHistory:
     history = ImportHistory(
         filename=filename,
         file_type=file_type,
         file_hash=file_hash,
         rows_received=rows_received,
-        duplicates_count=0,
-        status="SUCCESS",
+        duplicates_count=duplicates_count,
+        imported_count=imported_count,
+        rejected_count=rejected_count,
+        status=status,
     )
     db.add(history)
     db.commit()
@@ -66,6 +72,7 @@ def persist_import_history(
 
 
 def persist_deliveries(db: Session, rows: list[dict[str, str]]) -> None:
+    # LOG-010: transacao atomica - commit unico ao final
     for row in rows:
         db.add(
             Delivery(
@@ -151,6 +158,15 @@ def _validate_required_columns(columns: list[str]) -> None:
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=f"colunas obrigatorias ausentes: {', '.join(missing)}",
         )
+
+
+def _validate_duplicate_nf_in_db(db: Session, rows: list[dict[str, str]]) -> int:
+    # LOG-010: valida duplicidade de NF no banco e retorna contador
+    from app.modules.imports.models import Delivery
+    nfs = {(row.get("nf") or "").strip() for row in rows}
+    existing = db.query(Delivery.nf).filter(Delivery.nf.in_(nfs)).all()
+    existing_nfs = {nf for (nf,) in existing}
+    return len(existing_nfs)
 
 
 def _validate_duplicate_nf(rows: list[dict[str, str]]) -> None:

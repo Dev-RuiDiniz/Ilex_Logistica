@@ -17,5 +17,7 @@ class ImportHistoryResponse(BaseModel):
     file_hash: str
     rows_received: int
     duplicates_count: int
+    imported_count: int
+    rejected_count: int
     status: str
     created_at: datetime

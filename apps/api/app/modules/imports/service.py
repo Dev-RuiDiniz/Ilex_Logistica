@@ -93,6 +93,9 @@ def _parse_csv(raw: bytes) -> tuple[list[str], list[dict[str, str]]]:
         {_normalize_header(k): (v or "").strip() for k, v in row.items() if k and k.strip()}
         for row in reader
     ]
+    # LOG-007: rejeitar CSV com cabecalho mas sem linhas de dados
+    if not rows:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="csv sem dados: nenhuma linha encontrada")
     return columns, rows
 
 

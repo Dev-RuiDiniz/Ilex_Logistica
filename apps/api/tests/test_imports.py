@@ -329,3 +329,113 @@ def test_upload_rejeita_percentual_fora_da_faixa(client) -> None:
     )
     assert response.status_code == 400
     assert "percentual_frete" in response.json()["detail"].lower()
+
+
+# =============================================================================
+# LOG-007: Revisao do importador CSV/Excel - testes Red
+# =============================================================================
+
+
+def test_upload_csv_data_coleta_formato_invalido_retorna_400(client) -> None:
+    """CSV com data_coleta em formato DD/MM/AAAA (nao ISO) deve retornar 400."""
+    csv_bytes = b"nf,transportadora,data_coleta,valor_frete,percentual_frete\n999,XPTO,14/05/2026,10.50,5.00\n"
+    response = client.post(
+        "/api/v1/imports/upload",
+        files={"file": ("entregas.csv", csv_bytes, "text/csv")},
+    )
+    assert response.status_code == 400
+    detail = response.json()["detail"].lower()
+    assert "data_coleta" in detail
+
+
+def test_upload_csv_somente_cabecalho_sem_dados_retorna_400(client) -> None:
+    """CSV com apenas o cabecalho e nenhuma linha de dados deve retornar 400."""
+    csv_bytes = b"nf,transportadora,data_coleta,valor_frete,percentual_frete\n"
+    response = client.post(
+        "/api/v1/imports/upload",
+        files={"file": ("entregas.csv", csv_bytes, "text/csv")},
+    )
+    assert response.status_code == 400
+    detail = response.json()["detail"].lower()
+    assert "dado" in detail or "vazio" in detail or "linha" in detail
+
+
+def test_upload_csv_encoding_latin1_retorna_400(client) -> None:
+    """CSV com encoding Latin-1 (nao UTF-8) deve retornar 400 com mensagem segura."""
+    csv_bytes = "nf,transportadora,data_coleta,valor_frete,percentual_frete\n999,Transportadora São Paulo,2026-05-14,10.50,5.00\n".encode(
+        "latin-1"
+    )
+    response = client.post(
+        "/api/v1/imports/upload",
+        files={"file": ("entregas.csv", csv_bytes, "text/csv")},
+    )
+    assert response.status_code == 400
+    body = response.json()
+    assert "detail" in body
+    assert "traceback" not in str(body).lower()
+    assert "exception" not in str(body).lower()
+
+
+def test_upload_resposta_nao_expoe_stack_trace(client) -> None:
+    """Qualquer erro de importacao deve retornar JSON sem stack trace ou info interna."""
+    response = client.post(
+        "/api/v1/imports/upload",
+        files={"file": ("entregas.txt", b"conteudo qualquer", "text/plain")},
+    )
+    assert response.status_code == 400
+    body = response.json()
+    body_str = str(body).lower()
+    assert "traceback" not in body_str
+    assert "line " not in body_str
+    assert 'file "' not in body_str
+
+
+def test_upload_xlsx_sem_worksheet_retorna_400(client) -> None:
+    """XLSX sem sheet1.xml deve retornar 400 com mensagem clara."""
+    from io import BytesIO
+    from zipfile import ZIP_DEFLATED, ZipFile
+
+    out = BytesIO()
+    with ZipFile(out, "w", ZIP_DEFLATED) as zf:
+        zf.writestr("xl/workbook.xml", "<workbook/>")
+    xlsx_bytes = out.getvalue()
+    response = client.post(
+        "/api/v1/imports/upload",
+        files={"file": ("entregas.xlsx", xlsx_bytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")},
+    )
+    assert response.status_code == 400
+    detail = response.json()["detail"].lower()
+    assert "xlsx" in detail or "worksheet" in detail
+
+
+def test_upload_xlsx_corrompido_retorna_400(client) -> None:
+    """Bytes que nao sao ZIP valido com extensao .xlsx devem retornar 400."""
+    response = client.post(
+        "/api/v1/imports/upload",
+        files={"file": ("entregas.xlsx", b"isso nao e um zip", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")},
+    )
+    assert response.status_code == 400
+    detail = response.json()["detail"].lower()
+    assert "xlsx" in detail or "invalido" in detail
+
+
+def test_upload_csv_valor_frete_nao_numerico_retorna_400(client) -> None:
+    """CSV com valor_frete textual (nao numerico) deve retornar 400."""
+    csv_bytes = b"nf,transportadora,data_coleta,valor_frete,percentual_frete\n999,XPTO,2026-05-14,GRATIS,5.00\n"
+    response = client.post(
+        "/api/v1/imports/upload",
+        files={"file": ("entregas.csv", csv_bytes, "text/csv")},
+    )
+    assert response.status_code == 400
+    assert "valor_frete" in response.json()["detail"].lower()
+
+
+def test_upload_csv_data_coleta_ausente_retorna_400(client) -> None:
+    """CSV com data_coleta vazia deve retornar 400."""
+    csv_bytes = b"nf,transportadora,data_coleta,valor_frete,percentual_frete\n999,XPTO,,10.50,5.00\n"
+    response = client.post(
+        "/api/v1/imports/upload",
+        files={"file": ("entregas.csv", csv_bytes, "text/csv")},
+    )
+    assert response.status_code == 400
+    assert "data_coleta" in response.json()["detail"].lower()

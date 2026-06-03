@@ -3,8 +3,8 @@ from sqlalchemy.orm import Session
 
 from app.database.session import get_db
 from app.modules.imports.models import ImportHistory
-from app.modules.imports.schemas import ImportHistoryResponse, ImportPreviewResponse
-from app.modules.imports.service import parse_uploaded_file, persist_deliveries, persist_import_history, _validate_duplicate_nf_in_db
+from app.modules.imports.schemas import DeliveryListResponse, ImportHistoryResponse, ImportPreviewResponse
+from app.modules.imports.service import list_deliveries, parse_uploaded_file, persist_deliveries, persist_import_history, _validate_duplicate_nf_in_db
 
 router = APIRouter(prefix="/imports", tags=["imports"])
 
@@ -57,3 +57,22 @@ def list_import_history(
         )
         for item in items
     ]
+
+
+@router.get("/deliveries", response_model=DeliveryListResponse)
+def list_deliveries_endpoint(
+    page: int = Query(default=1, ge=1),
+    page_size: int = Query(default=20, ge=1, le=100),
+    nf: str | None = Query(default=None),
+    transportadora: str | None = Query(default=None),
+    data_coleta: str | None = Query(default=None),
+    db: Session = Depends(get_db),
+) -> DeliveryListResponse:
+    return DeliveryListResponse(**list_deliveries(
+        db=db,
+        page=page,
+        page_size=page_size,
+        nf=nf,
+        transportadora=transportadora,
+        data_coleta=data_coleta,
+    ))

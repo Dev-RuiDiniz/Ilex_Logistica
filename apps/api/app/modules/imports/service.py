@@ -1,7 +1,7 @@
 import csv
 import hashlib
 import unicodedata
-from datetime import datetime
+from datetime import date, datetime
 from decimal import Decimal, InvalidOperation
 from io import BytesIO
 from io import StringIO
@@ -84,6 +84,61 @@ def persist_deliveries(db: Session, rows: list[dict[str, str]]) -> None:
             )
         )
     db.commit()
+
+
+def list_deliveries(
+    db: Session,
+    page: int = 1,
+    page_size: int = 20,
+    nf: str | None = None,
+    transportadora: str | None = None,
+    data_coleta: str | None = None,
+) -> dict[str, any]:
+    """List deliveries with pagination and filtering."""
+    # Build query
+    query = db.query(Delivery)
+
+    # Apply filters
+    if nf:
+        query = query.filter(Delivery.nf == nf)
+    if transportadora:
+        query = query.filter(Delivery.transportadora == transportadora)
+    if data_coleta:
+        try:
+            parsed_date = date.fromisoformat(data_coleta)
+            query = query.filter(Delivery.data_coleta == parsed_date)
+        except ValueError:
+            pass  # Invalid date format, ignore filter
+
+    # Get total count
+    total = query.count()
+
+    # Apply sorting (created_at desc, then id desc)
+    query = query.order_by(Delivery.created_at.desc(), Delivery.id.desc())
+
+    # Apply pagination
+    offset = (page - 1) * page_size
+    items = query.offset(offset).limit(page_size).all()
+
+    # Convert to dict format
+    items_data = []
+    for item in items:
+        items_data.append({
+            "id": item.id,
+            "nf": item.nf,
+            "transportadora": item.transportadora,
+            "data_coleta": item.data_coleta,
+            "valor_frete": float(item.valor_frete),
+            "percentual_frete": float(item.percentual_frete),
+            "created_at": item.created_at,
+        })
+
+    return {
+        "items": items_data,
+        "total": total,
+        "page": page,
+        "page_size": page_size,
+    }
 
 
 def _parse_csv(raw: bytes) -> tuple[list[str], list[dict[str, str]]]:

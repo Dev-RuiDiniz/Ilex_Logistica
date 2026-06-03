@@ -38,6 +38,7 @@ def parse_uploaded_file(
     else:
         columns, rows = _parse_xlsx(raw)
     _validate_duplicate_nf(rows)
+    _validate_required_fields(rows)
     _validate_financial_fields(rows)
     return columns, rows, ext.replace(".", ""), _hash_bytes(raw)
 
@@ -169,6 +170,23 @@ def _validate_duplicate_nf(rows: list[dict[str, str]]) -> None:
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=f"duplicidades detectadas para nf: {ordered}",
         )
+
+
+def _validate_required_fields(rows: list[dict[str, str]]) -> None:
+    # LOG-008: validar campos obrigatorios com valor nao vazio por linha
+    for row in rows:
+        nf = (row.get("nf") or "").strip()
+        if not nf:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="nf obrigatoria: campo nf nao pode ser vazio",
+            )
+        transportadora = (row.get("transportadora") or "").strip()
+        if not transportadora:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="transportadora obrigatoria: campo transportadora nao pode ser vazio",
+            )
 
 
 def _validate_financial_fields(rows: list[dict[str, str]]) -> None:

@@ -439,3 +439,121 @@ def test_upload_csv_data_coleta_ausente_retorna_400(client) -> None:
     )
     assert response.status_code == 400
     assert "data_coleta" in response.json()["detail"].lower()
+
+
+# =============================================================================
+# LOG-008: Validacao de colunas obrigatorias antes do processamento
+# =============================================================================
+
+
+def test_upload_csv_nf_vazia_retorna_400(client) -> None:
+    """CSV com coluna nf presente mas valor vazio deve retornar 400."""
+    csv_bytes = b"nf,transportadora,data_coleta,valor_frete,percentual_frete\n,XPTO,2026-05-14,10.50,5.00\n"
+    response = client.post(
+        "/api/v1/imports/upload",
+        files={"file": ("entregas.csv", csv_bytes, "text/csv")},
+    )
+    assert response.status_code == 400
+    detail = response.json()["detail"].lower()
+    assert "nf" in detail
+
+
+def test_upload_csv_transportadora_vazia_retorna_400(client) -> None:
+    """CSV com coluna transportadora presente mas valor vazio deve retornar 400."""
+    csv_bytes = b"nf,transportadora,data_coleta,valor_frete,percentual_frete\n999,,2026-05-14,10.50,5.00\n"
+    response = client.post(
+        "/api/v1/imports/upload",
+        files={"file": ("entregas.csv", csv_bytes, "text/csv")},
+    )
+    assert response.status_code == 400
+    detail = response.json()["detail"].lower()
+    assert "transportadora" in detail
+
+
+def test_upload_csv_percentual_frete_negativo_retorna_400(client) -> None:
+    """CSV com percentual_frete negativo deve retornar 400."""
+    csv_bytes = b"nf,transportadora,data_coleta,valor_frete,percentual_frete\n999,XPTO,2026-05-14,10.50,-1.00\n"
+    response = client.post(
+        "/api/v1/imports/upload",
+        files={"file": ("entregas.csv", csv_bytes, "text/csv")},
+    )
+    assert response.status_code == 400
+    detail = response.json()["detail"].lower()
+    assert "percentual_frete" in detail
+
+
+def test_upload_csv_percentual_frete_nao_numerico_retorna_400(client) -> None:
+    """CSV com percentual_frete textual deve retornar 400."""
+    csv_bytes = b"nf,transportadora,data_coleta,valor_frete,percentual_frete\n999,XPTO,2026-05-14,10.50,ALTO\n"
+    response = client.post(
+        "/api/v1/imports/upload",
+        files={"file": ("entregas.csv", csv_bytes, "text/csv")},
+    )
+    assert response.status_code == 400
+    detail = response.json()["detail"].lower()
+    assert "percentual_frete" in detail
+
+
+def test_upload_csv_multiplas_colunas_ausentes_retorna_400_com_lista(client) -> None:
+    """CSV sem nf e sem transportadora deve listar ambas as colunas ausentes no erro."""
+    csv_bytes = b"data_coleta,valor_frete,percentual_frete\n2026-05-14,10.50,5.00\n"
+    response = client.post(
+        "/api/v1/imports/upload",
+        files={"file": ("entregas.csv", csv_bytes, "text/csv")},
+    )
+    assert response.status_code == 400
+    detail = response.json()["detail"].lower()
+    assert "nf" in detail
+    assert "transportadora" in detail
+
+
+def test_upload_xlsx_sem_coluna_nf_retorna_400(client) -> None:
+    """XLSX sem coluna nf deve retornar 400 com mensagem clara."""
+    from io import BytesIO
+    from zipfile import ZIP_DEFLATED, ZipFile
+
+    sheet = """<?xml version=\"1.0\" encoding=\"UTF-8\"?>
+<worksheet xmlns=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\">
+  <sheetData>
+    <row r=\"1\">
+      <c r=\"A1\" t=\"inlineStr\"><is><t>transportadora</t></is></c>
+      <c r=\"B1\" t=\"inlineStr\"><is><t>data_coleta</t></is></c>
+      <c r=\"C1\" t=\"inlineStr\"><is><t>valor_frete</t></is></c>
+      <c r=\"D1\" t=\"inlineStr\"><is><t>percentual_frete</t></is></c>
+    </row>
+    <row r=\"2\">
+      <c r=\"A2\" t=\"inlineStr\"><is><t>XPTO</t></is></c>
+      <c r=\"B2\" t=\"inlineStr\"><is><t>2026-05-14</t></is></c>
+      <c r=\"C2\" t=\"inlineStr\"><is><t>10.50</t></is></c>
+      <c r=\"D2\" t=\"inlineStr\"><is><t>5.00</t></is></c>
+    </row>
+  </sheetData>
+</worksheet>"""
+    out = BytesIO()
+    with ZipFile(out, "w", ZIP_DEFLATED) as zf:
+        zf.writestr("[Content_Types].xml", '<?xml version="1.0"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="xml" ContentType="application/xml"/></Types>')
+        zf.writestr("xl/worksheets/sheet1.xml", sheet)
+    response = client.post(
+        "/api/v1/imports/upload",
+        files={"file": ("entregas.xlsx", out.getvalue(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")},
+    )
+    assert response.status_code == 400
+    detail = response.json()["detail"].lower()
+    assert "nf" in detail
+
+
+def test_upload_csv_erro_contem_nome_do_campo_afetado(client) -> None:
+    """Erro de campo obrigatorio deve conter o nome do campo no detail."""
+    # data_coleta vazia: erro deve citar 'data_coleta'
+    csv_bytes = b"nf,transportadora,data_coleta,valor_frete,percentual_frete\n999,XPTO,,10.50,5.00\n"
+    response = client.post(
+        "/api/v1/imports/upload",
+        files={"file": ("entregas.csv", csv_bytes, "text/csv")},
+    )
+    assert response.status_code == 400
+    detail = response.json()["detail"]
+    # Deve ser string simples, sem stack trace
+    assert isinstance(detail, str)
+    assert "data_coleta" in detail.lower()
+    assert "Traceback" not in detail
+    assert "File \"" not in detail

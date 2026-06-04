@@ -13,27 +13,28 @@ export default function ExceptionsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  const load = async () => {
-    if (!session) return;
-    setLoading(true);
-    setError("");
-    try {
-      const response = await listExceptionShipments(session.accessToken, {
-        criticality: criticality || undefined,
-        sort_by: "delay_days",
-        sort_order: "desc",
-      });
-      setItems(response.items);
-    } catch {
-      setError("Não foi possível carregar exceções.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
-    void load();
-  }, [session?.accessToken, criticality]);
+    let cancelled = false;
+    const run = async () => {
+      if (!session) return;
+      setLoading(true);
+      setError("");
+      try {
+        const response = await listExceptionShipments(session.accessToken, {
+          criticality: criticality || undefined,
+          sort_by: "delay_days",
+          sort_order: "desc",
+        });
+        if (!cancelled) setItems(response.items);
+      } catch {
+        if (!cancelled) setError("Não foi possível carregar exceções.");
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    };
+    void run();
+    return () => { cancelled = true; };
+  }, [session, criticality]);
 
   return (
     <section className="space-y-4">

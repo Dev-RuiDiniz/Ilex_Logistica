@@ -2,6 +2,8 @@ import type {
   Carrier,
   CreateShipmentTreatmentRequest,
   DailyReportResponse,
+  DeliveryListParams,
+  DeliveryListResponse,
   ExceptionShipmentListResponse,
   ImportConfirmResponse,
   ShipmentDetail,
@@ -219,6 +221,21 @@ export async function updateUser(
 export async function inactivateUser(token: string, userId: number): Promise<UserListItem> {
   return request<UserListItem>(`/users/${userId}/inactivate`, {
     method: "POST",
+    headers: { Authorization: `Bearer ${token}` },
+  });
+}
+
+// LOG-011: Listagem de entregas
+export async function listDeliveries(token: string, params: DeliveryListParams = {}): Promise<DeliveryListResponse> {
+  const searchParams = new URLSearchParams();
+  if (params.page) searchParams.append("page", params.page.toString());
+  if (params.page_size) searchParams.append("page_size", params.page_size.toString());
+  if (params.nf) searchParams.append("nf", params.nf);
+  if (params.transportadora) searchParams.append("transportadora", params.transportadora);
+  if (params.data_coleta) searchParams.append("data_coleta", params.data_coleta);
+
+  const query = searchParams.toString();
+  return request<DeliveryListResponse>(`/imports/deliveries${query ? `?${query}` : ""}`, {
     headers: { Authorization: `Bearer ${token}` },
   });
 }

@@ -130,3 +130,29 @@ export interface UserListItem {
   is_active: boolean;
   roles: UserRole[];
 }
+
+// Delivery types (LOG-011)
+export interface DeliveryListItem {
+  id: number;
+  nf: string;
+  transportadora: string;
+  data_coleta: string;
+  valor_frete: number;
+  percentual_frete: number;
+  created_at: string;
+}
+
+export interface DeliveryListParams {
+  page?: number;
+  page_size?: number;
+  nf?: string;
+  transportadora?: string;
+  data_coleta?: string;
+}
+
+export interface DeliveryListResponse {
+  items: DeliveryListItem[];
+  total: number;
+  page: number;
+  page_size: number;
+}

@@ -6,6 +6,7 @@ import {
   confirmShipmentsImport,
   createCarrier,
   getApiBaseUrl,
+  getDeliveryDetail,
   inactivateCarrier,
   listCarriers,
   listDeliveries,
@@ -73,6 +74,10 @@ describe("api exports e assinaturas", () => {
     expect(typeof listDeliveries).toBe("function");
   });
 
+  it("getDeliveryDetail esta exportado (LOG-012)", () => {
+    expect(typeof getDeliveryDetail).toBe("function");
+  });
+
   it("uploadShipmentsCsv recebe token e file", () => {
     expect(uploadShipmentsCsv.length).toBe(2);
   });
@@ -87,5 +92,9 @@ describe("api exports e assinaturas", () => {
 
   it("listDeliveries recebe token e params opcionais (LOG-011)", () => {
     expect(listDeliveries.length).toBe(1);
+  });
+
+  it("getDeliveryDetail recebe token e deliveryId (LOG-012)", () => {
+    expect(getDeliveryDetail.length).toBe(2);
   });
 });

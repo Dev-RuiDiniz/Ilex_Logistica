@@ -1026,3 +1026,47 @@ def test_listar_entregas_resposta_nao_expoe_stack_trace(client) -> None:
         body = response.json()
         assert "Traceback" not in str(body)
         assert "File \"" not in str(body)
+
+
+def test_get_delivery_detail_entrega_existente_retorna_200(client, db_session) -> None:
+    """Verifica que GET detalhe de entrega existente retorna 200 e contém todos os campos."""
+    from datetime import date
+    from app.modules.imports.models import Delivery
+
+    delivery = Delivery(
+        nf="NF123",
+        transportadora="TRANSPORTADORA_TESTE",
+        data_coleta=date(2026, 5, 14),
+        valor_frete=10.50,
+        percentual_frete=5.00,
+    )
+    db_session.add(delivery)
+    db_session.commit()
+    db_session.refresh(delivery)
+
+    response = client.get(f"/api/v1/imports/deliveries/{delivery.id}")
+    assert response.status_code == 200
+    body = response.json()
+    assert body["id"] == delivery.id
+    assert body["nf"] == "NF123"
+    assert body["transportadora"] == "TRANSPORTADORA_TESTE"
+    assert str(body["data_coleta"]) == "2026-05-14"
+    assert body["valor_frete"] == 10.50
+    assert body["percentual_frete"] == 5.00
+    assert body["created_at"]
+
+
+def test_get_delivery_detail_entrega_inexistente_retorna_404(client) -> None:
+    """Verifica que GET entrega inexistente retorna 404."""
+    response = client.get("/api/v1/imports/deliveries/99999")
+    assert response.status_code == 404
+    assert "nao encontrada" in response.json()["detail"].lower()
+
+
+def test_get_delivery_detail_resposta_nao_expoe_stack_trace(client) -> None:
+    """Verifica que resposta de erro não expõe stack trace."""
+    response = client.get("/api/v1/imports/deliveries/99999")
+    assert response.status_code == 404
+    body = response.json()
+    assert "Traceback" not in str(body)
+    assert 'File "' not in str(body)

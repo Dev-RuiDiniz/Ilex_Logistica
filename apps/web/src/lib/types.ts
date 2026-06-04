@@ -156,3 +156,14 @@ export interface DeliveryListResponse {
   page: number;
   page_size: number;
 }
+
+// Delivery detail (LOG-012)
+export interface DeliveryDetail {
+  id: number;
+  nf: string;
+  transportadora: string;
+  data_coleta: string;
+  valor_frete: number;
+  percentual_frete: number;
+  created_at: string;
+}

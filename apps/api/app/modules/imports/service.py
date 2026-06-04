@@ -141,6 +141,22 @@ def list_deliveries(
     }
 
 
+def get_delivery_detail(db: Session, delivery_id: int) -> dict[str, any] | None:
+    """Get delivery detail by ID."""
+    item = db.get(Delivery, delivery_id)
+    if item is None:
+        return None
+    return {
+        "id": item.id,
+        "nf": item.nf,
+        "transportadora": item.transportadora,
+        "data_coleta": item.data_coleta,
+        "valor_frete": float(item.valor_frete),
+        "percentual_frete": float(item.percentual_frete),
+        "created_at": item.created_at,
+    }
+
+
 def _parse_csv(raw: bytes) -> tuple[list[str], list[dict[str, str]]]:
     try:
         text = raw.decode("utf-8-sig")

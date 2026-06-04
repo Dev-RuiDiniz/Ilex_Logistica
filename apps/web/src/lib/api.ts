@@ -2,6 +2,7 @@ import type {
   Carrier,
   CreateShipmentTreatmentRequest,
   DailyReportResponse,
+  DeliveryDetail,
   DeliveryListParams,
   DeliveryListResponse,
   ExceptionShipmentListResponse,
@@ -236,6 +237,13 @@ export async function listDeliveries(token: string, params: DeliveryListParams =
 
   const query = searchParams.toString();
   return request<DeliveryListResponse>(`/imports/deliveries${query ? `?${query}` : ""}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+}
+
+// LOG-012: Detalhe de entrega
+export async function getDeliveryDetail(token: string, deliveryId: number): Promise<DeliveryDetail> {
+  return request<DeliveryDetail>(`/imports/deliveries/${deliveryId}`, {
     headers: { Authorization: `Bearer ${token}` },
   });
 }

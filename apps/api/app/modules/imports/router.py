@@ -1,10 +1,10 @@
-from fastapi import APIRouter, Depends, File, Query, UploadFile
+from fastapi import APIRouter, Depends, File, HTTPException, Query, UploadFile
 from sqlalchemy.orm import Session
 
 from app.database.session import get_db
 from app.modules.imports.models import ImportHistory
-from app.modules.imports.schemas import DeliveryListResponse, ImportHistoryResponse, ImportPreviewResponse
-from app.modules.imports.service import list_deliveries, parse_uploaded_file, persist_deliveries, persist_import_history, _validate_duplicate_nf_in_db
+from app.modules.imports.schemas import DeliveryDetailResponse, DeliveryListResponse, ImportHistoryResponse, ImportPreviewResponse
+from app.modules.imports.service import get_delivery_detail, list_deliveries, parse_uploaded_file, persist_deliveries, persist_import_history, _validate_duplicate_nf_in_db
 
 router = APIRouter(prefix="/imports", tags=["imports"])
 
@@ -76,3 +76,14 @@ def list_deliveries_endpoint(
         transportadora=transportadora,
         data_coleta=data_coleta,
     ))
+
+
+@router.get("/deliveries/{delivery_id}", response_model=DeliveryDetailResponse)
+def get_delivery_detail_endpoint(
+    delivery_id: int,
+    db: Session = Depends(get_db),
+) -> DeliveryDetailResponse:
+    detail = get_delivery_detail(db, delivery_id)
+    if detail is None:
+        raise HTTPException(status_code=404, detail="entrega nao encontrada")
+    return DeliveryDetailResponse(**detail)

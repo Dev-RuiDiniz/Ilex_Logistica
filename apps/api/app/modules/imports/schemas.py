@@ -38,3 +38,13 @@ class DeliveryListResponse(BaseModel):
     total: int
     page: int
     page_size: int
+
+
+class DeliveryDetailResponse(BaseModel):
+    id: int
+    nf: str
+    transportadora: str
+    data_coleta: date
+    valor_frete: float
+    percentual_frete: float
+    created_at: datetime

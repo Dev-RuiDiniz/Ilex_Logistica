@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useState } from "react";
 
 import { listDeliveries } from "@/lib/api";
@@ -154,7 +155,11 @@ export default function DeliveriesPage() {
             ) : (
               items.map((item) => (
                 <tr key={item.id} className="border-t">
-                  <td className="px-3 py-2">{item.nf}</td>
+                  <td className="px-3 py-2">
+                    <Link href={`/shipments/deliveries/${item.id}`} className="text-blue-600 hover:underline">
+                      {item.nf}
+                    </Link>
+                  </td>
                   <td className="px-3 py-2">{item.transportadora}</td>
                   <td className="px-3 py-2">{formatDate(item.data_coleta)}</td>
                   <td className="px-3 py-2">{formatCurrency(item.valor_frete)}</td>

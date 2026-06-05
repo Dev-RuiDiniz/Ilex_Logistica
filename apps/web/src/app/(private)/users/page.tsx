@@ -14,10 +14,24 @@ export default function UsersPage() {
   const [error, setError] = useState("");
   const [email, setEmail] = useState("");
   const [fullName, setFullName] = useState("");
-  const [password, setPassword] = useState("123456");
   const [role, setRole] = useState<UserRole>("logistica");
 
-  const load = async () => {
+  useEffect(() => {
+    let cancelled = false;
+    const run = async () => {
+      if (!session) return;
+      try {
+        const users = await listUsers(session.accessToken);
+        if (!cancelled) setItems(users);
+      } catch {
+        if (!cancelled) setError("Falha ao carregar usuários.");
+      }
+    };
+    void run();
+    return () => { cancelled = true; };
+  }, [session]);
+
+  const reloadUsers = async () => {
     if (!session) return;
     try {
       setItems(await listUsers(session.accessToken));
@@ -26,19 +40,15 @@ export default function UsersPage() {
     }
   };
 
-  useEffect(() => {
-    void load();
-  }, [session?.accessToken]);
-
   const onCreate = async (event: FormEvent) => {
     event.preventDefault();
     if (!session) return;
     try {
-      await createUser(session.accessToken, { email, full_name: fullName, password, roles: [role] });
+      await createUser(session.accessToken, { email, full_name: fullName, password: "123456", roles: [role] });
       setEmail("");
       setFullName("");
       setRole("logistica");
-      await load();
+      await reloadUsers();
     } catch {
       setError("Falha ao criar usuário.");
     }
@@ -48,7 +58,7 @@ export default function UsersPage() {
     if (!session) return;
     try {
       await updateUser(session.accessToken, item.id, { roles: [nextRole] });
-      await load();
+      await reloadUsers();
     } catch {
       setError("Falha ao atualizar perfil.");
     }
@@ -58,7 +68,7 @@ export default function UsersPage() {
     if (!session) return;
     try {
       await inactivateUser(session.accessToken, item.id);
-      await load();
+      await reloadUsers();
     } catch {
       setError("Falha ao inativar usuário.");
     }

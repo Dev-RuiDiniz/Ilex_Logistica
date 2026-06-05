@@ -21,7 +21,7 @@ export default function DailyReportPage() {
       }
     };
     void load();
-  }, [session?.accessToken]);
+  }, [session]);
 
   const exportCsv = () => {
     if (!report) return;

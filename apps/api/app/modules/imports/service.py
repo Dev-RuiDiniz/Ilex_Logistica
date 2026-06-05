@@ -1,7 +1,7 @@
 import csv
 import hashlib
 import unicodedata
-from datetime import datetime
+from datetime import date, datetime
 from decimal import Decimal, InvalidOperation
 from io import BytesIO
 from io import StringIO
@@ -38,6 +38,7 @@ def parse_uploaded_file(
     else:
         columns, rows = _parse_xlsx(raw)
     _validate_duplicate_nf(rows)
+    _validate_required_fields(rows)
     _validate_financial_fields(rows)
     return columns, rows, ext.replace(".", ""), _hash_bytes(raw)
 
@@ -49,14 +50,20 @@ def persist_import_history(
     file_type: str,
     file_hash: str,
     rows_received: int,
+    imported_count: int = 0,
+    rejected_count: int = 0,
+    duplicates_count: int = 0,
+    status: str = "SUCCESS",
 ) -> ImportHistory:
     history = ImportHistory(
         filename=filename,
         file_type=file_type,
         file_hash=file_hash,
         rows_received=rows_received,
-        duplicates_count=0,
-        status="SUCCESS",
+        duplicates_count=duplicates_count,
+        imported_count=imported_count,
+        rejected_count=rejected_count,
+        status=status,
     )
     db.add(history)
     db.commit()
@@ -65,6 +72,7 @@ def persist_import_history(
 
 
 def persist_deliveries(db: Session, rows: list[dict[str, str]]) -> None:
+    # LOG-010: transacao atomica - commit unico ao final
     for row in rows:
         db.add(
             Delivery(
@@ -76,6 +84,77 @@ def persist_deliveries(db: Session, rows: list[dict[str, str]]) -> None:
             )
         )
     db.commit()
+
+
+def list_deliveries(
+    db: Session,
+    page: int = 1,
+    page_size: int = 20,
+    nf: str | None = None,
+    transportadora: str | None = None,
+    data_coleta: str | None = None,
+) -> dict[str, any]:
+    """List deliveries with pagination and filtering."""
+    # Build query
+    query = db.query(Delivery)
+
+    # Apply filters
+    if nf:
+        query = query.filter(Delivery.nf == nf)
+    if transportadora:
+        query = query.filter(Delivery.transportadora == transportadora)
+    if data_coleta:
+        try:
+            parsed_date = date.fromisoformat(data_coleta)
+            query = query.filter(Delivery.data_coleta == parsed_date)
+        except ValueError:
+            pass  # Invalid date format, ignore filter
+
+    # Get total count
+    total = query.count()
+
+    # Apply sorting (created_at desc, then id desc)
+    query = query.order_by(Delivery.created_at.desc(), Delivery.id.desc())
+
+    # Apply pagination
+    offset = (page - 1) * page_size
+    items = query.offset(offset).limit(page_size).all()
+
+    # Convert to dict format
+    items_data = []
+    for item in items:
+        items_data.append({
+            "id": item.id,
+            "nf": item.nf,
+            "transportadora": item.transportadora,
+            "data_coleta": item.data_coleta,
+            "valor_frete": float(item.valor_frete),
+            "percentual_frete": float(item.percentual_frete),
+            "created_at": item.created_at,
+        })
+
+    return {
+        "items": items_data,
+        "total": total,
+        "page": page,
+        "page_size": page_size,
+    }
+
+
+def get_delivery_detail(db: Session, delivery_id: int) -> dict[str, any] | None:
+    """Get delivery detail by ID."""
+    item = db.get(Delivery, delivery_id)
+    if item is None:
+        return None
+    return {
+        "id": item.id,
+        "nf": item.nf,
+        "transportadora": item.transportadora,
+        "data_coleta": item.data_coleta,
+        "valor_frete": float(item.valor_frete),
+        "percentual_frete": float(item.percentual_frete),
+        "created_at": item.created_at,
+    }
 
 
 def _parse_csv(raw: bytes) -> tuple[list[str], list[dict[str, str]]]:
@@ -93,6 +172,9 @@ def _parse_csv(raw: bytes) -> tuple[list[str], list[dict[str, str]]]:
         {_normalize_header(k): (v or "").strip() for k, v in row.items() if k and k.strip()}
         for row in reader
     ]
+    # LOG-007: rejeitar CSV com cabecalho mas sem linhas de dados
+    if not rows:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="csv sem dados: nenhuma linha encontrada")
     return columns, rows
 
 
@@ -149,6 +231,15 @@ def _validate_required_columns(columns: list[str]) -> None:
         )
 
 
+def _validate_duplicate_nf_in_db(db: Session, rows: list[dict[str, str]]) -> int:
+    # LOG-010: valida duplicidade de NF no banco e retorna contador
+    from app.modules.imports.models import Delivery
+    nfs = {(row.get("nf") or "").strip() for row in rows}
+    existing = db.query(Delivery.nf).filter(Delivery.nf.in_(nfs)).all()
+    existing_nfs = {nf for (nf,) in existing}
+    return len(existing_nfs)
+
+
 def _validate_duplicate_nf(rows: list[dict[str, str]]) -> None:
     seen: set[str] = set()
     duplicates: set[str] = set()
@@ -166,6 +257,23 @@ def _validate_duplicate_nf(rows: list[dict[str, str]]) -> None:
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=f"duplicidades detectadas para nf: {ordered}",
         )
+
+
+def _validate_required_fields(rows: list[dict[str, str]]) -> None:
+    # LOG-008: validar campos obrigatorios com valor nao vazio por linha
+    for row in rows:
+        nf = (row.get("nf") or "").strip()
+        if not nf:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="nf obrigatoria: campo nf nao pode ser vazio",
+            )
+        transportadora = (row.get("transportadora") or "").strip()
+        if not transportadora:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="transportadora obrigatoria: campo transportadora nao pode ser vazio",
+            )
 
 
 def _validate_financial_fields(rows: list[dict[str, str]]) -> None:

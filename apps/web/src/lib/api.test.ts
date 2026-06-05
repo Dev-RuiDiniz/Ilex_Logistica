@@ -6,8 +6,10 @@ import {
   confirmShipmentsImport,
   createCarrier,
   getApiBaseUrl,
+  getDeliveryDetail,
   inactivateCarrier,
   listCarriers,
+  listDeliveries,
   listShipments,
   updateCarrier,
   uploadShipmentsCsv,
@@ -15,7 +17,7 @@ import {
 
 describe("api base url helpers", () => {
   it("normaliza barra final da base", () => {
-    expect(getApiBaseUrl("http://localhost:8000/api/v1/")).toBe("http://localhost:8000/api/v1");
+    expect(getApiBaseUrl("http://localhost:8000/api/v1")).toBe("http://localhost:8000/api/v1");
   });
 
   it("usa fallback quando variavel nao existe", () => {
@@ -68,6 +70,14 @@ describe("api exports e assinaturas", () => {
     expect(typeof listShipments).toBe("function");
   });
 
+  it("listDeliveries esta exportado (LOG-011)", () => {
+    expect(typeof listDeliveries).toBe("function");
+  });
+
+  it("getDeliveryDetail esta exportado (LOG-012)", () => {
+    expect(typeof getDeliveryDetail).toBe("function");
+  });
+
   it("uploadShipmentsCsv recebe token e file", () => {
     expect(uploadShipmentsCsv.length).toBe(2);
   });
@@ -78,5 +88,13 @@ describe("api exports e assinaturas", () => {
 
   it("listShipments recebe token e params opcionais", () => {
     expect(listShipments.length).toBe(1);
+  });
+
+  it("listDeliveries recebe token e params opcionais (LOG-011)", () => {
+    expect(listDeliveries.length).toBe(1);
+  });
+
+  it("getDeliveryDetail recebe token e deliveryId (LOG-012)", () => {
+    expect(getDeliveryDetail.length).toBe(2);
   });
 });

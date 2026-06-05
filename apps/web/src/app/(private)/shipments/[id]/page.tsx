@@ -18,27 +18,30 @@ export default function ShipmentDetailPage({ params }: { params: { id: string } 
   const shipmentId = Number(params.id);
   const editable = canEditShipments(session?.role ?? "auditoria");
 
-  const load = async () => {
-    if (!session || Number.isNaN(shipmentId)) return;
-    setLoading(true);
-    setError("");
-    try {
-      const [shipment, timeline] = await Promise.all([
-        getShipmentDetail(session.accessToken, shipmentId),
-        listShipmentTreatments(session.accessToken, shipmentId),
-      ]);
-      setDetail(shipment);
-      setTreatments(timeline);
-    } catch {
-      setError("Falha ao carregar detalhe da entrega.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
-    void load();
-  }, [session?.accessToken, shipmentId]);
+    let cancelled = false;
+    const run = async () => {
+      if (!session || Number.isNaN(shipmentId)) return;
+      setLoading(true);
+      setError("");
+      try {
+        const [shipment, timeline] = await Promise.all([
+          getShipmentDetail(session.accessToken, shipmentId),
+          listShipmentTreatments(session.accessToken, shipmentId),
+        ]);
+        if (!cancelled) {
+          setDetail(shipment);
+          setTreatments(timeline);
+        }
+      } catch {
+        if (!cancelled) setError("Falha ao carregar detalhe da entrega.");
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    };
+    void run();
+    return () => { cancelled = true; };
+  }, [session, shipmentId]);
 
   const onSubmit = async (event: FormEvent) => {
     event.preventDefault();
@@ -46,7 +49,15 @@ export default function ShipmentDetailPage({ params }: { params: { id: string } 
     try {
       await createShipmentTreatment(session.accessToken, shipmentId, { status, comment });
       setComment("");
-      await load();
+      // Reload data after creating treatment
+      if (session) {
+        const [shipment, timeline] = await Promise.all([
+          getShipmentDetail(session.accessToken, shipmentId),
+          listShipmentTreatments(session.accessToken, shipmentId),
+        ]);
+        setDetail(shipment);
+        setTreatments(timeline);
+      }
     } catch {
       setError("Falha ao registrar tratativa.");
     }

@@ -15,6 +15,8 @@ class ImportHistory(Base):
     file_hash: Mapped[str] = mapped_column(String(64), nullable=False, index=True)
     rows_received: Mapped[int] = mapped_column(Integer, nullable=False)
     duplicates_count: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    imported_count: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    rejected_count: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     status: Mapped[str] = mapped_column(String(20), nullable=False, default="SUCCESS")
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), nullable=False, default=lambda: datetime.now(UTC), index=True

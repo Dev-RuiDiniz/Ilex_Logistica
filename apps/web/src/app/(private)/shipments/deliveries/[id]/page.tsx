@@ -2,9 +2,9 @@
 
 import { useEffect, useState } from "react";
 
-import { getDeliveryDetail, promoteDeliveryToShipment } from "@/lib/api";
+import { getDeliveryDetail, listCarriers, promoteDeliveryToShipment } from "@/lib/api";
 import { useAuth } from "@/features/auth/auth-provider";
-import type { DeliveryDetail, PromoteDeliveryRequest } from "@/lib/types";
+import type { Carrier, DeliveryDetail, PromoteDeliveryRequest } from "@/lib/types";
 
 export default function DeliveryDetailPage({ params }: { params: { id: string } }) {
   const { session } = useAuth();
@@ -18,6 +18,9 @@ export default function DeliveryDetailPage({ params }: { params: { id: string } 
   const [promoteError, setPromoteError] = useState("");
   const [promoteSuccess, setPromoteSuccess] = useState(false);
   const [shipmentCreated, setShipmentCreated] = useState<{ id: number; tracking_code: string; status: string } | null>(null);
+  const [carriers, setCarriers] = useState<Carrier[]>([]);
+  const [carriersLoading, setCarriersLoading] = useState(false);
+  const [carriersError, setCarriersError] = useState("");
   
   // Campos do formulário
   const [trackingCode, setTrackingCode] = useState("");
@@ -49,6 +52,24 @@ export default function DeliveryDetailPage({ params }: { params: { id: string } 
     void run();
     return () => { cancelled = true; };
   }, [session, params.id]);
+
+  // Carregar carriers quando o formulário é aberto
+  useEffect(() => {
+    if (!showPromoteForm || !session) return;
+    const loadCarriers = async () => {
+      setCarriersLoading(true);
+      setCarriersError("");
+      try {
+        const data = await listCarriers(session.accessToken);
+        setCarriers(data);
+      } catch {
+        setCarriersError("Não foi possível carregar transportadoras.");
+      } finally {
+        setCarriersLoading(false);
+      }
+    };
+    void loadCarriers();
+  }, [showPromoteForm, session]);
 
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat("pt-BR", {
@@ -180,15 +201,27 @@ export default function DeliveryDetailPage({ params }: { params: { id: string } 
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium">Carrier ID *</label>
-                <input
-                  type="number"
-                  value={carrierId}
-                  onChange={(e) => setCarrierId(e.target.value)}
-                  required
-                  className="mt-1 w-full rounded border px-3 py-2 text-sm"
-                  disabled={promoteLoading}
-                />
+                <label className="block text-sm font-medium">Transportadora *</label>
+                {carriersLoading ? (
+                  <p className="mt-1 text-sm text-slate-500">Carregando transportadoras...</p>
+                ) : carriersError ? (
+                  <p className="mt-1 text-sm text-red-700">{carriersError}</p>
+                ) : (
+                  <select
+                    value={carrierId}
+                    onChange={(e) => setCarrierId(e.target.value)}
+                    required
+                    className="mt-1 w-full rounded border px-3 py-2 text-sm"
+                    disabled={promoteLoading}
+                  >
+                    <option value="">Selecione uma transportadora</option>
+                    {carriers.map((carrier) => (
+                      <option key={carrier.id} value={carrier.id.toString()}>
+                        {carrier.name}
+                      </option>
+                    ))}
+                  </select>
+                )}
               </div>
               <div>
                 <label className="block text-sm font-medium">Data Estimada de Entrega *</label>

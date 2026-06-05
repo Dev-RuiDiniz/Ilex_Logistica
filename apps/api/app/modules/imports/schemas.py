@@ -48,3 +48,31 @@ class DeliveryDetailResponse(BaseModel):
     valor_frete: float
     percentual_frete: float
     created_at: datetime
+
+
+# LOG-021: Schema para promoção Delivery → Shipment
+class PromoteDeliveryRequest(BaseModel):
+    tracking_code: str
+    carrier_id: int
+    estimated_delivery: datetime
+    recipient_name: str
+    recipient_phone: str
+    origin_address: str
+    destination_address: str
+    shipment_status: str = "pending"
+
+
+class PromoteDeliveryResponse(BaseModel):
+    id: int
+    tracking_code: str
+    carrier_id: int
+    status: str
+    estimated_delivery: datetime
+    recipient_name: str
+    recipient_phone: str
+    origin_address: str
+    destination_address: str
+    amount: float | None
+    invoice_number: str | None
+    created_at: datetime
+    updated_at: datetime

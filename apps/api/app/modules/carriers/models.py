@@ -10,5 +10,5 @@ class Carrier(Base):
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     name: Mapped[str] = mapped_column(String(150), nullable=False, unique=True, index=True)
     external_code: Mapped[str | None] = mapped_column(String(80), nullable=True)
-    integration_metadata: Mapped[dict] = mapped_column(JSON, default=dict)
+    integration_metadata: Mapped[dict] = mapped_column(JSON, default=lambda: {})
     is_active: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)

@@ -3,8 +3,8 @@ from sqlalchemy.orm import Session
 
 from app.database.session import get_db
 from app.modules.imports.models import ImportHistory
-from app.modules.imports.schemas import DeliveryDetailResponse, DeliveryListResponse, ImportHistoryResponse, ImportPreviewResponse
-from app.modules.imports.service import get_delivery_detail, list_deliveries, parse_uploaded_file, persist_deliveries, persist_import_history, _validate_duplicate_nf_in_db
+from app.modules.imports.schemas import DeliveryDetailResponse, DeliveryListResponse, ImportHistoryResponse, ImportPreviewResponse, PromoteDeliveryRequest, PromoteDeliveryResponse
+from app.modules.imports.service import get_delivery_detail, list_deliveries, parse_uploaded_file, persist_deliveries, persist_import_history, _validate_duplicate_nf_in_db, promote_delivery_to_shipment
 
 router = APIRouter(prefix="/imports", tags=["imports"])
 
@@ -87,3 +87,26 @@ def get_delivery_detail_endpoint(
     if detail is None:
         raise HTTPException(status_code=404, detail="entrega nao encontrada")
     return DeliveryDetailResponse(**detail)
+
+
+# LOG-021: Endpoint para promover Delivery para Shipment
+@router.post("/deliveries/{delivery_id}/promote", response_model=PromoteDeliveryResponse, status_code=201)
+def promote_delivery_endpoint(
+    delivery_id: int,
+    request: PromoteDeliveryRequest,
+    db: Session = Depends(get_db),
+) -> PromoteDeliveryResponse:
+    """Promove uma Delivery existente para Shipment."""
+    shipment = promote_delivery_to_shipment(
+        db=db,
+        delivery_id=delivery_id,
+        tracking_code=request.tracking_code,
+        carrier_id=request.carrier_id,
+        estimated_delivery=request.estimated_delivery,
+        recipient_name=request.recipient_name,
+        recipient_phone=request.recipient_phone,
+        origin_address=request.origin_address,
+        destination_address=request.destination_address,
+        shipment_status=request.shipment_status,
+    )
+    return PromoteDeliveryResponse(**shipment)

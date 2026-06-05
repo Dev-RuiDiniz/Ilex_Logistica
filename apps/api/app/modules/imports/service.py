@@ -9,7 +9,7 @@ from pathlib import Path
 from xml.etree import ElementTree
 from zipfile import BadZipFile, ZipFile
 
-from fastapi import HTTPException, UploadFile, status
+from fastapi import HTTPException, UploadFile, status as http_status
 from sqlalchemy.orm import Session
 
 from app.modules.imports.models import Delivery, ImportHistory
@@ -25,13 +25,13 @@ def parse_uploaded_file(
     ext = Path(upload.filename or "").suffix.lower()
     if ext not in SUPPORTED_EXTENSIONS:
         raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
+            status_code=http_status.HTTP_400_BAD_REQUEST,
             detail="formato de arquivo nao suportado. use CSV ou XLSX",
         )
 
     raw = upload.file.read()
     if not raw:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="arquivo vazio")
+        raise HTTPException(status_code=http_status.HTTP_400_BAD_REQUEST, detail="arquivo vazio")
 
     if ext == ".csv":
         columns, rows = _parse_csv(raw)
@@ -161,11 +161,11 @@ def _parse_csv(raw: bytes) -> tuple[list[str], list[dict[str, str]]]:
     try:
         text = raw.decode("utf-8-sig")
     except UnicodeDecodeError as exc:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="csv invalido") from exc
+        raise HTTPException(status_code=http_status.HTTP_400_BAD_REQUEST, detail="csv invalido") from exc
 
     reader = csv.DictReader(StringIO(text))
     if not reader.fieldnames:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="csv sem cabecalho")
+        raise HTTPException(status_code=http_status.HTTP_400_BAD_REQUEST, detail="csv sem cabecalho")
     columns = [_normalize_header(c) for c in reader.fieldnames if c and c.strip()]
     _validate_required_columns(columns)
     rows = [
@@ -174,7 +174,7 @@ def _parse_csv(raw: bytes) -> tuple[list[str], list[dict[str, str]]]:
     ]
     # LOG-007: rejeitar CSV com cabecalho mas sem linhas de dados
     if not rows:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="csv sem dados: nenhuma linha encontrada")
+        raise HTTPException(status_code=http_status.HTTP_400_BAD_REQUEST, detail="csv sem dados: nenhuma linha encontrada")
     return columns, rows
 
 
@@ -183,9 +183,9 @@ def _parse_xlsx(raw: bytes) -> tuple[list[str], list[dict[str, str]]]:
         with ZipFile(BytesIO(raw), "r") as zf:
             xml_bytes = zf.read("xl/worksheets/sheet1.xml")
     except KeyError as exc:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="xlsx sem worksheet") from exc
+        raise HTTPException(status_code=http_status.HTTP_400_BAD_REQUEST, detail="xlsx sem worksheet") from exc
     except BadZipFile as exc:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="xlsx invalido") from exc
+        raise HTTPException(status_code=http_status.HTTP_400_BAD_REQUEST, detail="xlsx invalido") from exc
 
     root = ElementTree.fromstring(xml_bytes)
     rows: list[list[str]] = []
@@ -203,7 +203,7 @@ def _parse_xlsx(raw: bytes) -> tuple[list[str], list[dict[str, str]]]:
         rows.append(values)
 
     if not rows:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="xlsx vazio")
+        raise HTTPException(status_code=http_status.HTTP_400_BAD_REQUEST, detail="xlsx vazio")
 
     columns = [_normalize_header(c) for c in rows[0] if c.strip()]
     _validate_required_columns(columns)
@@ -226,7 +226,7 @@ def _validate_required_columns(columns: list[str]) -> None:
     missing = sorted(REQUIRED_COLUMNS - set(columns))
     if missing:
         raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
+            status_code=http_status.HTTP_400_BAD_REQUEST,
             detail=f"colunas obrigatorias ausentes: {', '.join(missing)}",
         )
 
@@ -236,85 +236,187 @@ def _validate_duplicate_nf_in_db(db: Session, rows: list[dict[str, str]]) -> int
     from app.modules.imports.models import Delivery
     nfs = {(row.get("nf") or "").strip() for row in rows}
     existing = db.query(Delivery.nf).filter(Delivery.nf.in_(nfs)).all()
-    existing_nfs = {nf for (nf,) in existing}
-    return len(existing_nfs)
+    return len(existing)
 
 
 def _validate_duplicate_nf(rows: list[dict[str, str]]) -> None:
-    seen: set[str] = set()
-    duplicates: set[str] = set()
-    for row in rows:
-        nf = (row.get("nf") or "").strip()
-        if not nf:
-            continue
-        if nf in seen:
-            duplicates.add(nf)
-        else:
-            seen.add(nf)
-    if duplicates:
-        ordered = ", ".join(sorted(duplicates))
+    # LOG-010: valida duplicidade de NF no arquivo
+    nfs = [(row.get("nf") or "").strip() for row in rows]
+    if len(nfs) != len(set(nfs)):
+        # Encontrar a NF duplicada
+        from collections import Counter
+        nf_counts = Counter(nfs)
+        duplicate_nf = next(nf for nf, count in nf_counts.items() if count > 1)
         raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"duplicidades detectadas para nf: {ordered}",
+            status_code=http_status.HTTP_400_BAD_REQUEST,
+            detail=f"duplicidade de nf no arquivo: {duplicate_nf}",
         )
 
 
 def _validate_required_fields(rows: list[dict[str, str]]) -> None:
-    # LOG-008: validar campos obrigatorios com valor nao vazio por linha
+    # LOG-006: valida campos obrigatorios nao vazios
     for row in rows:
-        nf = (row.get("nf") or "").strip()
-        if not nf:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="nf obrigatoria: campo nf nao pode ser vazio",
-            )
-        transportadora = (row.get("transportadora") or "").strip()
-        if not transportadora:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="transportadora obrigatoria: campo transportadora nao pode ser vazio",
-            )
+        if not (row.get("nf") or "").strip():
+            raise HTTPException(status_code=http_status.HTTP_400_BAD_REQUEST, detail="nf vazio")
+        if not (row.get("transportadora") or "").strip():
+            raise HTTPException(status_code=http_status.HTTP_400_BAD_REQUEST, detail="transportadora vazio")
 
 
 def _validate_financial_fields(rows: list[dict[str, str]]) -> None:
+    # LOG-006: valida campos financeiros
     for row in rows:
-        valor_frete = _parse_decimal(row.get("valor_frete"), field="valor_frete")
-        if valor_frete < Decimal("0"):
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="valor_frete deve ser maior ou igual a 0",
-            )
+        valor_frete_str = (row.get("valor_frete") or "").strip()
+        percentual_frete_str = (row.get("percentual_frete") or "").strip()
+        
+        if valor_frete_str:
+            try:
+                valor = Decimal(valor_frete_str)
+                if valor < 0:
+                    raise HTTPException(status_code=http_status.HTTP_400_BAD_REQUEST, detail="valor_frete negativo")
+            except InvalidOperation:
+                raise HTTPException(status_code=http_status.HTTP_400_BAD_REQUEST, detail="valor_frete invalido")
+        
+        if percentual_frete_str:
+            try:
+                percentual = Decimal(percentual_frete_str)
+                if percentual < 0:
+                    raise HTTPException(status_code=http_status.HTTP_400_BAD_REQUEST, detail="percentual_frete negativo")
+                if percentual > 100:
+                    raise HTTPException(status_code=http_status.HTTP_400_BAD_REQUEST, detail="percentual_frete fora da faixa (0-100)")
+            except InvalidOperation:
+                raise HTTPException(status_code=http_status.HTTP_400_BAD_REQUEST, detail="percentual_frete invalido")
 
-        percentual_frete = _parse_decimal(row.get("percentual_frete"), field="percentual_frete")
-        if percentual_frete < Decimal("0") or percentual_frete > Decimal("100"):
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="percentual_frete deve estar entre 0 e 100",
-            )
 
-        _parse_date(row.get("data_coleta"))
-
-
-def _parse_decimal(value: str | None, *, field: str) -> Decimal:
-    raw = (value or "").strip()
-    if not raw:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"{field} obrigatorio")
-    normalized = raw.replace(",", ".")
+def _parse_date(value: str | None) -> date:
+    if not value:
+        raise HTTPException(status_code=http_status.HTTP_400_BAD_REQUEST, detail="data_coleta vazio")
     try:
-        return Decimal(normalized)
-    except InvalidOperation as exc:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"{field} invalido") from exc
+        return date.fromisoformat(value)
+    except ValueError:
+        raise HTTPException(status_code=http_status.HTTP_400_BAD_REQUEST, detail=f"data_coleta invalido: {value}")
 
 
-def _parse_date(value: str | None):
-    raw = (value or "").strip()
-    if not raw:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="data_coleta obrigatoria")
+def _parse_decimal(value: str | None, field: str) -> Decimal:
+    if not value:
+        return Decimal("0.00")
     try:
-        return datetime.strptime(raw, "%Y-%m-%d").date()
-    except ValueError as exc:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="data_coleta invalida") from exc
+        return Decimal(value)
+    except InvalidOperation:
+        raise HTTPException(status_code=http_status.HTTP_400_BAD_REQUEST, detail=f"{field} invalido")
 
 
 def _hash_bytes(raw: bytes) -> str:
     return hashlib.sha256(raw).hexdigest()
+
+
+def list_import_history(
+    db: Session,
+    page: int = 1,
+    page_size: int = 20,
+) -> dict[str, any]:
+    """List import history with pagination."""
+    query = db.query(ImportHistory)
+    total = query.count()
+    query = query.order_by(ImportHistory.created_at.desc(), ImportHistory.id.desc())
+    offset = (page - 1) * page_size
+    items = query.offset(offset).limit(page_size).all()
+    
+    items_data = []
+    for item in items:
+        items_data.append({
+            "id": item.id,
+            "filename": item.filename,
+            "file_type": item.file_type,
+            "file_hash": item.file_hash,
+            "rows_received": item.rows_received,
+            "imported_count": item.imported_count,
+            "rejected_count": item.rejected_count,
+            "duplicates_count": item.duplicates_count,
+            "status": item.status,
+            "created_at": item.created_at,
+        })
+    
+    return {
+        "items": items_data,
+        "total": total,
+        "page": page,
+        "page_size": page_size,
+    }
+
+
+# LOG-021: Função para promover Delivery para Shipment
+def promote_delivery_to_shipment(
+    db: Session,
+    delivery_id: int,
+    tracking_code: str,
+    carrier_id: int,
+    estimated_delivery: datetime,
+    recipient_name: str,
+    recipient_phone: str,
+    origin_address: str,
+    destination_address: str,
+    shipment_status: str = "pending",
+) -> dict[str, any]:
+    """Promove uma Delivery existente para Shipment."""
+    from app.modules.imports.models import Delivery
+    from app.modules.shipments.models import Shipment
+    
+    # Verificar se Delivery existe
+    delivery = db.get(Delivery, delivery_id)
+    if delivery is None:
+        raise HTTPException(
+            status_code=http_status.HTTP_404_NOT_FOUND,
+            detail="entrega nao encontrada"
+        )
+    
+    # Verificar se tracking_code já existe
+    existing_shipment = db.query(Shipment).filter(Shipment.tracking_code == tracking_code).first()
+    if existing_shipment:
+        raise HTTPException(
+            status_code=http_status.HTTP_409_CONFLICT,
+            detail="tracking_code ja existe"
+        )
+    
+    # Verificar se carrier existe
+    from app.modules.carriers.models import Carrier
+    carrier = db.get(Carrier, carrier_id)
+    if carrier is None:
+        raise HTTPException(
+            status_code=http_status.HTTP_404_NOT_FOUND,
+            detail="carrier nao encontrado"
+        )
+    
+    # Criar Shipment
+    shipment = Shipment(
+        tracking_code=tracking_code,
+        carrier_id=carrier_id,
+        status=shipment_status,
+        estimated_delivery=estimated_delivery,
+        recipient_name=recipient_name,
+        recipient_phone=recipient_phone,
+        origin_address=origin_address,
+        destination_address=destination_address,
+        amount=delivery.valor_frete,
+        invoice_number=delivery.nf,  # Mapear NF para invoice_number
+    )
+    db.add(shipment)
+    db.commit()
+    db.refresh(shipment)
+    
+    # Retornar dados do Shipment criado
+    return {
+        "id": shipment.id,
+        "tracking_code": shipment.tracking_code,
+        "carrier_id": shipment.carrier_id,
+        "status": shipment.status,
+        "estimated_delivery": shipment.estimated_delivery,
+        "recipient_name": shipment.recipient_name,
+        "recipient_phone": shipment.recipient_phone,
+        "origin_address": shipment.origin_address,
+        "destination_address": shipment.destination_address,
+        "amount": float(shipment.amount) if shipment.amount else None,
+        "invoice_number": shipment.invoice_number,
+        "created_at": shipment.created_at,
+        "updated_at": shipment.updated_at,
+    }
+

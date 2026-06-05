@@ -7,6 +7,8 @@ import type {
   DeliveryListResponse,
   ExceptionShipmentListResponse,
   ImportConfirmResponse,
+  PromoteDeliveryRequest,
+  PromoteDeliveryResponse,
   ShipmentDetail,
   ShipmentListParams,
   ShipmentListResponse,
@@ -245,5 +247,18 @@ export async function listDeliveries(token: string, params: DeliveryListParams =
 export async function getDeliveryDetail(token: string, deliveryId: number): Promise<DeliveryDetail> {
   return request<DeliveryDetail>(`/imports/deliveries/${deliveryId}`, {
     headers: { Authorization: `Bearer ${token}` },
+  });
+}
+
+// LOG-022: Promover Delivery para Shipment
+export async function promoteDeliveryToShipment(
+  token: string,
+  deliveryId: number,
+  payload: PromoteDeliveryRequest,
+): Promise<PromoteDeliveryResponse> {
+  return request<PromoteDeliveryResponse>(`/imports/deliveries/${deliveryId}/promote`, {
+    method: "POST",
+    headers: { Authorization: `Bearer ${token}` },
+    body: JSON.stringify(payload),
   });
 }

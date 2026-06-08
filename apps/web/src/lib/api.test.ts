@@ -11,6 +11,7 @@ import {
   listCarriers,
   listDeliveries,
   listShipments,
+  promoteDeliveryToShipment,
   updateCarrier,
   uploadShipmentsCsv,
 } from "@/lib/api";
@@ -78,6 +79,10 @@ describe("api exports e assinaturas", () => {
     expect(typeof getDeliveryDetail).toBe("function");
   });
 
+  it("promoteDeliveryToShipment esta exportado (LOG-022)", () => {
+    expect(typeof promoteDeliveryToShipment).toBe("function");
+  });
+
   it("uploadShipmentsCsv recebe token e file", () => {
     expect(uploadShipmentsCsv.length).toBe(2);
   });
@@ -96,5 +101,9 @@ describe("api exports e assinaturas", () => {
 
   it("getDeliveryDetail recebe token e deliveryId (LOG-012)", () => {
     expect(getDeliveryDetail.length).toBe(2);
+  });
+
+  it("promoteDeliveryToShipment recebe token, deliveryId e payload (LOG-022)", () => {
+    expect(promoteDeliveryToShipment.length).toBe(3);
   });
 });

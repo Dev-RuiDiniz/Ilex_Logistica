@@ -167,3 +167,31 @@ export interface DeliveryDetail {
   percentual_frete: number;
   created_at: string;
 }
+
+// Promote Delivery to Shipment (LOG-022)
+export interface PromoteDeliveryRequest {
+  tracking_code: string;
+  carrier_id: number;
+  estimated_delivery: string;
+  recipient_name: string;
+  recipient_phone: string;
+  origin_address: string;
+  destination_address: string;
+  shipment_status?: string;
+}
+
+export interface PromoteDeliveryResponse {
+  id: number;
+  tracking_code: string;
+  carrier_id: number;
+  status: string;
+  estimated_delivery: string;
+  recipient_name: string;
+  recipient_phone: string;
+  origin_address: string;
+  destination_address: string;
+  amount: number | null;
+  invoice_number: string | null;
+  created_at: string;
+  updated_at: string;
+}

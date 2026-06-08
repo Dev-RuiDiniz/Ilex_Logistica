@@ -78,6 +78,52 @@ Próximas ações pós BETA-009S para o projeto Ilex Logística.
 
 ---
 
+### BETA-012C: Importação Assistida Braspress - Layout, Fixtures e Documentação
+**Status:** ✅ Implementado
+**Branch:** `feature/beta-012c-braspress-assisted-import`
+**Data:** 2026-06-10
+
+**Implementado:**
+- ✅ Layout Braspress assistido beta documentado
+- ✅ Mapper específico para Braspress (braspress_mapper.py)
+- ✅ Integração de source/layout ao preview endpoint
+- ✅ Fixtures fake (CSV) para testes
+- ✅ Testes TDD para Braspress assisted import
+- ✅ Testes TDD para validação de documentação
+- ✅ Frontend: seletor de layout (Genérico / Braspress assistido)
+- ✅ Documentação específica Braspress (BRASPRESS_IMPORTACAO_ASSISTIDA.md)
+- ✅ Atualização de documentação existente (BETA_012A, BETA_012B)
+
+**Arquivos Criados:**
+- `apps/api/app/modules/imports/braspress_mapper.py`
+- `apps/api/tests/fixtures/imports/braspress_valid.csv`
+- `apps/api/tests/fixtures/imports/braspress_invalid_missing_required.csv`
+- `apps/api/tests/fixtures/imports/braspress_duplicates.csv`
+- `apps/api/tests/test_braspress_assisted_import.py`
+- `apps/api/tests/test_braspress_documented_flow.py`
+- `docs/BRASPRESS_IMPORTACAO_ASSISTIDA.md`
+
+**Arquivos Atualizados:**
+- `apps/api/app/modules/imports/mapper.py` (adicionado variações Braspress)
+- `apps/api/app/modules/imports/service_v2.py` (suporte a source parameter)
+- `apps/api/app/modules/imports/router.py` (source query parameter)
+- `apps/api/app/modules/imports/schemas.py` (source field em response)
+- `apps/web/src/lib/types.ts` (source field em ImportPreviewV2Response)
+- `apps/web/src/lib/api.ts` (source parameter em previewShipmentImport)
+- `apps/web/src/app/(private)/shipments/import/page.tsx` (seletor de layout)
+- `docs/BETA_012A_IMPORT_CSV_XLSX_BACKEND.md`
+- `docs/BETA_012B_IMPORT_UPLOAD_PREVIEW_CONFIRM_FRONTEND.md`
+
+**Limitações Conhecidas:**
+- Layout beta deve ser validado com amostra real sanitizada antes do piloto
+- Sem integração automática com API Braspress (fora do escopo beta)
+- Sem scraping/bot (fora do escopo beta)
+- Sem SLA por transportadora (fora do escopo beta)
+
+**Documentação:** `docs/BRASPRESS_IMPORTACAO_ASSISTIDA.md`
+
+---
+
 ## Ações Imediatas (Antes de Merge dos PRs Beta)
 
 ### 1. Revisar Draft PRs na Ordem Correta

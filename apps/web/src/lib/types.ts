@@ -100,6 +100,7 @@ export interface ImportPreviewV2Response {
   preview_items: ValidatedRowData[];
   errors: RowValidationError[];
   warnings: RowValidationError[];
+  source?: string; // BETA-012C: Import source identifier
 }
 
 export interface ImportConfirmRequest {

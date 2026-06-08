@@ -392,6 +392,16 @@ O BETA-011B (Frontend dos Campos Fiscais/Financeiros e Filtros Avançados) foi i
 
 Veja `docs/BETA_011B_SHIPMENT_FISCAL_FINANCIAL_FRONTEND.md` para detalhes completos da implementação frontend.
 
+## Nota sobre BETA-011C
+
+O BETA-011C (Correção de Bloqueadores de Build/Test Frontend Preexistentes) foi implementado para corrigir os erros que impediam `npm run build` e deixavam `npm run test` com falhas. As correções foram:
+
+- Substituição de `inactivateUser` por `updateUser` com `is_active: false` em users/page.tsx
+- Substituição de `promoteDeliveryToShipment` por `promoteDelivery` em deliveries/[id]/page.tsx
+- Atualização de testes em api.test.ts para usar `promoteDelivery`
+
+Veja `docs/BETA_011C_FRONTEND_BUILD_TEST_FIXES.md` para detalhes completos das correções.
+
 ### Recomendação de Próximos PRs Funcionais
 
 Com base na auditoria funcional e na implementação do BETA-011A e BETA-011B, os próximos PRs funcionais devem seguir esta ordem:

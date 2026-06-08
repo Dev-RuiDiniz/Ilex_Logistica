@@ -1,4 +1,4 @@
 Número da entrega ou rastreio,Número da NF,Cliente,UF destino,Data coleta/saída,Valor NF,Valor frete,Transportadora
-BP123456789BR,NF001234567,Empresa Exemplo Ltda,SP,15/01/2025,1.234,56,123,45,Braspress
-BP987654321BR,NF009876543,Outra Empresa SA,RJ,16/01/2025,2.345,67,234,56,Braspress
-BP123456789BR,NF008888888,Terceira Comércio MG,MG,17/01/2025,3.456,78,345,67,Braspress
+BP123456789BR,NF001234567,Empresa Exemplo Ltda,SP,15/01/2025,1234.56,123.45,Test Carrier
+BP987654321BR,NF009876543,Outra Empresa SA,RJ,16/01/2025,2345.67,234.56,Test Carrier
+BP123456789BR,NF008888888,Terceira Comércio MG,MG,17/01/2025,3456.78,345.67,Test Carrier

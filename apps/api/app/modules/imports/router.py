@@ -3,14 +3,34 @@ from sqlalchemy.orm import Session
 
 from app.database.session import get_db
 from app.modules.imports.models import ImportHistory
-from app.modules.imports.schemas import DeliveryDetailResponse, DeliveryListResponse, ImportHistoryResponse, ImportPreviewResponse, PromoteDeliveryRequest, PromoteDeliveryResponse
-from app.modules.imports.service import get_delivery_detail, list_deliveries, parse_uploaded_file, persist_deliveries, persist_import_history, _validate_duplicate_nf_in_db, promote_delivery_to_shipment
+from app.modules.imports.schemas import (
+    DeliveryDetailResponse,
+    DeliveryListResponse,
+    ImportConfirmRequest,
+    ImportConfirmResponse,
+    ImportHistoryResponse,
+    ImportPreviewResponse,
+    ImportPreviewV2Response,
+    PromoteDeliveryRequest,
+    PromoteDeliveryResponse,
+)
+from app.modules.imports.service import (
+    get_delivery_detail,
+    list_deliveries,
+    parse_uploaded_file,
+    persist_deliveries,
+    persist_import_history,
+    _validate_duplicate_nf_in_db,
+    promote_delivery_to_shipment,
+)
+from app.modules.imports.service_v2 import confirm_import, preview_import
 
 router = APIRouter(prefix="/imports", tags=["imports"])
 
 
 @router.post("/upload", response_model=ImportPreviewResponse)
 def upload_import_file(file: UploadFile = File(...), db: Session = Depends(get_db)) -> ImportPreviewResponse:
+    """Legacy upload endpoint - persists immediately."""
     columns, rows, file_type, file_hash = parse_uploaded_file(file)
     # LOG-010: validar duplicidade no banco
     duplicates_count = _validate_duplicate_nf_in_db(db, rows)
@@ -34,6 +54,39 @@ def upload_import_file(file: UploadFile = File(...), db: Session = Depends(get_d
     )
 
 
+@router.post("/preview", response_model=ImportPreviewV2Response)
+def preview_import_endpoint(
+    file: UploadFile = File(...),
+    db: Session = Depends(get_db),
+) -> ImportPreviewV2Response:
+    """BETA-012A: Preview import without persisting data.
+    
+    Validates all rows, detects duplicates, and returns detailed error/warning information.
+    """
+    preview = preview_import(db, file)
+    return ImportPreviewV2Response(**preview.to_dict())
+
+
+@router.post("/confirm", response_model=ImportConfirmResponse)
+def confirm_import_endpoint(
+    request: ImportConfirmRequest,
+    db: Session = Depends(get_db),
+) -> ImportConfirmResponse:
+    """BETA-012A: Confirm and persist import after preview.
+    
+    Only valid rows are persisted. Invalid rows cause the entire import to be rejected.
+    """
+    # In a real implementation, we would store the preview in cache/session
+    # For now, we'll use a simplified approach that re-validates
+    # This is a placeholder - the actual implementation would need to store preview state
+    
+    # For this implementation, we'll raise an error as we need to implement state management
+    raise HTTPException(
+        status_code=501,
+        detail="confirm endpoint requires preview state management - not implemented in this version",
+    )
+
+
 @router.get("/history", response_model=list[ImportHistoryResponse])
 def list_import_history(
     limit: int = Query(default=20, ge=1, le=200),
@@ -54,6 +107,9 @@ def list_import_history(
             rejected_count=item.rejected_count,
             status=item.status,
             created_at=item.created_at,
+            source=item.source,
+            import_metadata=item.import_metadata,
+            imported_by=item.imported_by,
         )
         for item in items
     ]

@@ -41,3 +41,13 @@ export function buildSearchParams(searchType: "tracking" | "invoice" | "all", se
   }
   return { tracking_code: searchQuery };
 }
+
+/**
+ * Monta parâmetros de busca global para listagem de shipments
+ * @param searchQuery Termo de busca global
+ * @returns Objeto com parâmetro de busca global
+ */
+export function buildGlobalSearchParams(searchQuery: string): Partial<ShipmentListParams> {
+  if (!searchQuery.trim()) return {};
+  return { search: searchQuery };
+}

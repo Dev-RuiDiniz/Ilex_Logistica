@@ -14,7 +14,7 @@ Esta auditoria funcional automatizada inspecionou a estrutura do repositório pa
 |-------|--------|--------------|---------|---------|
 | 1 - SLA, atraso e criticidade | PARCIAL | 2/10 (20%) | 0/10 (0%) | 8/10 (80%) |
 | 2 - Importação Excel/CSV | PARCIAL | 1/12 (8%) | 3/12 (25%) | 8/12 (67%) |
-| 3 - Campos fiscais/financeiros | PARCIAL | 1/15 (7%) | 1/15 (7%) | 13/15 (87%) |
+| 3 - Campos fiscais/financeiros | PARCIAL | 7/15 (47%) | 1/15 (7%) | 7/15 (47%) |
 | 4 - Eficiência por transportadora | AUSENTE | 0/6 (0%) | 0/6 (0%) | 6/6 (100%) |
 | 5 - Alertas e notificações | PARCIAL | 0/10 (0%) | 2/10 (20%) | 8/10 (80%) |
 | 6 - Relatório diário automático | AUSENTE | 0/6 (0%) | 0/6 (0%) | 6/6 (100%) |
@@ -26,8 +26,11 @@ Esta auditoria funcional automatizada inspecionou a estrutura do repositório pa
 | 12 - Documentação beta | PARCIAL | 5/14 (36%) | 0/14 (0%) | 9/14 (64%) |
 
 **Resumo Geral:**
-- Implementados: 18/120 (15%)
+- Implementados: 24/120 (20%)
 - Parciais: 12/120 (10%)
+- Ausentes: 84/120 (70%)
+
+**Nota:** O Épico 3 teve progresso significativo com o BETA-011A (backend dos campos fiscais/financeiros e filtros avançados). Veja `docs/BETA_011A_SHIPMENT_FISCAL_FINANCIAL_BACKEND.md` para detalhes.
 - Ausentes: 90/120 (75%)
 
 ## Tabela dos 12 Épicos

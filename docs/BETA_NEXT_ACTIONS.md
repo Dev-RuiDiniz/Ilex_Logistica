@@ -372,4 +372,34 @@ npx playwright test
 
 **Assinatura:** Devin (SWE-1.6)  
 **Data:** 2026-06-08  
-**Status:** 🔄 Em execução (BETA-009S - Revalidação Empilhada)
+**Status:** ✅ Concluído (BETA-009S - Revalidação Empilhada)
+
+## Nota sobre BETA-010
+
+O BETA-010 (Auditoria Funcional Automatizada dos 12 Épicos do Roadmap) foi implementado para identificar, com evidência técnica, o que já está implementado, o que está parcialmente implementado e o que ainda falta para cada um dos 12 épicos do roadmap beta.
+
+Veja `docs/BETA_FUNCTIONAL_EPIC_AUDIT.md` para detalhes completos da auditoria funcional.
+
+### Recomendação de Próximos PRs Funcionais
+
+Com base na auditoria funcional, os próximos PRs funcionais devem seguir esta ordem:
+
+1. **BETA-011:** Implementar Épico 3 - Campos fiscais, financeiros e filtros do Apêndice 1 (Prioridade: ALTA)
+2. **BETA-012:** Implementar Épico 2 - Importação Excel/CSV robusta e importação assistida (Prioridade: ALTA)
+3. **BETA-013:** Implementar Épico 1 - SLA, atraso e criticidade (Prioridade: ALTA)
+4. **BETA-014:** Implementar Épico 4 - Eficiência por transportadora (Prioridade: ALTA)
+5. **BETA-015:** Implementar Épico 5 - Alertas e notificações (Prioridade: MÉDIA)
+6. **BETA-016:** Implementar Épico 6 - Relatório diário automático (Prioridade: MÉDIA)
+7. **BETA-017:** Implementar Épico 9 - Gestão de usuários, permissões e segurança beta (Prioridade: MÉDIA)
+8. **BETA-018:** Implementar Épico 10 - Dashboard beta e UX operacional (Prioridade: BAIXA)
+9. **BETA-019:** Implementar Épico 7 - Logs de coleta, importação e auditoria operacional (Prioridade: BAIXA)
+10. **BETA-020:** Implementar Épico 8 - Integrações assistidas e conectores preparados (Prioridade: BAIXA)
+11. **BETA-021:** Completar Épico 12 - Documentação beta (Prioridade: BAIXA)
+
+**Importante:** O próximo PR funcional deve ser escolhido com base no maior bloqueio da Sprint Beta 1. Recomenda-se não iniciar módulos de comunicação/alertas antes de validar SLA/importação/campos base.
+
+---
+
+**Assinatura:** Devin (SWE-1.6)  
+**Data:** 2026-06-08  
+**Status:** ✅ Concluído (BETA-010 - Auditoria Funcional Automatizada)

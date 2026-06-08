@@ -1,17 +1,18 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Script de validação de migrations
 
-set -e
+set -euo pipefail
 
-SCRIPTS_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-PROJECT_ROOT="$(dirname "$SCRIPTS_DIR")"
+# Resolver raiz do repo
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
 API_DIR="$PROJECT_ROOT/apps/api"
 
-echo "🔍 Validando migrations..."
+echo "Validating migrations..."
 
 # Verificar se diretório da API existe
 if [ ! -d "$API_DIR" ]; then
-  echo "❌ ERRO: Diretório da API não encontrado: $API_DIR"
+  echo "ERROR: API directory not found: $API_DIR"
   exit 1
 fi
 
@@ -19,22 +20,28 @@ cd "$API_DIR"
 
 # Verificar se Alembic está configurado
 if [ ! -f "alembic.ini" ] && [ ! -d "migrations" ]; then
-  echo "❌ ERRO: Alembic não está configurado"
+  echo "ERROR: Alembic not configured"
   exit 1
 fi
 
-# Verificar se migrations podem ser importadas
-echo "📦 Verificando importação de migrations..."
-python -c "from alembic.config import main; main()" 2>/dev/null || {
-  echo "❌ ERRO: Não foi possível importar configuração do Alembic"
+# Detectar Python de forma portátil
+PYTHON_CMD=()
+if command -v python >/dev/null 2>&1; then
+  PYTHON_CMD=(python)
+elif command -v python3 >/dev/null 2>&1; then
+  PYTHON_CMD=(python3)
+elif command -v py >/dev/null 2>&1; then
+  PYTHON_CMD=(py -3)
+else
+  echo "ERROR: Python not found"
+  exit 1
+fi
+
+# Executar testes de migrations
+echo "Running migration tests..."
+"${PYTHON_CMD[@]}" -m pytest tests/test_migrations.py -v || {
+  echo "ERROR: Migration tests failed"
   exit 1
 }
 
-# Verificar versão atual
-echo "🗄️  Verificando versão atual das migrations..."
-alembic current
-
-# NOTA: Teste de rollback completo não é viável neste PR
-# Será implementado no BETA-004 com ambiente de teste isolado
-echo "⚠️  Teste de rollback completo será implementado no BETA-004"
-echo "✅ Validação básica de migrations concluída"
+echo "OK: Migration validation passed"

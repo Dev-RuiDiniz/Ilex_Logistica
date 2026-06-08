@@ -211,11 +211,14 @@ def test_data_preservation():
         # Upgrade ate head
         command.upgrade(config, "head")
         
-        # Aplicar roundtrip para testar recriacao de tabelas
+        # Aplicar roundtrip (downgrade + upgrade)
+        # LIMITAÇÃO DOCUMENTADA: Downgrade para base DESTRUI dados
+        # Este teste valida que rollback funciona, mas não que dados são preservados
+        # Para validar preservação real, seria necessário migration incremental
         command.downgrade(config, "base")
         command.upgrade(config, "head")
         
-        # Verificar que tabelas foram recriadas
+        # Verificar que tabelas foram recriadas (rollback funciona)
         conn = sqlite3.connect(db_path)
         cursor = conn.cursor()
         cursor.execute("SELECT name FROM sqlite_master WHERE type='table'")
@@ -229,7 +232,7 @@ def test_data_preservation():
         assert "shipments" in tables_after, "Tabela shipments nao recriada"
         assert "import_history" in tables_after, "Tabela import_history nao recriada"
         assert "deliveries" in tables_after, "Tabela deliveries nao recriada"
-    
+        
     finally:
         # Restaurar DATABASE_URL original
         if original_db_url:

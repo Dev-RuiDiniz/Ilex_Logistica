@@ -130,6 +130,21 @@ cp ilex.db.backup.<timestamp> ilex.db
 psql ilex_beta < ilex_beta.backup.<timestamp>.sql
 ```
 
+### 3.6 Limitações de Rollback
+
+**Downgrade para Base Destrói Dados:**
+- O comando `alembic downgrade base` destrói todas as tabelas e dados
+- Isso é comportamento esperado do Alembic
+- Para preservar dados, seria necessário migrations incrementais reversíveis
+- O teste `test_data_preservation` valida que rollback funciona, mas não que dados são preservados
+- Documentação recomenda backup antes de qualquer rollback
+
+**Validação Atual:**
+- `test_migrations_roundtrip` valida downgrade → upgrade funciona
+- `test_data_preservation` valida tabelas são recriadas após roundtrip
+- **Limitação:** Não há validação de preservação real de dados
+- **Motivo:** Downgrade para base destrói dados por design
+
 ---
 
 ## 4. Procedimento de Upgrade Após Rollback

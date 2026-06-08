@@ -39,6 +39,7 @@ DENYLIST = [
     (r"password\s*=\s*[^f][^a][^k][^e][^t][^e][^x][^a][^m][^p][^l][^e][^c][^h][^a][^n][^g][^e][^m][^e]", "senha hardcoded"),
     (r"refresh_token\s*=\s*[^f][^a][^k][^e]", "refresh token real"),
     (r"authorization\s*=\s*Bearer\s+[a-zA-Z0-9]{30,}", "authorization header real"),
+    (r"AWS_ACCESS_KEY_ID\s*=\s*AKIA[0-9A-Z]{16}", "AWS access key"),
 ]
 
 # Diretórios a ignorar
@@ -54,6 +55,7 @@ IGNORE_DIRS = {
     "coverage",
     "playwright-report",
     "test-results",
+    ".self_test_temp",
 }
 
 # Arquivos a ignorar
@@ -72,6 +74,7 @@ SCRIPT_EXCEPTIONS = {
     "check_secrets.py",
     "check_secrets.sh",
     "check_secrets.ps1",
+    "check_secrets_core.py",  # self-test usa este arquivo
 }
 
 # Arquivos a ignorar
@@ -144,8 +147,47 @@ def main():
     repo_root = Path(args.repo_root)
     
     if args.self_test:
-        print("Self-test not implemented yet")
-        return 0
+        # Self-test real
+        print("Self-test started")
+        
+        # Criar diretório temporário para self-test
+        temp_dir = repo_root / ".self_test_temp"
+        temp_dir.mkdir(exist_ok=True)
+        
+        try:
+            # Cenário A: fake permitido (deve passar)
+            print("  Testing fake allowed values...")
+            fake_file = temp_dir / "fake_allowed.txt"
+            fake_file.write_text("fake-jwt-token-for-e2e-tests\nFakePassword123!\nexample\nchangeme")
+            issues = check_secrets_in_file(fake_file)
+            fake_file.unlink()
+            
+            if issues:
+                print("  FAIL: Fake values were detected incorrectly")
+                for issue in issues:
+                    print(f"    {issue['file']}:{issue['line']} - {issue['rule']}: {issue['value']}")
+                return 1
+            print("  OK: Fake values allowed")
+            
+            # Cenário B: secret simulado bloqueante (deve falhar)
+            print("  Testing blocked secrets...")
+            secret_file = temp_dir / "secret_blocked.txt"
+            secret_file.write_text("-----BEGIN PRIVATE KEY-----\n")  # Private key pattern
+            issues = check_secrets_in_file(secret_file)
+            secret_file.unlink()
+            
+            if not issues:
+                print("  FAIL: Simulated secret was not detected")
+                return 1
+            print("  OK: Simulated secret detected")
+            
+            print("Self-test completed successfully")
+            return 0
+        finally:
+            # Cenário C: cleanup
+            if temp_dir.exists():
+                import shutil
+                shutil.rmtree(temp_dir)
     
     if args.debug:
         print(f"Scanning repo: {repo_root}")

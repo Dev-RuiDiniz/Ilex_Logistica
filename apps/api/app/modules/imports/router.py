@@ -59,12 +59,15 @@ def preview_import_endpoint(
     file: UploadFile = File(...),
     db: Session = Depends(get_db),
 ) -> ImportPreviewV2Response:
-    """BETA-012A: Preview import without persisting data.
+    """BETA-012A: Preview import without persisting shipments.
     
+    Creates a pending ImportHistory record with validated data in metadata.
     Validates all rows, detects duplicates, and returns detailed error/warning information.
     """
     preview = preview_import(db, file)
-    return ImportPreviewV2Response(**preview.to_dict())
+    response_dict = preview.to_dict()
+    response_dict["import_id"] = preview.import_id
+    return ImportPreviewV2Response(**response_dict)
 
 
 @router.post("/confirm", response_model=ImportConfirmResponse)
@@ -76,14 +79,22 @@ def confirm_import_endpoint(
     
     Only valid rows are persisted. Invalid rows cause the entire import to be rejected.
     """
-    # In a real implementation, we would store the preview in cache/session
-    # For now, we'll use a simplified approach that re-validates
-    # This is a placeholder - the actual implementation would need to store preview state
-    
-    # For this implementation, we'll raise an error as we need to implement state management
-    raise HTTPException(
-        status_code=501,
-        detail="confirm endpoint requires preview state management - not implemented in this version",
+    history = confirm_import(db, request.import_id)
+    return ImportConfirmResponse(
+        id=history.id,
+        filename=history.filename,
+        file_type=history.file_type,
+        file_hash=history.file_hash,
+        rows_received=history.rows_received,
+        duplicates_count=history.duplicates_count,
+        imported_count=history.imported_count,
+        rejected_count=history.rejected_count,
+        status=history.status,
+        source=history.source,
+        import_metadata=history.import_metadata,
+        imported_by=history.imported_by,
+        created_at=history.created_at,
+        created_shipments=getattr(history, "created_shipment_ids", []),
     )
 
 

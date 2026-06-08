@@ -123,6 +123,7 @@ class ImportPreview:
         self.rows = rows
         self.errors = errors
         self.warnings = warnings
+        self.import_id: int | None = None
     
     def to_dict(self) -> dict[str, Any]:
         return {
@@ -136,6 +137,7 @@ class ImportPreview:
             "preview_items": [row.to_dict() for row in self.rows[:10]],  # First 10 rows
             "errors": [error.to_dict() for error in self.errors],
             "warnings": [warning.to_dict() for warning in self.warnings],
+            "import_id": self.import_id,
         }
 
 
@@ -592,7 +594,9 @@ def preview_import(
     upload: UploadFile,
     user_id: int | None = None,
 ) -> ImportPreview:
-    """Preview import without persisting data.
+    """Preview import without persisting shipments.
+    
+    Creates a pending ImportHistory record with validated data in metadata.
     
     Args:
         db: Database session
@@ -624,7 +628,42 @@ def preview_import(
     duplicate_in_db = detect_duplicates_in_db(db, validated_rows)
     total_duplicates = duplicate_in_file + duplicate_in_db
     
-    return ImportPreview(
+    # Create pending ImportHistory with validated data in metadata
+    # Convert datetime objects to strings for JSON serialization
+    valid_rows_serializable = []
+    for row in validated_rows:
+        if row.is_valid:
+            row_data = row.data.copy()
+            # Convert datetime to ISO string
+            for key, value in row_data.items():
+                if isinstance(value, datetime):
+                    row_data[key] = value.isoformat()
+            valid_rows_serializable.append(row_data)
+    
+    history = ImportHistory(
+        filename=upload.filename or "unknown",
+        file_type=file_type,
+        file_hash=file_hash,
+        rows_received=len(rows),
+        duplicates_count=total_duplicates,
+        imported_count=0,
+        rejected_count=0,
+        status="pending",
+        source="csv_xlsx_import",
+        import_metadata=json.dumps({
+            "valid_rows": valid_rows_serializable,
+            "invalid_rows": invalid_rows,
+            "errors": [error.to_dict() for error in all_errors],
+            "warnings": [warning.to_dict() for warning in all_warnings],
+        }),
+        imported_by=user_id,
+    )
+    db.add(history)
+    db.commit()
+    db.refresh(history)
+    
+    # Store import_id in preview for later confirmation
+    preview = ImportPreview(
         filename=upload.filename or "unknown",
         file_type=file_type,
         file_hash=file_hash,
@@ -636,94 +675,131 @@ def preview_import(
         errors=all_errors,
         warnings=all_warnings,
     )
+    preview.import_id = history.id  # Attach import_id to preview
+    
+    return preview
 
 
 def confirm_import(
     db: Session,
-    preview: ImportPreview,
+    import_id: int,
     user_id: int | None = None,
 ) -> ImportHistory:
     """Confirm and persist import after preview.
     
+    Retrieves the pending ImportHistory, validates the data, and persists shipments.
+    
     Args:
         db: Database session
-        preview: ImportPreview from preview_import
+        import_id: ImportHistory ID from preview
         user_id: User ID performing the import (optional)
         
     Returns:
-        ImportHistory record
+        Updated ImportHistory record with created shipment IDs
     """
-    # Check if there are blocking errors
-    if preview.invalid_rows > 0:
+    # Retrieve pending import history
+    history = db.query(ImportHistory).filter(ImportHistory.id == import_id).first()
+    if not history:
         raise HTTPException(
-            status_code=http_status.HTTP_400_BAD_REQUEST,
-            detail=f"nao e possivel confirmar importacao com {preview.invalid_rows} linhas invalidas",
+            status_code=http_status.HTTP_404_NOT_FOUND,
+            detail=f"import_id {import_id} nao encontrado",
         )
     
-    # Filter valid rows
-    valid_rows = [row for row in preview.rows if row.is_valid]
+    # Check if already completed
+    if history.status != "pending":
+        raise HTTPException(
+            status_code=http_status.HTTP_400_BAD_REQUEST,
+            detail=f"import_id {import_id} ja processado com status {history.status}",
+        )
+    
+    # Parse metadata to get validated rows
+    try:
+        metadata = json.loads(history.import_metadata or "{}")
+        valid_rows_data = metadata.get("valid_rows", [])
+        invalid_rows = metadata.get("invalid_rows", 0)
+    except (json.JSONDecodeError, TypeError) as exc:
+        raise HTTPException(
+            status_code=http_status.HTTP_400_BAD_REQUEST,
+            detail=f"metadata invalido para import_id {import_id}",
+        ) from exc
+    
+    # Check if there are blocking errors
+    if invalid_rows > 0:
+        # Update history to failed
+        history.status = "failed"
+        history.import_metadata = json.dumps({
+            **metadata,
+            "error": f"nao e possivel confirmar importacao com {invalid_rows} linhas invalidas",
+        })
+        db.commit()
+        raise HTTPException(
+            status_code=http_status.HTTP_400_BAD_REQUEST,
+            detail=f"nao e possivel confirmar importacao com {invalid_rows} linhas invalidas",
+        )
     
     # Persist shipments
     imported_count = 0
     rejected_count = 0
+    created_shipment_ids: list[int] = []
     
-    for validated_row in valid_rows:
+    for row_data in valid_rows_data:
         try:
             # Check for duplicates in database
             existing = db.query(Shipment).filter(
-                Shipment.tracking_code == validated_row.data.get("tracking_code")
+                Shipment.tracking_code == row_data.get("tracking_code")
             ).first()
             
             if existing:
                 rejected_count += 1
                 continue
             
+            # Convert datetime strings back to datetime objects
+            collection_date = row_data.get("collection_departure_date")
+            if isinstance(collection_date, str):
+                collection_date = datetime.fromisoformat(collection_date)
+            
             # Create Shipment
             shipment = Shipment(
-                tracking_code=validated_row.data["tracking_code"],
-                carrier_id=validated_row.data["carrier_id"],
+                tracking_code=row_data["tracking_code"],
+                carrier_id=row_data["carrier_id"],
                 status="pending",
-                estimated_delivery=validated_row.data.get("collection_departure_date") or datetime.now(UTC),
-                recipient_name=validated_row.data.get("customer_name", ""),
+                estimated_delivery=collection_date or datetime.now(UTC),
+                recipient_name=row_data.get("customer_name", ""),
                 recipient_phone="",  # Not provided in import
                 origin_address="",  # Not provided in import
                 destination_address="",  # Not provided in import
-                invoice_number=validated_row.data.get("invoice_number"),
-                invoice_value=validated_row.data.get("invoice_value"),
-                freight_value=validated_row.data.get("freight_value"),
-                collection_departure_date=validated_row.data.get("collection_departure_date"),
-                customer_name=validated_row.data.get("customer_name"),
-                destination_uf=validated_row.data.get("destination_uf"),
+                invoice_number=row_data.get("invoice_number"),
+                invoice_value=row_data.get("invoice_value"),
+                freight_value=row_data.get("freight_value"),
+                collection_departure_date=collection_date,
+                customer_name=row_data.get("customer_name"),
+                destination_uf=row_data.get("destination_uf"),
             )
             db.add(shipment)
+            db.flush()  # Get the ID without committing
+            created_shipment_ids.append(shipment.id)
             imported_count += 1
-        except Exception:
+        except Exception as exc:
             rejected_count += 1
+            # Log error but continue processing other rows
+            continue
     
-    db.commit()
+    # Update import history
+    history.imported_count = imported_count
+    history.rejected_count = rejected_count
+    history.status = "completed" if rejected_count == 0 else "failed"
+    history.import_metadata = json.dumps({
+        **metadata,
+        "created_shipment_ids": created_shipment_ids,
+        "imported_count": imported_count,
+        "rejected_count": rejected_count,
+    })
     
-    # Create import history
-    history = ImportHistory(
-        filename=preview.filename,
-        file_type=preview.file_type,
-        file_hash=preview.file_hash,
-        rows_received=preview.total_rows,
-        duplicates_count=preview.duplicate_rows,
-        imported_count=imported_count,
-        rejected_count=rejected_count,
-        status="completed" if rejected_count == 0 else "failed",
-        source="csv_xlsx_import",
-        import_metadata=json.dumps({
-            "valid_rows": preview.valid_rows,
-            "invalid_rows": preview.invalid_rows,
-            "errors_count": len(preview.errors),
-            "warnings_count": len(preview.warnings),
-        }),
-        imported_by=user_id,
-    )
-    db.add(history)
     db.commit()
     db.refresh(history)
+    
+    # Attach created shipment IDs to history for response
+    history.created_shipment_ids = created_shipment_ids
     
     return history
 

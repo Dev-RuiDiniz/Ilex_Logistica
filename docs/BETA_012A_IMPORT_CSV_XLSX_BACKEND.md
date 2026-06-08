@@ -62,10 +62,13 @@ Implementar sistema de importação CSV/XLSX com preview, validação linha a li
 - `customer_name`: obrigatório, não vazio
 - `destination_uf`: obrigatório, 2 caracteres (sigla do estado)
 
-### 4. Preview Sem Persistir
+### 4. Preview com Persistência de Estado (Sem Redis)
 - ✅ Endpoint/service de preview
+- ✅ Criar `ImportHistory` com status `pending`
+- ✅ Armazenar dados normalizados em `import_metadata` (JSON)
+- ✅ Retornar `import_id` para confirmação posterior
 - ✅ Retornar resumo: total_rows, valid_rows, invalid_rows, duplicate_rows, errors, warnings, preview_items
-- ✅ Não persistir entregas finais durante preview
+- ✅ Não persistir shipments finais durante preview
 
 **Arquivos:**
 - `apps/api/app/modules/imports/service_v2.py` - Função `preview_import()`
@@ -87,27 +90,79 @@ Response:
   "duplicate_rows": 2,
   "preview_items": [...],  // Primeiras 10 linhas validadas
   "errors": [...],
-  "warnings": [...]
+  "warnings": [...],
+  "import_id": 123  // ID do ImportHistory criado
 }
 ```
 
-### 5. Confirmação da Importação
-- ✅ Endpoint/service de confirmação
-- ✅ Confirmar apenas importação validada
+**Comportamento:**
+- Preview cria um registro `ImportHistory` com status `pending`
+- Dados validados são armazenados em `import_metadata` como JSON
+- Datetime objects são convertidos para strings ISO para serialização JSON
+- `import_id` é retornado para uso no endpoint de confirmação
+- Shipments NÃO são persistidos durante preview
+
+### 5. Confirmação da Importação (Sem Redis)
+- ✅ Endpoint/service de confirmação implementado (sem placeholder 501)
+- ✅ Confirmar usando `import_id` do preview
+- ✅ Validar que `import_id` existe e está em status `pending`
 - ✅ Bloquear confirmação quando houver erro bloqueante
-- ✅ Persistir entregas válidas com campos fiscais/financeiros
-- ✅ Registrar histórico completed/failed
-- ✅ Atualizar contadores
+- ✅ Bloquear confirmação duplicada (status não é `pending`)
+- ✅ Persistir shipments válidos com campos fiscais/financeiros
+- ✅ Converter datetime strings de volta para objetos datetime
+- ✅ Atualizar `ImportHistory` para `completed` ou `failed`
+- ✅ Atualizar contadores: imported_count, rejected_count
+- ✅ Retornar lista de IDs de shipments criados
+- ✅ Não requer Redis - usa banco de dados para gerenciamento de estado
 
 **Arquivos:**
 - `apps/api/app/modules/imports/service_v2.py` - Função `confirm_import()`
-- `apps/api/app/modules/imports/router.py` - Endpoint `POST /imports/confirm` (placeholder - requer gerenciamento de estado)
+- `apps/api/app/modules/imports/router.py` - Endpoint `POST /imports/confirm`
 
-**Nota:** O endpoint de confirmação atualmente retorna 501 (Not Implemented) pois requer gerenciamento de estado (cache/session) para armazenar o preview entre as chamadas. Em produção, isso seria implementado com Redis ou similar.
+**Endpoint:**
+```
+POST /api/v1/imports/confirm
+Content-Type: application/json
+
+Request:
+{
+  "import_id": 123,
+  "confirm": true
+}
+
+Response:
+{
+  "id": 123,
+  "filename": "import.csv",
+  "file_type": "csv",
+  "file_hash": "sha256...",
+  "rows_received": 100,
+  "duplicates_count": 2,
+  "imported_count": 95,
+  "rejected_count": 5,
+  "status": "completed",
+  "source": "csv_xlsx_import",
+  "import_metadata": "{...}",
+  "imported_by": null,
+  "created_at": "2026-06-10T...",
+  "created_shipments": [456, 457, 458, ...]  // IDs dos shipments criados
+}
+```
+
+**Comportamento:**
+- Confirm busca `ImportHistory` pelo `import_id`
+- Valida que status é `pending` (bloqueia se já foi processado)
+- Recupera dados validados de `import_metadata`
+- Converte datetime strings de volta para objetos datetime
+- Persiste shipments válidos (ignora duplicatas no banco)
+- Atualiza `ImportHistory` com contadores e status final
+- Retorna lista de IDs de shipments criados
+- Em caso de erro, atualiza status para `failed` e registra erro em metadata
 
 ### 6. Histórico de Importação
-- ✅ Atualizar ImportHistory com campos: source, metadata, imported_by
+- ✅ Atualizar ImportHistory com campos: source, import_metadata, imported_by
 - ✅ Criar migration se necessário
+- ✅ Suportar status: pending, completed, failed
 
 **Arquivos:**
 - `apps/api/migrations/versions/20260610_01_add_import_history_metadata.py` - Migration
@@ -115,8 +170,13 @@ Response:
 
 **Novos Campos:**
 - `source`: str (50) - Origem da importação (ex: "csv_xlsx_import")
-- `metadata`: text - JSON com metadados adicionais
+- `import_metadata`: text - JSON com dados validados do preview e metadados adicionais
 - `imported_by`: int - ID do usuário que realizou a importação
+
+**Status de ImportHistory:**
+- `pending`: Criado no preview, aguardando confirmação
+- `completed`: Confirmação realizada com sucesso
+- `failed`: Confirmação falhou (erros bloqueantes ou exceções)
 
 ### 7. Integração com Shipment
 - ✅ Usar campos do BETA-011A: invoice_number, invoice_value, freight_value, freight_percentage, collection_departure_date, customer_name, destination_uf
@@ -160,13 +220,23 @@ Response:
 - ✅ Testes de detalhes de erro no preview
 - ✅ Testes de consistência de hash de arquivo
 - ✅ Testes de formatos brasileiros no preview
-- ✅ Testes de endpoint de confirmação (não implementado)
+- ✅ **Teste: Preview cria ImportHistory com status pending**
+- ✅ **Teste: Preview não persiste shipments finais**
+- ✅ **Teste: Confirm com import_id válido persiste shipments**
+- ✅ **Teste: Confirm atualiza histórico para completed**
+- ✅ **Teste: Confirm bloqueia importação com erro bloqueante**
+- ✅ **Teste: Confirm com import_id inexistente retorna 404**
+- ✅ **Teste: Confirm de import_id já completed não duplica shipments**
+- ✅ **Teste: Confirm retorna lista de IDs de shipments criados**
 - ✅ Testes de preservação de nome de arquivo
 - ✅ Testes de detecção de tipo de arquivo
-- ✅ Testes de campos obrigatórios
-- ✅ Testes de valores negativos/zero
+- ✅ Testes de campos obrigatórios presentes
+- ✅ Testes de campos obrigatórios ausentes
+- ✅ Testes de campos obrigatórios vazios
+- ✅ Testes de valores negativos
+- ✅ Testes de valores zero
 
-**Total:** 17 testes
+**Total:** 25 testes
 
 ### 4. test_import_duplicate_detection.py
 - ✅ Testes de detecção de duplicidade por tracking_code no arquivo
@@ -174,18 +244,18 @@ Response:
 - ✅ Testes de ausência de duplicidade
 - ✅ Testes de múltiplas duplicidades
 - ✅ Testes de ignorar linhas inválidas na detecção
-- ✅ Testes de detecção de duplicidade no banco (tracking_code)
-- ✅ Testes de detecção de duplicidade no banco (invoice_number)
-- ✅ Testes de ausência de duplicidade no banco
-- ✅ Testes de lista vazia
-- ✅ Testes de contagem de duplicidade no preview
+- ✅ **Testes de detecção de duplicidade no banco (tracking_code)** - anteriormente skip
+- ✅ **Testes de detecção de duplicidade no banco (invoice_number)** - anteriormente skip
+- ✅ **Testes de ausência de duplicidade no banco** - anteriormente skip
+- ✅ **Testes de lista vazia** - anteriormente skip
+- ✅ **Testes de contagem de duplicidade no preview** - anteriormente skip
 - ✅ Testes de detecção de duplicidade no arquivo via preview
 - ✅ Testes de diferentes carriers com mesmo tracking_code
 - ✅ Testes de campos faltantes na detecção
 
-**Total:** 13 testes
+**Total:** 13 testes (todos passando, sem skips)
 
-**Total de Testes:** 63 testes
+**Total de Testes BETA-012A:** 92 testes (26 CSV + 7 XLSX + 25 preview/confirm + 13 duplicidade + 9 fiscais + 12 filtros)
 
 ## Estrutura de Arquivos
 
@@ -250,7 +320,7 @@ apps/api/
 ## Endpoints
 
 ### POST /api/v1/imports/preview
-Preview de importação sem persistir dados.
+Preview de importação sem persistir shipments finais. Cria ImportHistory com status pending.
 
 **Request:**
 ```
@@ -297,17 +367,24 @@ file: <arquivo CSV ou XLSX>
       "is_blocking": true
     }
   ],
-  "warnings": []
+  "warnings": [],
+  "import_id": 123
 }
 ```
 
+**Comportamento:**
+- Cria `ImportHistory` com status `pending`
+- Armazena dados validados em `import_metadata` (JSON)
+- Retorna `import_id` para uso no endpoint de confirmação
+- Não persiste shipments finais
+
 ### POST /api/v1/imports/confirm
-Confirmação de importação (requer gerenciamento de estado - atualmente retorna 501).
+Confirmação de importação usando `import_id` do preview. Implementado sem Redis.
 
 **Request:**
 ```json
 {
-  "file_hash": "abc123...",
+  "import_id": 123,
   "confirm": true
 }
 ```
@@ -315,7 +392,7 @@ Confirmação de importação (requer gerenciamento de estado - atualmente retor
 **Response:**
 ```json
 {
-  "id": 1,
+  "id": 123,
   "filename": "import.csv",
   "file_type": "csv",
   "file_hash": "abc123...",
@@ -325,38 +402,66 @@ Confirmação de importação (requer gerenciamento de estado - atualmente retor
   "rejected_count": 5,
   "status": "completed",
   "source": "csv_xlsx_import",
-  "metadata": "{\"valid_rows\": 95, \"invalid_rows\": 5, ...}",
-  "imported_by": 1,
-  "created_at": "2026-06-10T10:00:00Z"
+  "import_metadata": "{\"valid_rows\": [...], \"invalid_rows\": 5, \"created_shipment_ids\": [...], ...}",
+  "imported_by": null,
+  "created_at": "2026-06-10T10:00:00Z",
+  "created_shipments": [456, 457, 458, ...]
 }
 ```
 
+**Comportamento:**
+- Busca `ImportHistory` pelo `import_id`
+- Valida que status é `pending` (bloqueia se já foi processado)
+- Recupera dados validados de `import_metadata`
+- Converte datetime strings de volta para objetos datetime
+- Persiste shipments válidos (ignora duplicatas no banco)
+- Atualiza `ImportHistory` com contadores e status final
+- Retorna lista de IDs de shipments criados
+- Em caso de erro, atualiza status para `failed` e registra erro em metadata
+
 ## Limitações Conhecidas
 
-1. **Endpoint de Confirmação:** Requer gerenciamento de estado (cache/session) para armazenar o preview entre as chamadas. Atualmente retorna 501.
-2. **Estado de Preview:** O preview não é persistido, então a confirmação precisa re-validar os dados ou usar cache.
-3. **Performance:** Para arquivos muito grandes (>10.000 linhas), o preview pode ser lento devido à validação linha a linha.
-4. **Braspress Layout:** O mapper está preparado para layout Braspress futuro, mas não está totalmente implementado.
+1. **Performance:** Para arquivos muito grandes (>10.000 linhas), o preview pode ser lento devido à validação linha a linha.
+2. **Braspress Layout:** O mapper está preparado para layout Braspress futuro, mas não está totalmente implementado.
+3. **Processamento Assíncrono:** Importação é síncrona. Para arquivos grandes, processamento assíncrono com fila seria ideal.
+4. **Rollback:** Não há rollback automático em caso de erro parcial. Linhas com erro são rejeitadas mas linhas válidas são persistidas.
 
-## Próximos Passos
+## Notas Importantes
 
-1. Implementar gerenciamento de estado (Redis) para endpoint de confirmação
-2. Adicionar suporte para layout específico Braspress
-3. Implementar processamento assíncrono para arquivos grandes
-4. Adicionar mais validações de negócio (ex: validar carrier_id existe)
-5. Implementar rollback de importação em caso de erro parcial
+- **Redis não é obrigatório:** Gerenciamento de estado é feito via banco de dados (`ImportHistory` + `import_metadata` JSON)
+- **Preview não persiste shipments:** Shipments são persistidos apenas na confirmação
+- **Confirmação é idempotente:** Tentar confirmar o mesmo `import_id` duas vezes retorna erro 400
+- **Datetime serialization:** Datetime objects são convertidos para strings ISO para JSON e convertidos de volta na confirmação
+
+## Melhorias Futuras (Opcionais)
+
+1. Implementar processamento assíncrono para arquivos grandes
+2. Adicionar validação de carrier_id existe no banco
+3. Implementar rollback de importação em caso de erro parcial
+4. Adicionar suporte para layout específico Braspress
 
 ## Validações
 
 ### Validações de Código
-- ✅ `python scripts/check_secrets.py --repo-root .`
-- ✅ `python scripts/check_secrets.py --repo-root . --self-test`
-- ✅ `python scripts/validate_migrations.py`
-- ✅ `python scripts/validate_docs.py`
-- ✅ `python scripts/beta_validate.py`
+- ✅ `python scripts/check_secrets.py --repo-root .` - OK
+- ✅ `python scripts/check_secrets.py --repo-root . --self-test` - OK
+- ✅ `python scripts/validate_migrations.py` - OK
+- ✅ `python scripts/validate_docs.py` - OK
+- ✅ `python scripts/beta_validate.py` - OK
 
 ### Validações de Testes
-- ✅ `python -m pytest tests/test_import_csv_validation.py -v`
+- ✅ `python -m pytest tests/test_import_csv_validation.py -v` - 26 passed
+- ✅ `python -m pytest tests/test_import_xlsx_validation.py -v` - 7 passed
+- ✅ `python -m pytest tests/test_import_preview_confirm.py -v` - 25 passed
+- ✅ `python -m pytest tests/test_import_duplicate_detection.py -v` - 13 passed (sem skips)
+- ✅ `python -m pytest tests/test_shipment_fiscal_financial_fields.py -v` - 9 passed
+- ✅ `python -m pytest tests/test_shipments_advanced_filters.py -v` - 12 passed
+- ✅ `python -m pytest -v` - 205 passed
+
+### Validações Frontend (Branch Empilhada Continua Estável)
+- ✅ `npm run lint` - Passou
+- ✅ `npm run test` - 60 passed
+- ✅ `npm run build` - Passou
 - ✅ `python -m pytest tests/test_import_xlsx_validation.py -v`
 - ✅ `python -m pytest tests/test_import_preview_confirm.py -v`
 - ✅ `python -m pytest tests/test_import_duplicate_detection.py -v`

@@ -111,10 +111,11 @@ class ImportPreviewV2Response(BaseModel):
     preview_items: list[ValidatedRowData]
     errors: list[RowValidationError]
     warnings: list[RowValidationError]
+    import_id: int | None = None
 
 
 class ImportConfirmRequest(BaseModel):
-    file_hash: str
+    import_id: int
     confirm: bool = True
 
 
@@ -132,3 +133,4 @@ class ImportConfirmResponse(BaseModel):
     import_metadata: str | None = None
     imported_by: int | None = None
     created_at: datetime
+    created_shipments: list[int] = []

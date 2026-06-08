@@ -160,190 +160,153 @@ def test_detect_duplicates_in_file_ignores_invalid_rows():
     assert duplicate_count == 0  # Invalid row ignored, no duplicates detected
 
 
-@pytest.mark.skip(reason="Requires database migrations to be run in test environment")
-def test_detect_duplicates_in_db_tracking_code(client):
+def test_detect_duplicates_in_db_tracking_code(db_session):
     """Test detecting duplicates by tracking_code against database."""
     from app.modules.imports.service_v2 import detect_duplicates_in_db, ValidatedRow
+    from datetime import datetime, UTC
     
     # First, create a shipment in the database
     from app.modules.shipments.models import Shipment
-    from app.database.session import SessionLocal
     
-    db = SessionLocal()
-    try:
-        # Create a test shipment
-        shipment = Shipment(
-            tracking_code="BR123456789",
-            carrier_id=1,
-            status="pending",
-            estimated_delivery=None,
-            recipient_name="Test",
-            recipient_phone="1234567890",
-            origin_address="Origin",
-            destination_address="Destination",
-        )
-        db.add(shipment)
-        db.commit()
-        
-        # Now test duplicate detection
-        rows = [
-            ValidatedRow(
-                row_number=2,
-                data={"tracking_code": "BR123456789", "carrier_id": 1, "invoice_number": "NF1"},
-                errors=[],
-                warnings=[],
-            ),
-            ValidatedRow(
-                row_number=3,
-                data={"tracking_code": "BR987654321", "carrier_id": 1, "invoice_number": "NF2"},
-                errors=[],
-                warnings=[],
-            ),
-        ]
-        
-        duplicate_count = detect_duplicates_in_db(db, rows)
-        assert duplicate_count == 1  # One duplicate (BR123456789 exists in DB)
-        
-        # Cleanup
-        db.delete(shipment)
-        db.commit()
-    finally:
-        db.close()
+    # Create a test shipment
+    shipment = Shipment(
+        tracking_code="BR123456789",
+        carrier_id=1,
+        status="pending",
+        estimated_delivery=datetime.now(UTC),
+        recipient_name="Test",
+        recipient_phone="1234567890",
+        origin_address="Origin",
+        destination_address="Destination",
+    )
+    db_session.add(shipment)
+    db_session.commit()
+    
+    # Now test duplicate detection
+    rows = [
+        ValidatedRow(
+            row_number=2,
+            data={"tracking_code": "BR123456789", "carrier_id": 1, "invoice_number": "NF1"},
+            errors=[],
+            warnings=[],
+        ),
+        ValidatedRow(
+            row_number=3,
+            data={"tracking_code": "BR987654321", "carrier_id": 1, "invoice_number": "NF2"},
+            errors=[],
+            warnings=[],
+        ),
+    ]
+    
+    duplicate_count = detect_duplicates_in_db(db_session, rows)
+    assert duplicate_count == 1  # One duplicate (BR123456789 exists in DB)
 
 
-@pytest.mark.skip(reason="Requires database migrations to be run in test environment")
-def test_detect_duplicates_in_db_invoice_number(client):
+def test_detect_duplicates_in_db_invoice_number(db_session):
     """Test detecting duplicates by invoice_number against database."""
     from app.modules.imports.service_v2 import detect_duplicates_in_db, ValidatedRow
     from app.modules.shipments.models import Shipment
-    from app.database.session import SessionLocal
+    from datetime import datetime, UTC
     
-    db = SessionLocal()
-    try:
-        # Create a test shipment with invoice_number
-        shipment = Shipment(
-            tracking_code="BR123456789",
-            carrier_id=1,
-            status="pending",
-            estimated_delivery=None,
-            recipient_name="Test",
-            recipient_phone="1234567890",
-            origin_address="Origin",
-            destination_address="Destination",
-            invoice_number="NF12345",
-        )
-        db.add(shipment)
-        db.commit()
-        
-        # Now test duplicate detection
-        rows = [
-            ValidatedRow(
-                row_number=2,
-                data={"tracking_code": "BR987654321", "carrier_id": 1, "invoice_number": "NF12345"},
-                errors=[],
-                warnings=[],
-            ),
-            ValidatedRow(
-                row_number=3,
-                data={"tracking_code": "BR555555555", "carrier_id": 1, "invoice_number": "NF67890"},
-                errors=[],
-                warnings=[],
-            ),
-        ]
-        
-        duplicate_count = detect_duplicates_in_db(db, rows)
-        assert duplicate_count == 1  # One duplicate (NF12345 exists in DB)
-        
-        # Cleanup
-        db.delete(shipment)
-        db.commit()
-    finally:
-        db.close()
+    # Create a test shipment with invoice_number
+    shipment = Shipment(
+        tracking_code="BR123456789",
+        carrier_id=1,
+        status="pending",
+        estimated_delivery=datetime.now(UTC),
+        recipient_name="Test",
+        recipient_phone="1234567890",
+        origin_address="Origin",
+        destination_address="Destination",
+        invoice_number="NF12345",
+    )
+    db_session.add(shipment)
+    db_session.commit()
+    
+    # Now test duplicate detection
+    rows = [
+        ValidatedRow(
+            row_number=2,
+            data={"tracking_code": "BR987654321", "carrier_id": 1, "invoice_number": "NF12345"},
+            errors=[],
+            warnings=[],
+        ),
+        ValidatedRow(
+            row_number=3,
+            data={"tracking_code": "BR555555555", "carrier_id": 1, "invoice_number": "NF67890"},
+            errors=[],
+            warnings=[],
+        ),
+    ]
+    
+    duplicate_count = detect_duplicates_in_db(db_session, rows)
+    assert duplicate_count == 1  # One duplicate (NF12345 exists in DB)
 
 
-@pytest.mark.skip(reason="Requires database migrations to be run in test environment")
-def test_detect_duplicates_in_db_no_duplicates(client):
+def test_detect_duplicates_in_db_no_duplicates(db_session):
     """Test detecting no duplicates when database has no matching records."""
     from app.modules.imports.service_v2 import detect_duplicates_in_db, ValidatedRow
-    from app.database.session import SessionLocal
     
-    db = SessionLocal()
-    try:
-        rows = [
-            ValidatedRow(
-                row_number=2,
-                data={"tracking_code": "BR123456789", "carrier_id": 1, "invoice_number": "NF1"},
-                errors=[],
-                warnings=[],
-            ),
-            ValidatedRow(
-                row_number=3,
-                data={"tracking_code": "BR987654321", "carrier_id": 1, "invoice_number": "NF2"},
-                errors=[],
-                warnings=[],
-            ),
-        ]
-        
-        duplicate_count = detect_duplicates_in_db(db, rows)
-        assert duplicate_count == 0
-    finally:
-        db.close()
+    rows = [
+        ValidatedRow(
+            row_number=2,
+            data={"tracking_code": "BR123456789", "carrier_id": 1, "invoice_number": "NF1"},
+            errors=[],
+            warnings=[],
+        ),
+        ValidatedRow(
+            row_number=3,
+            data={"tracking_code": "BR987654321", "carrier_id": 1, "invoice_number": "NF2"},
+            errors=[],
+            warnings=[],
+        ),
+    ]
+    
+    duplicate_count = detect_duplicates_in_db(db_session, rows)
+    assert duplicate_count == 0
+    assert duplicate_count == 0
 
 
-def test_detect_duplicates_in_db_empty_rows():
+def test_detect_duplicates_in_db_empty_rows(db_session):
     """Test duplicate detection with empty rows list."""
     from app.modules.imports.service_v2 import detect_duplicates_in_db
-    from app.database.session import SessionLocal
     
-    db = SessionLocal()
-    try:
-        duplicate_count = detect_duplicates_in_db(db, [])
-        assert duplicate_count == 0
-    finally:
-        db.close()
+    duplicate_count = detect_duplicates_in_db(db_session, [])
+    assert duplicate_count == 0
 
 
-@pytest.mark.skip(reason="Requires database migrations to be run in test environment")
-def test_preview_includes_duplicate_count(client):
+def test_preview_includes_duplicate_count(client, db_session):
     """Test that preview includes duplicate count in summary."""
     # First, create a shipment in the database
     from app.modules.shipments.models import Shipment
-    from app.database.session import SessionLocal
+    from datetime import datetime, UTC
     
-    db = SessionLocal()
-    try:
-        shipment = Shipment(
-            tracking_code="BR123456789",
-            carrier_id=1,
-            status="pending",
-            estimated_delivery=None,
-            recipient_name="Test",
-            recipient_phone="1234567890",
-            origin_address="Origin",
-            destination_address="Destination",
-        )
-        db.add(shipment)
-        db.commit()
-        
-        # Now test preview with duplicate
-        csv_content = b"tracking_code,carrier_id,invoice_number,invoice_value,freight_value,collection_departure_date,customer_name,destination_uf\nBR123456789,1,NF12345,1234.56,123.45,2026-06-15,Cliente Teste,SP\n"
-        
-        response = client.post(
-            "/api/v1/imports/preview",
-            files={"file": ("test.csv", csv_content, "text/csv")},
-        )
-        
-        assert response.status_code == 200
-        data = response.json()
-        
-        assert "duplicate_rows" in data
-        assert data["duplicate_rows"] >= 1  # At least one duplicate in DB
-        
-        # Cleanup
-        db.delete(shipment)
-        db.commit()
-    finally:
-        db.close()
+    shipment = Shipment(
+        tracking_code="BR123456789",
+        carrier_id=1,
+        status="pending",
+        estimated_delivery=datetime.now(UTC),
+        recipient_name="Test",
+        recipient_phone="1234567890",
+        origin_address="Origin",
+        destination_address="Destination",
+    )
+    db_session.add(shipment)
+    db_session.commit()
+    
+    # Now test preview with duplicate
+    csv_content = b"tracking_code,carrier_id,invoice_number,invoice_value,freight_value,collection_departure_date,customer_name,destination_uf\nBR123456789,1,NF12345,1234.56,123.45,2026-06-15,Cliente Teste,SP\n"
+    
+    response = client.post(
+        "/api/v1/imports/preview",
+        files={"file": ("test.csv", csv_content, "text/csv")},
+    )
+    
+    assert response.status_code == 200
+    data = response.json()
+    
+    assert "duplicate_rows" in data
+    assert data["duplicate_rows"] >= 1  # At least one duplicate in DB
 
 
 def test_preview_detects_in_file_duplicates(client):

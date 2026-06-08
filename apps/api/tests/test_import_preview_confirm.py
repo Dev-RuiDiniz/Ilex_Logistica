@@ -27,6 +27,7 @@ def test_preview_import_returns_summary(client):
     assert "preview_items" in data
     assert "errors" in data
     assert "warnings" in data
+    assert "import_id" in data
 
 
 def test_preview_import_with_multiple_rows(client):
@@ -48,6 +49,7 @@ BR987654321,1,NF67890,5678.90,234.56,2026-06-16,Cliente Dois,RJ
     assert data["valid_rows"] == 2
     assert data["invalid_rows"] == 0
     assert len(data["preview_items"]) == 2
+    assert data["import_id"] is not None
 
 
 def test_preview_import_with_mixed_valid_invalid(client):
@@ -70,6 +72,7 @@ INVALID,invalid,NF99999,invalid,invalid,invalid,Cliente Tres,SP
     assert data["valid_rows"] == 2
     assert data["invalid_rows"] == 1
     assert len(data["errors"]) > 0
+    assert data["import_id"] is not None
 
 
 def test_preview_import_empty_file(client):
@@ -214,17 +217,230 @@ def test_preview_with_brazilian_formats(client):
     assert preview_item["data"]["freight_value"] == 123.45
 
 
-def test_confirm_endpoint_not_implemented(client):
-    """Test that confirm endpoint returns 501 (not implemented)."""
-    from fastapi import HTTPException
+def test_preview_creates_pending_import_history(client, db_session):
+    """Test that preview creates a pending ImportHistory record."""
+    csv_content = b"tracking_code,carrier_id,invoice_number,invoice_value,freight_value,collection_departure_date,customer_name,destination_uf\nBR123456789,1,NF12345,1234.56,123.45,2026-06-15,Cliente Teste,SP\n"
     
     response = client.post(
-        "/api/v1/imports/confirm",
-        json={"file_hash": "test", "confirm": True},
+        "/api/v1/imports/preview",
+        files={"file": ("test.csv", csv_content, "text/csv")},
     )
     
-    # Currently returns 501 as state management is not implemented
-    assert response.status_code == 501
+    assert response.status_code == 200
+    data = response.json()
+    
+    import_id = data["import_id"]
+    assert import_id is not None
+    
+    # Check that ImportHistory was created with pending status
+    from app.modules.imports.models import ImportHistory
+    history = db_session.query(ImportHistory).filter(ImportHistory.id == import_id).first()
+    assert history is not None
+    assert history.status == "pending"
+    assert history.imported_count == 0
+    assert history.rejected_count == 0
+
+
+def test_preview_does_not_persist_shipments(client, db_session):
+    """Test that preview does not persist shipments to database."""
+    csv_content = b"tracking_code,carrier_id,invoice_number,invoice_value,freight_value,collection_departure_date,customer_name,destination_uf\nBR123456789,1,NF12345,1234.56,123.45,2026-06-15,Cliente Teste,SP\n"
+    
+    # Count shipments before preview
+    from app.modules.shipments.models import Shipment
+    count_before = db_session.query(Shipment).count()
+    
+    response = client.post(
+        "/api/v1/imports/preview",
+        files={"file": ("test.csv", csv_content, "text/csv")},
+    )
+    
+    assert response.status_code == 200
+    
+    # Count shipments after preview - should be the same
+    count_after = db_session.query(Shipment).count()
+    assert count_after == count_before
+
+
+def test_confirm_with_valid_import_id(client, db_session):
+    """Test that confirm persists shipments for valid import_id."""
+    csv_content = b"tracking_code,carrier_id,invoice_number,invoice_value,freight_value,collection_departure_date,customer_name,destination_uf\nBR123456789,1,NF12345,1234.56,123.45,2026-06-15,Cliente Teste,SP\n"
+    
+    # First, create a preview
+    preview_response = client.post(
+        "/api/v1/imports/preview",
+        files={"file": ("test.csv", csv_content, "text/csv")},
+    )
+    
+    assert preview_response.status_code == 200
+    import_id = preview_response.json()["import_id"]
+    
+    # Count shipments before confirm
+    from app.modules.shipments.models import Shipment
+    count_before = db_session.query(Shipment).count()
+    
+    # Confirm the import
+    confirm_response = client.post(
+        "/api/v1/imports/confirm",
+        json={"import_id": import_id, "confirm": True},
+    )
+    
+    assert confirm_response.status_code == 200
+    data = confirm_response.json()
+    
+    # Check response
+    assert data["status"] == "completed"
+    assert data["imported_count"] == 1
+    assert data["rejected_count"] == 0
+    assert len(data["created_shipments"]) == 1
+    
+    # Count shipments after confirm - should have increased
+    count_after = db_session.query(Shipment).count()
+    assert count_after == count_before + 1
+    
+    # Check that the shipment was created with fiscal/financial fields
+    shipment = db_session.query(Shipment).filter(Shipment.tracking_code == "BR123456789").first()
+    assert shipment is not None
+    assert shipment.invoice_number == "NF12345"
+    assert float(shipment.invoice_value) == 1234.56
+    assert float(shipment.freight_value) == 123.45
+    assert shipment.customer_name == "Cliente Teste"
+    assert shipment.destination_uf == "SP"
+
+
+def test_confirm_updates_import_history_status(client, db_session):
+    """Test that confirm updates ImportHistory status to completed."""
+    csv_content = b"tracking_code,carrier_id,invoice_number,invoice_value,freight_value,collection_departure_date,customer_name,destination_uf\nBR123456789,1,NF12345,1234.56,123.45,2026-06-15,Cliente Teste,SP\n"
+    
+    # Create preview
+    preview_response = client.post(
+        "/api/v1/imports/preview",
+        files={"file": ("test.csv", csv_content, "text/csv")},
+    )
+    
+    import_id = preview_response.json()["import_id"]
+    
+    # Check status before confirm
+    from app.modules.imports.models import ImportHistory
+    history = db_session.query(ImportHistory).filter(ImportHistory.id == import_id).first()
+    assert history.status == "pending"
+    
+    # Confirm
+    confirm_response = client.post(
+        "/api/v1/imports/confirm",
+        json={"import_id": import_id, "confirm": True},
+    )
+    
+    assert confirm_response.status_code == 200
+    
+    # Check status after confirm
+    db_session.refresh(history)
+    assert history.status == "completed"
+    assert history.imported_count == 1
+    assert history.rejected_count == 0
+
+
+def test_confirm_blocks_import_with_blocking_errors(client, db_session):
+    """Test that confirm blocks import when there are blocking errors."""
+    csv_content = b"tracking_code,carrier_id,invoice_number,invoice_value,freight_value,collection_departure_date,customer_name,destination_uf\n,1,NF12345,1234.56,123.45,2026-06-15,Cliente Teste,SP\n"
+    
+    # Create preview with invalid row
+    preview_response = client.post(
+        "/api/v1/imports/preview",
+        files={"file": ("test.csv", csv_content, "text/csv")},
+    )
+    
+    assert preview_response.status_code == 200
+    import_id = preview_response.json()["import_id"]
+    assert preview_response.json()["invalid_rows"] == 1
+    
+    # Try to confirm - should fail
+    confirm_response = client.post(
+        "/api/v1/imports/confirm",
+        json={"import_id": import_id, "confirm": True},
+    )
+    
+    assert confirm_response.status_code == 400
+    
+    # Check that history was updated to failed
+    from app.modules.imports.models import ImportHistory
+    history = db_session.query(ImportHistory).filter(ImportHistory.id == import_id).first()
+    assert history.status == "failed"
+
+
+def test_confirm_with_nonexistent_import_id(client):
+    """Test that confirm returns 404 for nonexistent import_id."""
+    response = client.post(
+        "/api/v1/imports/confirm",
+        json={"import_id": 99999, "confirm": True},
+    )
+    
+    assert response.status_code == 404
+
+
+def test_confirm_with_already_completed_import(client, db_session):
+    """Test that confirm prevents double-confirmation of same import."""
+    csv_content = b"tracking_code,carrier_id,invoice_number,invoice_value,freight_value,collection_departure_date,customer_name,destination_uf\nBR123456789,1,NF12345,1234.56,123.45,2026-06-15,Cliente Teste,SP\n"
+    
+    # Create preview
+    preview_response = client.post(
+        "/api/v1/imports/preview",
+        files={"file": ("test.csv", csv_content, "text/csv")},
+    )
+    
+    import_id = preview_response.json()["import_id"]
+    
+    # Confirm first time
+    confirm_response1 = client.post(
+        "/api/v1/imports/confirm",
+        json={"import_id": import_id, "confirm": True},
+    )
+    
+    assert confirm_response1.status_code == 200
+    
+    # Count shipments
+    from app.modules.shipments.models import Shipment
+    count_after_first = db_session.query(Shipment).count()
+    
+    # Try to confirm second time - should fail
+    confirm_response2 = client.post(
+        "/api/v1/imports/confirm",
+        json={"import_id": import_id, "confirm": True},
+    )
+    
+    assert confirm_response2.status_code == 400
+    
+    # Count shipments - should not have increased
+    count_after_second = db_session.query(Shipment).count()
+    assert count_after_second == count_after_first
+
+
+def test_confirm_returns_created_shipment_ids(client, db_session):
+    """Test that confirm returns list of created shipment IDs."""
+    csv_content = b"""tracking_code,carrier_id,invoice_number,invoice_value,freight_value,collection_departure_date,customer_name,destination_uf
+BR123456789,1,NF12345,1234.56,123.45,2026-06-15,Cliente Teste,SP
+BR987654321,1,NF67890,5678.90,234.56,2026-06-16,Cliente Dois,RJ
+"""
+    
+    # Create preview
+    preview_response = client.post(
+        "/api/v1/imports/preview",
+        files={"file": ("test.csv", csv_content, "text/csv")},
+    )
+    
+    import_id = preview_response.json()["import_id"]
+    
+    # Confirm
+    confirm_response = client.post(
+        "/api/v1/imports/confirm",
+        json={"import_id": import_id, "confirm": True},
+    )
+    
+    assert confirm_response.status_code == 200
+    data = confirm_response.json()
+    
+    assert "created_shipments" in data
+    assert len(data["created_shipments"]) == 2
+    assert all(isinstance(id, int) for id in data["created_shipments"])
 
 
 def test_preview_preserves_original_filename(client):

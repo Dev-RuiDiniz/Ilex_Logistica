@@ -437,6 +437,13 @@ Confirmação de importação usando `import_id` do preview. Implementado sem Re
 
 1. Implementar processamento assíncrono para arquivos grandes
 2. Adicionar validação de carrier_id existe no banco
+
+## Frontend Correspondente
+
+- **BETA-012B:** Frontend de Upload, Preview, Erros por Linha e Confirmação de Importação
+- **Status:** ✅ Implementado
+- **Branch:** `feature/beta-012b-import-upload-preview-confirm-frontend`
+- **Documentação:** `docs/BETA_012B_IMPORT_UPLOAD_PREVIEW_CONFIRM_FRONTEND.md`
 3. Implementar rollback de importação em caso de erro parcial
 4. Adicionar suporte para layout específico Braspress
 

@@ -24,20 +24,17 @@ jobs:
           cache: npm
           cache-dependency-path: package-lock.json
 
-      - name: Install dependencies
-        run: npm ci
+      - name: Run Web validation script
+        run: bash ../../scripts/validate_web.sh
 
-      - name: Run lint
-        run: npm run lint
-
-      - name: Run build
-        run: npm run build
+      - name: Check secrets
+        run: python3 ../../scripts/check_secrets.py --repo-root $GITHUB_WORKSPACE
 
       - name: Install Playwright browsers
         run: npx playwright install --with-deps
 
-      - name: Run E2E tests
-        run: npm run test:e2e
+      - name: Run E2E validation script
+        run: bash ../../scripts/validate_e2e.sh
         env:
           CI: true
 

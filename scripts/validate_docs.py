@@ -12,7 +12,7 @@ DOCS_DIR = PROJECT_ROOT / "docs"
 
 print("Validating documentation...")
 
-# Required docs (se estiverem em branches beta)
+# Required docs
 REQUIRED_DOCS = [
     "BETA_CHECKLIST.md",
     "BETA_VALIDATION_EVIDENCE.md",
@@ -43,11 +43,16 @@ print("1. Checking required docs...")
 for doc in REQUIRED_DOCS:
     doc_path = DOCS_DIR / doc
     if not doc_path.exists():
-        print(f"  WARNING: Required doc not found: {doc} (may be in beta branch)")
+        errors.append(f"ERROR: Required doc not found: {doc}")
     else:
         print(f"  OK: {doc} exists")
 
-print("OK: Documentation check completed")
+if errors:
+    for error in errors:
+        print(error)
+    sys.exit(1)
+
+print("OK: All required docs exist")
 
 # Check official commands exist
 print("\n2. Checking official commands...")

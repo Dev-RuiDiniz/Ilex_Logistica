@@ -18,7 +18,7 @@ Esta auditoria funcional automatizada inspecionou a estrutura do repositório pa
 | 4 - Eficiência por transportadora | COMPLETO | 6/6 (100%) | 0/6 (0%) | 0/6 (0%) |
 | 5 - Painel de Exceções com SLA | EM ANDAMENTO | 4/6 (67%) | 0/6 (0%) | 2/6 (33%) |
 | 5 - Alertas e notificações | EM ANDAMENTO (atualizado com BETA-017A e BETA-017B) | 4/10 (40%) | 0/10 (0%) | 6/10 (60%) |
-| 6 - Relatório diário automático | AUSENTE | 0/6 (0%) | 0/6 (0%) | 6/6 (100%) |
+| 6 - Relatório diário automático | EM ANDAMENTO (atualizado com BETA-018A) | 4/6 (67%) | 0/6 (0%) | 2/6 (33%) |
 | 7 - Logs e auditoria | PARCIAL | 0/9 (0%) | 2/9 (22%) | 7/9 (78%) |
 | 8 - Integrações assistidas | PARCIAL | 0/9 (0%) | 1/9 (11%) | 8/9 (89%) |
 | 9 - Usuários, permissões e segurança | PARCIAL | 1/11 (9%) | 1/11 (9%) | 9/11 (82%) |
@@ -273,7 +273,7 @@ Esta auditoria funcional automatizada inspecionou a estrutura do repositório pa
 
 ### Épico 6 — Relatório diário automático
 
-**Status:** AUSENTE
+**Status:** EM ANDAMENTO (atualizado com BETA-018A)
 
 **Ausentes:**
 - DailyReport

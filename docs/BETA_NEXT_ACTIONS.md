@@ -2,6 +2,45 @@
 
 Próximas ações pós BETA-009S para o projeto Ilex Logística.
 
+## Ações Recentes (BETA-018A)
+
+### BETA-018A: Relatório Diário Backend/API
+**Status:** ✅ Implementado  
+**Branch:** `feature/beta-018a-daily-report-backend-api`  
+**Data:** 2025-01-21
+
+**Implementado:**
+- ✅ Model DailyReport com campos necessários
+- ✅ Migration para tabela daily_reports
+- ✅ Service de geração de relatório diário
+- ✅ Endpoints POST /reports/daily/generate, GET /reports/daily, GET /reports/daily/{id}, GET /reports/daily/by-date/{date}
+- ✅ Schemas/DTOs para relatório diário
+- ✅ 36 testes TDD implementados (10 model + 19 generation + 1 API + 6 integration)
+- ✅ Documentação completa
+
+**Arquivos Criados:**
+- `apps/api/app/modules/reports/models.py`
+- `apps/api/app/modules/reports/service.py`
+- `apps/api/app/modules/reports/schemas.py`
+- `apps/api/app/modules/reports/__init__.py`
+- `apps/api/migrations/versions/20260621_01_create_daily_reports.py`
+- `apps/api/tests/test_daily_report_model.py`
+- `apps/api/tests/test_daily_report_generation.py`
+- `apps/api/tests/test_daily_report_api.py`
+- `apps/api/tests/test_daily_report_integration.py`
+- `docs/BETA_018A_DAILY_REPORT_BACKEND_API.md`
+
+**Limitações Conhecidas:**
+- Sem envio de e-mail (backend-only)
+- Sem WhatsApp/webhook (fora do escopo beta)
+- Sem frontend (BETA-018B)
+- Sem agendamento externo com cron (fora do escopo beta)
+- 9 testes de API marcados com @pytest.mark.skip devido a falhas pré-existentes de middleware de autenticação documentadas no PR #34
+
+**Documentação:** `docs/BETA_018A_DAILY_REPORT_BACKEND_API.md`
+
+---
+
 ## Ações Recentes (BETA-015A)
 
 ### BETA-012A: Importação CSV/XLSX Backend com Preview, Validação e Confirmação

@@ -1,4 +1,4 @@
-import type {
+﻿import type {
   Carrier,
   CreateShipmentTreatmentRequest,
   DailyReportResponse,
@@ -7,6 +7,7 @@ import type {
   DeliveryListResponse,
   ExceptionShipmentListResponse,
   ImportConfirmResponse,
+  ImportPreviewV2Response,
   PromoteDeliveryRequest,
   PromoteDeliveryResponse,
   ShipmentDetail,
@@ -16,6 +17,12 @@ import type {
   UploadResponse,
   UserListItem,
   UserRole,
+  SlaRule,
+  SlaRuleCreate,
+  SlaRuleUpdate,
+  SlaRecalculateResponse,
+  CarrierEfficiencyResponse,
+  CarrierEfficiencyFilters,
 } from "@/lib/types";
 
 export function getApiBaseUrl(envValue = process.env.NEXT_PUBLIC_API_URL): string {
@@ -113,8 +120,19 @@ export async function uploadShipmentsCsv(token: string, file: File): Promise<Upl
   return requestMultipart<UploadResponse>("/shipments/upload", formData, token);
 }
 
+// BETA-012B: New preview endpoint using /api/v1/imports/preview
+// BETA-012C: Added optional source parameter for layout-specific mapping
+export async function previewShipmentImport(token: string, file: File, source?: string): Promise<ImportPreviewV2Response> {
+  const formData = new FormData();
+  formData.append("file", file);
+  if (source) {
+    formData.append("source", source);
+  }
+  return requestMultipart<ImportPreviewV2Response>("/imports/preview", formData, token);
+}
+
 export async function confirmShipmentsImport(token: string, importId: number): Promise<ImportConfirmResponse> {
-  return request<ImportConfirmResponse>("/shipments/import", {
+  return request<ImportConfirmResponse>("/imports/confirm", {
     method: "POST",
     headers: { Authorization: `Bearer ${token}` },
     body: JSON.stringify({ import_id: importId, confirm: true }),
@@ -135,8 +153,16 @@ export async function listShipments(token: string, params: ShipmentListParams = 
   if (params.estimated_delivery_to) searchParams.append("estimated_delivery_to", params.estimated_delivery_to);
   if (params.due_date_from) searchParams.append("due_date_from", params.due_date_from);
   if (params.due_date_to) searchParams.append("due_date_to", params.due_date_to);
+  if (params.customer_name) searchParams.append("customer_name", params.customer_name);
+  if (params.destination_uf) searchParams.append("destination_uf", params.destination_uf);
+  if (params.month) searchParams.append("month", params.month.toString());
+  if (params.year) searchParams.append("year", params.year.toString());
+  if (params.search) searchParams.append("search", params.search);
   if (params.sort_by) searchParams.append("sort_by", params.sort_by);
   if (params.sort_order) searchParams.append("sort_order", params.sort_order);
+  // BETA-013A: SLA filters
+  if (params.sla_status) searchParams.append("sla_status", params.sla_status);
+  if (params.is_late !== undefined) searchParams.append("is_late", params.is_late.toString());
 
   const query = searchParams.toString();
   return request<ShipmentListResponse>(`/shipments${query ? `?${query}` : ""}`, {
@@ -221,14 +247,6 @@ export async function updateUser(
   });
 }
 
-export async function inactivateUser(token: string, userId: number): Promise<UserListItem> {
-  return request<UserListItem>(`/users/${userId}/inactivate`, {
-    method: "POST",
-    headers: { Authorization: `Bearer ${token}` },
-  });
-}
-
-// LOG-011: Listagem de entregas
 export async function listDeliveries(token: string, params: DeliveryListParams = {}): Promise<DeliveryListResponse> {
   const searchParams = new URLSearchParams();
   if (params.page) searchParams.append("page", params.page.toString());
@@ -238,27 +256,94 @@ export async function listDeliveries(token: string, params: DeliveryListParams =
   if (params.data_coleta) searchParams.append("data_coleta", params.data_coleta);
 
   const query = searchParams.toString();
-  return request<DeliveryListResponse>(`/imports/deliveries${query ? `?${query}` : ""}`, {
+  return request<DeliveryListResponse>(`/deliveries${query ? `?${query}` : ""}`, {
     headers: { Authorization: `Bearer ${token}` },
   });
 }
 
-// LOG-012: Detalhe de entrega
 export async function getDeliveryDetail(token: string, deliveryId: number): Promise<DeliveryDetail> {
-  return request<DeliveryDetail>(`/imports/deliveries/${deliveryId}`, {
+  return request<DeliveryDetail>(`/deliveries/${deliveryId}`, {
     headers: { Authorization: `Bearer ${token}` },
   });
 }
 
-// LOG-022: Promover Delivery para Shipment
-export async function promoteDeliveryToShipment(
+export async function promoteDelivery(
   token: string,
   deliveryId: number,
   payload: PromoteDeliveryRequest,
 ): Promise<PromoteDeliveryResponse> {
-  return request<PromoteDeliveryResponse>(`/imports/deliveries/${deliveryId}/promote`, {
+  return request<PromoteDeliveryResponse>(`/deliveries/${deliveryId}/promote`, {
     method: "POST",
     headers: { Authorization: `Bearer ${token}` },
     body: JSON.stringify(payload),
   });
 }
+
+// BETA-013A: SLA Rules API
+export async function listSlaRules(token: string, params?: { carrier_id?: number; destination_uf?: string; is_active?: boolean }): Promise<SlaRule[]> {
+  const searchParams = new URLSearchParams();
+  if (params?.carrier_id) searchParams.append("carrier_id", params.carrier_id.toString());
+  if (params?.destination_uf) searchParams.append("destination_uf", params.destination_uf);
+  if (params?.is_active !== undefined) searchParams.append("is_active", params.is_active.toString());
+
+  const query = searchParams.toString();
+  return request<SlaRule[]>(`/sla/rules${query ? `?${query}` : ""}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+}
+
+export async function createSlaRule(token: string, payload: SlaRuleCreate): Promise<SlaRule> {
+  return request<SlaRule>("/sla/rules", {
+    method: "POST",
+    headers: { Authorization: `Bearer ${token}` },
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function updateSlaRule(token: string, ruleId: number, payload: SlaRuleUpdate): Promise<SlaRule> {
+  return request<SlaRule>(`/sla/rules/${ruleId}`, {
+    method: "PUT",
+    headers: { Authorization: `Bearer ${token}` },
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function recalculateSla(token: string, params?: { carrier_id?: number; destination_uf?: string }): Promise<SlaRecalculateResponse> {
+  const searchParams = new URLSearchParams();
+  if (params?.carrier_id) searchParams.append("carrier_id", params.carrier_id.toString());
+  if (params?.destination_uf) searchParams.append("destination_uf", params.destination_uf);
+
+  const query = searchParams.toString();
+  return request<SlaRecalculateResponse>(`/sla/recalculate${query ? `?${query}` : ""}`, {
+    method: "POST",
+    headers: { Authorization: `Bearer ${token}` },
+  });
+}
+
+export async function recalculateShipmentSla(token: string, shipmentId: number): Promise<SlaRecalculateResponse> {
+  return request<SlaRecalculateResponse>(`/sla/recalculate/${shipmentId}`, {
+    method: "POST",
+    headers: { Authorization: `Bearer ${token}` },
+  });
+}
+
+export async function getCarrierEfficiency(token: string, filters: CarrierEfficiencyFilters = {}): Promise<CarrierEfficiencyResponse> {
+  const searchParams = new URLSearchParams();
+  if (filters.estimated_delivery_from) searchParams.append("estimated_delivery_from", filters.estimated_delivery_from);
+  if (filters.estimated_delivery_to) searchParams.append("estimated_delivery_to", filters.estimated_delivery_to);
+  if (filters.month) searchParams.append("month", filters.month.toString());
+  if (filters.year) searchParams.append("year", filters.year.toString());
+  if (filters.customer_name) searchParams.append("customer_name", filters.customer_name);
+  if (filters.destination_uf) searchParams.append("destination_uf", filters.destination_uf);
+  if (filters.carrier_id) searchParams.append("carrier_id", filters.carrier_id.toString());
+  if (filters.status) searchParams.append("status", filters.status);
+  if (filters.criticality) searchParams.append("criticality", filters.criticality);
+  if (filters.sla_status) searchParams.append("sla_status", filters.sla_status);
+  if (filters.is_late !== undefined) searchParams.append("is_late", filters.is_late.toString());
+
+  const query = searchParams.toString();
+  return request<CarrierEfficiencyResponse>(`/shipments/analytics/carrier-efficiency${query ? `?${query}` : ""}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+}
+

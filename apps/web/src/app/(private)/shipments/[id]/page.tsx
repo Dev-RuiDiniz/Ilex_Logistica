@@ -6,6 +6,8 @@ import { createShipmentTreatment, getShipmentDetail, listShipmentTreatments } fr
 import { canEditShipments } from "@/lib/permissions";
 import { useAuth } from "@/features/auth/auth-provider";
 import type { ShipmentDetail, ShipmentTreatment } from "@/lib/types";
+import { formatSlaStatusLabel, getSlaStatusBadgeColor, formatDelayDays, formatDateBR } from "@/lib/sla-helpers";
+import { SlaBadge } from "@/components/SlaBadge";
 
 export default function ShipmentDetailPage({ params }: { params: { id: string } }) {
   const { session } = useAuth();
@@ -17,6 +19,25 @@ export default function ShipmentDetailPage({ params }: { params: { id: string } 
   const [loading, setLoading] = useState(true);
   const shipmentId = Number(params.id);
   const editable = canEditShipments(session?.role ?? "auditoria");
+
+  // Formatting helpers
+  const formatCurrencyBRL = (value: number | null) => {
+    if (value === null || value === undefined) return "-";
+    return new Intl.NumberFormat("pt-BR", {
+      style: "currency",
+      currency: "BRL",
+    }).format(value);
+  };
+
+  const formatPercentage = (value: number | null) => {
+    if (value === null || value === undefined) return "-";
+    return `${value.toFixed(2)}%`;
+  };
+
+  const formatUnavailable = (value: string | number | null) => {
+    if (value === null || value === undefined || value === "") return "-";
+    return value;
+  };
 
   useEffect(() => {
     let cancelled = false;
@@ -73,15 +94,46 @@ export default function ShipmentDetailPage({ params }: { params: { id: string } 
         <p className="text-sm text-slate-600">{detail.tracking_code}</p>
       </header>
       {error && <p className="rounded bg-red-50 px-3 py-2 text-sm text-red-700">{error}</p>}
+      
+      {/* Informações Básicas */}
       <div className="grid gap-3 rounded border p-4 md:grid-cols-2">
         <div><strong>Status:</strong> {detail.status}</div>
         <div><strong>Criticidade:</strong> {detail.criticality}</div>
         <div><strong>Atraso:</strong> {detail.delay_days} dias</div>
-        <div><strong>Valor:</strong> {detail.amount ?? "-"}</div>
-        <div><strong>NF:</strong> {detail.invoice_number ?? "-"}</div>
-        <div><strong>Documento:</strong> {detail.fiscal_document ?? "-"}</div>
+        <div><strong>Carrier ID:</strong> {detail.carrier_id}</div>
         <div className="md:col-span-2"><strong>Origem:</strong> {detail.origin_address}</div>
         <div className="md:col-span-2"><strong>Destino:</strong> {detail.destination_address}</div>
+      </div>
+
+      {/* SLA e Criticidade */}
+      <div className="grid gap-3 rounded border p-4 md:grid-cols-2">
+        {!detail.sla_due_date && !detail.sla_status ? (
+          <div className="md:col-span-2 text-slate-500">Sem SLA</div>
+        ) : (
+          <>
+            <div><strong>Prazo SLA:</strong> {formatDateBR(detail.sla_due_date)}</div>
+            <div><strong>Status SLA:</strong> <SlaBadge status={detail.sla_status} /></div>
+            <div><strong>Atraso em dias:</strong> {formatDelayDays(detail.delay_days)}</div>
+            <div><strong>Criticidade:</strong> {formatUnavailable(detail.criticality)}</div>
+            <div><strong>Regra aplicada:</strong> {detail.sla_rule_id ? detail.sla_rule_id : "-"}</div>
+          </>
+        )}
+      </div>
+
+      {/* Informações Fiscais/Financeiras */}
+      <div className="grid gap-3 rounded border p-4 md:grid-cols-2">
+        <div><strong>NF:</strong> {formatUnavailable(detail.invoice_number)}</div>
+        <div><strong>Documento Fiscal:</strong> {formatUnavailable(detail.fiscal_document)}</div>
+        <div><strong>Cliente:</strong> {formatUnavailable(detail.customer_name)}</div>
+        <div><strong>UF Destino:</strong> {formatUnavailable(detail.destination_uf)}</div>
+        <div><strong>Data Coleta/Saída:</strong> {formatDateBR(detail.collection_departure_date)}</div>
+        <div><strong>Valor NF:</strong> {formatCurrencyBRL(detail.invoice_value)}</div>
+        <div><strong>Valor Frete:</strong> {formatCurrencyBRL(detail.freight_value)}</div>
+        <div><strong>% Frete:</strong> {formatPercentage(detail.freight_percentage)}</div>
+        <div><strong>Valor (Legado):</strong> {formatCurrencyBRL(detail.amount)}</div>
+        <div><strong>Entrega Estimada:</strong> {formatDateBR(detail.estimated_delivery)}</div>
+        <div><strong>Entrega Real:</strong> {formatDateBR(detail.actual_delivery)}</div>
+        <div><strong>Vencimento:</strong> {formatDateBR(detail.due_date)}</div>
       </div>
 
       <section className="space-y-3 rounded border p-4">

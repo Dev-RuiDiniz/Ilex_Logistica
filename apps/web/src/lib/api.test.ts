@@ -11,6 +11,7 @@ import {
   listCarriers,
   listDeliveries,
   listShipments,
+  previewShipmentImport,
   promoteDelivery,
   updateCarrier,
   uploadShipmentsCsv,
@@ -105,5 +106,14 @@ describe("api exports e assinaturas", () => {
 
   it("promoteDelivery recebe token, deliveryId e payload (LOG-022)", () => {
     expect(promoteDelivery.length).toBe(3);
+  });
+
+  // BETA-012B: New preview function
+  it("previewShipmentImport esta exportado (BETA-012B)", () => {
+    expect(typeof previewShipmentImport).toBe("function");
+  });
+
+  it("previewShipmentImport recebe token e file (BETA-012B)", () => {
+    expect(previewShipmentImport.length).toBe(2);
   });
 });

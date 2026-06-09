@@ -7,6 +7,7 @@ import type {
   DeliveryListResponse,
   ExceptionShipmentListResponse,
   ImportConfirmResponse,
+  ImportPreviewV2Response,
   PromoteDeliveryRequest,
   PromoteDeliveryResponse,
   ShipmentDetail,
@@ -113,8 +114,15 @@ export async function uploadShipmentsCsv(token: string, file: File): Promise<Upl
   return requestMultipart<UploadResponse>("/shipments/upload", formData, token);
 }
 
+// BETA-012B: New preview endpoint using /api/v1/imports/preview
+export async function previewShipmentImport(token: string, file: File): Promise<ImportPreviewV2Response> {
+  const formData = new FormData();
+  formData.append("file", file);
+  return requestMultipart<ImportPreviewV2Response>("/imports/preview", formData, token);
+}
+
 export async function confirmShipmentsImport(token: string, importId: number): Promise<ImportConfirmResponse> {
-  return request<ImportConfirmResponse>("/shipments/import", {
+  return request<ImportConfirmResponse>("/imports/confirm", {
     method: "POST",
     headers: { Authorization: `Bearer ${token}` },
     body: JSON.stringify({ import_id: importId, confirm: true }),

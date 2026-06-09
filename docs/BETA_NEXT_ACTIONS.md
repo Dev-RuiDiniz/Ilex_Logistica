@@ -39,6 +39,45 @@ Próximas ações pós BETA-009S para o projeto Ilex Logística.
 
 ---
 
+### BETA-012B: Frontend de Upload, Preview, Erros por Linha e Confirmação de Importação
+**Status:** ✅ Implementado
+**Branch:** `feature/beta-012b-import-upload-preview-confirm-frontend`
+**Data:** 2026-06-10
+
+**Implementado:**
+- ✅ Atualização de tipos TypeScript (RowValidationError, ValidatedRowData, ImportPreviewV2Response, ImportConfirmResponse)
+- ✅ Nova função previewShipmentImport no API client
+- ✅ Atualização de confirmShipmentsImport para usar /api/v1/imports/confirm
+- ✅ Extração de helpers de formatação (formatCurrencyBRL, formatPercentage, formatDateBR, formatUnavailable)
+- ✅ Atualização da tela de importação com novos estados e fluxos
+- ✅ Suporte a CSV e XLSX
+- ✅ Preview com tabela de dados fiscais/financeiros
+- ✅ Exibição de erros por linha com severidade
+- ✅ Exibição de warnings separados
+- ✅ Bloqueio de confirmação quando há erro bloqueante
+- ✅ Exibição de resultado final com created_shipments
+- ✅ 17 testes TDD implementados (15 page.test.tsx + 2 api.test.ts)
+- ✅ Documentação completa
+
+**Arquivos Criados:**
+- `apps/web/src/app/(private)/shipments/import/page.test.tsx`
+- `docs/BETA_012B_IMPORT_UPLOAD_PREVIEW_CONFIRM_FRONTEND.md`
+
+**Arquivos Atualizados:**
+- `apps/web/src/lib/types.ts`
+- `apps/web/src/lib/api.ts`
+- `apps/web/src/lib/shipment-utils.ts`
+- `apps/web/src/app/(private)/shipments/import/page.tsx`
+- `apps/web/src/lib/api.test.ts`
+- `apps/web/src/app/(private)/shipments/page.tsx` (import de helpers)
+
+**Limitações Conhecidas:**
+- Nenhuma limitação conhecida
+
+**Documentação:** `docs/BETA_012B_IMPORT_UPLOAD_PREVIEW_CONFIRM_FRONTEND.md`
+
+---
+
 ## Ações Imediatas (Antes de Merge dos PRs Beta)
 
 ### 1. Revisar Draft PRs na Ordem Correta

@@ -53,6 +53,16 @@ export interface CSVRowError {
   value?: string;
 }
 
+// BETA-012A: Enhanced error type with severity
+export interface RowValidationError {
+  row_number: number;
+  field: string;
+  message: string;
+  value?: string;
+  severity: "error" | "warning";
+  is_blocking: boolean;
+}
+
 export interface UploadResponse {
   import_id: number | null;
   status: "validated" | "failed";
@@ -60,6 +70,36 @@ export interface UploadResponse {
   valid_rows: number;
   invalid_rows: number;
   errors: CSVRowError[];
+}
+
+// BETA-012A: Validated row data for preview
+export interface ValidatedRowData {
+  row_number: number;
+  data: {
+    tracking_code: string;
+    carrier_id: number;
+    invoice_number: string;
+    invoice_value: number;
+    freight_value: number;
+    collection_departure_date: string;
+    customer_name: string;
+    destination_uf: string;
+  };
+}
+
+// BETA-012A: Preview response with enhanced error handling
+export interface ImportPreviewV2Response {
+  import_id: number;
+  filename: string;
+  file_type: string;
+  file_hash: string;
+  total_rows: number;
+  valid_rows: number;
+  invalid_rows: number;
+  duplicate_rows: number;
+  preview_items: ValidatedRowData[];
+  errors: RowValidationError[];
+  warnings: RowValidationError[];
 }
 
 export interface ImportConfirmRequest {
@@ -75,6 +115,8 @@ export interface ImportConfirmResponse {
   invalid_rows: number;
   imported_count: number;
   rejected_count: number;
+  duplicates_count: number;
+  created_shipments: number[];
   errors: CSVRowError[];
 }
 

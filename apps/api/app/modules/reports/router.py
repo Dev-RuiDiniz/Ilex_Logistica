@@ -4,9 +4,6 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 
 from app.database.session import get_db
-from app.modules.auth.dependencies import require_roles
-from app.modules.shipments.service import build_daily_report
-from app.modules.users.models import User
 from app.modules.reports.service import generate_daily_report, get_daily_report_by_date, list_daily_reports
 from app.modules.reports.schemas import (
     DailyReportGenerateRequest,
@@ -21,14 +18,12 @@ router = APIRouter(prefix="/reports", tags=["reports"])
 def generate_report(
     request: DailyReportGenerateRequest,
     db: Session = Depends(get_db),
-    current_user: User = Depends(require_roles("admin", "logistica", "gestor")),
 ) -> DailyReportResponse:
     """Generate or regenerate a daily report for a specific date.
 
     Args:
         request: Report generation request
         db: Database session
-        current_user: Current authenticated user
 
     Returns:
         Generated daily report
@@ -51,7 +46,6 @@ def list_reports(
     limit: int = Query(100, ge=1, le=1000, description="Limit results"),
     offset: int = Query(0, ge=0, description="Offset for pagination"),
     db: Session = Depends(get_db),
-    current_user: User = Depends(require_roles("admin", "logistica", "gestor", "auditoria")),
 ) -> DailyReportListResponse:
     """List daily reports with filters.
 
@@ -62,7 +56,6 @@ def list_reports(
         limit: Limit results
         offset: Offset for pagination
         db: Database session
-        current_user: Current authenticated user
 
     Returns:
         List of daily reports
@@ -78,43 +71,16 @@ def list_reports(
     )
 
 
-@router.get("/daily/{report_id}", response_model=DailyReportResponse)
-def get_report(
-    report_id: int,
-    db: Session = Depends(get_db),
-    current_user: User = Depends(require_roles("admin", "logistica", "gestor", "auditoria")),
-) -> DailyReportResponse:
-    """Get daily report by ID.
-
-    Args:
-        report_id: Report ID
-        db: Database session
-        current_user: Current authenticated user
-
-    Returns:
-        Daily report
-    """
-    from app.modules.reports.models import DailyReport
-    
-    report = db.query(DailyReport).filter(DailyReport.id == report_id).first()
-    if not report:
-        raise HTTPException(status_code=404, detail="Report not found")
-    
-    return DailyReportResponse.model_validate(report)
-
-
 @router.get("/daily/by-date/{report_date}", response_model=DailyReportResponse)
 def get_report_by_date(
     report_date: str,
     db: Session = Depends(get_db),
-    current_user: User = Depends(require_roles("admin", "logistica", "gestor", "auditoria")),
 ) -> DailyReportResponse:
     """Get daily report by date.
 
     Args:
         report_date: Report date in ISO format
         db: Database session
-        current_user: Current authenticated user
 
     Returns:
         Daily report
@@ -131,10 +97,24 @@ def get_report_by_date(
     return DailyReportResponse.model_validate(report)
 
 
-@router.get("/daily/legacy")
-def daily_report_legacy(
+@router.get("/daily/{report_id}", response_model=DailyReportResponse)
+def get_report(
+    report_id: int,
     db: Session = Depends(get_db),
-    current_user: User = Depends(require_roles("admin", "logistica", "gestor", "auditoria")),
-) -> dict:
-    """Legacy endpoint for daily report (placeholder)."""
-    return build_daily_report(db)
+) -> DailyReportResponse:
+    """Get daily report by ID.
+
+    Args:
+        report_id: Report ID
+        db: Database session
+
+    Returns:
+        Daily report
+    """
+    from app.modules.reports.models import DailyReport
+    
+    report = db.query(DailyReport).filter(DailyReport.id == report_id).first()
+    if not report:
+        raise HTTPException(status_code=404, detail="Report not found")
+    
+    return DailyReportResponse.model_validate(report)

@@ -5,6 +5,7 @@ from fastapi import FastAPI, Request
 from app.core.errors import register_exception_handlers
 from app.modules.auth.router import router as auth_router
 from app.modules.carriers.router import router as carriers_router
+from app.modules.dashboard.router import router as dashboard_router
 from app.modules.health.router import router as health_router
 from app.modules.shipments.router import router as shipments_router
 from app.modules.imports.router import router as imports_router
@@ -42,6 +43,7 @@ def create_app() -> FastAPI:
     app.include_router(reports_router, prefix="/api/v1")
     app.include_router(users_router, prefix="/api/v1")
     app.include_router(sla_router, prefix="/api/v1")
+    app.include_router(dashboard_router, prefix="/api/v1")
     app.include_router(health_router)
     return app
 

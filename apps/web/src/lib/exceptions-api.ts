@@ -55,7 +55,7 @@ export async function getExceptionsPanel(
 ): Promise<ExceptionsPanelResponse> {
   // Remove undefined and empty string values
   const cleanFilters = Object.fromEntries(
-    Object.entries(filters).filter(([_, value]) => value !== undefined && value !== "")
+    Object.entries(filters).filter(([, value]) => value !== undefined && value !== "")
   );
 
   // Build query string

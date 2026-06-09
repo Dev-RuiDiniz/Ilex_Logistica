@@ -2,7 +2,7 @@
 
 import { FormEvent, useEffect, useState } from "react";
 
-import { createUser, inactivateUser, listUsers, updateUser } from "@/lib/api";
+import { createUser, listUsers, updateUser } from "@/lib/api";
 import { useAuth } from "@/features/auth/auth-provider";
 import type { UserListItem, UserRole } from "@/lib/types";
 
@@ -67,7 +67,7 @@ export default function UsersPage() {
   const onInactivate = async (item: UserListItem) => {
     if (!session) return;
     try {
-      await inactivateUser(session.accessToken, item.id);
+      await updateUser(session.accessToken, item.id, { is_active: false });
       await reloadUsers();
     } catch {
       setError("Falha ao inativar usuário.");

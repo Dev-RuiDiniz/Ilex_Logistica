@@ -1,4 +1,4 @@
-from datetime import datetime
+﻿from datetime import datetime
 from typing import Any
 
 from pydantic import BaseModel, Field, field_validator
@@ -90,6 +90,13 @@ class ShipmentListItem(BaseModel):
     due_date: datetime | None = None
     delay_days: int
     criticality: str
+    # Novos campos fiscais/financeiros (BETA-011A)
+    freight_value: float | None = None
+    invoice_value: float | None = None
+    freight_percentage: float | None = None
+    collection_departure_date: datetime | None = None
+    customer_name: str | None = None
+    destination_uf: str | None = None
     created_at: datetime
     updated_at: datetime
 

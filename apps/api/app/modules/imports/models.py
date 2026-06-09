@@ -1,9 +1,13 @@
 from datetime import UTC, date, datetime
+from typing import TYPE_CHECKING
 
 from sqlalchemy import Date, DateTime, Integer, Numeric, String
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.database.base import Base
+
+if TYPE_CHECKING:
+    pass
 
 
 class ImportHistory(Base):
@@ -18,6 +22,10 @@ class ImportHistory(Base):
     imported_count: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     rejected_count: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     status: Mapped[str] = mapped_column(String(20), nullable=False, default="SUCCESS")
+    # BETA-012A: Additional metadata fields
+    source: Mapped[str | None] = mapped_column(String(50), nullable=True)
+    import_metadata: Mapped[str | None] = mapped_column(String, nullable=True)  # JSON stored as text
+    imported_by: Mapped[int | None] = mapped_column(Integer, nullable=True, index=True)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), nullable=False, default=lambda: datetime.now(UTC), index=True
     )

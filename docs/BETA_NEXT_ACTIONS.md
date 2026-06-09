@@ -1,6 +1,10 @@
 # BETA NEXT ACTIONS
 
+<<<<<<< HEAD
 Próximas ações pós BETA-009S para o projeto Ilex Logística.
+=======
+Próximas ações pós BETA-005 para o projeto Ilex Logística.
+>>>>>>> origin/main
 
 ## Ações Imediatas (Antes de Merge dos PRs Beta)
 
@@ -13,10 +17,13 @@ Próximas ações pós BETA-009S para o projeto Ilex Logística.
 5. PR #10: BETA-003 - Cobertura de Testes e Relatórios
 6. PR #11: BETA-004 - Testes de Migrations e Rollback
 7. PR #12: BETA-005 - Documentação Final, Checklists e Consolidação Beta
+<<<<<<< HEAD
 8. PR #13: BETA-006 - Auditoria de PRs, CI e Plano de Merge Seguro
 9. PR #14: BETA-007 - Convergência de PRs e Validação Integrada
 10. PR #15: BETA-008 - Bootstrap de CI Base e Plano de Conversão Draft para Ready
 11. PR #17: BETA-009S - Revalidação Empilhada sobre CI Bootstrap
+=======
+>>>>>>> origin/main
 
 **Comando:**
 ```bash
@@ -34,7 +41,10 @@ gh pr view <pr-number>
 - Todos os workflows de CI passam
 - Nenhum teste falha
 - Nenhum erro de build
+<<<<<<< HEAD
 - Nenhum warning crítico
+=======
+>>>>>>> origin/main
 
 **Comando:**
 ```bash
@@ -88,6 +98,7 @@ python scripts/validate_docs.py
 
 ### 1. Merge Manual Planejado
 **Processo:**
+<<<<<<< HEAD
 1. Merge PR #15 BETA-008 primeiro (se aprovado pelo mantenedor)
 2. Merge PR #17 BETA-009S (se aprovado pelo mantenedor)
 3. Merge PR #6 BETA-000
@@ -98,13 +109,25 @@ python scripts/validate_docs.py
 8. Merge PR #12 BETA-005
 9. Merge PR #13 BETA-006
 10. Merge PR #14 BETA-007
+=======
+1. Merge PR #6 (BETA-000) primeiro
+2. Merge PR #7 e PR #8 (BETA-001) juntos
+3. Merge PR #9 (BETA-002)
+4. Merge PR #10 (BETA-003)
+5. Merge PR #11 (BETA-004)
+6. Merge PR #12 (BETA-005)
+>>>>>>> origin/main
 
 **Comando:**
 ```bash
 gh pr merge <pr-number> --merge --delete-branch
 ```
 
+<<<<<<< HEAD
 **Responsível:** Mantenedor
+=======
+**Responsável:** Mantenedor
+>>>>>>> origin/main
 **Status:** Pendente aprovação
 
 ---
@@ -121,7 +144,11 @@ git tag pre-beta-backup-$(date +%Y%m%d_%H%M%S)
 git push origin --tags
 ```
 
+<<<<<<< HEAD
 **Responsível:** Mantenedor
+=======
+**Responsável:** Mantenedor
+>>>>>>> origin/main
 **Status:** Pendente
 
 ---
@@ -139,7 +166,11 @@ gh run list
 python scripts/beta_validate.py
 ```
 
+<<<<<<< HEAD
 **Responsível:** Mantenedor
+=======
+**Responsável:** Mantenedor
+>>>>>>> origin/main
 **Status:** Pendente
 
 ---
@@ -179,7 +210,11 @@ cd apps/api
 python -m pytest tests/test_migrations.py -v
 ```
 
+<<<<<<< HEAD
 **Responsível:** Desenvolvedor
+=======
+**Responsável:** Desenvolvedor
+>>>>>>> origin/main
 **Status:** Pendente
 
 ---
@@ -198,7 +233,11 @@ cd apps/web
 npx playwright test
 ```
 
+<<<<<<< HEAD
 **Responsível:** Desenvolvedor
+=======
+**Responsável:** Desenvolvedor
+>>>>>>> origin/main
 **Status:** Pendente
 
 ---
@@ -217,7 +256,11 @@ cd apps/web
 npx playwright test
 ```
 
+<<<<<<< HEAD
 **Responsível:** Desenvolvedor
+=======
+**Responsável:** Desenvolvedor
+>>>>>>> origin/main
 **Status:** Pendente
 
 ---
@@ -230,7 +273,11 @@ npx playwright test
 - Profiling de Web
 - Alertas de gargalos
 
+<<<<<<< HEAD
 **Responsível:** Desenvolvedor
+=======
+**Responsável:** Desenvolvedor
+>>>>>>> origin/main
 **Status:** Pendente
 
 ---
@@ -243,7 +290,11 @@ npx playwright test
 - Navegação por teclado
 - Screen reader
 
+<<<<<<< HEAD
 **Responsível:** Desenvolvedor
+=======
+**Responsável:** Desenvolvedor
+>>>>>>> origin/main
 **Status:** Pendente
 
 ---
@@ -256,7 +307,11 @@ npx playwright test
 - Traduções
 - Formatação localizada
 
+<<<<<<< HEAD
 **Responsível:** Desenvolvedor
+=======
+**Responsável:** Desenvolvedor
+>>>>>>> origin/main
 **Status:** Pendente
 
 ---
@@ -284,7 +339,11 @@ npx playwright test
 - Corrigir falhas
 - Atualizar dependências
 
+<<<<<<< HEAD
 **Responsível:** Desenvolvedor
+=======
+**Responsável:** Desenvolvedor
+>>>>>>> origin/main
 **Status:** Recorrente
 
 ---
@@ -297,6 +356,7 @@ npx playwright test
 - Revisar falsos positivos
 - Atualizar allowlist se necessário
 
+<<<<<<< HEAD
 **Responsível:** Desenvolvedor
 **Status:** Recorrente
 
@@ -311,6 +371,9 @@ npx playwright test
 - Atualizar docs/BETA_STACKED_VALIDATION_REPORT.md
 
 **Responsível:** Desenvolvedor
+=======
+**Responsável:** Desenvolvedor
+>>>>>>> origin/main
 **Status:** Recorrente
 
 ---
@@ -325,7 +388,11 @@ npx playwright test
 - Compartilhar documentação
 - Compartilhar comandos oficiais
 
+<<<<<<< HEAD
 **Responsível:** Mantenedor
+=======
+**Responsável:** Mantenedor
+>>>>>>> origin/main
 **Status:** Pendente
 
 ---
@@ -338,7 +405,11 @@ npx playwright test
 - Documentar decisões de tecnologia
 - Documentar decisões de processo
 
+<<<<<<< HEAD
 **Responsível:** Desenvolvedor
+=======
+**Responsável:** Desenvolvedor
+>>>>>>> origin/main
 **Status:** Recorrente
 
 ---
@@ -364,7 +435,10 @@ npx playwright test
 | Atualizar documentação | Desenvolvedor | Recorrente | Média |
 | Manter CI verde | Desenvolvedor | Recorrente | Alta |
 | Manter secret scan | Desenvolvedor | Recorrente | Alta |
+<<<<<<< HEAD
 | Manter documentação de convergência | Desenvolvedor | Recorrente | Média |
+=======
+>>>>>>> origin/main
 | Comunicar com equipe | Mantenedor | Pendente | Alta |
 | Documentar decisões | Desenvolvedor | Recorrente | Média |
 
@@ -372,4 +446,8 @@ npx playwright test
 
 **Assinatura:** Devin (SWE-1.6)  
 **Data:** 2026-06-08  
+<<<<<<< HEAD
 **Status:** 🔄 Em execução (BETA-009S - Revalidação Empilhada)
+=======
+**Status:** 🔄 Em execução (BETA-005)
+>>>>>>> origin/main

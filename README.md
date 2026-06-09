@@ -127,6 +127,29 @@ Padrão recomendado (pt-BR + escopo):
 - `chore(infra): ajusta compose para ...`
 - `docs(readme): atualiza guia de setup`
 
+## Validação Beta
+
+Para validação automatizada da fase beta, consulte:
+
+- [Comandos Oficiais](docs/BETA_COMMANDS.md)
+- [Checklist Beta](docs/BETA_CHECKLIST.md)
+- [Gates de Liberação](docs/BETA_RELEASE_GATE.md)
+
+### Comandos Rápidos
+
+```bash
+# Secret scan
+python scripts/check_secrets.py --repo-root .
+
+# Migrations
+python scripts/validate_migrations.py
+
+# Validação beta agregada
+python scripts/beta_validate.py
+```
+
+Para detalhes completos, veja a documentação beta em `docs/`.
+
 ## Status Atual
 
 - Monorepo consolidado com histórico preservado dos domínios:

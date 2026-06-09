@@ -38,6 +38,22 @@ REMOVED_WRAPPERS = [
 
 errors = []
 
+def read_file_with_encoding_fallback(file_path: Path) -> str:
+    """Read file with encoding fallback for robustness."""
+    encodings = ['utf-8', 'utf-8-sig', 'cp1252', 'latin-1']
+    
+    for encoding in encodings:
+        try:
+            content = file_path.read_text(encoding=encoding)
+            if encoding != 'utf-8':
+                print(f"  WARNING: {file_path.name} read with encoding {encoding} (fallback)")
+            return content
+        except UnicodeDecodeError:
+            continue
+    
+    # If all encodings fail, raise the original error
+    return file_path.read_text()
+
 # Check required docs exist
 print("1. Checking required docs...")
 for doc in REQUIRED_DOCS:
@@ -70,7 +86,7 @@ print("\n3. Checking for references to removed Bash wrappers...")
 for doc in REQUIRED_DOCS:
     doc_path = DOCS_DIR / doc
     if doc_path.exists():
-        content = doc_path.read_text()
+        content = read_file_with_encoding_fallback(doc_path)
         for wrapper in REMOVED_WRAPPERS:
             if wrapper in content:
                 errors.append(f"ERROR: {doc} references removed wrapper: {wrapper}")
@@ -88,7 +104,7 @@ SECRET_PATTERNS = ["-----BEGIN PRIVATE KEY-----", "AKIA[0-9A-Z]{16}", "ghp_[a-zA
 for doc in REQUIRED_DOCS:
     doc_path = DOCS_DIR / doc
     if doc_path.exists():
-        content = doc_path.read_text()
+        content = read_file_with_encoding_fallback(doc_path)
         for pattern in SECRET_PATTERNS:
             if pattern in content:
                 errors.append(f"ERROR: {doc} contains potential secret pattern: {pattern}")
@@ -105,7 +121,7 @@ print("\n5. Checking for contradictory status...")
 for doc in REQUIRED_DOCS:
     doc_path = DOCS_DIR / doc
     if doc_path.exists():
-        content = doc_path.read_text()
+        content = read_file_with_encoding_fallback(doc_path)
         if "em execucao" in content.lower() and "concluido" in content.lower():
             errors.append(f"WARNING: {doc} may have contradictory status")
 

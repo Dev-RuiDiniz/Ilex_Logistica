@@ -2098,6 +2098,44 @@ Com base na auditoria funcional e na implementação do BETA-011A e BETA-011B, o
 
 ---
 
+### BETA-016B: Dashboard Beta Frontend e UX Operacional
+**Status:** ✅ Implementado
+**Branch:** `feature/beta-016b-dashboard-beta-frontend`
+**Data:** 2025-01-15
+
+**Implementado:**
+- ✅ API client getDashboardSummary com tipos TypeScript
+- ✅ Página /dashboard com cards de KPI
+- ✅ Top 5 transportadoras por eficiência
+- ✅ Top 10 exceções priorizadas
+- ✅ Filtros globais (mês, ano, cliente, UF, status SLA, atrasada)
+- ✅ Estados de UX (loading, erro, vazio, sucesso)
+- ✅ 31 testes TDD implementados (6 API + 25 página)
+- ✅ Documentação completa
+
+**Arquivos Criados:**
+- `apps/web/src/lib/dashboard-api.ts`
+- `apps/web/src/lib/dashboard-api.test.ts`
+- `apps/web/src/app/(private)/dashboard/page.tsx`
+- `apps/web/src/app/(private)/dashboard/dashboard-page.test.tsx`
+- `docs/BETA_016B_DASHBOARD_BETA_FRONTEND.md`
+
+**Arquivos Atualizados:**
+- `apps/web/src/app/(private)/shipments/analytics/exceptions/page.tsx` (correção de lint)
+
+**Limitações Conhecidas:**
+- Sem gráficos avançados (biblioteca pesada não adicionada)
+- Sem alertas/e-mail (módulo não existe)
+- Sem relatório diário (já existe endpoint separado)
+- Sem auditoria completa (Épico 7)
+- Sem E2E (Playwright não configurado)
+- `active_alerts_count` sempre 0 (módulo de alertas não existe)
+- `resolved_count` e `no_update_count` sempre 0 (campos não existem no modelo)
+
+**Documentação:** `docs/BETA_016B_DASHBOARD_BETA_FRONTEND.md`
+
+---
+
 **Assinatura:** Devin (SWE-1.6)  
 **Data:** 2026-06-08  
 **Status:** ✅ Concluído (BETA-010 - Auditoria Funcional Automatizada)

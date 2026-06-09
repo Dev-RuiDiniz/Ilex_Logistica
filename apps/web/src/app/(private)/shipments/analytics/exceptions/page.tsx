@@ -109,7 +109,7 @@ export default function ExceptionsPanelPage() {
               min="1"
               max="12"
               value={filters.month ?? ""}
-              onChange={(e) => handleFilterChange("month", e.target.value ? parseInt(e.target.value) : undefined as any)}
+              onChange={(e) => handleFilterChange("month", e.target.value ? parseInt(e.target.value) : undefined)}
             />
           </div>
           <div>

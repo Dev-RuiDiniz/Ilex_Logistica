@@ -6,6 +6,8 @@ import { createShipmentTreatment, getShipmentDetail, listShipmentTreatments } fr
 import { canEditShipments } from "@/lib/permissions";
 import { useAuth } from "@/features/auth/auth-provider";
 import type { ShipmentDetail, ShipmentTreatment } from "@/lib/types";
+import { formatSlaStatusLabel, getSlaStatusBadgeColor, formatDelayDays, formatDateBR } from "@/lib/sla-helpers";
+import { SlaBadge } from "@/components/SlaBadge";
 
 export default function ShipmentDetailPage({ params }: { params: { id: string } }) {
   const { session } = useAuth();
@@ -30,11 +32,6 @@ export default function ShipmentDetailPage({ params }: { params: { id: string } 
   const formatPercentage = (value: number | null) => {
     if (value === null || value === undefined) return "-";
     return `${value.toFixed(2)}%`;
-  };
-
-  const formatDateBR = (dateString: string | null) => {
-    if (!dateString) return "-";
-    return new Date(dateString).toLocaleDateString("pt-BR");
   };
 
   const formatUnavailable = (value: string | number | null) => {
@@ -106,6 +103,21 @@ export default function ShipmentDetailPage({ params }: { params: { id: string } 
         <div><strong>Carrier ID:</strong> {detail.carrier_id}</div>
         <div className="md:col-span-2"><strong>Origem:</strong> {detail.origin_address}</div>
         <div className="md:col-span-2"><strong>Destino:</strong> {detail.destination_address}</div>
+      </div>
+
+      {/* SLA e Criticidade */}
+      <div className="grid gap-3 rounded border p-4 md:grid-cols-2">
+        {!detail.sla_due_date && !detail.sla_status ? (
+          <div className="md:col-span-2 text-slate-500">Sem SLA</div>
+        ) : (
+          <>
+            <div><strong>Prazo SLA:</strong> {formatDateBR(detail.sla_due_date)}</div>
+            <div><strong>Status SLA:</strong> <SlaBadge status={detail.sla_status} /></div>
+            <div><strong>Atraso em dias:</strong> {formatDelayDays(detail.delay_days)}</div>
+            <div><strong>Criticidade:</strong> {formatUnavailable(detail.criticality)}</div>
+            <div><strong>Regra aplicada:</strong> {detail.sla_rule_id ? detail.sla_rule_id : "-"}</div>
+          </>
+        )}
       </div>
 
       {/* Informações Fiscais/Financeiras */}

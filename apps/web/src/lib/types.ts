@@ -1,4 +1,4 @@
-export type UserRole = "admin" | "logistica" | "gestor" | "auditoria";
+﻿export type UserRole = "admin" | "logistica" | "gestor" | "auditoria";
 
 export interface SessionData {
   accessToken: string;
@@ -44,6 +44,11 @@ export interface Shipment {
   collection_departure_date: string | null;
   customer_name: string | null;
   destination_uf: string | null;
+  // BETA-013A: SLA fields (calculados on-demand)
+  sla_due_date: string | null;
+  sla_status: string | null;
+  is_late: boolean;
+  sla_rule_id: number | null;
 }
 
 export interface CSVRowError {
@@ -142,6 +147,9 @@ export interface ShipmentListParams {
   month?: number;
   year?: number;
   search?: string;
+  // BETA-013A: SLA filters
+  sla_status?: string;
+  is_late?: boolean;
 }
 
 export interface ShipmentListResponse {
@@ -248,4 +256,42 @@ export interface PromoteDeliveryResponse {
   invoice_number: string | null;
   created_at: string;
   updated_at: string;
+}
+
+// BETA-013A: SLA Rule types
+export interface SlaRule {
+  id: number;
+  carrier_id: number | null;
+  destination_uf: string | null;
+  transit_days: number;
+  warning_threshold_days: number;
+  critical_delay_days: number;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface SlaRuleCreate {
+  carrier_id?: number | null;
+  destination_uf?: string | null;
+  transit_days: number;
+  warning_threshold_days: number;
+  critical_delay_days: number;
+  is_active?: boolean;
+}
+
+export interface SlaRuleUpdate {
+  carrier_id?: number | null;
+  destination_uf?: string | null;
+  transit_days?: number | null;
+  warning_threshold_days?: number | null;
+  critical_delay_days?: number | null;
+  is_active?: boolean | null;
+}
+
+export interface SlaRecalculateResponse {
+  processed_count: number;
+  updated_count: number;
+  skipped_count: number;
+  error_count: number;
 }

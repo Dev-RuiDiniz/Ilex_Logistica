@@ -130,7 +130,11 @@ Checklist final de entrada beta para o projeto Ilex Logística.
 - [x] BETA_TEST_COVERAGE_REPORT.md
 
 ### README
+<<<<<<< HEAD
+- [x] README.md atualizado com seção Validação Beta
+=======
 - [ ] README.md atualizado com seção Validação Beta
+>>>>>>> origin/main
 
 ## Evidências por PR
 
@@ -170,8 +174,43 @@ Checklist final de entrada beta para o projeto Ilex Logística.
 - [x] Pendência: Revisão de PR
 
 ### BETA-005
+<<<<<<< HEAD
+- [x] PR #12: Documentação Final, Checklists e Consolidação Beta
+- [x] Branch: feature/beta-005-docs-checklists
+- [x] Status: DRAFT
+- [x] Pendência: Revisão de PR
+
+### BETA-006
+- [x] PR #13: Auditoria de PRs, CI e Plano de Merge Seguro
+- [x] Branch: feature/beta-006-pr-audit-merge-plan
+- [x] Status: DRAFT
+- [x] Pendência: Revisão de PR
+
+### BETA-007
+- [x] PR #14: Convergência de PRs e Validação Integrada
+- [x] Branch: feature/beta-007-integration-convergence
+- [x] Status: DRAFT
+- [x] Pendência: Revisão de PR
+
+### BETA-008
+- [x] PR #15: Bootstrap de CI Base e Plano de Conversão Draft para Ready
+- [x] Branch: feature/beta-008-ci-bootstrap-ready-plan
+- [x] Status: DRAFT
+- [x] Pendência: Revisão de PR
+
+### BETA-009
+- [x] PR #16: Revalidação dos PRs Beta contra CI Base - BLOQUEADO
+- [x] Branch: feature/beta-009-pr-revalidation-after-ci-bootstrap
+- [x] Status: DRAFT
+- [x] Pendência: Merge manual do BETA-008
+
+### BETA-009S
+- [ ] PR #: Revalidação Empilhada sobre CI Bootstrap
+- [ ] Branch: feature/beta-009s-stacked-validation-on-ci-bootstrap
+=======
 - [ ] PR #: Documentação Final, Checklists e Consolidação Beta
 - [ ] Branch: feature/beta-005-docs-checklists
+>>>>>>> origin/main
 - [ ] Status: DRAFT
 - [ ] Pendência: Revisão de PR
 
@@ -236,9 +275,19 @@ python scripts/validate_docs.py
 - [ ] BETA-003: Revisão de PR
 - [ ] BETA-004: Revisão de PR
 - [ ] BETA-005: Revisão de PR
+<<<<<<< HEAD
+- [ ] BETA-006: Revisão de PR
+- [ ] BETA-007: Revisão de PR
+- [ ] BETA-008: Revisão de PR (merge manual em main)
+- [ ] BETA-009S: Revisão de PR
+
+### CI/CD
+- [ ] CI verde em todos os PRs
+=======
 
 ### CI/CD
 - [ ] CI verde em todos os PRs beta
+>>>>>>> origin/main
 - [ ] Nenhum conflito entre PRs
 - [ ] Testes passando em todos os PRs
 
@@ -257,4 +306,8 @@ python scripts/validate_docs.py
 
 **Assinatura:** Devin (SWE-1.6)  
 **Data:** 2026-06-08  
+<<<<<<< HEAD
+**Status:** 🔄 Em execução (BETA-009S - Revalidação Empilhada)
+=======
 **Status:** 🔄 Em execução (BETA-005)
+>>>>>>> origin/main

@@ -2,7 +2,7 @@
 
 Próximas ações pós BETA-009S para o projeto Ilex Logística.
 
-## Ações Recentes (BETA-012A)
+## Ações Recentes (BETA-015A)
 
 ### BETA-012A: Importação CSV/XLSX Backend com Preview, Validação e Confirmação
 **Status:** ✅ Implementado  
@@ -226,6 +226,45 @@ Próximas ações pós BETA-009S para o projeto Ilex Logística.
 - Nenhuma limitação conhecida
 
 **Documentação:** `docs/BETA_013A_SLA_DELAY_CRITICALITY_BACKEND.md`
+
+---
+
+### BETA-015A: Painel de Exceções com SLA Backend
+**Status:** 🔄 Em Andamento
+**Branch:** `feature/beta-015a-exceptions-panel-sla-backend`
+**Data:** 2026-06-18
+
+**Implementado:**
+- ✅ Service exceptions_service.py para agregação de exceções
+- ✅ Endpoint GET /api/v1/shipments/analytics/exceptions
+- ✅ Schemas ExceptionSummary, ExceptionItem, ExceptionsPanelResponse
+- ✅ 35 testes TDD implementados (30 service + 5 API)
+- ✅ Integração com analytics_schemas.py
+- ✅ Integração com router.py
+- ✅ Fixtures em conftest.py
+- ✅ Documentação completa
+
+**Arquivos Criados:**
+- `apps/api/app/modules/shipments/exceptions_service.py`
+- `apps/api/tests/test_exceptions_panel_sla.py`
+- `apps/api/tests/test_exceptions_panel_api.py`
+- `docs/BETA_015A_EXCEPTIONS_PANEL_SLA_BACKEND.md`
+
+**Arquivos Modificados:**
+- `apps/api/app/modules/shipments/analytics_schemas.py` (ExceptionSummary, ExceptionItem, ExceptionsPanelResponse)
+- `apps/api/app/modules/shipments/router.py` (endpoint GET /api/v1/shipments/analytics/exceptions)
+- `apps/api/tests/conftest.py` (fixtures para exceções)
+
+**Base:**
+- BETA-014B (Eficiência por Transportadora)
+
+**Próximo Passo:**
+- BETA-015B (Frontend do painel de exceções)
+
+**Limitações Conhecidas:**
+- Nenhuma limitação conhecida
+
+**Documentação:** `docs/BETA_015A_EXCEPTIONS_PANEL_SLA_BACKEND.md`
 
 ---
 

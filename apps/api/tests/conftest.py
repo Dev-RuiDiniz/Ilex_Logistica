@@ -92,3 +92,10 @@ def login(client: TestClient, email: str, password: str) -> str:
     response = client.post("/api/v1/auth/login", json={"email": email, "password": password})
     assert response.status_code == 200
     return response.json()["access_token"]
+
+
+@pytest.fixture
+def auth_headers(db_session: Session, client: TestClient, seed_roles) -> dict[str, str]:
+    create_user_with_roles(db_session, "test@example.com", "test123", ["admin"])
+    token = login(client, "test@example.com", "test123")
+    return {"Authorization": f"Bearer {token}"}

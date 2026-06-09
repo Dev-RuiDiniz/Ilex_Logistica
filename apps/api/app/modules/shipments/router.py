@@ -15,6 +15,7 @@ from app.modules.shipments.schemas import (
     ShipmentTreatmentResponse,
     UploadResponse,
 )
+from app.modules.shipments.analytics_schemas import CarrierEfficiencyResponse
 from app.modules.shipments.service import (
     create_treatment,
     get_shipment_detail,
@@ -24,6 +25,8 @@ from app.modules.shipments.service import (
     parse_csv_file,
     process_import,
 )
+
+from app.modules.shipments.analytics_service import calculate_carrier_efficiency
 
 router = APIRouter(prefix="/shipments", tags=["shipments"])
 
@@ -150,6 +153,39 @@ def confirm_import(
         raise HTTPException(status_code=400, detail=result["errors"][0].message if result["errors"] else "erro ao processar importacao")
 
     return ImportConfirmResponse(**result)
+
+
+@router.get("/analytics/carrier-efficiency", response_model=CarrierEfficiencyResponse)
+def get_carrier_efficiency(
+    estimated_delivery_from: Annotated[str | None, Query()] = None,
+    estimated_delivery_to: Annotated[str | None, Query()] = None,
+    month: Annotated[int | None, Query()] = None,
+    year: Annotated[int | None, Query()] = None,
+    customer_name: Annotated[str | None, Query()] = None,
+    destination_uf: Annotated[str | None, Query()] = None,
+    carrier_id: Annotated[int | None, Query()] = None,
+    status: Annotated[str | None, Query()] = None,
+    criticality: Annotated[str | None, Query()] = None,
+    sla_status: Annotated[str | None, Query()] = None,
+    is_late: Annotated[bool | None, Query()] = None,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+) -> CarrierEfficiencyResponse:
+    result = calculate_carrier_efficiency(
+        db=db,
+        estimated_delivery_from=estimated_delivery_from,
+        estimated_delivery_to=estimated_delivery_to,
+        month=month,
+        year=year,
+        customer_name=customer_name,
+        destination_uf=destination_uf,
+        carrier_id=carrier_id,
+        status=status,
+        criticality=criticality,
+        sla_status=sla_status,
+        is_late=is_late,
+    )
+    return CarrierEfficiencyResponse(**result)
 
 
 @router.get("/{shipment_id}", response_model=ShipmentDetailResponse)

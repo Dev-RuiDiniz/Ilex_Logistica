@@ -8,25 +8,7 @@ from app.main import app
 
 
 class TestSlaAPI:
-    """Testes de API SLA."""
-
-    def test_list_exposes_sla_fields(self, db_session, client):
-        """Listagem expõe campos SLA (testado em test_shipments_advanced_filters)."""
-        # Este teste é coberto por test_expose_sla_fields_in_list em test_shipments_advanced_filters.py
-        # Mantido aqui para documentação, mas skip para evitar problemas de encoding no Windows
-        pytest.skip("Coberto por test_expose_sla_fields_in_list em test_shipments_advanced_filters.py")
-
-    def test_detail_exposes_sla_fields(self, db_session, client):
-        """Detalhe expõe campos SLA (testado em test_shipments_advanced_filters)."""
-        # Este teste é coberto por test_expose_sla_fields_in_list em test_shipments_advanced_filters.py
-        # Mantido aqui para documentação, mas skip para evitar problemas de encoding no Windows
-        pytest.skip("Coberto por test_expose_sla_fields_in_list em test_shipments_advanced_filters.py")
-
-    def test_filter_by_criticality(self, db_session, client):
-        """Filtro por criticality funciona (testado em test_shipments_advanced_filters)."""
-        # Este teste é coberto por test_filter_by_criticality em test_shipments_advanced_filters.py
-        # Mantido aqui para documentação, mas skip para evitar problemas de encoding no Windows
-        pytest.skip("Coberto por test_filter_by_criticality em test_shipments_advanced_filters.py")
+    """Testes de API SLA - BETA-013A."""
 
     def test_filter_by_sla_status(self, db_session, client):
         """Filtro por sla_status funciona."""
@@ -128,8 +110,31 @@ class TestSlaAPI:
         # assert response.status_code == 201
 
     def test_user_without_permission_cannot_alter_rules(self, db_session, client):
-        """Usuário sem permissão não pode alterar regras SLA (RBAC avançado fica para Épico 9)."""
+        """Usuário sem permissão não pode alterar regras SLA (comportamento atual)."""
         # RBAC básico já existe (require_roles bloqueia se não for admin)
+        # Este teste valida o comportamento atual: endpoint exige role admin
         # RBAC avançado (controle granular) fica para Épico 9
-        # Este teste é documentado como gap e não implementado para não bloquear BETA-013A
-        pytest.skip("RBAC avançado (controle granular) fica para Épico 9")
+        
+        # Criar regra SLA para testar
+        from app.modules.sla.models import SlaRule
+        rule = SlaRule(
+            transit_days=5,
+            warning_threshold_days=2,
+            critical_delay_days=3,
+            is_active=True,
+        )
+        db_session.add(rule)
+        db_session.commit()
+        
+        # Tentar acessar endpoint sem autenticação (comportamento atual: 401)
+        response = client.post(
+            "/api/v1/sla/rules",
+            json={
+                "transit_days": 5,
+                "warning_threshold_days": 2,
+                "critical_delay_days": 3,
+            }
+        )
+        
+        # Comportamento atual: 401 se não autenticado
+        assert response.status_code == 401

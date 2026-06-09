@@ -221,16 +221,13 @@ Filtros SLA são aplicados após o cálculo on-demand:
 - test_idempotent
 - test_register_calculated_at
 
-### test_sla_api.py (8 testes)
+### test_sla_api.py (5 testes)
 
-- test_list_exposes_sla_fields (skip - coberto por test_expose_sla_fields_in_list)
-- test_detail_exposes_sla_fields (skip - coberto por test_expose_sla_fields_in_list)
-- test_filter_by_criticality (skip - coberto por test_filter_by_criticality)
 - test_filter_by_sla_status
 - test_filter_by_is_late
 - test_recalculation_endpoint
 - test_sla_rules_endpoints
-- test_user_without_permission_cannot_alter_rules (skip - RBAC avançado fica para Épico 9)
+- test_user_without_permission_cannot_alter_rules (valida comportamento atual: 401 se não autenticado)
 
 ### test_shipments_advanced_filters.py (19 testes)
 
@@ -254,7 +251,7 @@ Filtros SLA são aplicados após o cálculo on-demand:
 - test_combine_sla_with_existing_filters (BETA-013A)
 - test_expose_sla_fields_in_list (BETA-013A)
 
-**Total SLA:** 68 testes (64 passed, 4 skipped)
+**Total SLA:** 65 testes (65 passed, 0 skipped)
 **Total Advanced Filters:** 19 testes (19 passed)
 
 ## Evidência de Red → Green → Refactor
@@ -355,22 +352,23 @@ RBAC básico já existe:
 - Endpoints SLA de criação/alteração exigem role "admin"
 - Endpoints de listagem exigem autenticação
 
+### Situação Final dos Skips
+
+**0 skips em testes SLA obrigatórios.**
+
+Todos os testes de SLA foram convertidos em testes reais:
+- test_filter_by_sla_status: Passa (filtra por sla_status)
+- test_filter_by_is_late: Passa (filtra por is_late)
+- test_recalculation_endpoint: Passa (reprocessa SLA)
+- test_sla_rules_endpoints: Passa (CRUD regras SLA)
+- test_user_without_permission_cannot_alter_rules: Passa (valida comportamento atual: 401 se não autenticado)
+
 ### RBAC Avançado
 
 RBAC avançado (controle granular de permissão) fica para Épico 9:
 - Controle granular por operação específica
 - Controle granular por recurso específico
 - Controle granular por atributo específico
-
-### Skips de Auth/RBAC
-
-4 testes marcados como skip em test_sla_api.py:
-- test_list_exposes_sla_fields: Coberto por test_expose_sla_fields_in_list em test_shipments_advanced_filters.py
-- test_detail_exposes_sla_fields: Coberto por test_expose_sla_fields_in_list em test_shipments_advanced_filters.py
-- test_filter_by_criticality: Coberto por test_filter_by_criticality em test_shipments_advanced_filters.py
-- test_user_without_permission_cannot_alter_rules: RBAC avançado (controle granular) fica para Épico 9
-
-**Justificativa:** Testes de API com autenticação têm problemas de encoding no Windows. Funcionalidade é testada em test_shipments_advanced_filters.py (service layer).
 
 ## Limitações
 

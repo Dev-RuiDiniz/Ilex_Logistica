@@ -2,21 +2,51 @@
 
 import { ChangeEvent, useState } from "react";
 
-import { confirmShipmentsImport, uploadShipmentsCsv } from "@/lib/api";
+import { confirmShipmentsImport, previewShipmentImport } from "@/lib/api";
 import { canEditShipments } from "@/lib/permissions";
-import { useAuth } from "@/features/auth/auth-provider";
-import type { CSVRowError, UploadResponse, ImportConfirmResponse } from "@/lib/types";
 
-type ImportState = "idle" | "uploading" | "validated" | "importing" | "completed" | "failed";
+import { useAuth } from "@/features/auth/auth-provider";
+import type { ImportConfirmResponse, ImportPreviewV2Response, RowValidationError, ValidatedRowData } from "@/lib/types";
+
+// Formatting helpers
+function formatCurrencyBRL(value: number | null): string {
+  if (value === null || value === undefined) return "-";
+  return new Intl.NumberFormat("pt-BR", {
+    style: "currency",
+    currency: "BRL",
+  }).format(value);
+}
+
+function formatDateBR(dateString: string | null): string {
+  if (!dateString) return "-";
+  return new Date(dateString).toLocaleDateString("pt-BR");
+}
+
+function formatUnavailable(value: string | number | null): string {
+  if (value === null || value === undefined || value === "") return "-";
+  return String(value);
+}
+
+type ImportState =
+  | "idle"
+  | "file_selected"
+  | "preview_loading"
+  | "preview_success"
+  | "preview_with_errors"
+  | "confirm_loading"
+  | "confirm_success"
+  | "confirm_error"
+  | "api_error";
 
 export default function ShipmentsImportPage() {
   const { session } = useAuth();
   const [state, setState] = useState<ImportState>("idle");
   const [error, setError] = useState("");
   const [file, setFile] = useState<File | null>(null);
-  const [uploadResponse, setUploadResponse] = useState<UploadResponse | null>(null);
-  const [importResponse, setImportResponse] = useState<ImportConfirmResponse | null>(null);
   const [fileName, setFileName] = useState("");
+  const [previewResponse, setPreviewResponse] = useState<ImportPreviewV2Response | null>(null);
+  const [confirmResponse, setConfirmResponse] = useState<ImportConfirmResponse | null>(null);
+  const [layout, setLayout] = useState<"generic" | "braspress_assisted">("generic"); // BETA-012C: Layout selector
 
   const editable = canEditShipments(session?.role ?? "auditoria");
 
@@ -26,157 +56,259 @@ export default function ShipmentsImportPage() {
       setFile(null);
       setFileName("");
       setError("");
+      setState("idle");
       return;
     }
 
-    // Validar por MIME type e extensão
+    // Validar por MIME type e extensão - aceitar CSV e XLSX
     const isCsvByType = selected.type === "text/csv" || selected.type === "application/vnd.ms-excel";
     const isCsvByExtension = selected.name.toLowerCase().endsWith(".csv");
+    const isXlsxByType =
+      selected.type === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" ||
+      selected.type === "application/vnd.ms-excel.sheet.macroEnabled.12";
+    const isXlsxByExtension = selected.name.toLowerCase().endsWith(".xlsx");
 
-    if (isCsvByType || isCsvByExtension) {
+    if (isCsvByType || isCsvByExtension || isXlsxByType || isXlsxByExtension) {
       setFile(selected);
       setFileName(selected.name);
       setError("");
+      setState("file_selected");
     } else {
       setFile(null);
       setFileName("");
-      setError("Por favor, selecione um arquivo CSV válido (.csv).");
+      setError("Por favor, selecione um arquivo CSV ou XLSX válido (.csv, .xlsx).");
+      setState("idle");
     }
   };
 
-  const onUpload = async () => {
+  const onPreview = async () => {
     if (!session || !file || !editable) return;
-    setState("uploading");
+    setState("preview_loading");
     setError("");
     try {
-      const response = await uploadShipmentsCsv(session.accessToken, file);
-      setUploadResponse(response);
-      if (response.status === "validated") {
-        setState("validated");
+      const source = layout === "braspress_assisted" ? "braspress_assisted" : undefined;
+      const response = await previewShipmentImport(session.accessToken, file, source);
+      setPreviewResponse(response);
+      if (response.errors.some((err) => err.is_blocking)) {
+        setState("preview_with_errors");
       } else {
-        setState("failed");
-        if (response.errors.length > 0) {
-          setError("Validação falhou. Verifique os erros abaixo.");
-        } else {
-          setError("Falha na validação do arquivo CSV.");
-        }
+        setState("preview_success");
       }
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : "Falha ao fazer upload do arquivo CSV.";
+      const errorMessage = err instanceof Error ? err.message : "Falha ao fazer preview do arquivo.";
       setError(errorMessage);
-      setState("failed");
+      setState("api_error");
     }
   };
 
   const onConfirm = async () => {
-    if (!session || !uploadResponse?.import_id || !editable) return;
-    setState("importing");
+    if (!session || !previewResponse?.import_id || !editable) return;
+    setState("confirm_loading");
     setError("");
     try {
-      const response = await confirmShipmentsImport(session.accessToken, uploadResponse.import_id);
-      setImportResponse(response);
+      const response = await confirmShipmentsImport(session.accessToken, previewResponse.import_id);
+      setConfirmResponse(response);
       if (response.status === "completed") {
-        setState("completed");
+        setState("confirm_success");
       } else {
-        setState("failed");
-        if (response.errors.length > 0) {
-          setError("Importação falhou. Verifique os erros abaixo.");
-        } else {
-          setError("Falha ao confirmar importação.");
-        }
+        setState("confirm_error");
+        setError("Importação falhou. Verifique os erros abaixo.");
       }
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : "Falha ao confirmar importação.";
       setError(errorMessage);
-      setState("failed");
+      setState("confirm_error");
     }
   };
 
   const onReset = () => {
     setFile(null);
     setFileName("");
-    setUploadResponse(null);
-    setImportResponse(null);
+    setPreviewResponse(null);
+    setConfirmResponse(null);
     setError("");
+    setLayout("generic"); // BETA-012C: Reset layout
     setState("idle");
   };
 
-  const isUploadingOrImporting = state === "uploading" || state === "importing";
+  const isLoading = state === "preview_loading" || state === "confirm_loading";
+  const hasBlockingErrors = previewResponse?.errors.some((err) => err.is_blocking) ?? false;
+  const canConfirm = !hasBlockingErrors && (previewResponse?.valid_rows ?? 0) > 0;
 
   return (
     <section className="space-y-4">
       <header>
         <h2 className="text-xl font-semibold">Importar Envios</h2>
-        <p className="text-sm text-slate-600">Upload de arquivo CSV para importação em lote de envios.</p>
+        <p className="text-sm text-slate-600">Upload de arquivo CSV ou XLSX para importação em lote de envios.</p>
       </header>
 
       {!editable && <p className="rounded bg-amber-50 px-3 py-2 text-sm text-amber-700">Perfil com permissão somente leitura.</p>}
 
       {state === "idle" && (
-        <div className="rounded border bg-white p-4">
-          <label className="block text-sm font-medium">Arquivo CSV</label>
-          <input
-            type="file"
-            accept=".csv,text/csv"
-            onChange={onFileChange}
-            disabled={!editable || isUploadingOrImporting}
-            className="mt-1 w-full rounded border px-3 py-2 disabled:opacity-60"
-          />
-          {fileName && <p className="mt-1 text-sm text-slate-600">Arquivo selecionado: {fileName}</p>}
-          {error && <p className="mt-2 text-sm text-red-600">{error}</p>}
-          {file && (
-            <div className="mt-4 flex gap-2">
-              <button
-                onClick={onUpload}
-                disabled={!editable || isUploadingOrImporting}
-                className="rounded bg-slate-900 px-4 py-2 text-sm text-white disabled:opacity-60"
-              >
-                Fazer Upload
-              </button>
-              <button
-                onClick={onReset}
-                disabled={isUploadingOrImporting}
-                className="rounded border px-4 py-2 text-sm disabled:opacity-60"
-              >
-                Limpar
-              </button>
-            </div>
-          )}
+        <div className="rounded border bg-white p-4 space-y-4">
+          <div>
+            <label className="block text-sm font-medium">Layout de importação</label>
+            <select
+              value={layout}
+              onChange={(e) => setLayout(e.target.value as "generic" | "braspress_assisted")}
+              disabled={!editable || isLoading}
+              className="mt-1 w-full rounded border px-3 py-2 disabled:opacity-60"
+            >
+              <option value="generic">Genérico</option>
+              <option value="braspress_assisted">Braspress assistido</option>
+            </select>
+          </div>
+          <div>
+            <label className="block text-sm font-medium">Arquivo CSV ou XLSX</label>
+            <input
+              type="file"
+              accept=".csv,.xlsx,text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+              onChange={onFileChange}
+              disabled={!editable || isLoading}
+              className="mt-1 w-full rounded border px-3 py-2 disabled:opacity-60"
+            />
+          </div>
+          {error && <p className="text-sm text-red-600">{error}</p>}
         </div>
       )}
 
-      {state === "uploading" && (
+      {state === "file_selected" && (
+        <div className="rounded border bg-white p-4 space-y-4">
+          <div>
+            <p className="text-sm text-slate-600">Arquivo selecionado: {fileName}</p>
+          </div>
+          <div className="flex gap-2">
+            <button
+              onClick={onPreview}
+              disabled={!editable || isLoading}
+              className="rounded bg-slate-900 px-4 py-2 text-sm text-white disabled:opacity-60"
+            >
+              Validar Arquivo
+            </button>
+            <button
+              onClick={onReset}
+              disabled={isLoading}
+              className="rounded border px-4 py-2 text-sm disabled:opacity-60"
+            >
+              Cancelar
+            </button>
+          </div>
+        </div>
+      )}
+
+      {state === "preview_loading" && (
         <div className="rounded border bg-white p-4">
           <div className="flex items-center gap-2">
             <div className="h-4 w-4 animate-spin rounded-full border-2 border-slate-900 border-t-transparent" />
-            <p className="text-sm text-slate-600">Fazendo upload do arquivo...</p>
+            <p className="text-sm text-slate-600">Validando arquivo...</p>
           </div>
         </div>
       )}
 
-      {(state === "validated" || state === "failed") && uploadResponse && (
+      {(state === "preview_success" || state === "preview_with_errors") && previewResponse && (
         <div className="rounded border bg-white p-4 space-y-4">
           <div>
             <h3 className="text-base font-semibold">Resumo da Validação</h3>
-            <div className="mt-2 grid grid-cols-3 gap-4 text-sm">
+            <div className="mt-2 grid grid-cols-4 gap-4 text-sm">
               <div>
                 <span className="text-slate-600">Total de linhas:</span>
-                <span className="ml-2 font-semibold">{uploadResponse.total_rows}</span>
+                <span className="ml-2 font-semibold">{previewResponse.total_rows}</span>
               </div>
               <div>
                 <span className="text-slate-600">Linhas válidas:</span>
-                <span className="ml-2 font-semibold text-green-700">{uploadResponse.valid_rows}</span>
+                <span className="ml-2 font-semibold text-green-700">{previewResponse.valid_rows}</span>
               </div>
               <div>
                 <span className="text-slate-600">Linhas inválidas:</span>
-                <span className="ml-2 font-semibold text-red-700">{uploadResponse.invalid_rows}</span>
+                <span className="ml-2 font-semibold text-red-700">{previewResponse.invalid_rows}</span>
+              </div>
+              <div>
+                <span className="text-slate-600">Duplicatas:</span>
+                <span className="ml-2 font-semibold text-amber-700">{previewResponse.duplicate_rows}</span>
               </div>
             </div>
           </div>
 
-          {uploadResponse.errors.length > 0 && (
+          {/* Preview table with fiscal/financial fields */}
+          {previewResponse.preview_items.length > 0 && (
+            <div>
+              <h4 className="text-sm font-semibold">Preview (primeiras linhas)</h4>
+              <div className="mt-2 max-h-64 overflow-y-auto rounded border">
+                <table className="w-full text-sm">
+                  <thead className="bg-slate-100 text-left sticky top-0">
+                    <tr>
+                      <th className="px-3 py-2">Linha</th>
+                      <th className="px-3 py-2">NF</th>
+                      <th className="px-3 py-2">Cliente</th>
+                      <th className="px-3 py-2">UF</th>
+                      <th className="px-3 py-2">Data Coleta</th>
+                      <th className="px-3 py-2">Valor NF</th>
+                      <th className="px-3 py-2">Valor Frete</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {previewResponse.preview_items.map((item: ValidatedRowData) => (
+                      <tr key={item.row_number} className="border-t">
+                        <td className="px-3 py-2">{item.row_number}</td>
+                        <td className="px-3 py-2">{formatUnavailable(item.data.invoice_number)}</td>
+                        <td className="px-3 py-2">{formatUnavailable(item.data.customer_name)}</td>
+                        <td className="px-3 py-2">{formatUnavailable(item.data.destination_uf)}</td>
+                        <td className="px-3 py-2">{formatDateBR(item.data.collection_departure_date)}</td>
+                        <td className="px-3 py-2">{formatCurrencyBRL(item.data.invoice_value)}</td>
+                        <td className="px-3 py-2">{formatCurrencyBRL(item.data.freight_value)}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+
+          {/* Errors by line */}
+          {previewResponse.errors.length > 0 && (
             <div>
               <h4 className="text-sm font-semibold">Erros por linha</h4>
+              <div className="mt-2 max-h-64 overflow-y-auto rounded border">
+                <table className="w-full text-sm">
+                  <thead className="bg-slate-100 text-left sticky top-0">
+                    <tr>
+                      <th className="px-3 py-2">Linha</th>
+                      <th className="px-3 py-2">Campo</th>
+                      <th className="px-3 py-2">Mensagem</th>
+                      <th className="px-3 py-2">Valor</th>
+                      <th className="px-3 py-2">Severidade</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {previewResponse.errors.map((err: RowValidationError, idx: number) => (
+                      <tr key={idx} className="border-t">
+                        <td className="px-3 py-2">{err.row_number}</td>
+                        <td className="px-3 py-2">{err.field}</td>
+                        <td className="px-3 py-2">{err.message}</td>
+                        <td className="px-3 py-2">{err.value ?? "-"}</td>
+                        <td className="px-3 py-2">
+                          <span
+                            className={`inline-flex rounded-full px-2 py-1 text-xs font-medium ${
+                              err.severity === "error"
+                                ? "bg-red-100 text-red-800"
+                                : "bg-amber-100 text-amber-800"
+                            }`}
+                          >
+                            {err.severity === "error" ? "Erro" : "Aviso"}
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+
+          {/* Warnings separately */}
+          {previewResponse.warnings.length > 0 && (
+            <div>
+              <h4 className="text-sm font-semibold">Avisos</h4>
               <div className="mt-2 max-h-64 overflow-y-auto rounded border">
                 <table className="w-full text-sm">
                   <thead className="bg-slate-100 text-left sticky top-0">
@@ -188,7 +320,7 @@ export default function ShipmentsImportPage() {
                     </tr>
                   </thead>
                   <tbody>
-                    {uploadResponse.errors.map((err: CSVRowError, idx: number) => (
+                    {previewResponse.warnings.map((err: RowValidationError, idx: number) => (
                       <tr key={idx} className="border-t">
                         <td className="px-3 py-2">{err.row_number}</td>
                         <td className="px-3 py-2">{err.field}</td>
@@ -202,42 +334,33 @@ export default function ShipmentsImportPage() {
             </div>
           )}
 
-          {state === "validated" && uploadResponse.valid_rows > 0 && editable && (
-            <div className="flex gap-2">
+          {/* Action buttons */}
+          <div className="flex gap-2">
+            {canConfirm && editable && (
               <button
                 onClick={onConfirm}
-                disabled={!editable || isUploadingOrImporting}
+                disabled={!editable || isLoading || !canConfirm}
                 className="rounded bg-slate-900 px-4 py-2 text-sm text-white disabled:opacity-60"
               >
                 Confirmar Importação
               </button>
-              <button
-                onClick={onReset}
-                disabled={isUploadingOrImporting}
-                className="rounded border px-4 py-2 text-sm disabled:opacity-60"
-              >
-                Cancelar
-              </button>
-            </div>
-          )}
+            )}
+            <button onClick={onReset} disabled={isLoading} className="rounded border px-4 py-2 text-sm disabled:opacity-60">
+              Cancelar
+            </button>
+          </div>
 
-          {state === "failed" && (
-            <div className="flex gap-2">
-              <button
-                onClick={onReset}
-                disabled={isUploadingOrImporting}
-                className="rounded border px-4 py-2 text-sm disabled:opacity-60"
-              >
-                Tentar Novamente
-              </button>
-            </div>
+          {hasBlockingErrors && (
+            <p className="rounded bg-red-50 px-3 py-2 text-sm text-red-700">
+              Existem erros bloqueantes. Corrija o arquivo e tente novamente.
+            </p>
           )}
 
           {error && <p className="rounded bg-red-50 px-3 py-2 text-sm text-red-700">{error}</p>}
         </div>
       )}
 
-      {state === "importing" && (
+      {state === "confirm_loading" && (
         <div className="rounded border bg-white p-4">
           <div className="flex items-center gap-2">
             <div className="h-4 w-4 animate-spin rounded-full border-2 border-slate-900 border-t-transparent" />
@@ -246,34 +369,128 @@ export default function ShipmentsImportPage() {
         </div>
       )}
 
-      {state === "completed" && importResponse && (
+      {state === "confirm_success" && confirmResponse && (
         <div className="rounded border bg-white p-4 space-y-4">
           <div>
             <h3 className="text-base font-semibold text-green-700">Importação Concluída</h3>
-            <div className="mt-2 grid grid-cols-3 gap-4 text-sm">
+            <div className="mt-2 grid grid-cols-4 gap-4 text-sm">
               <div>
                 <span className="text-slate-600">Total de linhas:</span>
-                <span className="ml-2 font-semibold">{importResponse.total_rows}</span>
+                <span className="ml-2 font-semibold">{confirmResponse.total_rows}</span>
               </div>
               <div>
                 <span className="text-slate-600">Importados:</span>
-                <span className="ml-2 font-semibold text-green-700">{importResponse.imported_count}</span>
+                <span className="ml-2 font-semibold text-green-700">{confirmResponse.imported_count}</span>
               </div>
               <div>
                 <span className="text-slate-600">Rejeitados:</span>
-                <span className="ml-2 font-semibold text-red-700">{importResponse.rejected_count}</span>
+                <span className="ml-2 font-semibold text-red-700">{confirmResponse.rejected_count}</span>
+              </div>
+              <div>
+                <span className="text-slate-600">Duplicatas:</span>
+                <span className="ml-2 font-semibold text-amber-700">{confirmResponse.duplicates_count}</span>
               </div>
             </div>
           </div>
 
+          {confirmResponse.created_shipments.length > 0 && (
+            <div>
+              <h4 className="text-sm font-semibold">Shipments Criados ({confirmResponse.created_shipments.length})</h4>
+              <div className="mt-2 max-h-32 overflow-y-auto rounded border p-2 text-sm">
+                {confirmResponse.created_shipments.map((id: number) => (
+                  <span key={id} className="inline-block mr-2 mb-1">
+                    <span className="rounded bg-slate-100 px-2 py-1">#{id}</span>
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+
           <div className="flex gap-2">
-            <button
-              onClick={onReset}
-              className="rounded bg-slate-900 px-4 py-2 text-sm text-white"
-            >
+            <button onClick={onReset} className="rounded bg-slate-900 px-4 py-2 text-sm text-white">
               Nova Importação
             </button>
           </div>
+        </div>
+      )}
+
+      {state === "confirm_error" && (
+        <div className="rounded border bg-white p-4 space-y-4">
+          <div>
+            <h3 className="text-base font-semibold text-red-700">Importação Falhou</h3>
+            {confirmResponse && (
+              <div className="mt-2 grid grid-cols-4 gap-4 text-sm">
+                <div>
+                  <span className="text-slate-600">Total de linhas:</span>
+                  <span className="ml-2 font-semibold">{confirmResponse.total_rows}</span>
+                </div>
+                <div>
+                  <span className="text-slate-600">Importados:</span>
+                  <span className="ml-2 font-semibold text-green-700">{confirmResponse.imported_count}</span>
+                </div>
+                <div>
+                  <span className="text-slate-600">Rejeitados:</span>
+                  <span className="ml-2 font-semibold text-red-700">{confirmResponse.rejected_count}</span>
+                </div>
+                <div>
+                  <span className="text-slate-600">Duplicatas:</span>
+                  <span className="ml-2 font-semibold text-amber-700">{confirmResponse.duplicates_count}</span>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {(confirmResponse?.errors?.length ?? 0) > 0 && (
+            <div>
+              <h4 className="text-sm font-semibold">Erros</h4>
+              <div className="mt-2 max-h-64 overflow-y-auto rounded border">
+                <table className="w-full text-sm">
+                  <thead className="bg-slate-100 text-left sticky top-0">
+                    <tr>
+                      <th className="px-3 py-2">Linha</th>
+                      <th className="px-3 py-2">Campo</th>
+                      <th className="px-3 py-2">Mensagem</th>
+                      <th className="px-3 py-2">Valor</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {confirmResponse!.errors.map((err, idx: number) => (
+                      <tr key={idx} className="border-t">
+                        <td className="px-3 py-2">{err.row_number}</td>
+                        <td className="px-3 py-2">{err.field}</td>
+                        <td className="px-3 py-2">{err.message}</td>
+                        <td className="px-3 py-2">{err.value ?? "-"}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+
+          <div className="flex gap-2">
+            <button onClick={onReset} className="rounded border px-4 py-2 text-sm">
+              Tentar Novamente
+            </button>
+          </div>
+
+          {error && <p className="rounded bg-red-50 px-3 py-2 text-sm text-red-700">{error}</p>}
+        </div>
+      )}
+
+      {state === "api_error" && (
+        <div className="rounded border bg-white p-4 space-y-4">
+          <div>
+            <h3 className="text-base font-semibold text-red-700">Erro na API</h3>
+          </div>
+
+          <div className="flex gap-2">
+            <button onClick={onReset} className="rounded border px-4 py-2 text-sm">
+              Tentar Novamente
+            </button>
+          </div>
+
+          {error && <p className="rounded bg-red-50 px-3 py-2 text-sm text-red-700">{error}</p>}
         </div>
       )}
     </section>

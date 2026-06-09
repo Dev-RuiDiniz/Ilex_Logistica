@@ -22,14 +22,14 @@ Esta auditoria funcional automatizada inspecionou a estrutura do repositório pa
 | 7 - Logs e auditoria | PARCIAL | 0/9 (0%) | 2/9 (22%) | 7/9 (78%) |
 | 8 - Integrações assistidas | PARCIAL | 0/9 (0%) | 1/9 (11%) | 8/9 (89%) |
 | 9 - Usuários, permissões e segurança | PARCIAL | 1/11 (9%) | 1/11 (9%) | 9/11 (82%) |
-| 10 - Dashboard beta e UX | PARCIAL | 0/9 (0%) | 2/9 (22%) | 7/9 (78%) |
+| 10 - Dashboard beta e UX | COMPLETO | 9/9 (100%) | 0/9 (0%) | 0/9 (0%) |
 | 11 - QA, CI/CD e validação | PARCIAL | 7/10 (70%) | 0/10 (0%) | 3/10 (30%) |
 | 12 - Documentação beta | PARCIAL | 6/14 (43%) | 0/14 (0%) | 8/14 (57%) |
 
 **Resumo Geral:**
-- Implementados: 45/126 (36%)
-- Parciais: 9/126 (7%)
-- Ausentes: 72/126 (57%)
+- Implementados: 54/126 (43%)
+- Parciais: 7/126 (6%)
+- Ausentes: 65/126 (52%)
 
 **Nota:**
 - O Épico 3 teve progresso significativo com o BETA-011A (backend) e BETA-011B (frontend). Veja `docs/BETA_011A_SHIPMENT_FISCAL_FINANCIAL_BACKEND.md` e `docs/BETA_011B_SHIPMENT_FISCAL_FINANCIAL_FRONTEND.md` para detalhes.
@@ -353,22 +353,41 @@ Esta auditoria funcional automatizada inspecionou a estrutura do repositório pa
 
 ### Épico 10 — Dashboard beta e UX operacional
 
-**Status:** PARCIAL
+**Status:** COMPLETO (atualizado com BETA-016A e BETA-016B)
 
-**Parciais:**
-- endpoint dashboard summary
-- docs
+**Implementados:**
+- endpoint GET /api/v1/dashboard/summary (BETA-016A)
+- service calculate_dashboard_summary (BETA-016A)
+- schemas DashboardKpis/CarrierEfficiencyItem/ExceptionItem/SummaryResponse (BETA-016A)
+- testes backend (BETA-016A - 30 testes: 25 service + 5 API)
+- API client getDashboardSummary (BETA-016B)
+- tipos frontend DashboardFilters/SummaryResponse (BETA-016B)
+- página /dashboard (BETA-016B)
+- cards de KPI (BETA-016B)
+- top transportadoras por eficiência (BETA-016B)
+- top exceções priorizadas (BETA-016B)
+- filtros globais (BETA-016B)
+- testes frontend (BETA-016B - 31 testes: 6 API + 25 página)
+- docs (BETA-016A, BETA-016B)
 
 **Ausentes:**
-- tela dashboard/KPIs
-- testes
+- Nenhum item ausente no escopo beta
 
 **Evidências:**
-- docs/BETA_CHECKLIST.md
+- apps/api/app/modules/dashboard/service.py (BETA-016A)
+- apps/api/app/modules/dashboard/schemas.py (BETA-016A)
+- apps/api/app/modules/dashboard/router.py (BETA-016A)
+- apps/api/tests/test_dashboard_summary.py (BETA-016A)
+- apps/api/tests/test_dashboard_api.py (BETA-016A)
+- apps/web/src/lib/dashboard-api.ts (BETA-016B)
+- apps/web/src/app/(private)/dashboard/page.tsx (BETA-016B)
+- apps/web/src/lib/dashboard-api.test.ts (BETA-016B)
+- apps/web/src/app/(private)/dashboard/dashboard-page.test.tsx (BETA-016B)
+- docs/BETA_016A_DASHBOARD_BETA_BACKEND.md (BETA-016A)
+- docs/BETA_016B_DASHBOARD_BETA_FRONTEND.md (BETA-016B)
 
 **Gaps Críticos:**
-- Falta tela dashboard/KPIs
-- Falta testes
+- Nenhum gap crítico
 
 ---
 
@@ -484,8 +503,7 @@ Esta auditoria funcional automatizada inspecionou a estrutura do repositório pa
 
 1. **Épico 7 - Logs:** Falta RBAC, testes, docs
 2. **Épico 8 - Integrações:** Falta parser Braspress, docs Braspress
-3. **Épico 10 - Dashboard:** Falta tela dashboard/KPIs, testes
-4. **Épico 12 - Documentação:** Falta manual usuário, docs específicas
+3. **Épico 12 - Documentação:** Falta manual usuário, docs específicas
 
 ## Riscos para Beta
 
@@ -503,7 +521,6 @@ Esta auditoria funcional automatizada inspecionou a estrutura do repositório pa
 ### Risco Baixo
 - **Épico 7 (Logs):** Falta RBAC, testes. Não bloqueador crítico.
 - **Épico 8 (Integrações):** Falta parser Braspress. Não bloqueador crítico.
-- **Épico 10 (Dashboard):** Falta tela dashboard. Não bloqueador crítico.
 - **Épico 12 (Documentação):** Falta docs específicas. Não bloqueador crítico.
 
 ## Próximos PRs Recomendados

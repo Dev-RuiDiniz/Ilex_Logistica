@@ -15,8 +15,7 @@ Esta auditoria funcional automatizada inspecionou a estrutura do repositório pa
 | 1 - SLA, atraso e criticidade | PARCIAL | 2/10 (20%) | 0/10 (0%) | 8/10 (80%) |
 | 2 - Importação Excel/CSV | PARCIAL | 12/12 (100%) | 0/12 (0%) | 0/12 (0%) |
 | 3 - Campos fiscais/financeiros | PARCIAL | 13/15 (87%) | 1/15 (7%) | 1/15 (7%) |
-| 4 - Eficiência por transportadora | COMPLETO | 6/6 (100%) | 0/6 (0%) | 0/6 (0%) |
-| 5 - Painel de Exceções com SLA | EM ANDAMENTO | 4/6 (67%) | 0/6 (0%) | 2/6 (33%) |
+| 4 - Eficiência por transportadora | AUSENTE | 0/6 (0%) | 0/6 (0%) | 6/6 (100%) |
 | 5 - Alertas e notificações | PARCIAL | 0/10 (0%) | 2/10 (20%) | 8/10 (80%) |
 | 6 - Relatório diário automático | AUSENTE | 0/6 (0%) | 0/6 (0%) | 6/6 (100%) |
 | 7 - Logs e auditoria | PARCIAL | 0/9 (0%) | 2/9 (22%) | 7/9 (78%) |
@@ -27,14 +26,13 @@ Esta auditoria funcional automatizada inspecionou a estrutura do repositório pa
 | 12 - Documentação beta | PARCIAL | 6/14 (43%) | 0/14 (0%) | 8/14 (57%) |
 
 **Resumo Geral:**
-- Implementados: 45/126 (36%)
-- Parciais: 9/126 (7%)
-- Ausentes: 72/126 (57%)
+- Implementados: 41/120 (34%)
+- Parciais: 9/120 (8%)
+- Ausentes: 70/120 (58%)
 
 **Nota:**
 - O Épico 3 teve progresso significativo com o BETA-011A (backend) e BETA-011B (frontend). Veja `docs/BETA_011A_SHIPMENT_FISCAL_FINANCIAL_BACKEND.md` e `docs/BETA_011B_SHIPMENT_FISCAL_FINANCIAL_FRONTEND.md` para detalhes.
 - O Épico 2 teve progresso significativo com o BETA-012A (backend), BETA-012B (frontend) e BETA-012C (Braspress assistido). Veja `docs/BETA_012A_IMPORT_CSV_XLSX_BACKEND.md`, `docs/BETA_012B_IMPORT_UPLOAD_PREVIEW_CONFIRM_FRONTEND.md` e `docs/BRASPRESS_IMPORTACAO_ASSISTIDA.md` para detalhes.
-- O Épico 5 (Painel de Exceções com SLA) teve progresso com o BETA-015A (backend). Veja `docs/BETA_015A_EXCEPTIONS_PANEL_SLA_BACKEND.md` para detalhes.
 
 ## Tabela dos 12 Épicos
 
@@ -160,65 +158,27 @@ Esta auditoria funcional automatizada inspecionou a estrutura do repositório pa
 
 ### Épico 4 — Eficiência por transportadora
 
-**Status:** COMPLETO (atualizado com BETA-014A e BETA-014B)
-
-**Implementados:**
-- endpoint ou service de agregação (BETA-014A)
-- entregas no prazo/atrasadas (BETA-014A)
-- ranking/percentuais (BETA-014A)
-- testes backend (BETA-014A - 30 testes)
-- componente frontend (BETA-014B)
-- testes frontend (BETA-014B - 19 testes: 6 API + 5 página + 8 filtros)
-- docs (BETA-014A, BETA-014B)
+**Status:** AUSENTE
 
 **Ausentes:**
-- Nenhum item ausente no escopo beta
+- endpoint ou service de agregação
+- entregas no prazo/atrasadas/extraviadas
+- ranking/percentuais
+- componente frontend
+- testes
+- docs
 
 **Evidências:**
-- apps/api/app/modules/shipments/analytics_service.py (BETA-014A)
-- apps/api/app/modules/shipments/analytics_schemas.py (BETA-014A)
-- apps/api/app/modules/shipments/router.py (BETA-014A)
-- apps/api/tests/test_carrier_efficiency_report.py (BETA-014A)
-- apps/api/tests/test_carrier_efficiency_api.py (BETA-014A)
-- apps/web/src/lib/types.ts (BETA-014B)
-- apps/web/src/lib/api.ts (BETA-014B)
-- apps/web/src/app/(private)/shipments/analytics/carrier-efficiency/page.tsx (BETA-014B)
-- apps/web/src/lib/carrier-efficiency-api.test.ts (BETA-014B)
-- apps/web/src/app/(private)/shipments/analytics/carrier-efficiency/carrier-efficiency-page.test.tsx (BETA-014B)
-- apps/web/src/app/(private)/shipments/analytics/carrier-efficiency/carrier-efficiency-page-filters.test.tsx (BETA-014B)
-- docs/BETA_014A_CARRIER_EFFICIENCY_BACKEND.md (BETA-014A)
-- docs/BETA_014B_CARRIER_EFFICIENCY_FRONTEND.md (BETA-014B)
+- Nenhuma
 
 **Gaps Críticos:**
-- Nenhum gap crítico
-
----
-
-### Épico 5 — Painel de Exceções com SLA
-
-**Status:** EM ANDAMENTO (atualizado com BETA-015A)
-
-**Implementados:**
-- endpoint GET /api/v1/shipments/analytics/exceptions (BETA-015A)
-- service exceptions_service.py (BETA-015A)
-- schemas ExceptionSummary/ExceptionItem/ExceptionsPanelResponse (BETA-015A)
-- testes backend (BETA-015A - 35 testes: 30 service + 5 API)
-- docs (BETA-015A)
-
-**Ausentes:**
-- tela/frontend
-- testes frontend
-
-**Evidências:**
-- apps/api/app/modules/shipments/exceptions_service.py (BETA-015A)
-- apps/api/tests/test_exceptions_panel_sla.py (BETA-015A)
-- apps/api/tests/test_exceptions_panel_api.py (BETA-015A)
-- apps/api/app/modules/shipments/analytics_schemas.py (BETA-015A)
-- apps/api/app/modules/shipments/router.py (BETA-015A)
-
-**Gaps Críticos:**
-- Falta tela/frontend
-- Falta testes frontend
+- Todo o épico está ausente
+- Falta endpoint ou service de agregação
+- Falta entregas no prazo/atrasadas/extraviadas
+- Falta ranking/percentuais
+- Falta componente frontend
+- Falta testes
+- Falta docs
 
 ---
 

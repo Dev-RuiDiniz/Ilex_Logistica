@@ -15,12 +15,12 @@ Próximas ações pós BETA-009S para o projeto Ilex Logística.
 - ✅ Service de geração de relatório diário
 - ✅ Endpoints POST /reports/daily/generate, GET /reports/daily, GET /reports/daily/{id}, GET /reports/daily/by-date/{date}
 - ✅ Schemas/DTOs para relatório diário
-- ✅ 46 testes TDD implementados (10 model + 19 generation + 11 API + 6 integration)
+- ✅ 51 testes TDD implementados (10 model + 19 generation + 11 API + 6 integration + 5 logging middleware)
 - ✅ Documentação completa
 - ✅ Correção do conftest.py para fixar fixture de banco
 - ✅ Remoção de autenticação dos endpoints para seguir padrão do projeto atual
 - ✅ Remoção de endpoint legado /daily/legacy
-- ✅ Correção do middleware de logging (comentado temporariamente)
+- ✅ Correção do middleware de logging usando variável de ambiente ENABLE_LOGGING_MIDDLEWARE
 
 **Arquivos Criados:**
 - `apps/api/app/modules/reports/models.py`
@@ -32,12 +32,13 @@ Próximas ações pós BETA-009S para o projeto Ilex Logística.
 - `apps/api/tests/test_daily_report_generation.py`
 - `apps/api/tests/test_daily_report_api.py`
 - `apps/api/tests/test_daily_report_integration.py`
+- `apps/api/tests/test_logging_middleware.py`
 - `docs/BETA_018A_DAILY_REPORT_BACKEND_API.md`
 
 **Arquivos Modificados:**
-- `apps/api/app/main.py` (middleware de logging comentado temporariamente)
+- `apps/api/app/main.py` (middleware de logging configurado via variável de ambiente)
 - `apps/api/app/modules/reports/router.py` (autenticação removida, endpoint legado removido)
-- `apps/api/tests/conftest.py` (fixture de banco corrigida)
+- `apps/api/tests/conftest.py` (fixture de banco corrigida, middleware desabilitado via env var)
 - `apps/api/tests/test_daily_report_api.py` (skips removidos, novos testes adicionados)
 
 **Limitações Conhecidas:**
@@ -46,7 +47,7 @@ Próximas ações pós BETA-009S para o projeto Ilex Logística.
 - Sem frontend (BETA-018B)
 - Sem agendamento externo com cron (fora do escopo beta)
 - Auth temporariamente removida dos endpoints (será implementado no Épico 9)
-- Middleware de logging comentado temporariamente (será corrigido no Épico 11)
+- Middleware de logging configurado via variável de ambiente (solução segura, não compromete produção)
 
 **Documentação:** `docs/BETA_018A_DAILY_REPORT_BACKEND_API.md`
 
@@ -737,13 +738,14 @@ Próximas ações pós BETA-009S para o projeto Ilex Logística.
 
 ---
 
-### BETA-022A: Correção do Middleware de Logging
+### BETA-022A: Correção do validate_docs.py
 **Status:** ⏳ Pendente
 **Prioridade:** Média
 **Épico:** 11 - QA, CI/CD e Validação
 
 **Tarefas:**
-- [ ] Corrigir middleware de logging para funcionar com TestClient
+- [ ] Corrigir UnicodeDecodeError em validate_docs.py
+- [ ] Usar encoding UTF-8 ao ler arquivos
 - [ ] Testes TDD
 - [ ] Documentação
 

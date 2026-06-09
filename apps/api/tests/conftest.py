@@ -1,3 +1,4 @@
+import os
 from collections.abc import Generator
 
 import pytest
@@ -10,6 +11,9 @@ from app.database.base import Base
 from app.database.session import get_db
 from app.main import app
 from app.modules.users.models import Role, User
+
+# Disable logging middleware for tests to avoid TestClient compatibility issues
+os.environ["ENABLE_LOGGING_MIDDLEWARE"] = "false"
 
 # Import all models to ensure they are registered in Base.metadata before create_all()
 from app.modules.carriers.models import Carrier

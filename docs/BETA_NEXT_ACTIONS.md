@@ -39,6 +39,43 @@ Próximas ações pós BETA-009S para o projeto Ilex Logística.
 
 ---
 
+### BETA-014B: Painel Frontend de Eficiência por Transportadora
+**Status:** ✅ Implementado
+**Branch:** `feature/beta-014b-carrier-efficiency-frontend`
+**Data:** 2026-06-15
+
+**Implementado:**
+- ✅ Tipos TypeScript para Carrier Efficiency
+- ✅ API client function getCarrierEfficiency
+- ✅ Página de eficiência por transportadora
+- ✅ Tabela com métricas (total NFs, total entregas, no prazo, atrasadas, frete total, frete médio)
+- ✅ Exibição de rankings (eficiência, custo, volume)
+- ✅ Estados de UX (loading, erro, vazio, sucesso)
+- ✅ Formatação BRL e percentual
+- ✅ 9 testes TDD implementados (4 API + 5 página)
+- ✅ Documentação completa
+
+**Arquivos Criados:**
+- `apps/web/src/lib/carrier-efficiency-api.test.ts`
+- `apps/web/src/app/(private)/shipments/analytics/carrier-efficiency/page.tsx`
+- `apps/web/src/app/(private)/shipments/analytics/carrier-efficiency/carrier-efficiency-page.test.tsx`
+- `docs/BETA_014B_CARRIER_EFFICIENCY_FRONTEND.md`
+
+**Arquivos Atualizados:**
+- `apps/web/src/lib/types.ts` (CarrierEfficiencyMetrics, CarrierEfficiencyResponse, CarrierEfficiencyFilters)
+- `apps/web/src/lib/api.ts` (getCarrierEfficiency function)
+
+**Limitações Conhecidas:**
+- Filtros visuais não implementados na UI (apenas preparados no estado)
+- Sem componentes de UI avançados (cards, gráficos)
+- Sem integração com dashboard geral
+- Sem E2E (Playwright não configurado)
+- Build falha devido a erro de tipo no BETA-013B (SlaBadge.tsx) - não relacionado ao BETA-014B
+
+**Documentação:** `docs/BETA_014B_CARRIER_EFFICIENCY_FRONTEND.md`
+
+---
+
 ### BETA-012B: Frontend de Upload, Preview, Erros por Linha e Confirmação de Importação
 **Status:** ✅ Implementado
 **Branch:** `feature/beta-012b-import-upload-preview-confirm-frontend`
@@ -75,6 +112,43 @@ Próximas ações pós BETA-009S para o projeto Ilex Logística.
 - Nenhuma limitação conhecida
 
 **Documentação:** `docs/BETA_012B_IMPORT_UPLOAD_PREVIEW_CONFIRM_FRONTEND.md`
+
+---
+
+### BETA-014B: Painel Frontend de Eficiência por Transportadora
+**Status:** ✅ Implementado
+**Branch:** `feature/beta-014b-carrier-efficiency-frontend`
+**Data:** 2026-06-15
+
+**Implementado:**
+- ✅ Tipos TypeScript para Carrier Efficiency
+- ✅ API client function getCarrierEfficiency
+- ✅ Página de eficiência por transportadora
+- ✅ Tabela com métricas (total NFs, total entregas, no prazo, atrasadas, frete total, frete médio)
+- ✅ Exibição de rankings (eficiência, custo, volume)
+- ✅ Estados de UX (loading, erro, vazio, sucesso)
+- ✅ Formatação BRL e percentual
+- ✅ 9 testes TDD implementados (4 API + 5 página)
+- ✅ Documentação completa
+
+**Arquivos Criados:**
+- `apps/web/src/lib/carrier-efficiency-api.test.ts`
+- `apps/web/src/app/(private)/shipments/analytics/carrier-efficiency/page.tsx`
+- `apps/web/src/app/(private)/shipments/analytics/carrier-efficiency/carrier-efficiency-page.test.tsx`
+- `docs/BETA_014B_CARRIER_EFFICIENCY_FRONTEND.md`
+
+**Arquivos Atualizados:**
+- `apps/web/src/lib/types.ts` (CarrierEfficiencyMetrics, CarrierEfficiencyResponse, CarrierEfficiencyFilters)
+- `apps/web/src/lib/api.ts` (getCarrierEfficiency function)
+
+**Limitações Conhecidas:**
+- Filtros visuais não implementados na UI (apenas preparados no estado)
+- Sem componentes de UI avançados (cards, gráficos)
+- Sem integração com dashboard geral
+- Sem E2E (Playwright não configurado)
+- Build falha devido a erro de tipo no BETA-013B (SlaBadge.tsx) - não relacionado ao BETA-014B
+
+**Documentação:** `docs/BETA_014B_CARRIER_EFFICIENCY_FRONTEND.md`
 
 ---
 
@@ -155,6 +229,43 @@ Próximas ações pós BETA-009S para o projeto Ilex Logística.
 
 ---
 
+### BETA-014B: Painel Frontend de Eficiência por Transportadora
+**Status:** ✅ Implementado
+**Branch:** `feature/beta-014b-carrier-efficiency-frontend`
+**Data:** 2026-06-15
+
+**Implementado:**
+- ✅ Tipos TypeScript para Carrier Efficiency
+- ✅ API client function getCarrierEfficiency
+- ✅ Página de eficiência por transportadora
+- ✅ Tabela com métricas (total NFs, total entregas, no prazo, atrasadas, frete total, frete médio)
+- ✅ Exibição de rankings (eficiência, custo, volume)
+- ✅ Estados de UX (loading, erro, vazio, sucesso)
+- ✅ Formatação BRL e percentual
+- ✅ 9 testes TDD implementados (4 API + 5 página)
+- ✅ Documentação completa
+
+**Arquivos Criados:**
+- `apps/web/src/lib/carrier-efficiency-api.test.ts`
+- `apps/web/src/app/(private)/shipments/analytics/carrier-efficiency/page.tsx`
+- `apps/web/src/app/(private)/shipments/analytics/carrier-efficiency/carrier-efficiency-page.test.tsx`
+- `docs/BETA_014B_CARRIER_EFFICIENCY_FRONTEND.md`
+
+**Arquivos Atualizados:**
+- `apps/web/src/lib/types.ts` (CarrierEfficiencyMetrics, CarrierEfficiencyResponse, CarrierEfficiencyFilters)
+- `apps/web/src/lib/api.ts` (getCarrierEfficiency function)
+
+**Limitações Conhecidas:**
+- Filtros visuais não implementados na UI (apenas preparados no estado)
+- Sem componentes de UI avançados (cards, gráficos)
+- Sem integração com dashboard geral
+- Sem E2E (Playwright não configurado)
+- Build falha devido a erro de tipo no BETA-013B (SlaBadge.tsx) - não relacionado ao BETA-014B
+
+**Documentação:** `docs/BETA_014B_CARRIER_EFFICIENCY_FRONTEND.md`
+
+---
+
 ### BETA-013B: Frontend SLA - Badges, Filtros e Tela de Regras
 **Status:** ✅ Implementado
 **Branch:** `feature/beta-013b-sla-frontend-badges-filters-rules`
@@ -196,6 +307,43 @@ Próximas ações pós BETA-009S para o projeto Ilex Logística.
 
 ---
 
+### BETA-014B: Painel Frontend de Eficiência por Transportadora
+**Status:** ✅ Implementado
+**Branch:** `feature/beta-014b-carrier-efficiency-frontend`
+**Data:** 2026-06-15
+
+**Implementado:**
+- ✅ Tipos TypeScript para Carrier Efficiency
+- ✅ API client function getCarrierEfficiency
+- ✅ Página de eficiência por transportadora
+- ✅ Tabela com métricas (total NFs, total entregas, no prazo, atrasadas, frete total, frete médio)
+- ✅ Exibição de rankings (eficiência, custo, volume)
+- ✅ Estados de UX (loading, erro, vazio, sucesso)
+- ✅ Formatação BRL e percentual
+- ✅ 9 testes TDD implementados (4 API + 5 página)
+- ✅ Documentação completa
+
+**Arquivos Criados:**
+- `apps/web/src/lib/carrier-efficiency-api.test.ts`
+- `apps/web/src/app/(private)/shipments/analytics/carrier-efficiency/page.tsx`
+- `apps/web/src/app/(private)/shipments/analytics/carrier-efficiency/carrier-efficiency-page.test.tsx`
+- `docs/BETA_014B_CARRIER_EFFICIENCY_FRONTEND.md`
+
+**Arquivos Atualizados:**
+- `apps/web/src/lib/types.ts` (CarrierEfficiencyMetrics, CarrierEfficiencyResponse, CarrierEfficiencyFilters)
+- `apps/web/src/lib/api.ts` (getCarrierEfficiency function)
+
+**Limitações Conhecidas:**
+- Filtros visuais não implementados na UI (apenas preparados no estado)
+- Sem componentes de UI avançados (cards, gráficos)
+- Sem integração com dashboard geral
+- Sem E2E (Playwright não configurado)
+- Build falha devido a erro de tipo no BETA-013B (SlaBadge.tsx) - não relacionado ao BETA-014B
+
+**Documentação:** `docs/BETA_014B_CARRIER_EFFICIENCY_FRONTEND.md`
+
+---
+
 ### BETA-014A: Eficiência por Transportadora Backend
 **Status:** ✅ Implementado
 **Branch:** `feature/beta-014a-carrier-efficiency-backend`
@@ -231,6 +379,43 @@ Próximas ações pós BETA-009S para o projeto Ilex Logística.
 
 ---
 
+### BETA-014B: Painel Frontend de Eficiência por Transportadora
+**Status:** ✅ Implementado
+**Branch:** `feature/beta-014b-carrier-efficiency-frontend`
+**Data:** 2026-06-15
+
+**Implementado:**
+- ✅ Tipos TypeScript para Carrier Efficiency
+- ✅ API client function getCarrierEfficiency
+- ✅ Página de eficiência por transportadora
+- ✅ Tabela com métricas (total NFs, total entregas, no prazo, atrasadas, frete total, frete médio)
+- ✅ Exibição de rankings (eficiência, custo, volume)
+- ✅ Estados de UX (loading, erro, vazio, sucesso)
+- ✅ Formatação BRL e percentual
+- ✅ 9 testes TDD implementados (4 API + 5 página)
+- ✅ Documentação completa
+
+**Arquivos Criados:**
+- `apps/web/src/lib/carrier-efficiency-api.test.ts`
+- `apps/web/src/app/(private)/shipments/analytics/carrier-efficiency/page.tsx`
+- `apps/web/src/app/(private)/shipments/analytics/carrier-efficiency/carrier-efficiency-page.test.tsx`
+- `docs/BETA_014B_CARRIER_EFFICIENCY_FRONTEND.md`
+
+**Arquivos Atualizados:**
+- `apps/web/src/lib/types.ts` (CarrierEfficiencyMetrics, CarrierEfficiencyResponse, CarrierEfficiencyFilters)
+- `apps/web/src/lib/api.ts` (getCarrierEfficiency function)
+
+**Limitações Conhecidas:**
+- Filtros visuais não implementados na UI (apenas preparados no estado)
+- Sem componentes de UI avançados (cards, gráficos)
+- Sem integração com dashboard geral
+- Sem E2E (Playwright não configurado)
+- Build falha devido a erro de tipo no BETA-013B (SlaBadge.tsx) - não relacionado ao BETA-014B
+
+**Documentação:** `docs/BETA_014B_CARRIER_EFFICIENCY_FRONTEND.md`
+
+---
+
 ## Ações Imediatas (Antes de Merge dos PRs Beta)
 
 ### 1. Revisar Draft PRs na Ordem Correta
@@ -258,6 +443,43 @@ gh pr view <pr-number>
 
 ---
 
+### BETA-014B: Painel Frontend de Eficiência por Transportadora
+**Status:** ✅ Implementado
+**Branch:** `feature/beta-014b-carrier-efficiency-frontend`
+**Data:** 2026-06-15
+
+**Implementado:**
+- ✅ Tipos TypeScript para Carrier Efficiency
+- ✅ API client function getCarrierEfficiency
+- ✅ Página de eficiência por transportadora
+- ✅ Tabela com métricas (total NFs, total entregas, no prazo, atrasadas, frete total, frete médio)
+- ✅ Exibição de rankings (eficiência, custo, volume)
+- ✅ Estados de UX (loading, erro, vazio, sucesso)
+- ✅ Formatação BRL e percentual
+- ✅ 9 testes TDD implementados (4 API + 5 página)
+- ✅ Documentação completa
+
+**Arquivos Criados:**
+- `apps/web/src/lib/carrier-efficiency-api.test.ts`
+- `apps/web/src/app/(private)/shipments/analytics/carrier-efficiency/page.tsx`
+- `apps/web/src/app/(private)/shipments/analytics/carrier-efficiency/carrier-efficiency-page.test.tsx`
+- `docs/BETA_014B_CARRIER_EFFICIENCY_FRONTEND.md`
+
+**Arquivos Atualizados:**
+- `apps/web/src/lib/types.ts` (CarrierEfficiencyMetrics, CarrierEfficiencyResponse, CarrierEfficiencyFilters)
+- `apps/web/src/lib/api.ts` (getCarrierEfficiency function)
+
+**Limitações Conhecidas:**
+- Filtros visuais não implementados na UI (apenas preparados no estado)
+- Sem componentes de UI avançados (cards, gráficos)
+- Sem integração com dashboard geral
+- Sem E2E (Playwright não configurado)
+- Build falha devido a erro de tipo no BETA-013B (SlaBadge.tsx) - não relacionado ao BETA-014B
+
+**Documentação:** `docs/BETA_014B_CARRIER_EFFICIENCY_FRONTEND.md`
+
+---
+
 ### 2. Garantir CI Verde em Todos os PRs
 **Validação:**
 - Todos os workflows de CI passam
@@ -273,6 +495,43 @@ gh run list --workflow=<workflow-name>
 
 **Responsável:** Mantenedor
 **Status:** Pendente
+
+---
+
+### BETA-014B: Painel Frontend de Eficiência por Transportadora
+**Status:** ✅ Implementado
+**Branch:** `feature/beta-014b-carrier-efficiency-frontend`
+**Data:** 2026-06-15
+
+**Implementado:**
+- ✅ Tipos TypeScript para Carrier Efficiency
+- ✅ API client function getCarrierEfficiency
+- ✅ Página de eficiência por transportadora
+- ✅ Tabela com métricas (total NFs, total entregas, no prazo, atrasadas, frete total, frete médio)
+- ✅ Exibição de rankings (eficiência, custo, volume)
+- ✅ Estados de UX (loading, erro, vazio, sucesso)
+- ✅ Formatação BRL e percentual
+- ✅ 9 testes TDD implementados (4 API + 5 página)
+- ✅ Documentação completa
+
+**Arquivos Criados:**
+- `apps/web/src/lib/carrier-efficiency-api.test.ts`
+- `apps/web/src/app/(private)/shipments/analytics/carrier-efficiency/page.tsx`
+- `apps/web/src/app/(private)/shipments/analytics/carrier-efficiency/carrier-efficiency-page.test.tsx`
+- `docs/BETA_014B_CARRIER_EFFICIENCY_FRONTEND.md`
+
+**Arquivos Atualizados:**
+- `apps/web/src/lib/types.ts` (CarrierEfficiencyMetrics, CarrierEfficiencyResponse, CarrierEfficiencyFilters)
+- `apps/web/src/lib/api.ts` (getCarrierEfficiency function)
+
+**Limitações Conhecidas:**
+- Filtros visuais não implementados na UI (apenas preparados no estado)
+- Sem componentes de UI avançados (cards, gráficos)
+- Sem integração com dashboard geral
+- Sem E2E (Playwright não configurado)
+- Build falha devido a erro de tipo no BETA-013B (SlaBadge.tsx) - não relacionado ao BETA-014B
+
+**Documentação:** `docs/BETA_014B_CARRIER_EFFICIENCY_FRONTEND.md`
 
 ---
 
@@ -296,6 +555,43 @@ git push
 
 ---
 
+### BETA-014B: Painel Frontend de Eficiência por Transportadora
+**Status:** ✅ Implementado
+**Branch:** `feature/beta-014b-carrier-efficiency-frontend`
+**Data:** 2026-06-15
+
+**Implementado:**
+- ✅ Tipos TypeScript para Carrier Efficiency
+- ✅ API client function getCarrierEfficiency
+- ✅ Página de eficiência por transportadora
+- ✅ Tabela com métricas (total NFs, total entregas, no prazo, atrasadas, frete total, frete médio)
+- ✅ Exibição de rankings (eficiência, custo, volume)
+- ✅ Estados de UX (loading, erro, vazio, sucesso)
+- ✅ Formatação BRL e percentual
+- ✅ 9 testes TDD implementados (4 API + 5 página)
+- ✅ Documentação completa
+
+**Arquivos Criados:**
+- `apps/web/src/lib/carrier-efficiency-api.test.ts`
+- `apps/web/src/app/(private)/shipments/analytics/carrier-efficiency/page.tsx`
+- `apps/web/src/app/(private)/shipments/analytics/carrier-efficiency/carrier-efficiency-page.test.tsx`
+- `docs/BETA_014B_CARRIER_EFFICIENCY_FRONTEND.md`
+
+**Arquivos Atualizados:**
+- `apps/web/src/lib/types.ts` (CarrierEfficiencyMetrics, CarrierEfficiencyResponse, CarrierEfficiencyFilters)
+- `apps/web/src/lib/api.ts` (getCarrierEfficiency function)
+
+**Limitações Conhecidas:**
+- Filtros visuais não implementados na UI (apenas preparados no estado)
+- Sem componentes de UI avançados (cards, gráficos)
+- Sem integração com dashboard geral
+- Sem E2E (Playwright não configurado)
+- Build falha devido a erro de tipo no BETA-013B (SlaBadge.tsx) - não relacionado ao BETA-014B
+
+**Documentação:** `docs/BETA_014B_CARRIER_EFFICIENCY_FRONTEND.md`
+
+---
+
 ### 4. Validar Documentação
 **Validação:**
 - Documentos obrigatórios existem
@@ -310,6 +606,43 @@ python scripts/validate_docs.py
 
 **Responsável:** Mantenedor
 **Status:** Pendente
+
+---
+
+### BETA-014B: Painel Frontend de Eficiência por Transportadora
+**Status:** ✅ Implementado
+**Branch:** `feature/beta-014b-carrier-efficiency-frontend`
+**Data:** 2026-06-15
+
+**Implementado:**
+- ✅ Tipos TypeScript para Carrier Efficiency
+- ✅ API client function getCarrierEfficiency
+- ✅ Página de eficiência por transportadora
+- ✅ Tabela com métricas (total NFs, total entregas, no prazo, atrasadas, frete total, frete médio)
+- ✅ Exibição de rankings (eficiência, custo, volume)
+- ✅ Estados de UX (loading, erro, vazio, sucesso)
+- ✅ Formatação BRL e percentual
+- ✅ 9 testes TDD implementados (4 API + 5 página)
+- ✅ Documentação completa
+
+**Arquivos Criados:**
+- `apps/web/src/lib/carrier-efficiency-api.test.ts`
+- `apps/web/src/app/(private)/shipments/analytics/carrier-efficiency/page.tsx`
+- `apps/web/src/app/(private)/shipments/analytics/carrier-efficiency/carrier-efficiency-page.test.tsx`
+- `docs/BETA_014B_CARRIER_EFFICIENCY_FRONTEND.md`
+
+**Arquivos Atualizados:**
+- `apps/web/src/lib/types.ts` (CarrierEfficiencyMetrics, CarrierEfficiencyResponse, CarrierEfficiencyFilters)
+- `apps/web/src/lib/api.ts` (getCarrierEfficiency function)
+
+**Limitações Conhecidas:**
+- Filtros visuais não implementados na UI (apenas preparados no estado)
+- Sem componentes de UI avançados (cards, gráficos)
+- Sem integração com dashboard geral
+- Sem E2E (Playwright não configurado)
+- Build falha devido a erro de tipo no BETA-013B (SlaBadge.tsx) - não relacionado ao BETA-014B
+
+**Documentação:** `docs/BETA_014B_CARRIER_EFFICIENCY_FRONTEND.md`
 
 ---
 
@@ -338,6 +671,43 @@ gh pr merge <pr-number> --merge --delete-branch
 
 ---
 
+### BETA-014B: Painel Frontend de Eficiência por Transportadora
+**Status:** ✅ Implementado
+**Branch:** `feature/beta-014b-carrier-efficiency-frontend`
+**Data:** 2026-06-15
+
+**Implementado:**
+- ✅ Tipos TypeScript para Carrier Efficiency
+- ✅ API client function getCarrierEfficiency
+- ✅ Página de eficiência por transportadora
+- ✅ Tabela com métricas (total NFs, total entregas, no prazo, atrasadas, frete total, frete médio)
+- ✅ Exibição de rankings (eficiência, custo, volume)
+- ✅ Estados de UX (loading, erro, vazio, sucesso)
+- ✅ Formatação BRL e percentual
+- ✅ 9 testes TDD implementados (4 API + 5 página)
+- ✅ Documentação completa
+
+**Arquivos Criados:**
+- `apps/web/src/lib/carrier-efficiency-api.test.ts`
+- `apps/web/src/app/(private)/shipments/analytics/carrier-efficiency/page.tsx`
+- `apps/web/src/app/(private)/shipments/analytics/carrier-efficiency/carrier-efficiency-page.test.tsx`
+- `docs/BETA_014B_CARRIER_EFFICIENCY_FRONTEND.md`
+
+**Arquivos Atualizados:**
+- `apps/web/src/lib/types.ts` (CarrierEfficiencyMetrics, CarrierEfficiencyResponse, CarrierEfficiencyFilters)
+- `apps/web/src/lib/api.ts` (getCarrierEfficiency function)
+
+**Limitações Conhecidas:**
+- Filtros visuais não implementados na UI (apenas preparados no estado)
+- Sem componentes de UI avançados (cards, gráficos)
+- Sem integração com dashboard geral
+- Sem E2E (Playwright não configurado)
+- Build falha devido a erro de tipo no BETA-013B (SlaBadge.tsx) - não relacionado ao BETA-014B
+
+**Documentação:** `docs/BETA_014B_CARRIER_EFFICIENCY_FRONTEND.md`
+
+---
+
 ### 2. Backup Antes de Merge
 **Processo:**
 1. Criar tag de backup antes do merge
@@ -352,6 +722,43 @@ git push origin --tags
 
 **Responsível:** Mantenedor
 **Status:** Pendente
+
+---
+
+### BETA-014B: Painel Frontend de Eficiência por Transportadora
+**Status:** ✅ Implementado
+**Branch:** `feature/beta-014b-carrier-efficiency-frontend`
+**Data:** 2026-06-15
+
+**Implementado:**
+- ✅ Tipos TypeScript para Carrier Efficiency
+- ✅ API client function getCarrierEfficiency
+- ✅ Página de eficiência por transportadora
+- ✅ Tabela com métricas (total NFs, total entregas, no prazo, atrasadas, frete total, frete médio)
+- ✅ Exibição de rankings (eficiência, custo, volume)
+- ✅ Estados de UX (loading, erro, vazio, sucesso)
+- ✅ Formatação BRL e percentual
+- ✅ 9 testes TDD implementados (4 API + 5 página)
+- ✅ Documentação completa
+
+**Arquivos Criados:**
+- `apps/web/src/lib/carrier-efficiency-api.test.ts`
+- `apps/web/src/app/(private)/shipments/analytics/carrier-efficiency/page.tsx`
+- `apps/web/src/app/(private)/shipments/analytics/carrier-efficiency/carrier-efficiency-page.test.tsx`
+- `docs/BETA_014B_CARRIER_EFFICIENCY_FRONTEND.md`
+
+**Arquivos Atualizados:**
+- `apps/web/src/lib/types.ts` (CarrierEfficiencyMetrics, CarrierEfficiencyResponse, CarrierEfficiencyFilters)
+- `apps/web/src/lib/api.ts` (getCarrierEfficiency function)
+
+**Limitações Conhecidas:**
+- Filtros visuais não implementados na UI (apenas preparados no estado)
+- Sem componentes de UI avançados (cards, gráficos)
+- Sem integração com dashboard geral
+- Sem E2E (Playwright não configurado)
+- Build falha devido a erro de tipo no BETA-013B (SlaBadge.tsx) - não relacionado ao BETA-014B
+
+**Documentação:** `docs/BETA_014B_CARRIER_EFFICIENCY_FRONTEND.md`
 
 ---
 
@@ -370,6 +777,43 @@ python scripts/beta_validate.py
 
 **Responsível:** Mantenedor
 **Status:** Pendente
+
+---
+
+### BETA-014B: Painel Frontend de Eficiência por Transportadora
+**Status:** ✅ Implementado
+**Branch:** `feature/beta-014b-carrier-efficiency-frontend`
+**Data:** 2026-06-15
+
+**Implementado:**
+- ✅ Tipos TypeScript para Carrier Efficiency
+- ✅ API client function getCarrierEfficiency
+- ✅ Página de eficiência por transportadora
+- ✅ Tabela com métricas (total NFs, total entregas, no prazo, atrasadas, frete total, frete médio)
+- ✅ Exibição de rankings (eficiência, custo, volume)
+- ✅ Estados de UX (loading, erro, vazio, sucesso)
+- ✅ Formatação BRL e percentual
+- ✅ 9 testes TDD implementados (4 API + 5 página)
+- ✅ Documentação completa
+
+**Arquivos Criados:**
+- `apps/web/src/lib/carrier-efficiency-api.test.ts`
+- `apps/web/src/app/(private)/shipments/analytics/carrier-efficiency/page.tsx`
+- `apps/web/src/app/(private)/shipments/analytics/carrier-efficiency/carrier-efficiency-page.test.tsx`
+- `docs/BETA_014B_CARRIER_EFFICIENCY_FRONTEND.md`
+
+**Arquivos Atualizados:**
+- `apps/web/src/lib/types.ts` (CarrierEfficiencyMetrics, CarrierEfficiencyResponse, CarrierEfficiencyFilters)
+- `apps/web/src/lib/api.ts` (getCarrierEfficiency function)
+
+**Limitações Conhecidas:**
+- Filtros visuais não implementados na UI (apenas preparados no estado)
+- Sem componentes de UI avançados (cards, gráficos)
+- Sem integração com dashboard geral
+- Sem E2E (Playwright não configurado)
+- Build falha devido a erro de tipo no BETA-013B (SlaBadge.tsx) - não relacionado ao BETA-014B
+
+**Documentação:** `docs/BETA_014B_CARRIER_EFFICIENCY_FRONTEND.md`
 
 ---
 
@@ -394,6 +838,43 @@ npm run test:coverage
 
 ---
 
+### BETA-014B: Painel Frontend de Eficiência por Transportadora
+**Status:** ✅ Implementado
+**Branch:** `feature/beta-014b-carrier-efficiency-frontend`
+**Data:** 2026-06-15
+
+**Implementado:**
+- ✅ Tipos TypeScript para Carrier Efficiency
+- ✅ API client function getCarrierEfficiency
+- ✅ Página de eficiência por transportadora
+- ✅ Tabela com métricas (total NFs, total entregas, no prazo, atrasadas, frete total, frete médio)
+- ✅ Exibição de rankings (eficiência, custo, volume)
+- ✅ Estados de UX (loading, erro, vazio, sucesso)
+- ✅ Formatação BRL e percentual
+- ✅ 9 testes TDD implementados (4 API + 5 página)
+- ✅ Documentação completa
+
+**Arquivos Criados:**
+- `apps/web/src/lib/carrier-efficiency-api.test.ts`
+- `apps/web/src/app/(private)/shipments/analytics/carrier-efficiency/page.tsx`
+- `apps/web/src/app/(private)/shipments/analytics/carrier-efficiency/carrier-efficiency-page.test.tsx`
+- `docs/BETA_014B_CARRIER_EFFICIENCY_FRONTEND.md`
+
+**Arquivos Atualizados:**
+- `apps/web/src/lib/types.ts` (CarrierEfficiencyMetrics, CarrierEfficiencyResponse, CarrierEfficiencyFilters)
+- `apps/web/src/lib/api.ts` (getCarrierEfficiency function)
+
+**Limitações Conhecidas:**
+- Filtros visuais não implementados na UI (apenas preparados no estado)
+- Sem componentes de UI avançados (cards, gráficos)
+- Sem integração com dashboard geral
+- Sem E2E (Playwright não configurado)
+- Build falha devido a erro de tipo no BETA-013B (SlaBadge.tsx) - não relacionado ao BETA-014B
+
+**Documentação:** `docs/BETA_014B_CARRIER_EFFICIENCY_FRONTEND.md`
+
+---
+
 ### 2. Implementar Migrations Incrementais Reversíveis
 **Objetivo:** Implementar migrations que preservam dados
 
@@ -410,6 +891,43 @@ python -m pytest tests/test_migrations.py -v
 
 **Responsível:** Desenvolvedor
 **Status:** Pendente
+
+---
+
+### BETA-014B: Painel Frontend de Eficiência por Transportadora
+**Status:** ✅ Implementado
+**Branch:** `feature/beta-014b-carrier-efficiency-frontend`
+**Data:** 2026-06-15
+
+**Implementado:**
+- ✅ Tipos TypeScript para Carrier Efficiency
+- ✅ API client function getCarrierEfficiency
+- ✅ Página de eficiência por transportadora
+- ✅ Tabela com métricas (total NFs, total entregas, no prazo, atrasadas, frete total, frete médio)
+- ✅ Exibição de rankings (eficiência, custo, volume)
+- ✅ Estados de UX (loading, erro, vazio, sucesso)
+- ✅ Formatação BRL e percentual
+- ✅ 9 testes TDD implementados (4 API + 5 página)
+- ✅ Documentação completa
+
+**Arquivos Criados:**
+- `apps/web/src/lib/carrier-efficiency-api.test.ts`
+- `apps/web/src/app/(private)/shipments/analytics/carrier-efficiency/page.tsx`
+- `apps/web/src/app/(private)/shipments/analytics/carrier-efficiency/carrier-efficiency-page.test.tsx`
+- `docs/BETA_014B_CARRIER_EFFICIENCY_FRONTEND.md`
+
+**Arquivos Atualizados:**
+- `apps/web/src/lib/types.ts` (CarrierEfficiencyMetrics, CarrierEfficiencyResponse, CarrierEfficiencyFilters)
+- `apps/web/src/lib/api.ts` (getCarrierEfficiency function)
+
+**Limitações Conhecidas:**
+- Filtros visuais não implementados na UI (apenas preparados no estado)
+- Sem componentes de UI avançados (cards, gráficos)
+- Sem integração com dashboard geral
+- Sem E2E (Playwright não configurado)
+- Build falha devido a erro de tipo no BETA-013B (SlaBadge.tsx) - não relacionado ao BETA-014B
+
+**Documentação:** `docs/BETA_014B_CARRIER_EFFICIENCY_FRONTEND.md`
 
 ---
 
@@ -432,6 +950,43 @@ npx playwright test
 
 ---
 
+### BETA-014B: Painel Frontend de Eficiência por Transportadora
+**Status:** ✅ Implementado
+**Branch:** `feature/beta-014b-carrier-efficiency-frontend`
+**Data:** 2026-06-15
+
+**Implementado:**
+- ✅ Tipos TypeScript para Carrier Efficiency
+- ✅ API client function getCarrierEfficiency
+- ✅ Página de eficiência por transportadora
+- ✅ Tabela com métricas (total NFs, total entregas, no prazo, atrasadas, frete total, frete médio)
+- ✅ Exibição de rankings (eficiência, custo, volume)
+- ✅ Estados de UX (loading, erro, vazio, sucesso)
+- ✅ Formatação BRL e percentual
+- ✅ 9 testes TDD implementados (4 API + 5 página)
+- ✅ Documentação completa
+
+**Arquivos Criados:**
+- `apps/web/src/lib/carrier-efficiency-api.test.ts`
+- `apps/web/src/app/(private)/shipments/analytics/carrier-efficiency/page.tsx`
+- `apps/web/src/app/(private)/shipments/analytics/carrier-efficiency/carrier-efficiency-page.test.tsx`
+- `docs/BETA_014B_CARRIER_EFFICIENCY_FRONTEND.md`
+
+**Arquivos Atualizados:**
+- `apps/web/src/lib/types.ts` (CarrierEfficiencyMetrics, CarrierEfficiencyResponse, CarrierEfficiencyFilters)
+- `apps/web/src/lib/api.ts` (getCarrierEfficiency function)
+
+**Limitações Conhecidas:**
+- Filtros visuais não implementados na UI (apenas preparados no estado)
+- Sem componentes de UI avançados (cards, gráficos)
+- Sem integração com dashboard geral
+- Sem E2E (Playwright não configurado)
+- Build falha devido a erro de tipo no BETA-013B (SlaBadge.tsx) - não relacionado ao BETA-014B
+
+**Documentação:** `docs/BETA_014B_CARRIER_EFFICIENCY_FRONTEND.md`
+
+---
+
 ### 4. Implementar UI Completa
 **Objetivo:** Implementar UI para fluxos não implementados
 
@@ -451,6 +1006,43 @@ npx playwright test
 
 ---
 
+### BETA-014B: Painel Frontend de Eficiência por Transportadora
+**Status:** ✅ Implementado
+**Branch:** `feature/beta-014b-carrier-efficiency-frontend`
+**Data:** 2026-06-15
+
+**Implementado:**
+- ✅ Tipos TypeScript para Carrier Efficiency
+- ✅ API client function getCarrierEfficiency
+- ✅ Página de eficiência por transportadora
+- ✅ Tabela com métricas (total NFs, total entregas, no prazo, atrasadas, frete total, frete médio)
+- ✅ Exibição de rankings (eficiência, custo, volume)
+- ✅ Estados de UX (loading, erro, vazio, sucesso)
+- ✅ Formatação BRL e percentual
+- ✅ 9 testes TDD implementados (4 API + 5 página)
+- ✅ Documentação completa
+
+**Arquivos Criados:**
+- `apps/web/src/lib/carrier-efficiency-api.test.ts`
+- `apps/web/src/app/(private)/shipments/analytics/carrier-efficiency/page.tsx`
+- `apps/web/src/app/(private)/shipments/analytics/carrier-efficiency/carrier-efficiency-page.test.tsx`
+- `docs/BETA_014B_CARRIER_EFFICIENCY_FRONTEND.md`
+
+**Arquivos Atualizados:**
+- `apps/web/src/lib/types.ts` (CarrierEfficiencyMetrics, CarrierEfficiencyResponse, CarrierEfficiencyFilters)
+- `apps/web/src/lib/api.ts` (getCarrierEfficiency function)
+
+**Limitações Conhecidas:**
+- Filtros visuais não implementados na UI (apenas preparados no estado)
+- Sem componentes de UI avançados (cards, gráficos)
+- Sem integração com dashboard geral
+- Sem E2E (Playwright não configurado)
+- Build falha devido a erro de tipo no BETA-013B (SlaBadge.tsx) - não relacionado ao BETA-014B
+
+**Documentação:** `docs/BETA_014B_CARRIER_EFFICIENCY_FRONTEND.md`
+
+---
+
 ### 5. Implementar Monitoramento de Performance
 **Objetivo:** Implementar monitoramento de performance
 
@@ -461,6 +1053,43 @@ npx playwright test
 
 **Responsível:** Desenvolvedor
 **Status:** Pendente
+
+---
+
+### BETA-014B: Painel Frontend de Eficiência por Transportadora
+**Status:** ✅ Implementado
+**Branch:** `feature/beta-014b-carrier-efficiency-frontend`
+**Data:** 2026-06-15
+
+**Implementado:**
+- ✅ Tipos TypeScript para Carrier Efficiency
+- ✅ API client function getCarrierEfficiency
+- ✅ Página de eficiência por transportadora
+- ✅ Tabela com métricas (total NFs, total entregas, no prazo, atrasadas, frete total, frete médio)
+- ✅ Exibição de rankings (eficiência, custo, volume)
+- ✅ Estados de UX (loading, erro, vazio, sucesso)
+- ✅ Formatação BRL e percentual
+- ✅ 9 testes TDD implementados (4 API + 5 página)
+- ✅ Documentação completa
+
+**Arquivos Criados:**
+- `apps/web/src/lib/carrier-efficiency-api.test.ts`
+- `apps/web/src/app/(private)/shipments/analytics/carrier-efficiency/page.tsx`
+- `apps/web/src/app/(private)/shipments/analytics/carrier-efficiency/carrier-efficiency-page.test.tsx`
+- `docs/BETA_014B_CARRIER_EFFICIENCY_FRONTEND.md`
+
+**Arquivos Atualizados:**
+- `apps/web/src/lib/types.ts` (CarrierEfficiencyMetrics, CarrierEfficiencyResponse, CarrierEfficiencyFilters)
+- `apps/web/src/lib/api.ts` (getCarrierEfficiency function)
+
+**Limitações Conhecidas:**
+- Filtros visuais não implementados na UI (apenas preparados no estado)
+- Sem componentes de UI avançados (cards, gráficos)
+- Sem integração com dashboard geral
+- Sem E2E (Playwright não configurado)
+- Build falha devido a erro de tipo no BETA-013B (SlaBadge.tsx) - não relacionado ao BETA-014B
+
+**Documentação:** `docs/BETA_014B_CARRIER_EFFICIENCY_FRONTEND.md`
 
 ---
 
@@ -477,6 +1106,43 @@ npx playwright test
 
 ---
 
+### BETA-014B: Painel Frontend de Eficiência por Transportadora
+**Status:** ✅ Implementado
+**Branch:** `feature/beta-014b-carrier-efficiency-frontend`
+**Data:** 2026-06-15
+
+**Implementado:**
+- ✅ Tipos TypeScript para Carrier Efficiency
+- ✅ API client function getCarrierEfficiency
+- ✅ Página de eficiência por transportadora
+- ✅ Tabela com métricas (total NFs, total entregas, no prazo, atrasadas, frete total, frete médio)
+- ✅ Exibição de rankings (eficiência, custo, volume)
+- ✅ Estados de UX (loading, erro, vazio, sucesso)
+- ✅ Formatação BRL e percentual
+- ✅ 9 testes TDD implementados (4 API + 5 página)
+- ✅ Documentação completa
+
+**Arquivos Criados:**
+- `apps/web/src/lib/carrier-efficiency-api.test.ts`
+- `apps/web/src/app/(private)/shipments/analytics/carrier-efficiency/page.tsx`
+- `apps/web/src/app/(private)/shipments/analytics/carrier-efficiency/carrier-efficiency-page.test.tsx`
+- `docs/BETA_014B_CARRIER_EFFICIENCY_FRONTEND.md`
+
+**Arquivos Atualizados:**
+- `apps/web/src/lib/types.ts` (CarrierEfficiencyMetrics, CarrierEfficiencyResponse, CarrierEfficiencyFilters)
+- `apps/web/src/lib/api.ts` (getCarrierEfficiency function)
+
+**Limitações Conhecidas:**
+- Filtros visuais não implementados na UI (apenas preparados no estado)
+- Sem componentes de UI avançados (cards, gráficos)
+- Sem integração com dashboard geral
+- Sem E2E (Playwright não configurado)
+- Build falha devido a erro de tipo no BETA-013B (SlaBadge.tsx) - não relacionado ao BETA-014B
+
+**Documentação:** `docs/BETA_014B_CARRIER_EFFICIENCY_FRONTEND.md`
+
+---
+
 ### 7. Implementar Internacionalização
 **Objetivo:** Implementar suporte a múltiplos idiomas
 
@@ -487,6 +1153,43 @@ npx playwright test
 
 **Responsível:** Desenvolvedor
 **Status:** Pendente
+
+---
+
+### BETA-014B: Painel Frontend de Eficiência por Transportadora
+**Status:** ✅ Implementado
+**Branch:** `feature/beta-014b-carrier-efficiency-frontend`
+**Data:** 2026-06-15
+
+**Implementado:**
+- ✅ Tipos TypeScript para Carrier Efficiency
+- ✅ API client function getCarrierEfficiency
+- ✅ Página de eficiência por transportadora
+- ✅ Tabela com métricas (total NFs, total entregas, no prazo, atrasadas, frete total, frete médio)
+- ✅ Exibição de rankings (eficiência, custo, volume)
+- ✅ Estados de UX (loading, erro, vazio, sucesso)
+- ✅ Formatação BRL e percentual
+- ✅ 9 testes TDD implementados (4 API + 5 página)
+- ✅ Documentação completa
+
+**Arquivos Criados:**
+- `apps/web/src/lib/carrier-efficiency-api.test.ts`
+- `apps/web/src/app/(private)/shipments/analytics/carrier-efficiency/page.tsx`
+- `apps/web/src/app/(private)/shipments/analytics/carrier-efficiency/carrier-efficiency-page.test.tsx`
+- `docs/BETA_014B_CARRIER_EFFICIENCY_FRONTEND.md`
+
+**Arquivos Atualizados:**
+- `apps/web/src/lib/types.ts` (CarrierEfficiencyMetrics, CarrierEfficiencyResponse, CarrierEfficiencyFilters)
+- `apps/web/src/lib/api.ts` (getCarrierEfficiency function)
+
+**Limitações Conhecidas:**
+- Filtros visuais não implementados na UI (apenas preparados no estado)
+- Sem componentes de UI avançados (cards, gráficos)
+- Sem integração com dashboard geral
+- Sem E2E (Playwright não configurado)
+- Build falha devido a erro de tipo no BETA-013B (SlaBadge.tsx) - não relacionado ao BETA-014B
+
+**Documentação:** `docs/BETA_014B_CARRIER_EFFICIENCY_FRONTEND.md`
 
 ---
 
@@ -505,6 +1208,43 @@ npx playwright test
 
 ---
 
+### BETA-014B: Painel Frontend de Eficiência por Transportadora
+**Status:** ✅ Implementado
+**Branch:** `feature/beta-014b-carrier-efficiency-frontend`
+**Data:** 2026-06-15
+
+**Implementado:**
+- ✅ Tipos TypeScript para Carrier Efficiency
+- ✅ API client function getCarrierEfficiency
+- ✅ Página de eficiência por transportadora
+- ✅ Tabela com métricas (total NFs, total entregas, no prazo, atrasadas, frete total, frete médio)
+- ✅ Exibição de rankings (eficiência, custo, volume)
+- ✅ Estados de UX (loading, erro, vazio, sucesso)
+- ✅ Formatação BRL e percentual
+- ✅ 9 testes TDD implementados (4 API + 5 página)
+- ✅ Documentação completa
+
+**Arquivos Criados:**
+- `apps/web/src/lib/carrier-efficiency-api.test.ts`
+- `apps/web/src/app/(private)/shipments/analytics/carrier-efficiency/page.tsx`
+- `apps/web/src/app/(private)/shipments/analytics/carrier-efficiency/carrier-efficiency-page.test.tsx`
+- `docs/BETA_014B_CARRIER_EFFICIENCY_FRONTEND.md`
+
+**Arquivos Atualizados:**
+- `apps/web/src/lib/types.ts` (CarrierEfficiencyMetrics, CarrierEfficiencyResponse, CarrierEfficiencyFilters)
+- `apps/web/src/lib/api.ts` (getCarrierEfficiency function)
+
+**Limitações Conhecidas:**
+- Filtros visuais não implementados na UI (apenas preparados no estado)
+- Sem componentes de UI avançados (cards, gráficos)
+- Sem integração com dashboard geral
+- Sem E2E (Playwright não configurado)
+- Build falha devido a erro de tipo no BETA-013B (SlaBadge.tsx) - não relacionado ao BETA-014B
+
+**Documentação:** `docs/BETA_014B_CARRIER_EFFICIENCY_FRONTEND.md`
+
+---
+
 ### 2. Manter CI Verde
 **Frequência:** Contínua
 
@@ -515,6 +1255,43 @@ npx playwright test
 
 **Responsível:** Desenvolvedor
 **Status:** Recorrente
+
+---
+
+### BETA-014B: Painel Frontend de Eficiência por Transportadora
+**Status:** ✅ Implementado
+**Branch:** `feature/beta-014b-carrier-efficiency-frontend`
+**Data:** 2026-06-15
+
+**Implementado:**
+- ✅ Tipos TypeScript para Carrier Efficiency
+- ✅ API client function getCarrierEfficiency
+- ✅ Página de eficiência por transportadora
+- ✅ Tabela com métricas (total NFs, total entregas, no prazo, atrasadas, frete total, frete médio)
+- ✅ Exibição de rankings (eficiência, custo, volume)
+- ✅ Estados de UX (loading, erro, vazio, sucesso)
+- ✅ Formatação BRL e percentual
+- ✅ 9 testes TDD implementados (4 API + 5 página)
+- ✅ Documentação completa
+
+**Arquivos Criados:**
+- `apps/web/src/lib/carrier-efficiency-api.test.ts`
+- `apps/web/src/app/(private)/shipments/analytics/carrier-efficiency/page.tsx`
+- `apps/web/src/app/(private)/shipments/analytics/carrier-efficiency/carrier-efficiency-page.test.tsx`
+- `docs/BETA_014B_CARRIER_EFFICIENCY_FRONTEND.md`
+
+**Arquivos Atualizados:**
+- `apps/web/src/lib/types.ts` (CarrierEfficiencyMetrics, CarrierEfficiencyResponse, CarrierEfficiencyFilters)
+- `apps/web/src/lib/api.ts` (getCarrierEfficiency function)
+
+**Limitações Conhecidas:**
+- Filtros visuais não implementados na UI (apenas preparados no estado)
+- Sem componentes de UI avançados (cards, gráficos)
+- Sem integração com dashboard geral
+- Sem E2E (Playwright não configurado)
+- Build falha devido a erro de tipo no BETA-013B (SlaBadge.tsx) - não relacionado ao BETA-014B
+
+**Documentação:** `docs/BETA_014B_CARRIER_EFFICIENCY_FRONTEND.md`
 
 ---
 
@@ -531,6 +1308,43 @@ npx playwright test
 
 ---
 
+### BETA-014B: Painel Frontend de Eficiência por Transportadora
+**Status:** ✅ Implementado
+**Branch:** `feature/beta-014b-carrier-efficiency-frontend`
+**Data:** 2026-06-15
+
+**Implementado:**
+- ✅ Tipos TypeScript para Carrier Efficiency
+- ✅ API client function getCarrierEfficiency
+- ✅ Página de eficiência por transportadora
+- ✅ Tabela com métricas (total NFs, total entregas, no prazo, atrasadas, frete total, frete médio)
+- ✅ Exibição de rankings (eficiência, custo, volume)
+- ✅ Estados de UX (loading, erro, vazio, sucesso)
+- ✅ Formatação BRL e percentual
+- ✅ 9 testes TDD implementados (4 API + 5 página)
+- ✅ Documentação completa
+
+**Arquivos Criados:**
+- `apps/web/src/lib/carrier-efficiency-api.test.ts`
+- `apps/web/src/app/(private)/shipments/analytics/carrier-efficiency/page.tsx`
+- `apps/web/src/app/(private)/shipments/analytics/carrier-efficiency/carrier-efficiency-page.test.tsx`
+- `docs/BETA_014B_CARRIER_EFFICIENCY_FRONTEND.md`
+
+**Arquivos Atualizados:**
+- `apps/web/src/lib/types.ts` (CarrierEfficiencyMetrics, CarrierEfficiencyResponse, CarrierEfficiencyFilters)
+- `apps/web/src/lib/api.ts` (getCarrierEfficiency function)
+
+**Limitações Conhecidas:**
+- Filtros visuais não implementados na UI (apenas preparados no estado)
+- Sem componentes de UI avançados (cards, gráficos)
+- Sem integração com dashboard geral
+- Sem E2E (Playwright não configurado)
+- Build falha devido a erro de tipo no BETA-013B (SlaBadge.tsx) - não relacionado ao BETA-014B
+
+**Documentação:** `docs/BETA_014B_CARRIER_EFFICIENCY_FRONTEND.md`
+
+---
+
 ### 4. Manter Documentação de Convergência
 **Frequência:** Após cada merge significativo
 
@@ -541,6 +1355,43 @@ npx playwright test
 
 **Responsível:** Desenvolvedor
 **Status:** Recorrente
+
+---
+
+### BETA-014B: Painel Frontend de Eficiência por Transportadora
+**Status:** ✅ Implementado
+**Branch:** `feature/beta-014b-carrier-efficiency-frontend`
+**Data:** 2026-06-15
+
+**Implementado:**
+- ✅ Tipos TypeScript para Carrier Efficiency
+- ✅ API client function getCarrierEfficiency
+- ✅ Página de eficiência por transportadora
+- ✅ Tabela com métricas (total NFs, total entregas, no prazo, atrasadas, frete total, frete médio)
+- ✅ Exibição de rankings (eficiência, custo, volume)
+- ✅ Estados de UX (loading, erro, vazio, sucesso)
+- ✅ Formatação BRL e percentual
+- ✅ 9 testes TDD implementados (4 API + 5 página)
+- ✅ Documentação completa
+
+**Arquivos Criados:**
+- `apps/web/src/lib/carrier-efficiency-api.test.ts`
+- `apps/web/src/app/(private)/shipments/analytics/carrier-efficiency/page.tsx`
+- `apps/web/src/app/(private)/shipments/analytics/carrier-efficiency/carrier-efficiency-page.test.tsx`
+- `docs/BETA_014B_CARRIER_EFFICIENCY_FRONTEND.md`
+
+**Arquivos Atualizados:**
+- `apps/web/src/lib/types.ts` (CarrierEfficiencyMetrics, CarrierEfficiencyResponse, CarrierEfficiencyFilters)
+- `apps/web/src/lib/api.ts` (getCarrierEfficiency function)
+
+**Limitações Conhecidas:**
+- Filtros visuais não implementados na UI (apenas preparados no estado)
+- Sem componentes de UI avançados (cards, gráficos)
+- Sem integração com dashboard geral
+- Sem E2E (Playwright não configurado)
+- Build falha devido a erro de tipo no BETA-013B (SlaBadge.tsx) - não relacionado ao BETA-014B
+
+**Documentação:** `docs/BETA_014B_CARRIER_EFFICIENCY_FRONTEND.md`
 
 ---
 
@@ -559,6 +1410,43 @@ npx playwright test
 
 ---
 
+### BETA-014B: Painel Frontend de Eficiência por Transportadora
+**Status:** ✅ Implementado
+**Branch:** `feature/beta-014b-carrier-efficiency-frontend`
+**Data:** 2026-06-15
+
+**Implementado:**
+- ✅ Tipos TypeScript para Carrier Efficiency
+- ✅ API client function getCarrierEfficiency
+- ✅ Página de eficiência por transportadora
+- ✅ Tabela com métricas (total NFs, total entregas, no prazo, atrasadas, frete total, frete médio)
+- ✅ Exibição de rankings (eficiência, custo, volume)
+- ✅ Estados de UX (loading, erro, vazio, sucesso)
+- ✅ Formatação BRL e percentual
+- ✅ 9 testes TDD implementados (4 API + 5 página)
+- ✅ Documentação completa
+
+**Arquivos Criados:**
+- `apps/web/src/lib/carrier-efficiency-api.test.ts`
+- `apps/web/src/app/(private)/shipments/analytics/carrier-efficiency/page.tsx`
+- `apps/web/src/app/(private)/shipments/analytics/carrier-efficiency/carrier-efficiency-page.test.tsx`
+- `docs/BETA_014B_CARRIER_EFFICIENCY_FRONTEND.md`
+
+**Arquivos Atualizados:**
+- `apps/web/src/lib/types.ts` (CarrierEfficiencyMetrics, CarrierEfficiencyResponse, CarrierEfficiencyFilters)
+- `apps/web/src/lib/api.ts` (getCarrierEfficiency function)
+
+**Limitações Conhecidas:**
+- Filtros visuais não implementados na UI (apenas preparados no estado)
+- Sem componentes de UI avançados (cards, gráficos)
+- Sem integração com dashboard geral
+- Sem E2E (Playwright não configurado)
+- Build falha devido a erro de tipo no BETA-013B (SlaBadge.tsx) - não relacionado ao BETA-014B
+
+**Documentação:** `docs/BETA_014B_CARRIER_EFFICIENCY_FRONTEND.md`
+
+---
+
 ### 2. Documentar Decisões
 **Frequência:** Após cada decisão significativa
 
@@ -572,10 +1460,454 @@ npx playwright test
 
 ---
 
+### BETA-014B: Painel Frontend de Eficiência por Transportadora
+**Status:** ✅ Implementado
+**Branch:** `feature/beta-014b-carrier-efficiency-frontend`
+**Data:** 2026-06-15
+
+**Implementado:**
+- ✅ Tipos TypeScript para Carrier Efficiency
+- ✅ API client function getCarrierEfficiency
+- ✅ Página de eficiência por transportadora
+- ✅ Tabela com métricas (total NFs, total entregas, no prazo, atrasadas, frete total, frete médio)
+- ✅ Exibição de rankings (eficiência, custo, volume)
+- ✅ Estados de UX (loading, erro, vazio, sucesso)
+- ✅ Formatação BRL e percentual
+- ✅ 9 testes TDD implementados (4 API + 5 página)
+- ✅ Documentação completa
+
+**Arquivos Criados:**
+- `apps/web/src/lib/carrier-efficiency-api.test.ts`
+- `apps/web/src/app/(private)/shipments/analytics/carrier-efficiency/page.tsx`
+- `apps/web/src/app/(private)/shipments/analytics/carrier-efficiency/carrier-efficiency-page.test.tsx`
+- `docs/BETA_014B_CARRIER_EFFICIENCY_FRONTEND.md`
+
+**Arquivos Atualizados:**
+- `apps/web/src/lib/types.ts` (CarrierEfficiencyMetrics, CarrierEfficiencyResponse, CarrierEfficiencyFilters)
+- `apps/web/src/lib/api.ts` (getCarrierEfficiency function)
+
+**Limitações Conhecidas:**
+- Filtros visuais não implementados na UI (apenas preparados no estado)
+- Sem componentes de UI avançados (cards, gráficos)
+- Sem integração com dashboard geral
+- Sem E2E (Playwright não configurado)
+- Build falha devido a erro de tipo no BETA-013B (SlaBadge.tsx) - não relacionado ao BETA-014B
+
+**Documentação:** `docs/BETA_014B_CARRIER_EFFICIENCY_FRONTEND.md`
+
+---
+
 ## Resumo de Ações
 
 | Ação | Responsável | Status | Prioridade |
-|------|-------------|--------|-----------|
+|---
+
+### BETA-014B: Painel Frontend de Eficiência por Transportadora
+**Status:** ✅ Implementado
+**Branch:** `feature/beta-014b-carrier-efficiency-frontend`
+**Data:** 2026-06-15
+
+**Implementado:**
+- ✅ Tipos TypeScript para Carrier Efficiency
+- ✅ API client function getCarrierEfficiency
+- ✅ Página de eficiência por transportadora
+- ✅ Tabela com métricas (total NFs, total entregas, no prazo, atrasadas, frete total, frete médio)
+- ✅ Exibição de rankings (eficiência, custo, volume)
+- ✅ Estados de UX (loading, erro, vazio, sucesso)
+- ✅ Formatação BRL e percentual
+- ✅ 9 testes TDD implementados (4 API + 5 página)
+- ✅ Documentação completa
+
+**Arquivos Criados:**
+- `apps/web/src/lib/carrier-efficiency-api.test.ts`
+- `apps/web/src/app/(private)/shipments/analytics/carrier-efficiency/page.tsx`
+- `apps/web/src/app/(private)/shipments/analytics/carrier-efficiency/carrier-efficiency-page.test.tsx`
+- `docs/BETA_014B_CARRIER_EFFICIENCY_FRONTEND.md`
+
+**Arquivos Atualizados:**
+- `apps/web/src/lib/types.ts` (CarrierEfficiencyMetrics, CarrierEfficiencyResponse, CarrierEfficiencyFilters)
+- `apps/web/src/lib/api.ts` (getCarrierEfficiency function)
+
+**Limitações Conhecidas:**
+- Filtros visuais não implementados na UI (apenas preparados no estado)
+- Sem componentes de UI avançados (cards, gráficos)
+- Sem integração com dashboard geral
+- Sem E2E (Playwright não configurado)
+- Build falha devido a erro de tipo no BETA-013B (SlaBadge.tsx) - não relacionado ao BETA-014B
+
+**Documentação:** `docs/BETA_014B_CARRIER_EFFICIENCY_FRONTEND.md`
+
+------
+
+### BETA-014B: Painel Frontend de Eficiência por Transportadora
+**Status:** ✅ Implementado
+**Branch:** `feature/beta-014b-carrier-efficiency-frontend`
+**Data:** 2026-06-15
+
+**Implementado:**
+- ✅ Tipos TypeScript para Carrier Efficiency
+- ✅ API client function getCarrierEfficiency
+- ✅ Página de eficiência por transportadora
+- ✅ Tabela com métricas (total NFs, total entregas, no prazo, atrasadas, frete total, frete médio)
+- ✅ Exibição de rankings (eficiência, custo, volume)
+- ✅ Estados de UX (loading, erro, vazio, sucesso)
+- ✅ Formatação BRL e percentual
+- ✅ 9 testes TDD implementados (4 API + 5 página)
+- ✅ Documentação completa
+
+**Arquivos Criados:**
+- `apps/web/src/lib/carrier-efficiency-api.test.ts`
+- `apps/web/src/app/(private)/shipments/analytics/carrier-efficiency/page.tsx`
+- `apps/web/src/app/(private)/shipments/analytics/carrier-efficiency/carrier-efficiency-page.test.tsx`
+- `docs/BETA_014B_CARRIER_EFFICIENCY_FRONTEND.md`
+
+**Arquivos Atualizados:**
+- `apps/web/src/lib/types.ts` (CarrierEfficiencyMetrics, CarrierEfficiencyResponse, CarrierEfficiencyFilters)
+- `apps/web/src/lib/api.ts` (getCarrierEfficiency function)
+
+**Limitações Conhecidas:**
+- Filtros visuais não implementados na UI (apenas preparados no estado)
+- Sem componentes de UI avançados (cards, gráficos)
+- Sem integração com dashboard geral
+- Sem E2E (Playwright não configurado)
+- Build falha devido a erro de tipo no BETA-013B (SlaBadge.tsx) - não relacionado ao BETA-014B
+
+**Documentação:** `docs/BETA_014B_CARRIER_EFFICIENCY_FRONTEND.md`
+
+---|---
+
+### BETA-014B: Painel Frontend de Eficiência por Transportadora
+**Status:** ✅ Implementado
+**Branch:** `feature/beta-014b-carrier-efficiency-frontend`
+**Data:** 2026-06-15
+
+**Implementado:**
+- ✅ Tipos TypeScript para Carrier Efficiency
+- ✅ API client function getCarrierEfficiency
+- ✅ Página de eficiência por transportadora
+- ✅ Tabela com métricas (total NFs, total entregas, no prazo, atrasadas, frete total, frete médio)
+- ✅ Exibição de rankings (eficiência, custo, volume)
+- ✅ Estados de UX (loading, erro, vazio, sucesso)
+- ✅ Formatação BRL e percentual
+- ✅ 9 testes TDD implementados (4 API + 5 página)
+- ✅ Documentação completa
+
+**Arquivos Criados:**
+- `apps/web/src/lib/carrier-efficiency-api.test.ts`
+- `apps/web/src/app/(private)/shipments/analytics/carrier-efficiency/page.tsx`
+- `apps/web/src/app/(private)/shipments/analytics/carrier-efficiency/carrier-efficiency-page.test.tsx`
+- `docs/BETA_014B_CARRIER_EFFICIENCY_FRONTEND.md`
+
+**Arquivos Atualizados:**
+- `apps/web/src/lib/types.ts` (CarrierEfficiencyMetrics, CarrierEfficiencyResponse, CarrierEfficiencyFilters)
+- `apps/web/src/lib/api.ts` (getCarrierEfficiency function)
+
+**Limitações Conhecidas:**
+- Filtros visuais não implementados na UI (apenas preparados no estado)
+- Sem componentes de UI avançados (cards, gráficos)
+- Sem integração com dashboard geral
+- Sem E2E (Playwright não configurado)
+- Build falha devido a erro de tipo no BETA-013B (SlaBadge.tsx) - não relacionado ao BETA-014B
+
+**Documentação:** `docs/BETA_014B_CARRIER_EFFICIENCY_FRONTEND.md`
+
+------
+
+### BETA-014B: Painel Frontend de Eficiência por Transportadora
+**Status:** ✅ Implementado
+**Branch:** `feature/beta-014b-carrier-efficiency-frontend`
+**Data:** 2026-06-15
+
+**Implementado:**
+- ✅ Tipos TypeScript para Carrier Efficiency
+- ✅ API client function getCarrierEfficiency
+- ✅ Página de eficiência por transportadora
+- ✅ Tabela com métricas (total NFs, total entregas, no prazo, atrasadas, frete total, frete médio)
+- ✅ Exibição de rankings (eficiência, custo, volume)
+- ✅ Estados de UX (loading, erro, vazio, sucesso)
+- ✅ Formatação BRL e percentual
+- ✅ 9 testes TDD implementados (4 API + 5 página)
+- ✅ Documentação completa
+
+**Arquivos Criados:**
+- `apps/web/src/lib/carrier-efficiency-api.test.ts`
+- `apps/web/src/app/(private)/shipments/analytics/carrier-efficiency/page.tsx`
+- `apps/web/src/app/(private)/shipments/analytics/carrier-efficiency/carrier-efficiency-page.test.tsx`
+- `docs/BETA_014B_CARRIER_EFFICIENCY_FRONTEND.md`
+
+**Arquivos Atualizados:**
+- `apps/web/src/lib/types.ts` (CarrierEfficiencyMetrics, CarrierEfficiencyResponse, CarrierEfficiencyFilters)
+- `apps/web/src/lib/api.ts` (getCarrierEfficiency function)
+
+**Limitações Conhecidas:**
+- Filtros visuais não implementados na UI (apenas preparados no estado)
+- Sem componentes de UI avançados (cards, gráficos)
+- Sem integração com dashboard geral
+- Sem E2E (Playwright não configurado)
+- Build falha devido a erro de tipo no BETA-013B (SlaBadge.tsx) - não relacionado ao BETA-014B
+
+**Documentação:** `docs/BETA_014B_CARRIER_EFFICIENCY_FRONTEND.md`
+
+------
+
+### BETA-014B: Painel Frontend de Eficiência por Transportadora
+**Status:** ✅ Implementado
+**Branch:** `feature/beta-014b-carrier-efficiency-frontend`
+**Data:** 2026-06-15
+
+**Implementado:**
+- ✅ Tipos TypeScript para Carrier Efficiency
+- ✅ API client function getCarrierEfficiency
+- ✅ Página de eficiência por transportadora
+- ✅ Tabela com métricas (total NFs, total entregas, no prazo, atrasadas, frete total, frete médio)
+- ✅ Exibição de rankings (eficiência, custo, volume)
+- ✅ Estados de UX (loading, erro, vazio, sucesso)
+- ✅ Formatação BRL e percentual
+- ✅ 9 testes TDD implementados (4 API + 5 página)
+- ✅ Documentação completa
+
+**Arquivos Criados:**
+- `apps/web/src/lib/carrier-efficiency-api.test.ts`
+- `apps/web/src/app/(private)/shipments/analytics/carrier-efficiency/page.tsx`
+- `apps/web/src/app/(private)/shipments/analytics/carrier-efficiency/carrier-efficiency-page.test.tsx`
+- `docs/BETA_014B_CARRIER_EFFICIENCY_FRONTEND.md`
+
+**Arquivos Atualizados:**
+- `apps/web/src/lib/types.ts` (CarrierEfficiencyMetrics, CarrierEfficiencyResponse, CarrierEfficiencyFilters)
+- `apps/web/src/lib/api.ts` (getCarrierEfficiency function)
+
+**Limitações Conhecidas:**
+- Filtros visuais não implementados na UI (apenas preparados no estado)
+- Sem componentes de UI avançados (cards, gráficos)
+- Sem integração com dashboard geral
+- Sem E2E (Playwright não configurado)
+- Build falha devido a erro de tipo no BETA-013B (SlaBadge.tsx) - não relacionado ao BETA-014B
+
+**Documentação:** `docs/BETA_014B_CARRIER_EFFICIENCY_FRONTEND.md`
+
+------
+
+### BETA-014B: Painel Frontend de Eficiência por Transportadora
+**Status:** ✅ Implementado
+**Branch:** `feature/beta-014b-carrier-efficiency-frontend`
+**Data:** 2026-06-15
+
+**Implementado:**
+- ✅ Tipos TypeScript para Carrier Efficiency
+- ✅ API client function getCarrierEfficiency
+- ✅ Página de eficiência por transportadora
+- ✅ Tabela com métricas (total NFs, total entregas, no prazo, atrasadas, frete total, frete médio)
+- ✅ Exibição de rankings (eficiência, custo, volume)
+- ✅ Estados de UX (loading, erro, vazio, sucesso)
+- ✅ Formatação BRL e percentual
+- ✅ 9 testes TDD implementados (4 API + 5 página)
+- ✅ Documentação completa
+
+**Arquivos Criados:**
+- `apps/web/src/lib/carrier-efficiency-api.test.ts`
+- `apps/web/src/app/(private)/shipments/analytics/carrier-efficiency/page.tsx`
+- `apps/web/src/app/(private)/shipments/analytics/carrier-efficiency/carrier-efficiency-page.test.tsx`
+- `docs/BETA_014B_CARRIER_EFFICIENCY_FRONTEND.md`
+
+**Arquivos Atualizados:**
+- `apps/web/src/lib/types.ts` (CarrierEfficiencyMetrics, CarrierEfficiencyResponse, CarrierEfficiencyFilters)
+- `apps/web/src/lib/api.ts` (getCarrierEfficiency function)
+
+**Limitações Conhecidas:**
+- Filtros visuais não implementados na UI (apenas preparados no estado)
+- Sem componentes de UI avançados (cards, gráficos)
+- Sem integração com dashboard geral
+- Sem E2E (Playwright não configurado)
+- Build falha devido a erro de tipo no BETA-013B (SlaBadge.tsx) - não relacionado ao BETA-014B
+
+**Documentação:** `docs/BETA_014B_CARRIER_EFFICIENCY_FRONTEND.md`
+
+----|---
+
+### BETA-014B: Painel Frontend de Eficiência por Transportadora
+**Status:** ✅ Implementado
+**Branch:** `feature/beta-014b-carrier-efficiency-frontend`
+**Data:** 2026-06-15
+
+**Implementado:**
+- ✅ Tipos TypeScript para Carrier Efficiency
+- ✅ API client function getCarrierEfficiency
+- ✅ Página de eficiência por transportadora
+- ✅ Tabela com métricas (total NFs, total entregas, no prazo, atrasadas, frete total, frete médio)
+- ✅ Exibição de rankings (eficiência, custo, volume)
+- ✅ Estados de UX (loading, erro, vazio, sucesso)
+- ✅ Formatação BRL e percentual
+- ✅ 9 testes TDD implementados (4 API + 5 página)
+- ✅ Documentação completa
+
+**Arquivos Criados:**
+- `apps/web/src/lib/carrier-efficiency-api.test.ts`
+- `apps/web/src/app/(private)/shipments/analytics/carrier-efficiency/page.tsx`
+- `apps/web/src/app/(private)/shipments/analytics/carrier-efficiency/carrier-efficiency-page.test.tsx`
+- `docs/BETA_014B_CARRIER_EFFICIENCY_FRONTEND.md`
+
+**Arquivos Atualizados:**
+- `apps/web/src/lib/types.ts` (CarrierEfficiencyMetrics, CarrierEfficiencyResponse, CarrierEfficiencyFilters)
+- `apps/web/src/lib/api.ts` (getCarrierEfficiency function)
+
+**Limitações Conhecidas:**
+- Filtros visuais não implementados na UI (apenas preparados no estado)
+- Sem componentes de UI avançados (cards, gráficos)
+- Sem integração com dashboard geral
+- Sem E2E (Playwright não configurado)
+- Build falha devido a erro de tipo no BETA-013B (SlaBadge.tsx) - não relacionado ao BETA-014B
+
+**Documentação:** `docs/BETA_014B_CARRIER_EFFICIENCY_FRONTEND.md`
+
+------
+
+### BETA-014B: Painel Frontend de Eficiência por Transportadora
+**Status:** ✅ Implementado
+**Branch:** `feature/beta-014b-carrier-efficiency-frontend`
+**Data:** 2026-06-15
+
+**Implementado:**
+- ✅ Tipos TypeScript para Carrier Efficiency
+- ✅ API client function getCarrierEfficiency
+- ✅ Página de eficiência por transportadora
+- ✅ Tabela com métricas (total NFs, total entregas, no prazo, atrasadas, frete total, frete médio)
+- ✅ Exibição de rankings (eficiência, custo, volume)
+- ✅ Estados de UX (loading, erro, vazio, sucesso)
+- ✅ Formatação BRL e percentual
+- ✅ 9 testes TDD implementados (4 API + 5 página)
+- ✅ Documentação completa
+
+**Arquivos Criados:**
+- `apps/web/src/lib/carrier-efficiency-api.test.ts`
+- `apps/web/src/app/(private)/shipments/analytics/carrier-efficiency/page.tsx`
+- `apps/web/src/app/(private)/shipments/analytics/carrier-efficiency/carrier-efficiency-page.test.tsx`
+- `docs/BETA_014B_CARRIER_EFFICIENCY_FRONTEND.md`
+
+**Arquivos Atualizados:**
+- `apps/web/src/lib/types.ts` (CarrierEfficiencyMetrics, CarrierEfficiencyResponse, CarrierEfficiencyFilters)
+- `apps/web/src/lib/api.ts` (getCarrierEfficiency function)
+
+**Limitações Conhecidas:**
+- Filtros visuais não implementados na UI (apenas preparados no estado)
+- Sem componentes de UI avançados (cards, gráficos)
+- Sem integração com dashboard geral
+- Sem E2E (Playwright não configurado)
+- Build falha devido a erro de tipo no BETA-013B (SlaBadge.tsx) - não relacionado ao BETA-014B
+
+**Documentação:** `docs/BETA_014B_CARRIER_EFFICIENCY_FRONTEND.md`
+
+-----|---
+
+### BETA-014B: Painel Frontend de Eficiência por Transportadora
+**Status:** ✅ Implementado
+**Branch:** `feature/beta-014b-carrier-efficiency-frontend`
+**Data:** 2026-06-15
+
+**Implementado:**
+- ✅ Tipos TypeScript para Carrier Efficiency
+- ✅ API client function getCarrierEfficiency
+- ✅ Página de eficiência por transportadora
+- ✅ Tabela com métricas (total NFs, total entregas, no prazo, atrasadas, frete total, frete médio)
+- ✅ Exibição de rankings (eficiência, custo, volume)
+- ✅ Estados de UX (loading, erro, vazio, sucesso)
+- ✅ Formatação BRL e percentual
+- ✅ 9 testes TDD implementados (4 API + 5 página)
+- ✅ Documentação completa
+
+**Arquivos Criados:**
+- `apps/web/src/lib/carrier-efficiency-api.test.ts`
+- `apps/web/src/app/(private)/shipments/analytics/carrier-efficiency/page.tsx`
+- `apps/web/src/app/(private)/shipments/analytics/carrier-efficiency/carrier-efficiency-page.test.tsx`
+- `docs/BETA_014B_CARRIER_EFFICIENCY_FRONTEND.md`
+
+**Arquivos Atualizados:**
+- `apps/web/src/lib/types.ts` (CarrierEfficiencyMetrics, CarrierEfficiencyResponse, CarrierEfficiencyFilters)
+- `apps/web/src/lib/api.ts` (getCarrierEfficiency function)
+
+**Limitações Conhecidas:**
+- Filtros visuais não implementados na UI (apenas preparados no estado)
+- Sem componentes de UI avançados (cards, gráficos)
+- Sem integração com dashboard geral
+- Sem E2E (Playwright não configurado)
+- Build falha devido a erro de tipo no BETA-013B (SlaBadge.tsx) - não relacionado ao BETA-014B
+
+**Documentação:** `docs/BETA_014B_CARRIER_EFFICIENCY_FRONTEND.md`
+
+------
+
+### BETA-014B: Painel Frontend de Eficiência por Transportadora
+**Status:** ✅ Implementado
+**Branch:** `feature/beta-014b-carrier-efficiency-frontend`
+**Data:** 2026-06-15
+
+**Implementado:**
+- ✅ Tipos TypeScript para Carrier Efficiency
+- ✅ API client function getCarrierEfficiency
+- ✅ Página de eficiência por transportadora
+- ✅ Tabela com métricas (total NFs, total entregas, no prazo, atrasadas, frete total, frete médio)
+- ✅ Exibição de rankings (eficiência, custo, volume)
+- ✅ Estados de UX (loading, erro, vazio, sucesso)
+- ✅ Formatação BRL e percentual
+- ✅ 9 testes TDD implementados (4 API + 5 página)
+- ✅ Documentação completa
+
+**Arquivos Criados:**
+- `apps/web/src/lib/carrier-efficiency-api.test.ts`
+- `apps/web/src/app/(private)/shipments/analytics/carrier-efficiency/page.tsx`
+- `apps/web/src/app/(private)/shipments/analytics/carrier-efficiency/carrier-efficiency-page.test.tsx`
+- `docs/BETA_014B_CARRIER_EFFICIENCY_FRONTEND.md`
+
+**Arquivos Atualizados:**
+- `apps/web/src/lib/types.ts` (CarrierEfficiencyMetrics, CarrierEfficiencyResponse, CarrierEfficiencyFilters)
+- `apps/web/src/lib/api.ts` (getCarrierEfficiency function)
+
+**Limitações Conhecidas:**
+- Filtros visuais não implementados na UI (apenas preparados no estado)
+- Sem componentes de UI avançados (cards, gráficos)
+- Sem integração com dashboard geral
+- Sem E2E (Playwright não configurado)
+- Build falha devido a erro de tipo no BETA-013B (SlaBadge.tsx) - não relacionado ao BETA-014B
+
+**Documentação:** `docs/BETA_014B_CARRIER_EFFICIENCY_FRONTEND.md`
+
+------
+
+### BETA-014B: Painel Frontend de Eficiência por Transportadora
+**Status:** ✅ Implementado
+**Branch:** `feature/beta-014b-carrier-efficiency-frontend`
+**Data:** 2026-06-15
+
+**Implementado:**
+- ✅ Tipos TypeScript para Carrier Efficiency
+- ✅ API client function getCarrierEfficiency
+- ✅ Página de eficiência por transportadora
+- ✅ Tabela com métricas (total NFs, total entregas, no prazo, atrasadas, frete total, frete médio)
+- ✅ Exibição de rankings (eficiência, custo, volume)
+- ✅ Estados de UX (loading, erro, vazio, sucesso)
+- ✅ Formatação BRL e percentual
+- ✅ 9 testes TDD implementados (4 API + 5 página)
+- ✅ Documentação completa
+
+**Arquivos Criados:**
+- `apps/web/src/lib/carrier-efficiency-api.test.ts`
+- `apps/web/src/app/(private)/shipments/analytics/carrier-efficiency/page.tsx`
+- `apps/web/src/app/(private)/shipments/analytics/carrier-efficiency/carrier-efficiency-page.test.tsx`
+- `docs/BETA_014B_CARRIER_EFFICIENCY_FRONTEND.md`
+
+**Arquivos Atualizados:**
+- `apps/web/src/lib/types.ts` (CarrierEfficiencyMetrics, CarrierEfficiencyResponse, CarrierEfficiencyFilters)
+- `apps/web/src/lib/api.ts` (getCarrierEfficiency function)
+
+**Limitações Conhecidas:**
+- Filtros visuais não implementados na UI (apenas preparados no estado)
+- Sem componentes de UI avançados (cards, gráficos)
+- Sem integração com dashboard geral
+- Sem E2E (Playwright não configurado)
+- Build falha devido a erro de tipo no BETA-013B (SlaBadge.tsx) - não relacionado ao BETA-014B
+
+**Documentação:** `docs/BETA_014B_CARRIER_EFFICIENCY_FRONTEND.md`
+
+-----|
 | Revisar Draft PRs | Mantenedor | Pendente | Alta |
 | Garantir CI verde | Mantenedor | Pendente | Alta |
 | Resolver conflitos | Mantenedor | Pendente | Alta |
@@ -596,6 +1928,43 @@ npx playwright test
 | Manter documentação de convergência | Desenvolvedor | Recorrente | Média |
 | Comunicar com equipe | Mantenedor | Pendente | Alta |
 | Documentar decisões | Desenvolvedor | Recorrente | Média |
+
+---
+
+### BETA-014B: Painel Frontend de Eficiência por Transportadora
+**Status:** ✅ Implementado
+**Branch:** `feature/beta-014b-carrier-efficiency-frontend`
+**Data:** 2026-06-15
+
+**Implementado:**
+- ✅ Tipos TypeScript para Carrier Efficiency
+- ✅ API client function getCarrierEfficiency
+- ✅ Página de eficiência por transportadora
+- ✅ Tabela com métricas (total NFs, total entregas, no prazo, atrasadas, frete total, frete médio)
+- ✅ Exibição de rankings (eficiência, custo, volume)
+- ✅ Estados de UX (loading, erro, vazio, sucesso)
+- ✅ Formatação BRL e percentual
+- ✅ 9 testes TDD implementados (4 API + 5 página)
+- ✅ Documentação completa
+
+**Arquivos Criados:**
+- `apps/web/src/lib/carrier-efficiency-api.test.ts`
+- `apps/web/src/app/(private)/shipments/analytics/carrier-efficiency/page.tsx`
+- `apps/web/src/app/(private)/shipments/analytics/carrier-efficiency/carrier-efficiency-page.test.tsx`
+- `docs/BETA_014B_CARRIER_EFFICIENCY_FRONTEND.md`
+
+**Arquivos Atualizados:**
+- `apps/web/src/lib/types.ts` (CarrierEfficiencyMetrics, CarrierEfficiencyResponse, CarrierEfficiencyFilters)
+- `apps/web/src/lib/api.ts` (getCarrierEfficiency function)
+
+**Limitações Conhecidas:**
+- Filtros visuais não implementados na UI (apenas preparados no estado)
+- Sem componentes de UI avançados (cards, gráficos)
+- Sem integração com dashboard geral
+- Sem E2E (Playwright não configurado)
+- Build falha devido a erro de tipo no BETA-013B (SlaBadge.tsx) - não relacionado ao BETA-014B
+
+**Documentação:** `docs/BETA_014B_CARRIER_EFFICIENCY_FRONTEND.md`
 
 ---
 
@@ -647,6 +2016,43 @@ Com base na auditoria funcional e na implementação do BETA-011A e BETA-011B, o
 11. **BETA-021:** Completar Épico 12 - Documentação beta (Prioridade: BAIXA)
 
 **Importante:** O próximo PR funcional deve ser escolhido com base no maior bloqueio da Sprint Beta 1. Recomenda-se não iniciar módulos de comunicação/alertas antes de validar SLA/importação/campos base.
+
+---
+
+### BETA-014B: Painel Frontend de Eficiência por Transportadora
+**Status:** ✅ Implementado
+**Branch:** `feature/beta-014b-carrier-efficiency-frontend`
+**Data:** 2026-06-15
+
+**Implementado:**
+- ✅ Tipos TypeScript para Carrier Efficiency
+- ✅ API client function getCarrierEfficiency
+- ✅ Página de eficiência por transportadora
+- ✅ Tabela com métricas (total NFs, total entregas, no prazo, atrasadas, frete total, frete médio)
+- ✅ Exibição de rankings (eficiência, custo, volume)
+- ✅ Estados de UX (loading, erro, vazio, sucesso)
+- ✅ Formatação BRL e percentual
+- ✅ 9 testes TDD implementados (4 API + 5 página)
+- ✅ Documentação completa
+
+**Arquivos Criados:**
+- `apps/web/src/lib/carrier-efficiency-api.test.ts`
+- `apps/web/src/app/(private)/shipments/analytics/carrier-efficiency/page.tsx`
+- `apps/web/src/app/(private)/shipments/analytics/carrier-efficiency/carrier-efficiency-page.test.tsx`
+- `docs/BETA_014B_CARRIER_EFFICIENCY_FRONTEND.md`
+
+**Arquivos Atualizados:**
+- `apps/web/src/lib/types.ts` (CarrierEfficiencyMetrics, CarrierEfficiencyResponse, CarrierEfficiencyFilters)
+- `apps/web/src/lib/api.ts` (getCarrierEfficiency function)
+
+**Limitações Conhecidas:**
+- Filtros visuais não implementados na UI (apenas preparados no estado)
+- Sem componentes de UI avançados (cards, gráficos)
+- Sem integração com dashboard geral
+- Sem E2E (Playwright não configurado)
+- Build falha devido a erro de tipo no BETA-013B (SlaBadge.tsx) - não relacionado ao BETA-014B
+
+**Documentação:** `docs/BETA_014B_CARRIER_EFFICIENCY_FRONTEND.md`
 
 ---
 

@@ -295,3 +295,44 @@ export interface SlaRecalculateResponse {
   skipped_count: number;
   error_count: number;
 }
+
+// BETA-014B: Carrier Efficiency types
+export interface CarrierEfficiencyMetrics {
+  carrier_id: number;
+  carrier_name: string | null;
+  total_invoices: number;
+  total_shipments: number;
+  on_time_count: number;
+  on_time_percentage: number;
+  late_count: number;
+  late_percentage: number;
+  critical_count: number;
+  lost_count: number;
+  lost_percentage: number;
+  total_freight_value: number;
+  total_invoice_value: number;
+  average_freight_percentage: number;
+  average_freight_value: number;
+  ranking_by_efficiency: number;
+  ranking_by_cost: number;
+  ranking_by_volume: number;
+}
+
+export interface CarrierEfficiencyResponse {
+  carriers: CarrierEfficiencyMetrics[];
+  generated_at: string;
+}
+
+export interface CarrierEfficiencyFilters {
+  estimated_delivery_from?: string;
+  estimated_delivery_to?: string;
+  month?: number;
+  year?: number;
+  customer_name?: string;
+  destination_uf?: string;
+  carrier_id?: number;
+  status?: string;
+  criticality?: string;
+  sla_status?: string;
+  is_late?: boolean;
+}

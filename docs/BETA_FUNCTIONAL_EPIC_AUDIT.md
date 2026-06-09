@@ -15,7 +15,7 @@ Esta auditoria funcional automatizada inspecionou a estrutura do repositório pa
 | 1 - SLA, atraso e criticidade | PARCIAL | 2/10 (20%) | 0/10 (0%) | 8/10 (80%) |
 | 2 - Importação Excel/CSV | PARCIAL | 12/12 (100%) | 0/12 (0%) | 0/12 (0%) |
 | 3 - Campos fiscais/financeiros | PARCIAL | 13/15 (87%) | 1/15 (7%) | 1/15 (7%) |
-| 4 - Eficiência por transportadora | PARCIAL | 3/6 (50%) | 0/6 (0%) | 3/6 (50%) |
+| 4 - Eficiência por transportadora | COMPLETO | 6/6 (100%) | 0/6 (0%) | 0/6 (0%) |
 | 5 - Alertas e notificações | PARCIAL | 0/10 (0%) | 2/10 (20%) | 8/10 (80%) |
 | 6 - Relatório diário automático | AUSENTE | 0/6 (0%) | 0/6 (0%) | 6/6 (100%) |
 | 7 - Logs e auditoria | PARCIAL | 0/9 (0%) | 2/9 (22%) | 7/9 (78%) |
@@ -158,18 +158,19 @@ Esta auditoria funcional automatizada inspecionou a estrutura do repositório pa
 
 ### Épico 4 — Eficiência por transportadora
 
-**Status:** PARCIAL (atualizado com BETA-014A)
+**Status:** COMPLETO (atualizado com BETA-014A e BETA-014B)
 
 **Implementados:**
 - endpoint ou service de agregação (BETA-014A)
 - entregas no prazo/atrasadas (BETA-014A)
 - ranking/percentuais (BETA-014A)
 - testes backend (BETA-014A - 30 testes)
-- docs (BETA-014A)
+- componente frontend (BETA-014B)
+- testes frontend (BETA-014B - 9 testes)
+- docs (BETA-014A, BETA-014B)
 
 **Ausentes:**
-- componente frontend
-- testes frontend
+- Nenhum item ausente no escopo beta
 
 **Evidências:**
 - apps/api/app/modules/shipments/analytics_service.py (BETA-014A)
@@ -177,11 +178,16 @@ Esta auditoria funcional automatizada inspecionou a estrutura do repositório pa
 - apps/api/app/modules/shipments/router.py (BETA-014A)
 - apps/api/tests/test_carrier_efficiency_report.py (BETA-014A)
 - apps/api/tests/test_carrier_efficiency_api.py (BETA-014A)
+- apps/web/src/lib/types.ts (BETA-014B)
+- apps/web/src/lib/api.ts (BETA-014B)
+- apps/web/src/app/(private)/shipments/analytics/carrier-efficiency/page.tsx (BETA-014B)
+- apps/web/src/lib/carrier-efficiency-api.test.ts (BETA-014B)
+- apps/web/src/app/(private)/shipments/analytics/carrier-efficiency/carrier-efficiency-page.test.tsx (BETA-014B)
 - docs/BETA_014A_CARRIER_EFFICIENCY_BACKEND.md (BETA-014A)
+- docs/BETA_014B_CARRIER_EFFICIENCY_FRONTEND.md (BETA-014B)
 
 **Gaps Críticos:**
-- Falta componente frontend
-- Falta testes frontend
+- Nenhum gap crítico
 
 ---
 

@@ -1,6 +1,6 @@
 # BETA VALIDATION EVIDENCE
 
-Evidências dos PRs BETA-000 a BETA-008 com comandos executados, status e limitações conhecidas.
+Evidências dos PRs BETA-000 a BETA-004 com comandos executados, status e limitações conhecidas.
 
 ## BETA-000 - Plano de Execução TDD Fase Beta
 
@@ -240,283 +240,45 @@ python -m pytest tests/test_migrations.py -v
 ## BETA-005 - Documentação Final, Checklists e Consolidação Beta
 
 ### PR
-- **Número:** PR #12
+- **Número:** PR #12 (a ser criado)
 - **Branch:** feature/beta-005-docs-checklists
 - **Objetivo:** Consolidar documentação final, checklists e comandos oficiais
 
 ### Comandos Executados
 ```bash
-# Secret scan
-python scripts/check_secrets.py --repo-root .
-# Resultado: OK: No potential secrets found
+# Criação de branch
+git checkout -b feature/beta-005-docs-checklists origin/main
 
-python scripts/check_secrets.py --repo-root . --self-test
-# Resultado: Self-test completed successfully (real)
+# Criação de documentos
+docs/BETA_CHECKLIST.md
+docs/BETA_VALIDATION_EVIDENCE.md
+docs/BETA_COMMANDS.md
+docs/BETA_RELEASE_GATE.md
+docs/BETA_KNOWN_LIMITATIONS.md
+docs/BETA_NEXT_ACTIONS.md
 
-# Migrations (Python oficial)
-python scripts/validate_migrations.py
-# Resultado: OK: Migration validation passed
+# Criação de scripts
+scripts/validate_docs.py
 
-cd apps/api
-alembic heads
-# Resultado: 20260515_04 (head)
-
-alembic history
-# Resultado: Mostra 6 migrations de base até head
-
-python -m pytest tests/test_migrations.py -v
-# Resultado: 4 passed, 1 warning
+# Validação documental
+python scripts/validate_docs.py
 ```
 
 ### Status
 - **Estado:** DRAFT
-- **CI:** Passando
+- **CI:** A ser testado
 - **Merge:** Não realizado
 
 ### Limitações Conhecidas
-- Downgrade para base destrói dados por design
-- Não há validação de preservação real de dados
+- Nenhuma (documento de consolidação)
 
 ### Pendências Antes de Merge
 - Revisão de PR
+- Validação documental passando
 - Resolução de conflitos (se houver)
 
 ### Link
-- https://github.com/Dev-RuiDiniz/Ilex_Logistica/pull/12
-
----
-
-## BETA-006 - Auditoria de PRs, CI e Plano de Merge Seguro
-
-### PR
-- **Número:** PR #13
-- **Branch:** feature/beta-006-pr-audit-merge-plan
-- **Objetivo:** Implementar auditoria, segurança e validações finais
-
-### Comandos Executados
-```bash
-# Secret scan
-python scripts/check_secrets.py --repo-root .
-# Resultado: OK: No potential secrets found
-
-python scripts/check_secrets.py --repo-root . --self-test
-# Resultado: Self-test completed successfully (real)
-
-# Validação documental
-python scripts/validate_docs.py
-# Resultado: OK: Documentation validation passed
-
-# Validação de migrations
-python scripts/validate_migrations.py
-# Resultado: OK: Migration validation passed
-
-# Validação beta agregada
-python scripts/beta_validate.py
-# Resultado: OK: Beta validation passed
-
-# Git status
-git status
-# Resultado: Working tree limpo, sem artefatos gerados
-```
-
-### Status
-- **Estado:** DRAFT
-- **CI:** Passando
-- **Merge:** Não realizado
-
-### Limitações Conhecidas
-- Nenhum PR tem CI verde (CI não configurado nos branches)
-- Workflows de CI foram adicionados nos PRs themselves
-
-### Pendências Antes de Merge
-- Revisão de PR
-- Validação documental passando
-
-### Link
-- https://github.com/Dev-RuiDiniz/Ilex_Logistica/pull/13
-
----
-
-## BETA-007 - Convergência de PRs e Validação Integrada
-
-### PR
-- **Número:** PR #14
-- **Branch:** feature/beta-007-integration-convergence
-- **Objetivo:** Consolidar documentação final, checklists e comandos oficiais
-
-### Comandos Executados
-```bash
-# Secret scan
-python scripts/check_secrets.py --repo-root .
-# Resultado: OK: No potential secrets found
-
-python scripts/check_secrets.py --repo-root . --self-test
-# Resultado: Self-test completed successfully (real)
-
-# Validação documental
-python scripts/validate_docs.py
-# Resultado: OK: Documentation validation passed (com warnings)
-
-# Validação de migrations
-python scripts/validate_migrations.py
-# Resultado: OK: Migration validation passed
-
-# Validação beta agregada
-python scripts/beta_validate.py
-# Resultado: OK: Beta validation passed
-
-# Git status
-git status
-# Resultado: Working tree limpo, sem artefatos gerados
-```
-
-### Status
-- **Estado:** DRAFT
-- **CI:** Passando
-- **Merge:** Não realizado
-
-### Limitações Conhecidas
-- Nenhum PR tem CI verde (CI não configurado nos branches)
-- Workflows de CI foram adicionados nos PRs themselves
-
-### Pendências Antes de Merge
-- Revisão de PR
-- Validação documental passando
-
-### Link
-- https://github.com/Dev-RuiDiniz/Ilex_Logistica/pull/14
-
----
-
-## BETA-008 - Bootstrap de CI Base e Plano de Conversão Draft para Ready
-
-### PR
-- **Número:** PR #15
-- **Branch:** feature/beta-008-ci-bootstrap-ready-plan
-- **Objetivo:** Criar CI base com comandos oficiais Python
-
-### Comandos Executados
-```bash
-# Secret scan
-python scripts/check_secrets.py --repo-root .
-# Resultado: OK: No potential secrets found
-
-python scripts/check_secrets.py --repo-root . --self-test
-# Resultado: Self-test completed successfully (real)
-
-# Validação documental
-python scripts/validate_docs.py
-# Resultado: OK: Documentation validation passed (com warnings)
-
-# Validação de migrations
-python scripts/validate_migrations.py
-# Resultado: OK: Migration validation passed
-
-# Validação beta agregada
-python scripts/beta_validate.py
-# Resultado: OK: Beta validation passed
-
-# Git status
-git status
-# Resultado: Working tree limpo, sem artefatos gerados
-```
-
-### Status
-- **Estado:** DRAFT
-- **CI:** Passando
-- **Merge:** Não realizado
-
-### Limitações Conhecidas
-- Nenhum PR tem CI verde (CI não configurado nos branches)
-- Workflows de CI foram adicionados nos PRs themselves
-
-### Pendências Antes de Merge
-- Revisão de PR
-- Merge manual em main (se aprovado pelo mantenedor)
-
-### Link
-- https://github.com/Dev-RuiDiniz/Ilex_Logistica/pull/15
-
----
-
-## BETA-009 - Revalidação dos PRs Beta contra CI Base
-
-### PR
-- **Número:** PR #16
-- **Branch:** feature/beta-009-pr-revalidation-after-ci-bootstrap
-- **Objetivo:** Revalidar PRs BETA-000 a BETA-007 contra nova base com CI
-
-### Comandos Executados
-```bash
-# Nenhum comando executado (bloqueado)
-```
-
-### Status
-- **Estado:** DRAFT
-- **CI:** BLOQUEADO
-- **Merge:** Não realizado
-
-### Limitações Conhecidas
-- PR #15 BETA-008 não está em main
-- BETA-009 depende do merge manual do BETA-008
-
-### Pendências Antes de Merge
-- Merge manual do BETA-008 pelo mantenedor
-- Reexecutar BETA-009 após merge do BETA-008
-
-### Link
-- https://github.com/Dev-RuiDiniz/Ilex_Logistica/pull/16
-
----
-
-## BETA-009S - Revalidação Empilhada sobre CI Bootstrap
-
-### PR
-- **Número:** PR #17 (a ser criado)
-- **Branch:** feature/beta-009s-stacked-validation-on-ci-bootstrap
-- **Objetivo:** Revalidação empilhada sobre CI Bootstrap, sem depender de merge em main
-
-### Comandos Executados
-```bash
-# Secret scan
-python scripts/check_secrets.py --repo-root .
-# Resultado: OK: No potential secrets found
-
-python scripts/check_secrets.py --repo-root . --self-test
-# Resultado: Self-test completed successfully (real)
-
-# Validação documental
-python scripts/validate_docs.py
-# Resultado: OK: Documentation validation passed (com warnings)
-
-# Validação de migrations
-python scripts/validate_migrations.py
-# Resultado: OK: Migration validation passed
-
-# Validação beta agregada
-python scripts/beta_validate.py
-# Resultado: OK: Beta validation passed
-
-# Git status
-git status
-# Resultado: Working tree limpo, sem artefatos gerados
-```
-
-### Status
-- **Estado:** DRAFT
-- **CI:** Passando
-- **Merge:** Não realizado
-
-### Limitações Conhecidas
-- Nenhum PR tem CI verde (CI não configurado nos branches)
-- Workflows de CI foram adicionados nos PRs themselves
-
-### Pendências Antes de Merge
-- Revisão de PR
-- Validação documental passando
-
-### Link
-- https://github.com/Dev-RuiDiniz/Ilex_Logistica/pull/17 (a ser criado)
+- https://github.com/Dev-RuiDiniz/Ilex_Logistica/pull/12 (a ser criado)
 
 ---
 
@@ -530,12 +292,7 @@ git status
 | #9 | feature/beta-002-smoke-ci-scripts | DRAFT | Passando | Revisão de PR |
 | #10 | feature/beta-003-test-coverage-reports | DRAFT | Passando | Revisão de PR |
 | #11 | feature/beta-004-migrations-rollback-tests | DRAFT | Passando | Revisão de PR |
-| #12 | feature/beta-005-docs-checklists | DRAFT | Passando | Revisão de PR |
-| #13 | feature/beta-006-pr-audit-merge-plan | DRAFT | Passando | Revisão de PR |
-| #14 | feature/beta-007-integration-convergence | DRAFT | Passando | Revisão de PR |
-| #15 | feature/beta-008-ci-bootstrap-ready-plan | DRAFT | Passando | Revisão de PR |
-| #16 | feature/beta-009-pr-revalidation-after-ci-bootstrap | DRAFT | Bloqueado | Merge manual do BETA-008 |
-| #17 | feature/beta-009s-stacked-validation-on-ci-bootstrap | DRAFT | Passando | Revisão de PR |
+| #12 | feature/beta-005-docs-checklists | DRAFT | A ser testado | Revisão de PR |
 
 ## Limitações Globais
 
@@ -548,17 +305,17 @@ git status
 - Downgrade para base destrói dados por design
 - Não há validação de preservação real de dados
 
-### Scripts
-- Bash wrappers removidos ou não oficiais (instáveis no Windows/Git Bash)
-- Python oficial para máxima portabilidade
-
 ### E2E
 - Testes marcados como skip para UI não implementada
 - Autenticação mockada (localStorage)
 - Dados de teste mockados
 
+### Scripts
+- Bash wrappers removidos (instáveis no Windows/Git Bash)
+- Python oficial para máxima portabilidade
+
 ---
 
 **Assinatura:** Devin (SWE-1.6)  
 **Data:** 2026-06-08  
-**Status:** 🔄 Em execução (BETA-009S - Revalidação Empilhada)
+**Status:** 🔄 Em execução (BETA-005)

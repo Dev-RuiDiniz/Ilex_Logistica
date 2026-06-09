@@ -21,6 +21,8 @@
   SlaRuleCreate,
   SlaRuleUpdate,
   SlaRecalculateResponse,
+  CarrierEfficiencyResponse,
+  CarrierEfficiencyFilters,
 } from "@/lib/types";
 
 export function getApiBaseUrl(envValue = process.env.NEXT_PUBLIC_API_URL): string {
@@ -324,3 +326,24 @@ export async function recalculateShipmentSla(token: string, shipmentId: number):
     headers: { Authorization: `Bearer ${token}` },
   });
 }
+
+export async function getCarrierEfficiency(token: string, filters: CarrierEfficiencyFilters = {}): Promise<CarrierEfficiencyResponse> {
+  const searchParams = new URLSearchParams();
+  if (filters.estimated_delivery_from) searchParams.append("estimated_delivery_from", filters.estimated_delivery_from);
+  if (filters.estimated_delivery_to) searchParams.append("estimated_delivery_to", filters.estimated_delivery_to);
+  if (filters.month) searchParams.append("month", filters.month.toString());
+  if (filters.year) searchParams.append("year", filters.year.toString());
+  if (filters.customer_name) searchParams.append("customer_name", filters.customer_name);
+  if (filters.destination_uf) searchParams.append("destination_uf", filters.destination_uf);
+  if (filters.carrier_id) searchParams.append("carrier_id", filters.carrier_id.toString());
+  if (filters.status) searchParams.append("status", filters.status);
+  if (filters.criticality) searchParams.append("criticality", filters.criticality);
+  if (filters.sla_status) searchParams.append("sla_status", filters.sla_status);
+  if (filters.is_late !== undefined) searchParams.append("is_late", filters.is_late.toString());
+
+  const query = searchParams.toString();
+  return request<CarrierEfficiencyResponse>(`/shipments/analytics/carrier-efficiency${query ? `?${query}` : ""}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+}
+

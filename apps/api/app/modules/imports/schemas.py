@@ -112,7 +112,6 @@ class ImportPreviewV2Response(BaseModel):
     errors: list[RowValidationError]
     warnings: list[RowValidationError]
     import_id: int | None = None
-    source: str | None = None  # BETA-012C: Import source identifier
 
 
 class ImportConfirmRequest(BaseModel):

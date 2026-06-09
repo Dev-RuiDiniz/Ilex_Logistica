@@ -1,4 +1,4 @@
-﻿import csv
+import csv
 import io
 import json
 from datetime import UTC, datetime
@@ -10,7 +10,6 @@ from sqlalchemy.orm import Session
 from app.modules.carriers.models import Carrier
 from app.modules.shipments.models import ImportHistory, Shipment, ShipmentTreatment, calculate_freight_percentage
 from app.modules.shipments.schemas import CSVRowError
-from app.modules.sla.service import calculate_shipment_sla
 
 
 def calculate_delay_days(due_date: datetime | None, reference_date: datetime | None = None) -> int:
@@ -51,8 +50,6 @@ def list_shipments(
     month: int | None = None,
     year: int | None = None,
     search: str | None = None,
-    sla_status: str | None = None,
-    is_late: bool | None = None,
     sort_by: str = "created_at",
     sort_order: str = "desc",
 ) -> dict[str, Any]:
@@ -142,18 +139,9 @@ def list_shipments(
     offset = (page - 1) * page_size
     items = query.offset(offset).limit(page_size).all()
 
-    # Convert to dict format with SLA calculation and filtering
+    # Convert to dict format
     items_data = []
     for item in items:
-        # Calculate SLA on-demand
-        sla_result = calculate_shipment_sla(db, item.id)
-        
-        # Apply SLA filters (on-demand filtering)
-        if sla_status and sla_result.get("sla_status") != sla_status:
-            continue
-        if is_late is not None and sla_result.get("is_late") != is_late:
-            continue
-        
         items_data.append({
             "id": item.id,
             "tracking_code": item.tracking_code,
@@ -177,18 +165,13 @@ def list_shipments(
             "collection_departure_date": item.collection_departure_date,
             "customer_name": item.customer_name,
             "destination_uf": item.destination_uf,
-            # SLA fields (BETA-013A) - calculados on-demand
-            "sla_due_date": sla_result.get("sla_due_date"),
-            "sla_status": sla_result.get("sla_status"),
-            "is_late": sla_result.get("is_late", False),
-            "sla_rule_id": sla_result.get("sla_rule_id"),
             "created_at": item.created_at,
             "updated_at": item.updated_at,
         })
 
     return {
         "items": items_data,
-        "total": len(items_data),  # Adjusted total for filtered results
+        "total": total,
         "page": page,
         "page_size": page_size,
     }
@@ -244,14 +227,19 @@ def list_exception_shipments(
             query = query.filter(Shipment.due_date <= to_date)
         except (ValueError, AttributeError):
             pass
+    
     if customer_name:
         query = query.filter(Shipment.customer_name.ilike(f"%{customer_name}%"))
+    
     if destination_uf:
         query = query.filter(Shipment.destination_uf == destination_uf)
+    
     if month:
         query = query.filter(extract('month', Shipment.estimated_delivery) == month)
+    
     if year:
         query = query.filter(extract('year', Shipment.estimated_delivery) == year)
+    
     if search:
         from sqlalchemy import or_
         search_pattern = f"%{search}%"
@@ -266,183 +254,531 @@ def list_exception_shipments(
 
     total = query.count()
     sort_column = getattr(Shipment, sort_by, Shipment.delay_days)
-    if sort_order.lower() == "desc":
-        query = query.order_by(sort_column.desc())
-    else:
-        query = query.order_by(sort_column.asc())
+    query = query.order_by(sort_column.desc() if sort_order.lower() == "desc" else sort_column.asc())
     offset = (page - 1) * page_size
     items = query.offset(offset).limit(page_size).all()
 
-    items_data = []
-    for item in items:
-        # Calculate SLA on-demand
-        sla_result = calculate_shipment_sla(db, item.id)
-        
-        items_data.append({
-            "id": item.id,
-            "tracking_code": item.tracking_code,
-            "carrier_id": item.carrier_id,
-            "status": item.status,
-            "estimated_delivery": item.estimated_delivery,
-            "recipient_name": item.recipient_name,
-            "recipient_phone": item.recipient_phone,
-            "origin_address": item.origin_address,
-            "destination_address": item.destination_address,
-            "invoice_number": item.invoice_number,
-            "invoice_key": item.invoice_key,
-            "fiscal_document": item.fiscal_document,
-            "amount": float(item.amount) if item.amount else None,
-            "due_date": item.due_date,
-            "delay_days": item.delay_days,
-            "criticality": item.criticality,
-            "freight_value": float(item.freight_value) if item.freight_value else None,
-            "invoice_value": float(item.invoice_value) if item.invoice_value else None,
-            "freight_percentage": float(item.freight_percentage) if item.freight_percentage else None,
-            "collection_departure_date": item.collection_departure_date,
-            "customer_name": item.customer_name,
-            "destination_uf": item.destination_uf,
-            # SLA fields (BETA-013A) - calculados on-demand
-            "sla_due_date": sla_result.get("sla_due_date"),
-            "sla_status": sla_result.get("sla_status"),
-            "is_late": sla_result.get("is_late", False),
-            "sla_rule_id": sla_result.get("sla_rule_id"),
-            "created_at": item.created_at,
-            "updated_at": item.updated_at,
-        })
-
     return {
-        "items": items_data,
+        "items": [
+            {
+                "id": item.id,
+                "tracking_code": item.tracking_code,
+                "carrier_id": item.carrier_id,
+                "status": item.status,
+                "estimated_delivery": item.estimated_delivery,
+                "recipient_name": item.recipient_name,
+                "recipient_phone": item.recipient_phone,
+                "origin_address": item.origin_address,
+                "destination_address": item.destination_address,
+                "invoice_number": item.invoice_number,
+                "invoice_key": item.invoice_key,
+                "fiscal_document": item.fiscal_document,
+                "amount": float(item.amount) if item.amount else None,
+                "due_date": item.due_date,
+                "delay_days": item.delay_days,
+                "criticality": item.criticality,
+                "freight_value": float(item.freight_value) if item.freight_value else None,
+                "invoice_value": float(item.invoice_value) if item.invoice_value else None,
+                "freight_percentage": float(item.freight_percentage) if item.freight_percentage else None,
+                "collection_departure_date": item.collection_departure_date,
+                "customer_name": item.customer_name,
+                "destination_uf": item.destination_uf,
+                "created_at": item.created_at,
+                "updated_at": item.updated_at,
+            }
+            for item in items
+        ],
         "total": total,
         "page": page,
         "page_size": page_size,
     }
 
 
-def get_shipment_detail(db: Session, shipment_id: int) -> dict[str, Any] | None:
-    from app.modules.shipments.models import Shipment
+REQUIRED_COLUMNS = [
+    "tracking_code",
+    "carrier_name",
+    "estimated_delivery",
+    "recipient_name",
+    "recipient_phone",
+    "origin_address",
+    "destination_address",
+]
 
-    shipment = db.query(Shipment).filter(Shipment.id == shipment_id).first()
-    if not shipment:
-        return None
 
-    # Calculate SLA on-demand
-    sla_result = calculate_shipment_sla(db, shipment.id)
+def parse_csv_file(
+    file_content: bytes,
+    db: Session,
+    user_id: int,
+    filename: str,
+) -> dict[str, Any]:
+    """Parse CSV file and validate rows."""
+    errors: list[CSVRowError] = []
+    valid_rows: list[dict[str, Any]] = []
+    total_rows = 0
+
+    try:
+        csv_file = io.TextIOWrapper(io.BytesIO(file_content), encoding="utf-8")
+        reader = csv.DictReader(csv_file)
+
+        # Validate required columns
+        missing_columns = set(REQUIRED_COLUMNS) - set(reader.fieldnames or [])
+        if missing_columns:
+            return {
+                "status": "failed",
+                "total_rows": 0,
+                "valid_rows": 0,
+                "invalid_rows": 0,
+                "errors": [
+                    CSVRowError(
+                        row_number=0,
+                        field="columns",
+                        message=f"colunas obrigatorias faltando: {', '.join(missing_columns)}",
+                    )
+                ],
+            }
+
+        # Validate each row
+        for row_number, row in enumerate(reader, start=1):
+            total_rows += 1
+            row_errors = []
+
+            # Check required fields
+            for col in REQUIRED_COLUMNS:
+                value = row.get(col, "")
+                if not value or not str(value).strip():
+                    row_errors.append(
+                        CSVRowError(
+                            row_number=row_number,
+                            field=col,
+                            message="campo obrigatorio vazio",
+                            value=value,
+                        )
+                    )
+
+            # Validate carrier exists
+            carrier_name = row.get("carrier_name", "").strip()
+            if carrier_name:
+                carrier = db.query(Carrier).filter(Carrier.name == carrier_name).first()
+                if not carrier:
+                    row_errors.append(
+                        CSVRowError(
+                            row_number=row_number,
+                            field="carrier_name",
+                            message="transportadora nao encontrada",
+                            value=carrier_name,
+                        )
+                    )
+
+            # Validate date format manually
+            estimated_delivery = row.get("estimated_delivery", "")
+            if estimated_delivery and estimated_delivery.strip():
+                try:
+                    datetime.fromisoformat(estimated_delivery.replace("Z", "+00:00"))
+                except (ValueError, AttributeError):
+                    row_errors.append(
+                        CSVRowError(
+                            row_number=row_number,
+                            field="estimated_delivery",
+                            message="formato de data invalido, use ISO 8601 (YYYY-MM-DD)",
+                            value=estimated_delivery,
+                        )
+                    )
+
+            if row_errors:
+                errors.extend(row_errors)
+            else:
+                valid_rows.append(row)
+
+        # Create import history
+        try:
+            import_history = ImportHistory(
+                file_name=filename,
+                status="validated",
+                total_rows=total_rows,
+                valid_rows=len(valid_rows),
+                invalid_rows=len(errors),
+                imported_count=0,
+                rejected_count=0,
+                error_details=json.dumps({
+                    "errors": [err.model_dump() for err in errors],
+                    "valid_rows": valid_rows,
+                }),
+                created_by=user_id,
+            )
+            db.add(import_history)
+            db.commit()
+            db.refresh(import_history)
+
+            return {
+                "import_id": import_history.id,
+                "status": "validated",
+                "total_rows": total_rows,
+                "valid_rows": len(valid_rows),
+                "invalid_rows": len(errors),
+                "errors": errors,
+            }
+        except Exception:
+            db.rollback()
+            # Return without import_id if database fails
+            return {
+                "import_id": None,
+                "status": "validated",
+                "total_rows": total_rows,
+                "valid_rows": len(valid_rows),
+                "invalid_rows": len(errors),
+                "errors": errors,
+            }
+
+    except Exception as e:
+        return {
+            "import_id": None,
+            "status": "failed",
+            "total_rows": 0,
+            "valid_rows": 0,
+            "invalid_rows": 0,
+            "errors": [
+                CSVRowError(
+                    row_number=0,
+                    field="file",
+                    message=f"erro ao processar arquivo: {str(e)}",
+                )
+            ],
+        }
+
+
+def process_import(
+    import_id: int,
+    db: Session,
+) -> dict[str, Any]:
+    """Process import and persist valid shipments."""
+    import_history = db.get(ImportHistory, import_id)
+    if not import_history:
+        return {
+            "import_id": import_id,
+            "status": "failed",
+            "total_rows": 0,
+            "valid_rows": 0,
+            "invalid_rows": 0,
+            "imported_count": 0,
+            "rejected_count": 0,
+            "errors": [
+                CSVRowError(
+                    row_number=0,
+                    field="import_id",
+                    message="historico de importacao nao encontrado",
+                )
+            ],
+        }
+
+    if import_history.status != "validated":
+        return {
+            "import_id": import_id,
+            "status": "failed",
+            "total_rows": import_history.total_rows,
+            "valid_rows": import_history.valid_rows,
+            "invalid_rows": import_history.invalid_rows,
+            "imported_count": 0,
+            "rejected_count": 0,
+            "errors": [
+                CSVRowError(
+                    row_number=0,
+                    field="status",
+                    message="importacao ja processada ou em estado invalido",
+                )
+            ],
+        }
+
+    # Recover valid rows from error_details
+    try:
+        error_details = json.loads(import_history.error_details) if isinstance(import_history.error_details, str) else import_history.error_details
+        valid_rows = error_details.get("valid_rows", [])
+    except Exception:
+        valid_rows = []
+
+    if not valid_rows:
+        return {
+            "import_id": import_id,
+            "status": "completed",
+            "total_rows": import_history.total_rows,
+            "valid_rows": import_history.valid_rows,
+            "invalid_rows": import_history.invalid_rows,
+            "imported_count": 0,
+            "rejected_count": 0,
+            "errors": [],
+        }
+
+    # Process valid rows, checking for duplicates during processing
+    tracking_codes_in_file = {}
+    errors: list[CSVRowError] = []
+    imported_count = 0
+    rejected_count = 0
+
+    for idx, row in enumerate(valid_rows):
+        tracking_code = row.get("tracking_code", "").strip()
+        if not tracking_code:
+            continue
+
+        # Check duplicate in database
+        existing = db.query(Shipment).filter(Shipment.tracking_code == tracking_code).first()
+        if existing:
+            errors.append(
+                CSVRowError(
+                    row_number=idx + 1,
+                    field="tracking_code",
+                    message="tracking_code ja existe no banco",
+                    value=tracking_code,
+                )
+            )
+            rejected_count += 1
+            continue
+
+        # Check duplicate within file (only mark subsequent occurrences as errors)
+        if tracking_code in tracking_codes_in_file:
+            errors.append(
+                CSVRowError(
+                    row_number=idx + 1,
+                    field="tracking_code",
+                    message="tracking_code duplicado no arquivo",
+                    value=tracking_code,
+                )
+            )
+            rejected_count += 1
+            continue
+
+        # Mark this tracking_code as seen
+        tracking_codes_in_file[tracking_code] = idx + 1
+
+        # Process the row
+        carrier_name = row.get("carrier_name", "").strip()
+        carrier = db.query(Carrier).filter(Carrier.name == carrier_name).first()
+        if not carrier:
+            errors.append(
+                CSVRowError(
+                    row_number=idx + 1,
+                    field="carrier_name",
+                    message="transportadora nao encontrada",
+                    value=carrier_name,
+                )
+            )
+            rejected_count += 1
+            continue
+
+        # Create shipment
+        try:
+            estimated_delivery = datetime.fromisoformat(row.get("estimated_delivery", "").replace("Z", "+00:00"))
+            
+            # Parse fiscal/financial fields
+            invoice_number = row.get("invoice_number", "").strip() or None
+            invoice_key = row.get("invoice_key", "").strip() or None
+            fiscal_document = row.get("fiscal_document", "").strip() or None
+            amount = None
+            if row.get("amount", "").strip():
+                try:
+                    amount = float(row.get("amount", "").replace(",", ".").strip())
+                except (ValueError, AttributeError):
+                    amount = None
+            
+            due_date = None
+            if row.get("due_date", "").strip():
+                try:
+                    due_date = datetime.fromisoformat(row.get("due_date", "").replace("Z", "+00:00"))
+                except (ValueError, AttributeError):
+                    due_date = None
+            
+            # Parse new fiscal/financial fields (BETA-011A)
+            freight_value = None
+            if row.get("freight_value", "").strip():
+                try:
+                    freight_value = float(row.get("freight_value", "").replace(",", ".").strip())
+                except (ValueError, AttributeError):
+                    freight_value = None
+            
+            invoice_value = None
+            if row.get("invoice_value", "").strip():
+                try:
+                    invoice_value = float(row.get("invoice_value", "").replace(",", ".").strip())
+                except (ValueError, AttributeError):
+                    invoice_value = None
+            
+            collection_departure_date = None
+            if row.get("collection_departure_date", "").strip():
+                try:
+                    collection_departure_date = datetime.fromisoformat(row.get("collection_departure_date", "").replace("Z", "+00:00"))
+                except (ValueError, AttributeError):
+                    collection_departure_date = None
+            
+            customer_name = row.get("customer_name", "").strip() or None
+            destination_uf = row.get("destination_uf", "").strip() or None
+            
+            # Calculate delay_days and criticality
+            delay_days = calculate_delay_days(due_date)
+            criticality = classify_criticality(delay_days, amount)
+            
+            # Calculate freight_percentage
+            freight_percentage = calculate_freight_percentage(freight_value, invoice_value)
+            
+            shipment = Shipment(
+                tracking_code=tracking_code,
+                carrier_id=carrier.id,
+                status="pending",
+                estimated_delivery=estimated_delivery,
+                recipient_name=row.get("recipient_name", ""),
+                recipient_phone=row.get("recipient_phone", ""),
+                origin_address=row.get("origin_address", ""),
+                destination_address=row.get("destination_address", ""),
+                meta_data=json.dumps({}),
+                is_active=True,
+                invoice_number=invoice_number,
+                invoice_key=invoice_key,
+                fiscal_document=fiscal_document,
+                amount=amount,
+                due_date=due_date,
+                delay_days=delay_days,
+                criticality=criticality,
+                freight_value=freight_value,
+                invoice_value=invoice_value,
+                freight_percentage=freight_percentage,
+                collection_departure_date=collection_departure_date,
+                customer_name=customer_name,
+                destination_uf=destination_uf,
+            )
+            db.add(shipment)
+            imported_count += 1
+        except Exception as e:
+            errors.append(
+                CSVRowError(
+                    row_number=idx + 1,
+                    field="shipment",
+                    message=f"erro ao criar shipment: {str(e)}",
+                    value=tracking_code,
+                )
+            )
+            rejected_count += 1
+
+    # Update import history
+    import_history.status = "completed"
+    import_history.imported_count = imported_count
+    import_history.rejected_count = rejected_count
+    import_history.error_details = json.dumps({
+        "errors": [err.model_dump() for err in errors],
+        "valid_rows": valid_rows,
+    })
+
+    try:
+        db.commit()
+    except Exception:
+        db.rollback()
+        return {
+            "import_id": import_id,
+            "status": "failed",
+            "total_rows": import_history.total_rows,
+            "valid_rows": import_history.valid_rows,
+            "invalid_rows": import_history.invalid_rows,
+            "imported_count": 0,
+            "rejected_count": 0,
+            "errors": [
+                CSVRowError(
+                    row_number=0,
+                    field="database",
+                    message="erro ao persistir importacao",
+                )
+            ],
+        }
 
     return {
-        "id": shipment.id,
-        "tracking_code": shipment.tracking_code,
-        "carrier_id": shipment.carrier_id,
-        "status": shipment.status,
-        "estimated_delivery": shipment.estimated_delivery,
-        "actual_delivery": shipment.actual_delivery,
-        "recipient_name": shipment.recipient_name,
-        "recipient_phone": shipment.recipient_phone,
-        "origin_address": shipment.origin_address,
-        "destination_address": shipment.destination_address,
-        "invoice_number": shipment.invoice_number,
-        "invoice_key": shipment.invoice_key,
-        "fiscal_document": shipment.fiscal_document,
-        "amount": float(shipment.amount) if shipment.amount else None,
-        "due_date": shipment.due_date,
-        "delay_days": shipment.delay_days,
-        "criticality": shipment.criticality,
-        "freight_value": float(shipment.freight_value) if shipment.freight_value else None,
-        "invoice_value": float(shipment.invoice_value) if shipment.invoice_value else None,
-        "freight_percentage": float(shipment.freight_percentage) if shipment.freight_percentage else None,
-        "collection_departure_date": shipment.collection_departure_date,
-        "customer_name": shipment.customer_name,
-        "destination_uf": shipment.destination_uf,
-        # SLA fields (BETA-013A) - calculados on-demand
-        "sla_due_date": sla_result.get("sla_due_date"),
-        "sla_status": sla_result.get("sla_status"),
-        "is_late": sla_result.get("is_late", False),
-        "sla_rule_id": sla_result.get("sla_rule_id"),
-        "created_at": shipment.created_at,
-        "updated_at": shipment.updated_at,
+        "import_id": import_id,
+        "status": "completed",
+        "total_rows": import_history.total_rows,
+        "valid_rows": import_history.valid_rows,
+        "invalid_rows": import_history.invalid_rows,
+        "imported_count": imported_count,
+        "rejected_count": rejected_count,
+        "errors": errors,
     }
 
 
-def create_treatment(db: Session, shipment_id: int, status: str, comment: str, created_by: int) -> dict[str, Any]:
-    from app.modules.shipments.models import ShipmentTreatment
+def get_shipment_detail(db: Session, shipment_id: int) -> dict[str, Any] | None:
+    item = db.get(Shipment, shipment_id)
+    if item is None:
+        return None
+    return {
+        "id": item.id,
+        "tracking_code": item.tracking_code,
+        "carrier_id": item.carrier_id,
+        "status": item.status,
+        "estimated_delivery": item.estimated_delivery,
+        "recipient_name": item.recipient_name,
+        "recipient_phone": item.recipient_phone,
+        "origin_address": item.origin_address,
+        "destination_address": item.destination_address,
+        "invoice_number": item.invoice_number,
+        "invoice_key": item.invoice_key,
+        "fiscal_document": item.fiscal_document,
+        "amount": float(item.amount) if item.amount else None,
+        "due_date": item.due_date,
+        "delay_days": item.delay_days,
+        "criticality": item.criticality,
+        "created_at": item.created_at,
+        "updated_at": item.updated_at,
+    }
 
-    treatment = ShipmentTreatment(
+
+def list_treatments(db: Session, shipment_id: int) -> list[dict[str, Any]]:
+    rows = (
+        db.query(ShipmentTreatment)
+        .filter(ShipmentTreatment.shipment_id == shipment_id)
+        .order_by(ShipmentTreatment.created_at.desc())
+        .all()
+    )
+    return [
+        {
+            "id": row.id,
+            "shipment_id": row.shipment_id,
+            "status": row.status,
+            "comment": row.comment,
+            "created_by": row.created_by,
+            "created_at": row.created_at,
+        }
+        for row in rows
+    ]
+
+
+def create_treatment(db: Session, shipment_id: int, created_by: int, status: str, comment: str) -> dict[str, Any] | None:
+    shipment = db.get(Shipment, shipment_id)
+    if shipment is None:
+        return None
+    row = ShipmentTreatment(
         shipment_id=shipment_id,
         status=status,
         comment=comment,
         created_by=created_by,
     )
-    db.add(treatment)
+    db.add(row)
     db.commit()
-    db.refresh(treatment)
-
+    db.refresh(row)
     return {
-        "id": treatment.id,
-        "shipment_id": treatment.shipment_id,
-        "status": treatment.status,
-        "comment": treatment.comment,
-        "created_by": treatment.created_by,
-        "created_at": treatment.created_at,
+        "id": row.id,
+        "shipment_id": row.shipment_id,
+        "status": row.status,
+        "comment": row.comment,
+        "created_by": row.created_by,
+        "created_at": row.created_at,
     }
-
-
-def list_treatments(db: Session, shipment_id: int) -> list[dict[str, Any]]:
-    from app.modules.shipments.models import ShipmentTreatment
-
-    treatments = db.query(ShipmentTreatment).filter(ShipmentTreatment.shipment_id == shipment_id).all()
-
-    return [
-        {
-            "id": t.id,
-            "shipment_id": t.shipment_id,
-            "status": t.status,
-            "comment": t.comment,
-            "created_by": t.created_by,
-            "created_at": t.created_at,
-        }
-        for t in treatments
-    ]
-
-
-def process_import(
-    db: Session,
-    file_name: str,
-    rows: list[dict[str, Any]],
-    created_by: int,
-    source: str = "generic",
-) -> dict[str, Any]:
-    """Process import rows and create import history."""
-    from app.modules.imports.service_v2 import process_import_v2
-    
-    return process_import_v2(db, file_name, rows, created_by, source)
 
 
 def build_daily_report(db: Session) -> dict[str, Any]:
-    """Build daily report (placeholder for BETA-014)."""
-    from app.modules.shipments.models import Shipment
-    
-    total_shipments = db.query(Shipment).count()
-    delivered_shipments = db.query(Shipment).filter(Shipment.status == "delivered").count()
-    in_transit_shipments = db.query(Shipment).filter(Shipment.status == "in_transit").count()
-    pending_shipments = db.query(Shipment).filter(Shipment.status == "pending").count()
-    
+    shipments = db.query(Shipment).all()
+    total = len(shipments)
+    total_exceptions = len([s for s in shipments if s.delay_days > 0 or s.criticality != "normal"])
+    by_criticality: dict[str, int] = {"normal": 0, "baixa": 0, "media": 0, "alta": 0}
+    by_carrier: dict[int, int] = {}
+    for row in shipments:
+        by_criticality[row.criticality] = by_criticality.get(row.criticality, 0) + 1
+        by_carrier[row.carrier_id] = by_carrier.get(row.carrier_id, 0) + 1
     return {
-        "total_shipments": total_shipments,
-        "delivered_shipments": delivered_shipments,
-        "in_transit_shipments": in_transit_shipments,
-        "pending_shipments": pending_shipments,
-        "delivery_rate": (delivered_shipments / total_shipments * 100) if total_shipments > 0 else 0,
+        "report_date": datetime.now(UTC).date().isoformat(),
+        "total_shipments": total,
+        "total_exceptions": total_exceptions,
+        "by_criticality": by_criticality,
+        "by_carrier": [{"carrier_id": k, "count": v} for k, v in sorted(by_carrier.items())],
     }
-
-
-def parse_csv_file(file_content: bytes) -> tuple[list[dict[str, Any]], list[CSVRowError]]:
-    """Parse CSV file and return rows and errors."""
-    content_str = file_content.decode('utf-8')
-    csv_reader = csv.DictReader(io.StringIO(content_str))
-    
-    rows = []
-    errors = []
-    
-    for row_num, row in enumerate(csv_reader, start=1):
-        rows.append(row)
-    
-    return rows, errors

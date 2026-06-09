@@ -7,8 +7,6 @@ import { canViewShipments } from "@/lib/permissions";
 import { buildGlobalSearchParams, monthYearToDateRange } from "@/lib/shipment-utils";
 import { useAuth } from "@/features/auth/auth-provider";
 import type { Shipment, ShipmentListParams } from "@/lib/types";
-import { SlaBadge } from "@/components/SlaBadge";
-import { SlaFilters } from "@/components/SlaFilters";
 
 export default function ShipmentsPage() {
   const { session } = useAuth();
@@ -31,10 +29,6 @@ export default function ShipmentsPage() {
   const [dueDateTo, setDueDateTo] = useState("");
   const [customerNameFilter, setCustomerNameFilter] = useState("");
   const [destinationUfFilter, setDestinationUfFilter] = useState("");
-  
-  // Filtros SLA
-  const [slaStatusFilter, setSlaStatusFilter] = useState("");
-  const [isLateFilter, setIsLateFilter] = useState<"" | "true" | "false">("");
   
   // Filtro temporal por mês/ano
   const [useMonthYearFilter, setUseMonthYearFilter] = useState(false);
@@ -88,8 +82,6 @@ export default function ShipmentsPage() {
         due_date_to: dueDateTo || temporalFilter.due_date_to || undefined,
         customer_name: customerNameFilter || undefined,
         destination_uf: destinationUfFilter || undefined,
-        sla_status: slaStatusFilter || undefined,
-        is_late: isLateFilter ? isLateFilter === "true" : undefined,
         sort_by: sortBy,
         sort_order: sortOrder,
       };
@@ -123,8 +115,6 @@ export default function ShipmentsPage() {
     monthYearTarget,
     customerNameFilter,
     destinationUfFilter,
-    slaStatusFilter,
-    isLateFilter,
   ]);
 
   useEffect(() => {
@@ -198,8 +188,6 @@ export default function ShipmentsPage() {
     setDueDateTo("");
     setCustomerNameFilter("");
     setDestinationUfFilter("");
-    setSlaStatusFilter("");
-    setIsLateFilter("");
     setUseMonthYearFilter(false);
     setMonthYearTarget("estimated_delivery");
     setSelectedMonth("");
@@ -428,18 +416,6 @@ export default function ShipmentsPage() {
           </div>
         </div>
 
-        {/* Filtros SLA */}
-        <div className="border-t pt-4">
-          <h4 className="text-sm font-semibold mb-2">Filtros SLA</h4>
-          <SlaFilters
-            slaStatus={slaStatusFilter}
-            isLate={isLateFilter}
-            onSlaStatusChange={setSlaStatusFilter}
-            onIsLateChange={setIsLateFilter}
-            disabled={loading}
-          />
-        </div>
-
         {/* Ordenação */}
         <div className="flex flex-col gap-2 md:flex-row md:items-center border-t pt-4">
           <div className="flex-1">
@@ -501,20 +477,18 @@ export default function ShipmentsPage() {
               <th className="px-3 py-2">Vencimento</th>
               <th className="px-3 py-2">Atraso (dias)</th>
               <th className="px-3 py-2">Criticidade</th>
-              <th className="px-3 py-2">Status SLA</th>
-              <th className="px-3 py-2">Data Limite SLA</th>
             </tr>
           </thead>
           <tbody>
             {loading ? (
               <tr>
-                <td colSpan={15} className="px-3 py-3 text-slate-500">
+                <td colSpan={13} className="px-3 py-3 text-slate-500">
                   Carregando...
                 </td>
               </tr>
             ) : items.length === 0 ? (
               <tr>
-                <td colSpan={15} className="px-3 py-3 text-slate-500">
+                <td colSpan={13} className="px-3 py-3 text-slate-500">
                   Nenhum envio encontrado.
                 </td>
               </tr>
@@ -538,8 +512,6 @@ export default function ShipmentsPage() {
                   <td className="px-3 py-2">{formatDateBR(item.due_date)}</td>
                   <td className="px-3 py-2">{item.delay_days}</td>
                   <td className="px-3 py-2">{getCriticalityBadge(item.criticality)}</td>
-                  <td className="px-3 py-2"><SlaBadge status={item.sla_status} /></td>
-                  <td className="px-3 py-2">{formatDateBR(item.sla_due_date)}</td>
                 </tr>
               ))
             )}

@@ -113,6 +113,24 @@ Implementação do frontend do Épico 4 — Eficiência por transportadora — c
 - 5 testes para página
 - Testes de loading, vazio, erro e tabela
 
+**Arquivo:** apps/web/src/app/(private)/shipments/analytics/carrier-efficiency/carrier-efficiency-page-filters.test.tsx
+
+- 8 testes para interação de filtros
+- Testes de interação de filtros
+
+### 5. Testes de Interação de Filtros
+
+**Arquivo:** apps/web/src/app/(private)/shipments/analytics/carrier-efficiency/carrier-efficiency-page-filters.test.tsx
+
+- Deve chamar a API inicial sem filtros vazios
+- Deve alterar filtro de mês e refazer a consulta
+- Deve alterar filtro de UF e refazer a consulta
+- Deve alterar filtro de transportadora e refazer a consulta
+- Deve alterar filtro de criticality e refazer a consulta
+- Deve alterar filtro de sla_status e refazer a consulta
+- Deve alterar filtro de is_late e refazer a consulta
+- Deve limpar filtros e refazer a consulta sem query params
+
 ## Métricas Exibidas
 
 - **Transportadora:** Nome da transportadora (ou "-" se null)
@@ -174,7 +192,6 @@ Funcionalidades:
 - Sem componentes de UI avançados (cards, gráficos)
 - Sem integração com dashboard geral
 - Sem E2E (Playwright não configurado)
-- Testes de interação de filtros simplificados (foco em renderização de controles)
 
 ## TDD
 

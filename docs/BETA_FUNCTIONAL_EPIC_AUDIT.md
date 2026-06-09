@@ -166,7 +166,7 @@ Esta auditoria funcional automatizada inspecionou a estrutura do repositório pa
 - ranking/percentuais (BETA-014A)
 - testes backend (BETA-014A - 30 testes)
 - componente frontend (BETA-014B)
-- testes frontend (BETA-014B - 9 testes)
+- testes frontend (BETA-014B - 19 testes: 6 API + 5 página + 8 filtros)
 - docs (BETA-014A, BETA-014B)
 
 **Ausentes:**
@@ -183,6 +183,7 @@ Esta auditoria funcional automatizada inspecionou a estrutura do repositório pa
 - apps/web/src/app/(private)/shipments/analytics/carrier-efficiency/page.tsx (BETA-014B)
 - apps/web/src/lib/carrier-efficiency-api.test.ts (BETA-014B)
 - apps/web/src/app/(private)/shipments/analytics/carrier-efficiency/carrier-efficiency-page.test.tsx (BETA-014B)
+- apps/web/src/app/(private)/shipments/analytics/carrier-efficiency/carrier-efficiency-page-filters.test.tsx (BETA-014B)
 - docs/BETA_014A_CARRIER_EFFICIENCY_BACKEND.md (BETA-014A)
 - docs/BETA_014B_CARRIER_EFFICIENCY_FRONTEND.md (BETA-014B)
 

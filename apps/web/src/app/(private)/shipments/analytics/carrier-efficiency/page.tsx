@@ -59,8 +59,9 @@ export default function CarrierEfficiencyPage() {
         <h2 className="text-lg font-semibold mb-3">Filtros</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
-            <label className="block text-sm font-medium mb-1">Mês</label>
+            <label htmlFor="filter-month" className="block text-sm font-medium mb-1">Mês</label>
             <input
+              id="filter-month"
               type="number"
               min="1"
               max="12"
@@ -70,8 +71,9 @@ export default function CarrierEfficiencyPage() {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium mb-1">Ano</label>
+            <label htmlFor="filter-year" className="block text-sm font-medium mb-1">Ano</label>
             <input
+              id="filter-year"
               type="number"
               min="2020"
               max="2030"
@@ -81,8 +83,9 @@ export default function CarrierEfficiencyPage() {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium mb-1">Cliente</label>
+            <label htmlFor="filter-customer" className="block text-sm font-medium mb-1">Cliente</label>
             <input
+              id="filter-customer"
               type="text"
               className="w-full p-2 border rounded"
               value={filters.customer_name || ""}
@@ -90,8 +93,9 @@ export default function CarrierEfficiencyPage() {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium mb-1">UF</label>
+            <label htmlFor="filter-uf" className="block text-sm font-medium mb-1">UF</label>
             <input
+              id="filter-uf"
               type="text"
               maxLength={2}
               className="w-full p-2 border rounded"
@@ -100,8 +104,9 @@ export default function CarrierEfficiencyPage() {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium mb-1">Transportadora ID</label>
+            <label htmlFor="filter-carrier" className="block text-sm font-medium mb-1">Transportadora ID</label>
             <input
+              id="filter-carrier"
               type="number"
               className="w-full p-2 border rounded"
               value={filters.carrier_id || ""}
@@ -109,8 +114,9 @@ export default function CarrierEfficiencyPage() {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium mb-1">Status</label>
+            <label htmlFor="filter-status" className="block text-sm font-medium mb-1">Status</label>
             <input
+              id="filter-status"
               type="text"
               className="w-full p-2 border rounded"
               value={filters.status || ""}
@@ -118,8 +124,9 @@ export default function CarrierEfficiencyPage() {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium mb-1">Criticidade</label>
+            <label htmlFor="filter-criticality" className="block text-sm font-medium mb-1">Criticidade</label>
             <select
+              id="filter-criticality"
               className="w-full p-2 border rounded"
               value={filters.criticality || ""}
               onChange={(e) => handleFilterChange("criticality", e.target.value)}
@@ -132,8 +139,9 @@ export default function CarrierEfficiencyPage() {
             </select>
           </div>
           <div>
-            <label className="block text-sm font-medium mb-1">Status SLA</label>
+            <label htmlFor="filter-sla-status" className="block text-sm font-medium mb-1">Status SLA</label>
             <select
+              id="filter-sla-status"
               className="w-full p-2 border rounded"
               value={filters.sla_status || ""}
               onChange={(e) => handleFilterChange("sla_status", e.target.value)}
@@ -147,8 +155,9 @@ export default function CarrierEfficiencyPage() {
             </select>
           </div>
           <div>
-            <label className="block text-sm font-medium mb-1">Atrasada</label>
+            <label htmlFor="filter-is-late" className="block text-sm font-medium mb-1">Atrasada</label>
             <select
+              id="filter-is-late"
               className="w-full p-2 border rounded"
               value={filters.is_late === undefined ? "" : filters.is_late.toString()}
               onChange={(e) => handleFilterChange("is_late", e.target.value === "" ? undefined : e.target.value === "true")}

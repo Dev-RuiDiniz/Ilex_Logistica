@@ -9,6 +9,7 @@ from sqlalchemy.orm import Session
 from app.modules.carriers.models import Carrier
 from app.modules.imports.models import ImportHistory
 from app.modules.shipments.analytics_service import calculate_carrier_efficiency
+from app.modules.alerts.service import get_active_alerts_count
 from app.modules.shipments.exceptions_service import (
     calculate_exception_priority,
     classify_exception_type,
@@ -147,8 +148,8 @@ def calculate_dashboard_summary(
     if import_failure_result:
         import_failure_count = import_failure_result.rejected_count
 
-    # Active alerts count - módulo não existe, sempre 0
-    active_alerts_count = 0
+    # Active alerts count - agora usa contagem real de alertas
+    active_alerts_count = get_active_alerts_count(db)
 
     # Get carriers count
     carriers_count = db.query(Carrier).count()

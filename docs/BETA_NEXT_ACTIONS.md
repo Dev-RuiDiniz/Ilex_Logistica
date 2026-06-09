@@ -2136,6 +2136,52 @@ Com base na auditoria funcional e na implementação do BETA-011A e BETA-011B, o
 
 ---
 
+### BETA-017A: Alertas Backend/API
+**Status:** ✅ Implementado
+**Branch:** `feature/beta-017a-alerts-backend-api`
+**Data:** 2025-01-20
+
+**Implementado:**
+- Model/tabela Alert
+- Migration para tabela alerts
+- Service de geração de alertas
+- Endpoints de listagem/summary/generate/read/resolve
+- Integração com dashboard (active_alerts_count real)
+- Testes backend (27 testes: 9 model + 7 generation + 8 API + 3 integration)
+- Documentação completa
+
+**Arquivos Criados:**
+- `apps/api/app/modules/alerts/models.py`
+- `apps/api/app/modules/alerts/service.py`
+- `apps/api/app/modules/alerts/schemas.py`
+- `apps/api/app/modules/alerts/router.py`
+- `apps/api/migrations/versions/20260620_01_create_alerts.py`
+- `apps/api/tests/test_alerts_model.py`
+- `apps/api/tests/test_alerts_generation.py`
+- `apps/api/tests/test_alerts_api.py`
+- `apps/api/tests/test_dashboard_alerts_integration.py`
+- `docs/BETA_017A_ALERTS_BACKEND_API.md`
+
+**Arquivos Atualizados:**
+- `apps/api/app/main.py` (alerts router)
+- `apps/api/app/modules/dashboard/service.py` (get_active_alerts_count)
+
+**Limitações Conhecidas:**
+- Sem e-mail (fora do escopo beta)
+- Sem WhatsApp (fora do escopo beta)
+- Sem webhook externo (fora do escopo beta)
+- Sem push notification (fora do escopo beta)
+- Sem relatório diário (já existe endpoint separado)
+- Sem auditoria completa (Épico 7)
+- Sem frontend (BETA-017B)
+- Sem RBAC granular (Épico 9)
+- Alertas por eficiência de transportadora não implementados
+- Resolução automática de alertas não implementada
+
+**Documentação:** `docs/BETA_017A_ALERTS_BACKEND_API.md`
+
+---
+
 **Assinatura:** Devin (SWE-1.6)  
 **Data:** 2026-06-08  
 **Status:** ✅ Concluído (BETA-010 - Auditoria Funcional Automatizada)

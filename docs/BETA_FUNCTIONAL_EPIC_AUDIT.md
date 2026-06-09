@@ -17,7 +17,7 @@ Esta auditoria funcional automatizada inspecionou a estrutura do repositório pa
 | 3 - Campos fiscais/financeiros | PARCIAL | 13/15 (87%) | 1/15 (7%) | 1/15 (7%) |
 | 4 - Eficiência por transportadora | COMPLETO | 6/6 (100%) | 0/6 (0%) | 0/6 (0%) |
 | 5 - Painel de Exceções com SLA | EM ANDAMENTO | 4/6 (67%) | 0/6 (0%) | 2/6 (33%) |
-| 5 - Alertas e notificações | PARCIAL | 0/10 (0%) | 2/10 (20%) | 8/10 (80%) |
+| 5 - Alertas e notificações | EM ANDAMENTO (atualizado com BETA-017A) | 0/10 (0%) | 2/10 (20%) | 8/10 (80%) |
 | 6 - Relatório diário automático | AUSENTE | 0/6 (0%) | 0/6 (0%) | 6/6 (100%) |
 | 7 - Logs e auditoria | PARCIAL | 0/9 (0%) | 2/9 (22%) | 7/9 (78%) |
 | 8 - Integrações assistidas | PARCIAL | 0/9 (0%) | 1/9 (11%) | 8/9 (89%) |
@@ -224,28 +224,43 @@ Esta auditoria funcional automatizada inspecionou a estrutura do repositório pa
 
 ### Épico 5 — Alertas e notificações
 
-**Status:** PARCIAL
+**Status:** EM ANDAMENTO (atualizado com BETA-017A)
+
+**Implementados:**
+- model Alert (BETA-017A)
+- migration para tabela alerts (BETA-017A)
+- service de geração de alertas (BETA-017A)
+- endpoints de listagem/summary/generate/read/resolve (BETA-017A)
+- integração com dashboard (BETA-017A)
+- testes backend (BETA-017A - 27 testes: 9 model + 7 generation + 8 API + 3 integration)
+- docs (BETA-017A)
 
 **Parciais:**
-- model Alert
-- docs
+- painel/badge frontend (BETA-017B)
 
 **Ausentes:**
 - AlertDeliveryLog
-- geração para crítico/sem atualização/falha
-- deduplicação
-- painel/badge frontend
-- testes
+- geração para import_failure
+- deduplicação automática por condição não persistente
+- e-mail/WhatsApp/webhook (fora do escopo beta)
+- RBAC granular (Épico 9)
 
 **Evidências:**
-- docs/BETA_CI_BOOTSTRAP_AND_READY_PLAN.md
+- apps/api/app/modules/alerts/models.py (BETA-017A)
+- apps/api/migrations/versions/20260620_01_create_alerts.py (BETA-017A)
+- apps/api/app/modules/alerts/service.py (BETA-017A)
+- apps/api/app/modules/alerts/schemas.py (BETA-017A)
+- apps/api/app/modules/alerts/router.py (BETA-017A)
+- apps/api/tests/test_alerts_model.py (BETA-017A)
+- apps/api/tests/test_alerts_generation.py (BETA-017A)
+- apps/api/tests/test_alerts_api.py (BETA-017A)
+- apps/api/tests/test_dashboard_alerts_integration.py (BETA-017A)
+- docs/BETA_017A_ALERTS_BACKEND_API.md (BETA-017A)
 
 **Gaps Críticos:**
-- Falta AlertDeliveryLog
-- Falta geração para crítico/sem atualização/falha
-- Falta deduplicação
-- Falta painel/badge frontend
-- Falta testes
+- Falta painel/badge frontend (BETA-017B)
+- Falta e-mail/WhatsApp/webhook (fora do escopo beta)
+- Falta RBAC granular (Épico 9)
 
 ---
 

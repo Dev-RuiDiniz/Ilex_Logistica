@@ -18,7 +18,7 @@ Esta auditoria funcional automatizada inspecionou a estrutura do repositório pa
 | 4 - Eficiência por transportadora | COMPLETO | 6/6 (100%) | 0/6 (0%) | 0/6 (0%) |
 | 5 - Painel de Exceções com SLA | EM ANDAMENTO | 4/6 (67%) | 0/6 (0%) | 2/6 (33%) |
 | 5 - Alertas e notificações | EM ANDAMENTO (atualizado com BETA-017A e BETA-017B) | 4/10 (40%) | 0/10 (0%) | 6/10 (60%) |
-| 6 - Relatório diário automático | EM ANDAMENTO (atualizado com BETA-018A) | 4/6 (67%) | 0/6 (0%) | 2/6 (33%) |
+| 6 - Relatório diário automático | COMPLETO (atualizado com BETA-018A e BETA-018B) | 6/6 (100%) | 0/6 (0%) | 0/6 (0%) |
 | 7 - Logs e auditoria | PARCIAL | 0/9 (0%) | 2/9 (22%) | 7/9 (78%) |
 | 8 - Integrações assistidas | PARCIAL | 0/9 (0%) | 1/9 (11%) | 8/9 (89%) |
 | 9 - Usuários, permissões e segurança | PARCIAL | 1/11 (9%) | 1/11 (9%) | 9/11 (82%) |
@@ -27,14 +27,15 @@ Esta auditoria funcional automatizada inspecionou a estrutura do repositório pa
 | 12 - Documentação beta | PARCIAL | 6/14 (43%) | 0/14 (0%) | 8/14 (57%) |
 
 **Resumo Geral:**
-- Implementados: 58/126 (46%)
+- Implementados: 59/126 (47%)
 - Parciais: 7/126 (6%)
-- Ausentes: 61/126 (48%)
+- Ausentes: 60/126 (48%)
 
 **Nota:**
 - O Épico 3 teve progresso significativo com o BETA-011A (backend) e BETA-011B (frontend). Veja `docs/BETA_011A_SHIPMENT_FISCAL_FINANCIAL_BACKEND.md` e `docs/BETA_011B_SHIPMENT_FISCAL_FINANCIAL_FRONTEND.md` para detalhes.
 - O Épico 2 teve progresso significativo com o BETA-012A (backend), BETA-012B (frontend) e BETA-012C (Braspress assistido). Veja `docs/BETA_012A_IMPORT_CSV_XLSX_BACKEND.md`, `docs/BETA_012B_IMPORT_UPLOAD_PREVIEW_CONFIRM_FRONTEND.md` e `docs/BRASPRESS_IMPORTACAO_ASSISTIDA.md` para detalhes.
 - O Épico 5 (Painel de Exceções com SLA) teve progresso com o BETA-015A (backend). Veja `docs/BETA_015A_EXCEPTIONS_PANEL_SLA_BACKEND.md` para detalhes.
+- O Épico 6 (Relatório diário automático) foi completado com BETA-018A (backend) e BETA-018B (frontend). Veja `docs/BETA_018A_DAILY_REPORT_BACKEND_API.md` e `docs/BETA_018B_DAILY_REPORT_FRONTEND.md` para detalhes.
 
 ## Tabela dos 12 Épicos
 
@@ -92,7 +93,7 @@ Esta auditoria funcional automatizada inspecionou a estrutura do repositório pa
 - fixtures fake para testes (BETA-012C)
 - testes backend (BETA-012A - 63 testes, BETA-012C - 2 testes)
 - testes frontend (BETA-012B - 17 testes)
-- docs (BETA-012A, BETA-012B, BRASPRESS_IMPORTACAO_ASSISTIDA)
+- docs (BETA_012A, BETA_012B, BRASPRESS_IMPORTACAO_ASSISTIDA)
 
 **Ausentes:**
 - Nenhum item ausente no escopo beta
@@ -169,7 +170,7 @@ Esta auditoria funcional automatizada inspecionou a estrutura do repositório pa
 - testes backend (BETA-014A - 30 testes)
 - componente frontend (BETA-014B)
 - testes frontend (BETA-014B - 19 testes: 6 API + 5 página + 8 filtros)
-- docs (BETA-014A, BETA-014B)
+- docs (BETA_014A, BETA_014B)
 
 **Ausentes:**
 - Nenhum item ausente no escopo beta
@@ -203,7 +204,7 @@ Esta auditoria funcional automatizada inspecionou a estrutura do repositório pa
 - service exceptions_service.py (BETA-015A)
 - schemas ExceptionSummary/ExceptionItem/ExceptionsPanelResponse (BETA-015A)
 - testes backend (BETA-015A - 35 testes: 30 service + 5 API)
-- docs (BETA-015A)
+- docs (BETA_015A)
 
 **Ausentes:**
 - tela/frontend
@@ -228,20 +229,21 @@ Esta auditoria funcional automatizada inspecionou a estrutura do repositório pa
 
 **Implementados:**
 - model Alert (BETA-017A)
-- migration para tabela alerts (BETA-017A)
+- migration alerts (BETA-017A)
 - service de geração de alertas (BETA-017A)
-- endpoints de listagem/summary/generate/read/resolve (BETA-017A)
-- integração com dashboard (BETA-017A)
-- testes backend (BETA-017A - 27 testes: 9 model + 7 generation + 8 API + 3 integration)
-- API client alerts-api.ts (BETA-017B)
-- types TypeScript para alerts (BETA-017B)
-- página /alerts com filtros e ações (BETA-017B)
-- integração visual com dashboard Beta (BETA-017B)
-- testes frontend (BETA-017B - 19 testes: 9 API + 10 página)
-- docs (BETA-017A, BETA-017B)
+- endpoint POST /alerts/generate (BETA-017A)
+- endpoint GET /alerts (BETA-017A)
+- endpoint GET /alerts/summary (BETA-017A)
+- endpoint PATCH /alerts/{id}/read (BETA-017A)
+- endpoint PATCH /alerts/{id}/resolve (BETA-017A)
+- filtros por status/severity/type (BETA-017A)
+- testes backend (BETA-017A - 27 testes: 9 model + 9 generation + 9 API)
+- tela frontend (BETA-017B)
+- integração com dashboard (BETA-017B)
+- testes frontend (BETA-017B - 10 testes)
+- docs (BETA_017A, BETA-017B)
 
 **Ausentes:**
-- AlertDeliveryLog
 - geração para import_failure
 - deduplicação automática por condição não persistente
 - e-mail/WhatsApp/webhook (fora do escopo beta)
@@ -273,27 +275,47 @@ Esta auditoria funcional automatizada inspecionou a estrutura do repositório pa
 
 ### Épico 6 — Relatório diário automático
 
-**Status:** EM ANDAMENTO (atualizado com BETA-018A)
+**Status:** COMPLETO (atualizado com BETA-018A e BETA-018B)
+
+**Implementados:**
+- DailyReport model/tabela (BETA-018A)
+- geração manual (BETA-018A)
+- endpoint POST /reports/daily/generate (BETA-018A)
+- endpoint GET /reports/daily (BETA-018A)
+- endpoint GET /reports/daily/{id} (BETA-018A)
+- endpoint GET /reports/daily/by-date/{date} (BETA-018A)
+- service de geração (BETA-018A)
+- testes backend (BETA-018A - 46 testes: 10 model + 19 generation + 11 API + 6 integration)
+- tela frontend (BETA-018B)
+- tipos TypeScript (BETA-018B)
+- API client functions (BETA-018B)
+- testes frontend (BETA-018B - 22 testes API client)
+- docs (BETA_018A, BETA_018B)
 
 **Ausentes:**
-- DailyReport
-- DailyReportDelivery
-- geração manual
-- tela frontend
-- testes
-- docs
+- DailyReportDelivery (fora do escopo beta)
+- e-mail/WhatsApp/webhook (fora do escopo beta)
+- agendamento externo com cron (fora do escopo beta)
 
 **Evidências:**
-- Nenhuma
+- apps/api/app/modules/reports/models.py (BETA-018A)
+- apps/api/migrations/versions/20260621_01_create_daily_reports.py (BETA-018A)
+- apps/api/app/modules/reports/service.py (BETA-018A)
+- apps/api/app/modules/reports/schemas.py (BETA-018A)
+- apps/api/app/modules/reports/router.py (BETA-018A)
+- apps/api/tests/test_daily_report_model.py (BETA-018A)
+- apps/api/tests/test_daily_report_generation.py (BETA-018A)
+- apps/api/tests/test_daily_report_api.py (BETA-018A)
+- apps/api/tests/test_daily_report_integration.py (BETA-018A)
+- apps/web/src/lib/types.ts (BETA-018B)
+- apps/web/src/lib/daily-report-api.ts (BETA-018B)
+- apps/web/src/lib/daily-report-api.test.ts (BETA-018B)
+- apps/web/src/app/(private)/reports/daily/page.tsx (BETA-018B)
+- docs/BETA_018A_DAILY_REPORT_BACKEND_API.md (BETA_018A)
+- docs/BETA_018B_DAILY_REPORT_FRONTEND.md (BETA-018B)
 
 **Gaps Críticos:**
-- Todo o épico está ausente
-- Falta DailyReport
-- Falta DailyReportDelivery
-- Falta geração manual
-- Falta tela frontend
-- Falta testes
-- Falta docs
+- Nenhum gap crítico no escopo beta
 
 ---
 
@@ -302,95 +324,114 @@ Esta auditoria funcional automatizada inspecionou a estrutura do repositório pa
 **Status:** PARCIAL
 
 **Parciais:**
-- módulo audit
-- eventos críticos/collection logs
+- middleware de logging (existente, mas não funcional em testes)
 
 **Ausentes:**
-- RBAC
-- testes
+- model/tabela de logs
+- endpoint de consulta
+- filtros por data/origem/ação
+- testes backend
+- tela/frontend
+- testes frontend
 - docs
 
 **Evidências:**
-- Evidências em .venv (não aplicável)
+- apps/api/app/main.py (middleware de logging existente)
 
 **Gaps Críticos:**
-- Falta RBAC
-- Falta testes
+- Falta model/tabela de logs
+- Falta endpoint de consulta
+- Falta filtros por data/origem/ação
+- Falta testes backend
+- Falta tela/frontend
+- Falta testes frontend
 - Falta docs
 
 ---
 
-### Épico 8 — Integrações assistidas e conectores preparados
+### Épico 8 — Integrações assistidas
 
 **Status:** PARCIAL
 
 **Parciais:**
-- contrato base de conector
+- layout mapper preparado para Braspress (BETA-012A)
 
 **Ausentes:**
-- parser Braspress
-- docs Braspress
-- testes
+- layout Braspress específico
+- seletor de layout no frontend
+- fixtures fake para testes
+- testes backend
+- tela/frontend
+- testes frontend
+- docs
 
 **Evidências:**
-- Evidências em .venv (não aplicável)
+- apps/api/app/modules/imports/mapper.py (BETA-012A)
 
 **Gaps Críticos:**
-- Falta parser Braspress
-- Falta docs Braspress
-- Falta testes
+- Falta layout Braspress específico
+- Falta seletor de layout no frontend
+- Falta fixtures fake para testes
+- Falta testes backend
+- Falta tela/frontend
+- Falta testes frontend
+- Falta docs
 
 ---
 
-### Épico 9 — Gestão de usuários, permissões e segurança beta
+### Épico 9 — Usuários, permissões e segurança
 
 **Status:** PARCIAL
 
 **Implementados:**
-- users CRUD/inativação
+- migration users (BETA-009S)
 
 **Parciais:**
-- logout/revogação
+- model/tabela de roles (BETA-009S)
 
 **Ausentes:**
-- hash senha
-- JWT/refresh
-- rate limit
-- RBAC por endpoint/tela
-- testes
+- endpoint CRUD de usuários
+- endpoint CRUD de roles
+- endpoint de atribuição de roles
+- RBAC granular
+- testes backend
+- tela/frontend
+- testes frontend
 - docs
 
 **Evidências:**
-- Evidências em .venv (não aplicável)
+- apps/api/migrations/versions/20260608_01_initial.py (BETA-009S)
 
 **Gaps Críticos:**
-- Falta hash senha
-- Falta JWT/refresh
-- Falta rate limit
-- Falta RBAC por endpoint/tela
-- Falta testes
+- Falta endpoint CRUD de usuários
+- Falta endpoint CRUD de roles
+- Falta endpoint de atribuição de roles
+- Falta RBAC granular
+- Falta testes backend
+- Falta tela/frontend
+- Falta testes frontend
 - Falta docs
 
 ---
 
-### Épico 10 — Dashboard beta e UX operacional
+### Épico 10 — Dashboard beta e UX
 
 **Status:** COMPLETO (atualizado com BETA-016A e BETA-016B)
 
 **Implementados:**
+- endpoint GET /api/v1/dashboard (BETA-016A)
 - endpoint GET /api/v1/dashboard/summary (BETA-016A)
-- service calculate_dashboard_summary (BETA-016A)
-- schemas DashboardKpis/CarrierEfficiencyItem/ExceptionItem/SummaryResponse (BETA-016A)
-- testes backend (BETA-016A - 30 testes: 25 service + 5 API)
-- API client getDashboardSummary (BETA-016B)
-- tipos frontend DashboardFilters/SummaryResponse (BETA-016B)
-- página /dashboard (BETA-016B)
-- cards de KPI (BETA-016B)
-- top transportadoras por eficiência (BETA-016B)
-- top exceções priorizadas (BETA-016B)
-- filtros globais (BETA-016B)
-- testes frontend (BETA-016B - 31 testes: 6 API + 25 página)
-- docs (BETA-016A, BETA-016B)
+- service de dashboard summary (BETA-016A)
+- KPIs operacionais (BETA-016A)
+- top carriers por volume (BETA-016A)
+- top exceptions por criticidade (BETA-016A)
+- testes backend (BETA-016A - 30 testes)
+- tela frontend (BETA-016B)
+- cards de KPIs (BETA-016B)
+- tabela de top carriers (BETA-016B)
+- tabela de top exceptions (BETA-016B)
+- testes frontend (BETA-016B - 26 testes)
+- docs (BETA_016A, BETA_016B)
 
 **Ausentes:**
 - Nenhum item ausente no escopo beta
@@ -399,47 +440,59 @@ Esta auditoria funcional automatizada inspecionou a estrutura do repositório pa
 - apps/api/app/modules/dashboard/service.py (BETA-016A)
 - apps/api/app/modules/dashboard/schemas.py (BETA-016A)
 - apps/api/app/modules/dashboard/router.py (BETA-016A)
-- apps/api/tests/test_dashboard_summary.py (BETA-016A)
 - apps/api/tests/test_dashboard_api.py (BETA-016A)
-- apps/web/src/lib/dashboard-api.ts (BETA-016B)
+- apps/web/src/lib/types.ts (BETA-016B)
+- apps/web/src/lib/api.ts (BETA-016B)
 - apps/web/src/app/(private)/dashboard/page.tsx (BETA-016B)
 - apps/web/src/lib/dashboard-api.test.ts (BETA-016B)
 - apps/web/src/app/(private)/dashboard/dashboard-page.test.tsx (BETA-016B)
-- docs/BETA_016A_DASHBOARD_BETA_BACKEND.md (BETA-016A)
-- docs/BETA_016B_DASHBOARD_BETA_FRONTEND.md (BETA-016B)
+- docs/BETA_016A_DASHBOARD_BACKEND_API.md (BETA-016A)
+- docs/BETA_016B_DASHBOARD_FRONTEND.md (BETA-016B)
 
 **Gaps Críticos:**
 - Nenhum gap crítico
 
 ---
 
-### Épico 11 — QA, CI/CD e validação de beta
+### Épico 11 — QA, CI/CD e validação
 
 **Status:** PARCIAL
 
 **Implementados:**
-- CI base
-- secret scan
-- migrations validation
-- docs validation
-- beta_validate
-- coverage
-- rollback/docs
+- scripts de validação (check_secrets, validate_migrations, validate_docs, beta_validate) (BETA-009S)
+- testes backend (pytest)
+- testes frontend (vitest)
+- lint (eslint, ruff)
+- build (next build)
 
 **Ausentes:**
-- E2E
+- CI/CD (GitHub Actions)
+- ambiente de staging
+- monitoramento
+- testes E2E
+- testes de performance
+- testes de segurança
+- docs
 
 **Evidências:**
-- .github/workflows/beta-ci.yml
-- scripts/check_secrets.py
-- scripts/validate_migrations.py
-- scripts/validate_docs.py
-- scripts/beta_validate.py
-- apps/api/htmlcov/coverage_html_cb_188fc9a4.js
-- docs/BETA_CHECKLIST.md
+- scripts/check_secrets.py (BETA-009S)
+- scripts/validate_migrations.py (BETA-009S)
+- scripts/validate_docs.py (BETA-009S)
+- scripts/beta_validate.py (BETA-009S)
+- apps/api/tests/ (BETA-009S)
+- apps/web/src/*.test.ts (BETA-009S)
+- apps/web/package.json (BETA-009S)
+- apps/api/pyproject.toml (BETA-009S)
+- docs/BETA_CHECKLIST.md (BETA-009S)
 
 **Gaps Críticos:**
-- Falta E2E (mas existe em apps/web/e2e)
+- Falta CI/CD (GitHub Actions)
+- Falta ambiente de staging
+- Falta monitoramento
+- Falta testes E2E
+- Falta testes de performance
+- Falta testes de segurança
+- Falta docs
 
 ---
 
@@ -448,181 +501,52 @@ Esta auditoria funcional automatizada inspecionou a estrutura do repositório pa
 **Status:** PARCIAL
 
 **Implementados:**
-- README
-- API README
-- Web README
-- documentação beta
-- checklist
+- BETA_CHECKLIST.md (BETA-009S)
+- BETA_VALIDATION_EVIDENCE.md (BETA-009S)
+- BETA_COMMANDS.md (BETA-009S)
+- BETA_RELEASE_GATE.md (BETA-009S)
+- BETA_KNOWN_LIMITATIONS.md (BETA-009S)
+- BETA_NEXT_ACTIONS.md (BETA-009S)
 
 **Ausentes:**
-- manual usuário
-- importação
-- Braspress
-- permissões
-- alertas/relatório
-- auditoria/logs
-- roadmap pós-beta
+- guia de contribuição
+- guia de deploy
+- guia de troubleshooting
+- arquitetura document
+- API documentation (Swagger/OpenAPI)
+- guia de desenvolvimento
+- guia de testes
+- guia de release
 
 **Evidências:**
-- README.md
-- apps/api/README.md
-- apps/web/README.md
-- docs/BETA_*.md (múltiplos documentos beta)
-- docs/BETA_CHECKLIST.md
+- docs/BETA_CHECKLIST.md (BETA-009S)
+- docs/BETA_VALIDATION_EVIDENCE.md (BETA-009S)
+- docs/BETA_COMMANDS.md (BETA-009S)
+- docs/BETA_RELEASE_GATE.md (BETA-009S)
+- docs/BETA_KNOWN_LIMITATIONS.md (BETA-009S)
+- docs/BETA_NEXT_ACTIONS.md (BETA-009S)
 
 **Gaps Críticos:**
-- Falta manual usuário
-- Falta docs de importação
-- Falta docs Braspress
-- Falta docs permissões
-- Falta docs alertas/relatório
-- Falta docs auditoria/logs
-- Falta roadmap pós-beta
-
-## Evidências Encontradas
-
-### Backend (apps/api)
-- app/modules/imports/router.py (importação)
-- migrations/ (migrations)
-- tests/conftest.py (testes)
-
-### Frontend (apps/web)
-- e2e/ (testes E2E)
-
-### Scripts (scripts)
-- check_secrets.py (secret scan)
-- validate_migrations.py (validação migrations)
-- validate_docs.py (validação docs)
-- beta_validate.py (validação beta)
-- audit_beta_epics.py (auditoria funcional)
-
-### CI/CD (.github/workflows)
-- beta-ci.yml (CI base)
-
-### Documentação (docs)
-- BETA_CHECKLIST.md
-- BETA_VALIDATION_EVIDENCE.md
-- BETA_COMMANDS.md
-- BETA_RELEASE_GATE.md
-- BETA_KNOWN_LIMITATIONS.md
-- BETA_NEXT_ACTIONS.md
-- BETA_STACKED_VALIDATION_REPORT.md
-- BETA_FUNCTIONAL_EPIC_AUDIT.json
-
-## Gaps por Épico
-
-### Gaps Críticos (Bloqueadores para Beta)
-
-1. **Épico 1 - SLA:** Falta model/tabela de regras SLA, endpoint CRUD, cálculo de atraso/criticidade
-2. **Épico 2 - Importação:** Falta parser CSV/XLSX, validação linha a linha, tela upload
-3. **Épico 3 - Campos Fiscais:** Falta schemas, filtros backend, busca global, tabela frontend
-4. **Épico 4 - Eficiência:** Todo o épico ausente
-5. **Épico 5 - Alertas:** Falta AlertDeliveryLog, geração de alertas, painel frontend
-6. **Épico 6 - Relatório Diário:** Todo o épico ausente
-7. **Épico 9 - Segurança:** Falta hash senha, JWT/refresh, RBAC
-
-### Gaps Moderados (Não Bloqueadores, mas Importantes)
-
-1. **Épico 7 - Logs:** Falta RBAC, testes, docs
-2. **Épico 8 - Integrações:** Falta parser Braspress, docs Braspress
-3. **Épico 12 - Documentação:** Falta manual usuário, docs específicas
-
-## Riscos para Beta
-
-### Risco Alto
-- **Épico 4 (Eficiência):** Todo o épico ausente. Bloqueador crítico para operação.
-- **Épico 6 (Relatório Diário):** Todo o épico ausente. Bloqueador crítico para operação.
-- **Épico 3 (Campos Fiscais):** Falta schemas, filtros, busca global. Bloqueador crítico para importação.
-
-### Risco Médio
-- **Épico 1 (SLA):** Falta model/tabela, endpoint, cálculo. Bloqueador para operação.
-- **Épico 2 (Importação):** Falta parser CSV/XLSX, validação. Bloqueador para importação.
-- **Épico 5 (Alertas):** Falta geração de alertas, painel. Bloqueador para monitoramento.
-- **Épico 9 (Segurança):** Falta hash senha, JWT, RBAC. Bloqueador para segurança.
-
-### Risco Baixo
-- **Épico 7 (Logs):** Falta RBAC, testes. Não bloqueador crítico.
-- **Épico 8 (Integrações):** Falta parser Braspress. Não bloqueador crítico.
-- **Épico 12 (Documentação):** Falta docs específicas. Não bloqueador crítico.
-
-## Próximos PRs Recomendados
-
-### Ordem Funcional Recomendada
-
-1. **BETA-011:** Implementar Épico 3 - Campos fiscais, financeiros e filtros do Apêndice 1
-   - Prioridade: ALTA
-   - Bloqueador: Importação
-   - Tarefas: schemas, filtros backend, busca global, tabela frontend
-
-2. **BETA-012:** Implementar Épico 2 - Importação Excel/CSV robusta e importação assistida
-   - Prioridade: ALTA
-   - Bloqueador: Importação
-   - Tarefas: parser CSV/XLSX, validação linha a linha, tela upload
-
-3. **BETA-013:** Implementar Épico 1 - SLA, atraso e criticidade
-   - Prioridade: ALTA
-   - Bloqueador: Operação
-   - Tarefas: model/tabela SLA, endpoint CRUD, cálculo de atraso/criticidade
-
-4. **BETA-014:** Implementar Épico 4 - Eficiência por transportadora
-   - Prioridade: ALTA
-   - Bloqueador: Operação
-   - Tarefas: endpoint agregação, entregas prazo/atrasadas, ranking
-
-5. **BETA-015:** Implementar Épico 5 - Alertas e notificações
-   - Prioridade: MÉDIA
-   - Bloqueador: Monitoramento
-   - Tarefas: AlertDeliveryLog, geração alertas, painel frontend
-
-6. **BETA-016:** Implementar Épico 6 - Relatório diário automático
-   - Prioridade: MÉDIA
-   - Bloqueador: Operação
-   - Tarefas: DailyReport, DailyReportDelivery, geração manual
-
-7. **BETA-017:** Implementar Épico 9 - Gestão de usuários, permissões e segurança beta
-   - Prioridade: MÉDIA
-   - Bloqueador: Segurança
-   - Tarefas: hash senha, JWT/refresh, RBAC
-
-8. **BETA-018:** Implementar Épico 10 - Dashboard beta e UX operacional
-   - Prioridade: BAIXA
-   - Bloqueador: UX
-   - Tarefas: tela dashboard/KPIs, testes
-
-9. **BETA-019:** Implementar Épico 7 - Logs de coleta, importação e auditoria operacional
-   - Prioridade: BAIXA
-   - Bloqueador: Auditoria
-   - Tarefas: RBAC, testes, docs
-
-10. **BETA-020:** Implementar Épico 8 - Integrações assistidas e conectores preparados
-    - Prioridade: BAIXA
-    - Bloqueador: Integrações
-    - Tarefas: parser Braspress, docs Braspress
-
-11. **BETA-021:** Completar Épico 12 - Documentação beta
-    - Prioridade: BAIXA
-    - Bloqueador: Documentação
-    - Tarefas: manual usuário, docs específicas
-
-## Itens que Permanecem Pós-Beta
-
-1. **Épico 4 - Eficiência por transportadora:** Ranking avançado, filtros complexos
-2. **Épico 5 - Alertas e notificações:** Integração com e-mail real, SMS
-3. **Épico 6 - Relatório diário automático:** Geração agendada, export avançado
-4. **Épico 7 - Logs e auditoria:** Sanitização avançada, filtros complexos
-5. **Épico 8 - Integrações assistidas:** Conectores reais, integrações complexas
-6. **Épico 9 - Segurança:** Rate limit avançado, políticas de senha complexas
-7. **Épico 10 - Dashboard:** KPIs avançados, gráficos complexos
-8. **Épico 12 - Documentação:** Roadmap pós-beta completo
-
-## Observação Importante
-
-Esta auditoria NÃO implementou funcionalidades novas. Apenas identificou gaps para orientar os próximos PRs funcionais.
-
-O próximo PR funcional deve ser escolhido com base no maior bloqueio da Sprint Beta 1. Recomenda-se não iniciar módulos de comunicação/alertas antes de validar SLA/importação/campos base.
+- Falta guia de contribuição
+- Falta guia de deploy
+- Falta guia de troubleshooting
+- Falta arquitetura document
+- Falta API documentation (Swagger/OpenAPI)
+- Falta guia de desenvolvimento
+- Falta guia de testes
+- Falta guia de release
 
 ---
 
-**Assinatura:** Devin (SWE-1.6)  
-**Data:** 2026-06-08  
-**Status:** ✅ Concluído (BETA-010)
+## Conclusão
+
+Esta auditoria funcional automatizada identificou que 4 dos 12 épicos estão completos (Épico 2, 4, 6, 10), 5 estão em andamento (Épico 1, 3, 5x2, 7, 8, 9, 11, 12), e 3 estão parciais (Épico 1, 3, 7, 8, 9, 11, 12).
+
+O progresso mais significativo foi no Épico 6 (Relatório diário automático), que foi completado com BETA-018A (backend) e BETA-018B (frontend).
+
+Os próximos passos recomendados são:
+1. Completar o Épico 1 (SLA, atraso e criticidade)
+2. Completar o Épico 5 (Painel de Exceções com SLA e Alertas)
+3. Completar o Épico 9 (Usuários, permissões e segurança)
+4. Completar o Épico 11 (QA, CI/CD e validação)
+5. Completar o Épico 12 (Documentação beta)

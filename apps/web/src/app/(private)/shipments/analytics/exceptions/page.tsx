@@ -2,23 +2,20 @@
 
 import { useEffect, useState } from "react";
 import { getExceptionsPanel, type ExceptionsPanelResponse, type ExceptionsPanelFilters } from "@/lib/exceptions-api";
-import { useSession } from "@/lib/session";
 
 export default function ExceptionsPanelPage() {
-  const { accessToken } = useSession();
   const [data, setData] = useState<ExceptionsPanelResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [filters, setFilters] = useState<ExceptionsPanelFilters>({});
 
   useEffect(() => {
-    if (!accessToken) return;
-
     const fetchData = async () => {
       setLoading(true);
       setError(null);
       try {
-        const result = await getExceptionsPanel(accessToken, filters);
+        const token = localStorage.getItem("accessToken") || "";
+        const result = await getExceptionsPanel(token, filters);
         setData(result);
       } catch (err) {
         setError(err instanceof Error ? err.message : "Erro ao carregar dados");
@@ -28,9 +25,9 @@ export default function ExceptionsPanelPage() {
     };
 
     fetchData();
-  }, [accessToken, filters]);
+  }, [filters]);
 
-  const handleFilterChange = (key: keyof ExceptionsPanelFilters, value: string | number | boolean) => {
+  const handleFilterChange = (key: keyof ExceptionsPanelFilters, value: string | number | boolean | undefined) => {
     setFilters((prev) => ({
       ...prev,
       [key]: value,
@@ -112,7 +109,7 @@ export default function ExceptionsPanelPage() {
               min="1"
               max="12"
               value={filters.month ?? ""}
-              onChange={(e) => handleFilterChange("month", e.target.value ? parseInt(e.target.value) : undefined)}
+              onChange={(e) => handleFilterChange("month", e.target.value ? parseInt(e.target.value) : undefined as any)}
             />
           </div>
           <div>

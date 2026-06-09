@@ -3,11 +3,16 @@ import { render, screen, waitFor } from "@testing-library/react";
 import ExceptionsPanelPage from "./page";
 import { getExceptionsPanel } from "@/lib/exceptions-api";
 
-vi.mock("@/lib/session", () => ({
-  useSession: () => ({ accessToken: "test-token" }),
-}));
-
 vi.mock("@/lib/exceptions-api");
+
+// Mock localStorage
+const localStorageMock = {
+  getItem: vi.fn(() => "test-token"),
+  setItem: vi.fn(),
+  removeItem: vi.fn(),
+  clear: vi.fn(),
+};
+Object.defineProperty(global, "localStorage", { value: localStorageMock });
 
 describe("ExceptionsPanelPage", () => {
   beforeEach(() => {

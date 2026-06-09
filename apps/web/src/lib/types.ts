@@ -38,6 +38,12 @@ export interface Shipment {
   due_date: string | null;
   delay_days: number;
   criticality: string;
+  freight_value: number | null;
+  invoice_value: number | null;
+  freight_percentage: number | null;
+  collection_departure_date: string | null;
+  customer_name: string | null;
+  destination_uf: string | null;
 }
 
 export interface CSVRowError {
@@ -88,6 +94,11 @@ export interface ShipmentListParams {
   due_date_to?: string;
   sort_by?: string;
   sort_order?: string;
+  customer_name?: string;
+  destination_uf?: string;
+  month?: number;
+  year?: number;
+  search?: string;
 }
 
 export interface ShipmentListResponse {

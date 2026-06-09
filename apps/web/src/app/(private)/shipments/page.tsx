@@ -4,7 +4,7 @@ import { ChangeEvent, useCallback, useEffect, useState } from "react";
 
 import { listShipments } from "@/lib/api";
 import { canViewShipments } from "@/lib/permissions";
-import { buildSearchParams, monthYearToDateRange } from "@/lib/shipment-utils";
+import { buildGlobalSearchParams, monthYearToDateRange } from "@/lib/shipment-utils";
 import { useAuth } from "@/features/auth/auth-provider";
 import type { Shipment, ShipmentListParams } from "@/lib/types";
 
@@ -18,7 +18,6 @@ export default function ShipmentsPage() {
   const [total, setTotal] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [search, setSearch] = useState("");
-  const [searchType, setSearchType] = useState<"tracking" | "invoice" | "all">("all");
   
   // Filtros avançados
   const [statusFilter, setStatusFilter] = useState("");
@@ -28,6 +27,8 @@ export default function ShipmentsPage() {
   const [estimatedDeliveryTo, setEstimatedDeliveryTo] = useState("");
   const [dueDateFrom, setDueDateFrom] = useState("");
   const [dueDateTo, setDueDateTo] = useState("");
+  const [customerNameFilter, setCustomerNameFilter] = useState("");
+  const [destinationUfFilter, setDestinationUfFilter] = useState("");
   
   // Filtro temporal por mês/ano
   const [useMonthYearFilter, setUseMonthYearFilter] = useState(false);
@@ -46,7 +47,8 @@ export default function ShipmentsPage() {
     setLoading(true);
     setError("");
     try {
-      const searchParams = buildSearchParams(searchType, search);
+      // Use global search parameter for broader search capability
+      const searchParams = buildGlobalSearchParams(search);
       
       // Aplicar filtro temporal por mês/ano se ativado
       let temporalFilter: { estimated_delivery_from?: string; estimated_delivery_to?: string; due_date_from?: string; due_date_to?: string } = {};
@@ -78,6 +80,8 @@ export default function ShipmentsPage() {
         estimated_delivery_to: estimatedDeliveryTo || temporalFilter.estimated_delivery_to || undefined,
         due_date_from: dueDateFrom || temporalFilter.due_date_from || undefined,
         due_date_to: dueDateTo || temporalFilter.due_date_to || undefined,
+        customer_name: customerNameFilter || undefined,
+        destination_uf: destinationUfFilter || undefined,
         sort_by: sortBy,
         sort_order: sortOrder,
       };
@@ -101,7 +105,6 @@ export default function ShipmentsPage() {
     page,
     pageSize,
     search,
-    searchType,
     selectedMonth,
     selectedYear,
     session,
@@ -110,6 +113,8 @@ export default function ShipmentsPage() {
     statusFilter,
     useMonthYearFilter,
     monthYearTarget,
+    customerNameFilter,
+    destinationUfFilter,
   ]);
 
   useEffect(() => {
@@ -119,17 +124,28 @@ export default function ShipmentsPage() {
     return () => clearTimeout(timer);
   }, [load]);
 
-  const formatCurrency = (value: number | null) => {
-    if (value === null) return "-";
+  // Formatting helpers
+  const formatCurrencyBRL = (value: number | null) => {
+    if (value === null || value === undefined) return "-";
     return new Intl.NumberFormat("pt-BR", {
       style: "currency",
       currency: "BRL",
     }).format(value);
   };
 
-  const formatDate = (dateString: string | null) => {
+  const formatPercentage = (value: number | null) => {
+    if (value === null || value === undefined) return "-";
+    return `${value.toFixed(2)}%`;
+  };
+
+  const formatDateBR = (dateString: string | null) => {
     if (!dateString) return "-";
     return new Date(dateString).toLocaleDateString("pt-BR");
+  };
+
+  const formatUnavailable = (value: string | number | null) => {
+    if (value === null || value === undefined || value === "") return "-";
+    return value;
   };
 
   const getCriticalityBadge = (criticality: string) => {
@@ -163,7 +179,6 @@ export default function ShipmentsPage() {
 
   const onClearFilters = () => {
     setSearch("");
-    setSearchType("all");
     setStatusFilter("");
     setCarrierIdFilter("");
     setCriticalityFilter("");
@@ -171,6 +186,8 @@ export default function ShipmentsPage() {
     setEstimatedDeliveryTo("");
     setDueDateFrom("");
     setDueDateTo("");
+    setCustomerNameFilter("");
+    setDestinationUfFilter("");
     setUseMonthYearFilter(false);
     setMonthYearTarget("estimated_delivery");
     setSelectedMonth("");
@@ -200,28 +217,11 @@ export default function ShipmentsPage() {
       <div className="rounded border bg-white p-4 space-y-4">
         <div className="flex flex-col gap-2 md:flex-row md:items-end">
           <div className="flex-1">
-            <label className="block text-sm font-medium">Tipo de busca</label>
-            <select
-              value={searchType}
-              onChange={(e) => setSearchType(e.target.value as "tracking" | "invoice" | "all")}
-              className="mt-1 w-full rounded border px-3 py-2 text-sm"
-              disabled={loading}
-            >
-              <option value="all">Automático (heurística)</option>
-              <option value="tracking">Código de rastreio</option>
-              <option value="invoice">Nota fiscal</option>
-            </select>
-          </div>
-          <div className="flex-2">
             <label className="block text-sm font-medium">Buscar</label>
             <input
               value={search}
               onChange={onSearch}
-              placeholder={
-                searchType === "tracking" ? "Código de rastreio" :
-                searchType === "invoice" ? "Número da nota fiscal" :
-                "Código de rastreio ou nota fiscal"
-              }
+              placeholder="Buscar por tracking, NF, cliente, etc."
               className="mt-1 w-full rounded border px-3 py-2 text-sm"
               disabled={loading}
             />
@@ -351,6 +351,29 @@ export default function ShipmentsPage() {
               </select>
             </div>
             <div>
+              <label className="block text-sm font-medium">Cliente</label>
+              <input
+                type="text"
+                value={customerNameFilter}
+                onChange={(e) => setCustomerNameFilter(e.target.value)}
+                placeholder="Nome do cliente"
+                className="mt-1 w-full rounded border px-3 py-2 text-sm"
+                disabled={loading}
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium">UF Destino</label>
+              <input
+                type="text"
+                value={destinationUfFilter}
+                onChange={(e) => setDestinationUfFilter(e.target.value)}
+                placeholder="UF (ex: SP)"
+                maxLength={2}
+                className="mt-1 w-full rounded border px-3 py-2 text-sm uppercase"
+                disabled={loading}
+              />
+            </div>
+            <div>
               <label className="block text-sm font-medium">Entrega estimada (de)</label>
               <input
                 type="date"
@@ -437,17 +460,20 @@ export default function ShipmentsPage() {
       {error && <p className="rounded bg-red-50 px-3 py-2 text-sm text-red-700">{error}</p>}
 
       {/* Tabela */}
-      <div className="overflow-hidden rounded border">
+      <div className="overflow-x-auto rounded border">
         <table className="w-full text-sm">
           <thead className="bg-slate-100 text-left">
             <tr>
               <th className="px-3 py-2">Tracking</th>
-              <th className="px-3 py-2">Carrier ID</th>
+              <th className="px-3 py-2">NF</th>
+              <th className="px-3 py-2">Cliente</th>
+              <th className="px-3 py-2">UF</th>
+              <th className="px-3 py-2">Data Coleta/Saída</th>
+              <th className="px-3 py-2">Valor NF</th>
+              <th className="px-3 py-2">Valor Frete</th>
+              <th className="px-3 py-2">% Frete</th>
               <th className="px-3 py-2">Status</th>
               <th className="px-3 py-2">Entrega Estimada</th>
-              <th className="px-3 py-2">Nota Fiscal</th>
-              <th className="px-3 py-2">Doc. Fiscal</th>
-              <th className="px-3 py-2">Valor</th>
               <th className="px-3 py-2">Vencimento</th>
               <th className="px-3 py-2">Atraso (dias)</th>
               <th className="px-3 py-2">Criticidade</th>
@@ -456,13 +482,13 @@ export default function ShipmentsPage() {
           <tbody>
             {loading ? (
               <tr>
-                <td colSpan={10} className="px-3 py-3 text-slate-500">
+                <td colSpan={13} className="px-3 py-3 text-slate-500">
                   Carregando...
                 </td>
               </tr>
             ) : items.length === 0 ? (
               <tr>
-                <td colSpan={10} className="px-3 py-3 text-slate-500">
+                <td colSpan={13} className="px-3 py-3 text-slate-500">
                   Nenhum envio encontrado.
                 </td>
               </tr>
@@ -474,14 +500,16 @@ export default function ShipmentsPage() {
                       {item.tracking_code}
                     </a>
                   </td>
-                  
-                  <td className="px-3 py-2">{item.carrier_id}</td>
+                  <td className="px-3 py-2">{formatUnavailable(item.invoice_number)}</td>
+                  <td className="px-3 py-2">{formatUnavailable(item.customer_name)}</td>
+                  <td className="px-3 py-2">{formatUnavailable(item.destination_uf)}</td>
+                  <td className="px-3 py-2">{formatDateBR(item.collection_departure_date)}</td>
+                  <td className="px-3 py-2">{formatCurrencyBRL(item.invoice_value)}</td>
+                  <td className="px-3 py-2">{formatCurrencyBRL(item.freight_value)}</td>
+                  <td className="px-3 py-2">{formatPercentage(item.freight_percentage)}</td>
                   <td className="px-3 py-2">{item.status}</td>
-                  <td className="px-3 py-2">{formatDate(item.estimated_delivery)}</td>
-                  <td className="px-3 py-2">{item.invoice_number || "-"}</td>
-                  <td className="px-3 py-2">{item.fiscal_document || "-"}</td>
-                  <td className="px-3 py-2">{formatCurrency(item.amount)}</td>
-                  <td className="px-3 py-2">{formatDate(item.due_date)}</td>
+                  <td className="px-3 py-2">{formatDateBR(item.estimated_delivery)}</td>
+                  <td className="px-3 py-2">{formatDateBR(item.due_date)}</td>
                   <td className="px-3 py-2">{item.delay_days}</td>
                   <td className="px-3 py-2">{getCriticalityBadge(item.criticality)}</td>
                 </tr>
@@ -517,10 +545,9 @@ export default function ShipmentsPage() {
       )}
 
       {/* Limitação documentada */}
-      <div className="rounded bg-slate-50 px-3 py-2 text-xs text-slate-600">
-        <strong>Limitações conhecidas:</strong> A API não retorna nome da transportadora, apenas carrier_id.
-        Filtros de cliente/UF não implementados pois não são suportados pela API.
-      </div>
+      <p className="text-xs text-slate-500">
+        Esta listagem é limitada a 20 registros por página. Use os filtros para refinar sua busca.
+      </p>
     </section>
   );
 }

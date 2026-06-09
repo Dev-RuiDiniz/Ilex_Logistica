@@ -386,13 +386,18 @@ O BETA-011A (Backend dos Campos Fiscais/Financeiros e Filtros Avançados) foi im
 
 Veja `docs/BETA_011A_SHIPMENT_FISCAL_FINANCIAL_BACKEND.md` para detalhes completos da implementação backend.
 
+## Nota sobre BETA-011B
+
+O BETA-011B (Frontend dos Campos Fiscais/Financeiros e Filtros Avançados) foi implementado para exibir na UI os campos fiscais/financeiros e filtros avançados do Épico 3, consumindo o backend do BETA-011A.
+
+Veja `docs/BETA_011B_SHIPMENT_FISCAL_FINANCIAL_FRONTEND.md` para detalhes completos da implementação frontend.
+
 ### Recomendação de Próximos PRs Funcionais
 
-Com base na auditoria funcional e na implementação do BETA-011A, os próximos PRs funcionais devem seguir esta ordem:
+Com base na auditoria funcional e na implementação do BETA-011A e BETA-011B, os próximos PRs funcionais devem seguir esta ordem:
 
-1. **BETA-011B:** Implementar frontend dos campos fiscais/financeiros e filtros (Prioridade: ALTA)
-2. **BETA-012:** Implementar Épico 2 - Importação Excel/CSV robusta e importação assistida (Prioridade: ALTA)
-3. **BETA-013:** Implementar Épico 1 - SLA, atraso e criticidade (Prioridade: ALTA)
+1. **BETA-012:** Implementar Épico 2 - Importação Excel/CSV robusta e importação assistida (Prioridade: ALTA)
+2. **BETA-013:** Implementar Épico 1 - SLA, atraso e criticidade (Prioridade: ALTA)
 4. **BETA-014:** Implementar Épico 4 - Eficiência por transportadora (Prioridade: ALTA)
 5. **BETA-015:** Implementar Épico 5 - Alertas e notificações (Prioridade: MÉDIA)
 6. **BETA-016:** Implementar Épico 6 - Relatório diário automático (Prioridade: MÉDIA)

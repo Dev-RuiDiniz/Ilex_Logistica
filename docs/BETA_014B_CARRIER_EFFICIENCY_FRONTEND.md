@@ -9,6 +9,7 @@ Implementação do frontend do Épico 4 — Eficiência por transportadora — c
 - **Branch:** feature/beta-014b-carrier-efficiency-frontend
 - **Base:** origin/feature/beta-014a-carrier-efficiency-backend
 - **Tipo:** Frontend-only
+- ⚠️ Ajuste mínimo em SlaBadge.tsx para compatibilidade de build
 
 ## Contrato de API Verificado
 
@@ -78,6 +79,7 @@ Implementação do frontend do Épico 4 — Eficiência por transportadora — c
 - `getCarrierEfficiency(token, filters)`: Função para buscar dados de eficiência
 - Tratamento de erros de API
 - Construção de query params
+- Omissão de filtros vazios
 
 ### 3. Página de Eficiência
 
@@ -103,8 +105,8 @@ Implementação do frontend do Épico 4 — Eficiência por transportadora — c
 
 **Arquivo:** apps/web/src/lib/carrier-efficiency-api.test.ts
 
-- 4 testes para API client
-- Testes de endpoint, filtros, resposta e erro
+- 6 testes para API client
+- Testes de endpoint, filtros, resposta, erro, omissão de filtros vazios, serialização boolean
 
 **Arquivo:** apps/web/src/app/(private)/shipments/analytics/carrier-efficiency/carrier-efficiency-page.test.tsx
 
@@ -134,17 +136,24 @@ Rankings já calculados pelo backend, não recalcular no frontend:
 
 ## Filtros Visuais
 
-Filtros preparados no estado do componente (ainda não implementados na UI):
+Filtros implementados na UI:
 
-- Período (estimated_delivery_from, estimated_delivery_to)
-- Mês/Ano (month, year)
-- Cliente (customer_name)
-- UF (destination_uf)
-- Transportadora (carrier_id)
-- Status (status)
-- Criticidade (criticality)
-- Status SLA (sla_status)
-- Atrasada (is_late)
+- Mês (número)
+- Ano (número)
+- Cliente (texto)
+- UF (texto, max 2 caracteres)
+- Transportadora ID (número)
+- Status (texto)
+- Criticidade (select: normal, baixa, média, alta)
+- Status SLA (select: on_time, warning, late, critical, unknown)
+- Atrasada (select: todas, sim, não)
+
+Funcionalidades:
+- Filtros alteram a consulta ao endpoint
+- Filtros funcionam isolados e combinados
+- Botão "Limpar Filtros" reseta o estado e refaz a consulta
+- Filtros vazios são omitidos da query string
+- Estado vazio exibido quando filtros não retornam dados
 
 ## Estados de UX
 
@@ -162,11 +171,10 @@ Filtros preparados no estado do componente (ainda não implementados na UI):
 
 ## Limitações
 
-- Filtros visuais não implementados na UI (apenas preparados no estado)
 - Sem componentes de UI avançados (cards, gráficos)
 - Sem integração com dashboard geral
 - Sem E2E (Playwright não configurado)
-- Build falha devido a erro de tipo no BETA-013B (SlaBadge.tsx) - não relacionado ao BETA-014B
+- Testes de interação de filtros simplificados (foco em renderização de controles)
 
 ## TDD
 
@@ -185,6 +193,7 @@ Filtros preparados no estado do componente (ainda não implementados na UI):
 - ✅ Nenhum endpoint novo
 - ✅ Nenhum service novo
 - ✅ Foco exclusivo em UI/frontend
+- ⚠️ Ajuste mínimo em SlaBadge.tsx para compatibilidade de build
 
 ## Confirmação de Governança
 

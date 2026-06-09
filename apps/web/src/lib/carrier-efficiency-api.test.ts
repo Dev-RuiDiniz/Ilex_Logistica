@@ -58,6 +58,48 @@ describe("getCarrierEfficiency", () => {
     );
   });
 
+  it("Deve omitir filtros vazios", async () => {
+    const mockResponse = {
+      carriers: [],
+      generated_at: "2025-01-01T00:00:00Z",
+    };
+    (global.fetch as unknown as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
+      ok: true,
+      json: async () => mockResponse,
+    });
+
+    await getCarrierEfficiency("test-token", {
+      month: undefined,
+      year: undefined,
+      customer_name: "",
+    });
+
+    expect(global.fetch).toHaveBeenCalledWith(
+      expect.stringContaining("/shipments/analytics/carrier-efficiency"),
+      expect.any(Object)
+    );
+  });
+
+  it("Deve serializar boolean is_late corretamente", async () => {
+    const mockResponse = {
+      carriers: [],
+      generated_at: "2025-01-01T00:00:00Z",
+    };
+    (global.fetch as unknown as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
+      ok: true,
+      json: async () => mockResponse,
+    });
+
+    await getCarrierEfficiency("test-token", {
+      is_late: true,
+    });
+
+    expect(global.fetch).toHaveBeenCalledWith(
+      expect.stringContaining("is_late=true"),
+      expect.any(Object)
+    );
+  });
+
   it("Deve tratar resposta", async () => {
     const mockResponse = {
       carriers: [

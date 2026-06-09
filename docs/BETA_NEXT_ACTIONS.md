@@ -230,7 +230,7 @@ Próximas ações pós BETA-009S para o projeto Ilex Logística.
 ---
 
 ### BETA-014B: Painel Frontend de Eficiência por Transportadora
-**Status:** ✅ Implementado
+**Status:** ✅ Implementado (Atualizado com filtros visuais e build corrigido)
 **Branch:** `feature/beta-014b-carrier-efficiency-frontend`
 **Data:** 2026-06-15
 
@@ -242,8 +242,11 @@ Próximas ações pós BETA-009S para o projeto Ilex Logística.
 - ✅ Exibição de rankings (eficiência, custo, volume)
 - ✅ Estados de UX (loading, erro, vazio, sucesso)
 - ✅ Formatação BRL e percentual
-- ✅ 9 testes TDD implementados (4 API + 5 página)
+- ✅ Filtros visuais implementados (mês, ano, cliente, UF, transportadora, status, criticidade, status SLA, atrasada)
+- ✅ Botão "Limpar Filtros"
+- ✅ 11 testes TDD implementados (6 API + 5 página)
 - ✅ Documentação completa
+- ✅ Correção de build (SlaBadge.tsx type assertion)
 
 **Arquivos Criados:**
 - `apps/web/src/lib/carrier-efficiency-api.test.ts`
@@ -254,13 +257,13 @@ Próximas ações pós BETA-009S para o projeto Ilex Logística.
 **Arquivos Atualizados:**
 - `apps/web/src/lib/types.ts` (CarrierEfficiencyMetrics, CarrierEfficiencyResponse, CarrierEfficiencyFilters)
 - `apps/web/src/lib/api.ts` (getCarrierEfficiency function)
+- `apps/web/src/components/SlaBadge.tsx` (correção de type assertion)
 
 **Limitações Conhecidas:**
-- Filtros visuais não implementados na UI (apenas preparados no estado)
 - Sem componentes de UI avançados (cards, gráficos)
 - Sem integração com dashboard geral
 - Sem E2E (Playwright não configurado)
-- Build falha devido a erro de tipo no BETA-013B (SlaBadge.tsx) - não relacionado ao BETA-014B
+- Testes de interação de filtros simplificados (foco em renderização de controles)
 
 **Documentação:** `docs/BETA_014B_CARRIER_EFFICIENCY_FRONTEND.md`
 

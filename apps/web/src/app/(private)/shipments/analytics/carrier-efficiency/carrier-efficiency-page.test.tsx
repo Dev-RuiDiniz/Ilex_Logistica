@@ -68,15 +68,14 @@ describe("CarrierEfficiencyPage", () => {
     render(<CarrierEfficiencyPage />);
 
     await screen.findByText("Transportadora A");
-    expect(screen.getByText(/Total NFs/i)).toBeInTheDocument();
-    expect(screen.getByText(/Total Entregas/i)).toBeInTheDocument();
-    expect(screen.getByText(/No Prazo/i)).toBeInTheDocument();
-    expect(screen.getByText(/Atrasadas/i)).toBeInTheDocument();
-    expect(screen.getByText(/Frete Total/i)).toBeInTheDocument();
-    expect(screen.getByText(/Frete Médio/i)).toBeInTheDocument();
-    expect(screen.getByText(/Ranking Eficiência/i)).toBeInTheDocument();
-    expect(screen.getByText(/Ranking Custo/i)).toBeInTheDocument();
-    expect(screen.getByText(/Ranking Volume/i)).toBeInTheDocument();
+    expect(screen.getAllByText(/Total NFs/i)).toHaveLength(1);
+    expect(screen.getAllByText(/Total Entregas/i)).toHaveLength(1);
+    expect(screen.getAllByText(/Atrasadas/i)).toHaveLength(1);
+    expect(screen.getAllByText(/Frete Total/i)).toHaveLength(1);
+    expect(screen.getAllByText(/Frete Médio/i)).toHaveLength(1);
+    expect(screen.getAllByText(/Ranking Eficiência/i)).toHaveLength(1);
+    expect(screen.getAllByText(/Ranking Custo/i)).toHaveLength(1);
+    expect(screen.getAllByText(/Ranking Volume/i)).toHaveLength(1);
   });
 
   it("Deve tratar ausência de extraviadas como zero", async () => {

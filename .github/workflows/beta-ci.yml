@@ -1,0 +1,45 @@
+name: Beta CI Bootstrap
+
+on:
+  pull_request:
+    branches: [ main ]
+  push:
+    branches: [ main ]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+        
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -e "apps/api[dev]"
+        
+    - name: Secret scan
+      run: |
+        python scripts/check_secrets.py --repo-root .
+        
+    - name: Secret self-test
+      run: |
+        python scripts/check_secrets.py --repo-root . --self-test
+        
+    - name: Validate migrations
+      run: |
+        python scripts/validate_migrations.py
+        
+    - name: Validate docs
+      run: |
+        python scripts/validate_docs.py
+        
+    - name: Beta validation
+      run: |
+        python scripts/beta_validate.py

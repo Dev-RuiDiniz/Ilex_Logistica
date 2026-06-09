@@ -25,6 +25,7 @@ from zipfile import BadZipFile, ZipFile
 from fastapi import HTTPException, UploadFile, status as http_status
 from sqlalchemy.orm import Session
 
+from app.modules.carriers.models import Carrier
 from app.modules.imports.mapper import map_column, normalize_column_name, get_required_columns
 from app.modules.imports.models import ImportHistory
 from app.modules.shipments.models import Shipment
@@ -358,7 +359,7 @@ def validate_row(
     Args:
         row: Row data with mapped column names
         row_number: Row number in the file (1-indexed, header is row 1)
-        db: Database session for duplicate checking (optional)
+        db: Database session for carrier name resolution and duplicate checking (optional)
         
     Returns:
         ValidatedRow with errors and warnings
@@ -382,16 +383,12 @@ def validate_row(
     else:
         normalized_data["tracking_code"] = tracking_code
     
-    # Validate carrier_id
+    # Validate carrier_id or resolve carrier_name
     carrier_id_str = row.get("carrier_id", "").strip()
-    if not carrier_id_str:
-        errors.append(RowValidationError(
-            row_number=row_number,
-            field="carrier_id",
-            message="carrier_id obrigatorio",
-            value=carrier_id_str,
-        ))
-    else:
+    carrier_name = row.get("carrier_name", "").strip()
+    
+    if carrier_id_str:
+        # Use carrier_id directly
         try:
             carrier_id = int(carrier_id_str)
             if carrier_id <= 0:
@@ -410,6 +407,26 @@ def validate_row(
                 message="carrier_id deve ser um numero inteiro",
                 value=carrier_id_str,
             ))
+    elif carrier_name and db:
+        # Resolve carrier_name to carrier_id
+        resolved_carrier_id = resolve_carrier_name_to_id(db, carrier_name)
+        if resolved_carrier_id:
+            normalized_data["carrier_id"] = resolved_carrier_id
+        else:
+            errors.append(RowValidationError(
+                row_number=row_number,
+                field="carrier_name",
+                message=f"transportadora '{carrier_name}' nao encontrada",
+                value=carrier_name,
+            ))
+    else:
+        # Neither carrier_id nor carrier_name provided
+        errors.append(RowValidationError(
+            row_number=row_number,
+            field="carrier_id",
+            message="carrier_id ou carrier_name obrigatorio",
+            value=carrier_id_str,
+        ))
     
     # Validate invoice_number
     invoice_number = row.get("invoice_number", "").strip()
@@ -540,6 +557,22 @@ def validate_row(
         errors=errors,
         warnings=warnings,
     )
+
+
+def resolve_carrier_name_to_id(db: Session, carrier_name: str) -> int | None:
+    """Resolve carrier name to carrier_id.
+    
+    Args:
+        db: Database session
+        carrier_name: Carrier name to resolve
+        
+    Returns:
+        carrier_id if found, None otherwise
+    """
+    if not carrier_name:
+        return None
+    carrier = db.query(Carrier).filter(Carrier.name == carrier_name).first()
+    return carrier.id if carrier else None
 
 
 def detect_duplicates_in_file(rows: list[ValidatedRow]) -> int:

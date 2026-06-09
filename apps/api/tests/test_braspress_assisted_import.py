@@ -44,17 +44,6 @@ def db_session():
 
 
 @pytest.fixture
-def seed_carrier(db_session: Session):
-    """Seed a test carrier for import tests."""
-    from app.modules.carriers.models import Carrier
-    carrier = Carrier(name="Test Carrier")
-    db_session.add(carrier)
-    db_session.commit()
-    db_session.refresh(carrier)
-    return carrier
-
-
-@pytest.fixture
 def braspress_valid_csv():
     """Load valid Braspress CSV fixture."""
     fixture_path = Path(__file__).parent / "fixtures" / "imports" / "braspress_valid.csv"
@@ -257,16 +246,12 @@ class TestBraspressMapper:
 
 
 # Tests for Preview with Braspress Source
-# NOTE: Integration tests are skipped because they require complex carrier resolution
-# The unit tests in TestBraspressMapper and TestBraspressDataValidation cover the core logic
-# Integration with preview_import/confirm_import is covered by test_import_preview_confirm.py (BETA-012A)
 
 
 class TestBraspressPreview:
     """Test preview functionality with Braspress source."""
 
-    @pytest.mark.skip(reason="Integration test - requires carrier name resolution, covered by test_import_preview_confirm.py")
-    def test_preview_braspress_valid_csv(self, db_session: Session, braspress_valid_csv, seed_carrier):
+    def test_preview_braspress_valid_csv(self, db_session: Session, braspress_valid_csv, seed_braspress_carrier):
         """Test preview with valid Braspress CSV."""
         upload = create_upload_file(braspress_valid_csv, "braspress_valid.csv")
         preview = preview_import(db_session, upload, source="braspress_assisted")
@@ -276,8 +261,7 @@ class TestBraspressPreview:
         assert preview.invalid_rows == 0
         assert preview.import_id is not None
 
-    @pytest.mark.skip(reason="Integration test - requires carrier name resolution, covered by test_import_preview_confirm.py")
-    def test_preview_braspress_registers_source(self, db_session: Session, braspress_valid_csv, seed_carrier):
+    def test_preview_braspress_registers_source(self, db_session: Session, braspress_valid_csv, seed_braspress_carrier):
         """Test that preview registers source as braspress_assisted."""
         upload = create_upload_file(braspress_valid_csv, "braspress_valid.csv")
         preview = preview_import(db_session, upload, source="braspress_assisted")
@@ -291,8 +275,7 @@ class TestBraspressPreview:
         metadata = json.loads(history.import_metadata or "{}")
         assert metadata.get("layout") == "braspress_assisted"
 
-    @pytest.mark.skip(reason="Integration test - requires carrier name resolution, covered by test_import_preview_confirm.py")
-    def test_preview_braspress_invalid_csv(self, db_session: Session, braspress_invalid_csv, seed_carrier):
+    def test_preview_braspress_invalid_csv(self, db_session: Session, braspress_invalid_csv, seed_braspress_carrier):
         """Test preview with invalid Braspress CSV (missing required column)."""
         upload = create_upload_file(braspress_invalid_csv, "braspress_invalid.csv")
         preview = preview_import(db_session, upload, source="braspress_assisted")
@@ -301,18 +284,16 @@ class TestBraspressPreview:
         assert preview.invalid_rows > 0  # Should have errors due to missing invoice_value
         assert len(preview.errors) > 0
 
-    @pytest.mark.skip(reason="Integration test - requires carrier name resolution, covered by test_import_preview_confirm.py")
-    def test_preview_braspress_detects_duplicates(self, db_session: Session, braspress_duplicates_csv, seed_carrier):
+    def test_preview_braspress_detects_duplicates(self, db_session: Session, braspress_duplicates_csv, seed_braspress_carrier):
         """Test that preview detects duplicates in file."""
         upload = create_upload_file(braspress_duplicates_csv, "braspress_duplicates.csv")
         preview = preview_import(db_session, upload, source="braspress_assisted")
         
-        # The duplicate detection is handled in the service layer
-        # For now, just verify the preview works
-        assert preview.total_rows >= 2  # At least 2 rows in the fixture
+        # The duplicate detection should mark duplicate rows
+        # For now, verify the preview works and tracks duplicates
+        assert preview.duplicate_rows > 0
 
-    @pytest.mark.skip(reason="Integration test - requires carrier name resolution, covered by test_import_preview_confirm.py")
-    def test_preview_without_source_uses_generic(self, db_session: Session, braspress_valid_csv, seed_carrier):
+    def test_preview_without_source_uses_generic(self, db_session: Session, braspress_valid_csv, seed_braspress_carrier):
         """Test that preview without source uses generic mapper."""
         upload = create_upload_file(braspress_valid_csv, "braspress_valid.csv")
         preview = preview_import(db_session, upload, source=None)
@@ -323,16 +304,12 @@ class TestBraspressPreview:
 
 
 # Tests for Confirm with Braspress Source
-# NOTE: Integration tests are skipped because they require complex carrier name resolution
-# The unit tests in TestBraspressMapper and TestBraspressDataValidation cover the core logic
-# Integration with preview_import/confirm_import is covered by test_import_preview_confirm.py (BETA-012A)
 
 
 class TestBraspressConfirm:
     """Test confirmation functionality with Braspress source."""
 
-    @pytest.mark.skip(reason="Integration test - requires carrier name resolution, covered by test_import_preview_confirm.py")
-    def test_confirm_braspress_valid_import(self, db_session: Session, braspress_valid_csv, seed_carrier):
+    def test_confirm_braspress_valid_import(self, db_session: Session, braspress_valid_csv, seed_braspress_carrier):
         """Test confirming a valid Braspress import."""
         # First preview
         upload = create_upload_file(braspress_valid_csv, "braspress_valid.csv")
@@ -346,8 +323,7 @@ class TestBraspressConfirm:
         assert history.rejected_count == 0
         assert history.source == "braspress_assisted"
 
-    @pytest.mark.skip(reason="Integration test - requires carrier name resolution, covered by test_import_preview_confirm.py")
-    def test_confirm_braspress_creates_shipments(self, db_session: Session, braspress_valid_csv, seed_carrier):
+    def test_confirm_braspress_creates_shipments(self, db_session: Session, braspress_valid_csv, seed_braspress_carrier):
         """Test that confirmation creates shipments with fiscal/financial fields."""
         # First preview
         upload = create_upload_file(braspress_valid_csv, "braspress_valid.csv")
@@ -371,8 +347,7 @@ class TestBraspressConfirm:
         assert shipment.customer_name is not None
         assert shipment.destination_uf is not None
 
-    @pytest.mark.skip(reason="Integration test - requires carrier name resolution, covered by test_import_preview_confirm.py")
-    def test_confirm_braspress_with_invalid_rows_fails(self, db_session: Session, braspress_invalid_csv, seed_carrier):
+    def test_confirm_braspress_with_invalid_rows_fails(self, db_session: Session, braspress_invalid_csv, seed_braspress_carrier):
         """Test that confirmation fails when there are invalid rows."""
         # First preview
         upload = create_upload_file(braspress_invalid_csv, "braspress_invalid.csv")
@@ -382,8 +357,7 @@ class TestBraspressConfirm:
         with pytest.raises(Exception):  # HTTPException from service
             confirm_import(db_session, preview.import_id)
 
-    @pytest.mark.skip(reason="Integration test - requires carrier name resolution, covered by test_import_preview_confirm.py")
-    def test_confirm_preserves_source_in_history(self, db_session: Session, braspress_valid_csv, seed_carrier):
+    def test_confirm_preserves_source_in_history(self, db_session: Session, braspress_valid_csv, seed_braspress_carrier):
         """Test that confirmation preserves source in ImportHistory."""
         # First preview
         upload = create_upload_file(braspress_valid_csv, "braspress_valid.csv")
@@ -396,8 +370,7 @@ class TestBraspressConfirm:
         metadata = json.loads(history.import_metadata or "{}")
         assert metadata.get("layout") == "braspress_assisted"
 
-    @pytest.mark.skip(reason="Integration test - requires carrier name resolution, covered by test_import_preview_confirm.py")
-    def test_confirm_detects_db_duplicates(self, db_session: Session, braspress_valid_csv, seed_carrier):
+    def test_confirm_detects_db_duplicates(self, db_session: Session, braspress_valid_csv, seed_braspress_carrier):
         """Test that confirmation detects duplicates in database."""
         # First import
         upload = create_upload_file(braspress_valid_csv, "braspress_valid.csv")
@@ -415,15 +388,12 @@ class TestBraspressConfirm:
 
 
 # Tests for Generic Import (Backward Compatibility)
-# NOTE: Integration tests are skipped because they require complex carrier name resolution
-# Backward compatibility is covered by test_import_preview_confirm.py (BETA-012A)
 
 
 class TestGenericImportBackwardCompatibility:
     """Test that generic import still works after Braspress changes."""
 
-    @pytest.mark.skip(reason="Integration test - requires carrier name resolution, covered by test_import_preview_confirm.py")
-    def test_generic_csv_import_still_works(self, db_session: Session, braspress_valid_csv, seed_carrier):
+    def test_generic_csv_import_still_works(self, db_session: Session, braspress_valid_csv, seed_braspress_carrier):
         """Test that generic CSV import without source still works."""
         upload = create_upload_file(braspress_valid_csv, "generic.csv")
         preview = preview_import(db_session, upload, source=None)
@@ -432,8 +402,7 @@ class TestGenericImportBackwardCompatibility:
         history = db_session.query(ImportHistory).filter(ImportHistory.id == preview.import_id).first()
         assert history.source == "csv_xlsx_import"
 
-    @pytest.mark.skip(reason="Integration test - requires carrier name resolution, covered by test_import_preview_confirm.py")
-    def test_generic_csv_confirm_still_works(self, db_session: Session, braspress_valid_csv, seed_carrier):
+    def test_generic_csv_confirm_still_works(self, db_session: Session, braspress_valid_csv, seed_braspress_carrier):
         """Test that generic CSV confirmation still works."""
         upload = create_upload_file(braspress_valid_csv, "generic.csv")
         preview = preview_import(db_session, upload, source=None)

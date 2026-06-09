@@ -73,3 +73,15 @@ def create_user_with_roles(db: Session, email: str, password: str, roles: list[s
     db.commit()
     db.refresh(user)
     return user
+
+
+
+@pytest.fixture
+def seed_braspress_carrier(db_session: Session):
+    """Seed a fake Braspress carrier for Braspress import tests."""
+    from app.modules.carriers.models import Carrier
+    carrier = Carrier(name="Braspress")
+    db_session.add(carrier)
+    db_session.commit()
+    db_session.refresh(carrier)
+    return carrier

@@ -1,4 +1,4 @@
-import type {
+﻿import type {
   Carrier,
   CreateShipmentTreatmentRequest,
   DailyReportResponse,
@@ -17,6 +17,10 @@ import type {
   UploadResponse,
   UserListItem,
   UserRole,
+  SlaRule,
+  SlaRuleCreate,
+  SlaRuleUpdate,
+  SlaRecalculateResponse,
 } from "@/lib/types";
 
 export function getApiBaseUrl(envValue = process.env.NEXT_PUBLIC_API_URL): string {
@@ -154,6 +158,9 @@ export async function listShipments(token: string, params: ShipmentListParams = 
   if (params.search) searchParams.append("search", params.search);
   if (params.sort_by) searchParams.append("sort_by", params.sort_by);
   if (params.sort_order) searchParams.append("sort_order", params.sort_order);
+  // BETA-013A: SLA filters
+  if (params.sla_status) searchParams.append("sla_status", params.sla_status);
+  if (params.is_late !== undefined) searchParams.append("is_late", params.is_late.toString());
 
   const query = searchParams.toString();
   return request<ShipmentListResponse>(`/shipments${query ? `?${query}` : ""}`, {
@@ -267,5 +274,53 @@ export async function promoteDelivery(
     method: "POST",
     headers: { Authorization: `Bearer ${token}` },
     body: JSON.stringify(payload),
+  });
+}
+
+// BETA-013A: SLA Rules API
+export async function listSlaRules(token: string, params?: { carrier_id?: number; destination_uf?: string; is_active?: boolean }): Promise<SlaRule[]> {
+  const searchParams = new URLSearchParams();
+  if (params?.carrier_id) searchParams.append("carrier_id", params.carrier_id.toString());
+  if (params?.destination_uf) searchParams.append("destination_uf", params.destination_uf);
+  if (params?.is_active !== undefined) searchParams.append("is_active", params.is_active.toString());
+
+  const query = searchParams.toString();
+  return request<SlaRule[]>(`/sla/rules${query ? `?${query}` : ""}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+}
+
+export async function createSlaRule(token: string, payload: SlaRuleCreate): Promise<SlaRule> {
+  return request<SlaRule>("/sla/rules", {
+    method: "POST",
+    headers: { Authorization: `Bearer ${token}` },
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function updateSlaRule(token: string, ruleId: number, payload: SlaRuleUpdate): Promise<SlaRule> {
+  return request<SlaRule>(`/sla/rules/${ruleId}`, {
+    method: "PUT",
+    headers: { Authorization: `Bearer ${token}` },
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function recalculateSla(token: string, params?: { carrier_id?: number; destination_uf?: string }): Promise<SlaRecalculateResponse> {
+  const searchParams = new URLSearchParams();
+  if (params?.carrier_id) searchParams.append("carrier_id", params.carrier_id.toString());
+  if (params?.destination_uf) searchParams.append("destination_uf", params.destination_uf);
+
+  const query = searchParams.toString();
+  return request<SlaRecalculateResponse>(`/sla/recalculate${query ? `?${query}` : ""}`, {
+    method: "POST",
+    headers: { Authorization: `Bearer ${token}` },
+  });
+}
+
+export async function recalculateShipmentSla(token: string, shipmentId: number): Promise<SlaRecalculateResponse> {
+  return request<SlaRecalculateResponse>(`/sla/recalculate/${shipmentId}`, {
+    method: "POST",
+    headers: { Authorization: `Bearer ${token}` },
   });
 }

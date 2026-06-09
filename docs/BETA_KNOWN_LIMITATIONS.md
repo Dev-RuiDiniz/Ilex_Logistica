@@ -228,4 +228,4 @@ Limitações conhecidas do projeto Ilex Logística na fase beta.
 
 **Assinatura:** Devin (SWE-1.6)  
 **Data:** 2026-06-08  
-**Status:** 🔄 Em execução (BETA-009S - Revalidação Empilhada)
+**Status:** 🔄 Em execução (BETA-005)

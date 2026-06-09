@@ -15,7 +15,7 @@ Esta auditoria funcional automatizada inspecionou a estrutura do repositório pa
 | 1 - SLA, atraso e criticidade | PARCIAL | 2/10 (20%) | 0/10 (0%) | 8/10 (80%) |
 | 2 - Importação Excel/CSV | PARCIAL | 12/12 (100%) | 0/12 (0%) | 0/12 (0%) |
 | 3 - Campos fiscais/financeiros | PARCIAL | 13/15 (87%) | 1/15 (7%) | 1/15 (7%) |
-| 4 - Eficiência por transportadora | COMPLETO | 6/6 (100%) | 0/6 (0%) | 0/6 (0%) |
+| 4 - Eficiência por transportadora | AUSENTE | 0/6 (0%) | 0/6 (0%) | 6/6 (100%) |
 | 5 - Alertas e notificações | PARCIAL | 0/10 (0%) | 2/10 (20%) | 8/10 (80%) |
 | 6 - Relatório diário automático | AUSENTE | 0/6 (0%) | 0/6 (0%) | 6/6 (100%) |
 | 7 - Logs e auditoria | PARCIAL | 0/9 (0%) | 2/9 (22%) | 7/9 (78%) |
@@ -158,37 +158,27 @@ Esta auditoria funcional automatizada inspecionou a estrutura do repositório pa
 
 ### Épico 4 — Eficiência por transportadora
 
-**Status:** COMPLETO (atualizado com BETA-014A e BETA-014B)
-
-**Implementados:**
-- endpoint ou service de agregação (BETA-014A)
-- entregas no prazo/atrasadas (BETA-014A)
-- ranking/percentuais (BETA-014A)
-- testes backend (BETA-014A - 30 testes)
-- componente frontend (BETA-014B)
-- testes frontend (BETA-014B - 19 testes: 6 API + 5 página + 8 filtros)
-- docs (BETA-014A, BETA-014B)
+**Status:** AUSENTE
 
 **Ausentes:**
-- Nenhum item ausente no escopo beta
+- endpoint ou service de agregação
+- entregas no prazo/atrasadas/extraviadas
+- ranking/percentuais
+- componente frontend
+- testes
+- docs
 
 **Evidências:**
-- apps/api/app/modules/shipments/analytics_service.py (BETA-014A)
-- apps/api/app/modules/shipments/analytics_schemas.py (BETA-014A)
-- apps/api/app/modules/shipments/router.py (BETA-014A)
-- apps/api/tests/test_carrier_efficiency_report.py (BETA-014A)
-- apps/api/tests/test_carrier_efficiency_api.py (BETA-014A)
-- apps/web/src/lib/types.ts (BETA-014B)
-- apps/web/src/lib/api.ts (BETA-014B)
-- apps/web/src/app/(private)/shipments/analytics/carrier-efficiency/page.tsx (BETA-014B)
-- apps/web/src/lib/carrier-efficiency-api.test.ts (BETA-014B)
-- apps/web/src/app/(private)/shipments/analytics/carrier-efficiency/carrier-efficiency-page.test.tsx (BETA-014B)
-- apps/web/src/app/(private)/shipments/analytics/carrier-efficiency/carrier-efficiency-page-filters.test.tsx (BETA-014B)
-- docs/BETA_014A_CARRIER_EFFICIENCY_BACKEND.md (BETA-014A)
-- docs/BETA_014B_CARRIER_EFFICIENCY_FRONTEND.md (BETA-014B)
+- Nenhuma
 
 **Gaps Críticos:**
-- Nenhum gap crítico
+- Todo o épico está ausente
+- Falta endpoint ou service de agregação
+- Falta entregas no prazo/atrasadas/extraviadas
+- Falta ranking/percentuais
+- Falta componente frontend
+- Falta testes
+- Falta docs
 
 ---
 

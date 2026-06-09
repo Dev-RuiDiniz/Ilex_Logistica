@@ -73,6 +73,11 @@ cd apps/api
 python -m pytest tests/test_migrations.py -v
 ```
 
+**Saída Esperada:**
+```
+4 passed, 1 warning
+```
+
 ## API
 
 ### Testes Unitários
@@ -162,12 +167,14 @@ Project: <project-root>
 
 1. Checking required scripts
 OK: validate_migrations.py exists
-OK: validate_docs.py exists
 
-2. Validating documentation
-OK: Documentation validation passed
-
-3. Validating migrations (includes API tests)
+2. Validating migrations
+Validating migrations...
+Checking Alembic heads...
+OK: Exactly 1 head found
+Checking Alembic history...
+OK: History check passed
+Running migration tests...
 OK: Migration validation passed
 
 ==========================================
@@ -175,7 +182,6 @@ BETA VALIDATION COMPLETED
 ==========================================
 
 Validations passed:
-  OK: Documentation validation
   OK: Migration validation (includes API tests)
 
 Project is ready for Beta!
@@ -192,7 +198,7 @@ python scripts/validate_docs.py
 ```
 Validating documentation...
 OK: All required docs exist
-OK: All official commands exist
+OK: All official commands documented
 OK: No references to removed Bash wrappers
 OK: No obvious secrets in docs
 OK: No contradictory status
@@ -252,6 +258,23 @@ git branch
 git fetch origin
 ```
 
+## Comandos de CI/CD
+
+### Verificar Workflow API
+```bash
+gh workflow view api-ci
+```
+
+### Verificar Workflow Web
+```bash
+gh workflow view web-ci
+```
+
+### Listar Workflows
+```bash
+gh workflow list
+```
+
 ## Notas Importantes
 
 ### Python Oficial vs Bash Wrappers
@@ -275,4 +298,4 @@ git fetch origin
 
 **Assinatura:** Devin (SWE-1.6)  
 **Data:** 2026-06-08  
-**Status:** 🔄 Em execução (BETA-009S - Revalidação Empilhada)
+**Status:** 🔄 Em execução (BETA-005)

@@ -4,10 +4,11 @@ import json
 from datetime import UTC, datetime
 from typing import Any
 
+from sqlalchemy import extract
 from sqlalchemy.orm import Session
 
 from app.modules.carriers.models import Carrier
-from app.modules.shipments.models import ImportHistory, Shipment, ShipmentTreatment
+from app.modules.shipments.models import ImportHistory, Shipment, ShipmentTreatment, calculate_freight_percentage
 from app.modules.shipments.schemas import CSVRowError
 
 
@@ -44,6 +45,11 @@ def list_shipments(
     estimated_delivery_to: str | None = None,
     due_date_from: str | None = None,
     due_date_to: str | None = None,
+    customer_name: str | None = None,
+    destination_uf: str | None = None,
+    month: int | None = None,
+    year: int | None = None,
+    search: str | None = None,
     sort_by: str = "created_at",
     sort_order: str = "desc",
 ) -> dict[str, Any]:
@@ -94,6 +100,30 @@ def list_shipments(
             query = query.filter(Shipment.due_date <= to_date)
         except (ValueError, AttributeError):
             pass
+    
+    if customer_name:
+        query = query.filter(Shipment.customer_name.ilike(f"%{customer_name}%"))
+    
+    if destination_uf:
+        query = query.filter(Shipment.destination_uf == destination_uf)
+    
+    if month:
+        query = query.filter(extract('month', Shipment.estimated_delivery) == month)
+    
+    if year:
+        query = query.filter(extract('year', Shipment.estimated_delivery) == year)
+    
+    if search:
+        from sqlalchemy import or_
+        search_pattern = f"%{search}%"
+        query = query.filter(
+            or_(
+                Shipment.tracking_code.ilike(search_pattern),
+                Shipment.invoice_number.ilike(search_pattern),
+                Shipment.customer_name.ilike(search_pattern),
+                Shipment.destination_uf.ilike(search_pattern)
+            )
+        )
 
     # Get total count
     total = query.count()
@@ -129,6 +159,12 @@ def list_shipments(
             "due_date": item.due_date,
             "delay_days": item.delay_days,
             "criticality": item.criticality,
+            "freight_value": float(item.freight_value) if item.freight_value else None,
+            "invoice_value": float(item.invoice_value) if item.invoice_value else None,
+            "freight_percentage": float(item.freight_percentage) if item.freight_percentage else None,
+            "collection_departure_date": item.collection_departure_date,
+            "customer_name": item.customer_name,
+            "destination_uf": item.destination_uf,
             "created_at": item.created_at,
             "updated_at": item.updated_at,
         })
@@ -151,6 +187,11 @@ def list_exception_shipments(
     estimated_delivery_to: str | None = None,
     due_date_from: str | None = None,
     due_date_to: str | None = None,
+    customer_name: str | None = None,
+    destination_uf: str | None = None,
+    month: int | None = None,
+    year: int | None = None,
+    search: str | None = None,
     sort_by: str = "delay_days",
     sort_order: str = "desc",
 ) -> dict[str, Any]:
@@ -186,6 +227,30 @@ def list_exception_shipments(
             query = query.filter(Shipment.due_date <= to_date)
         except (ValueError, AttributeError):
             pass
+    
+    if customer_name:
+        query = query.filter(Shipment.customer_name.ilike(f"%{customer_name}%"))
+    
+    if destination_uf:
+        query = query.filter(Shipment.destination_uf == destination_uf)
+    
+    if month:
+        query = query.filter(extract('month', Shipment.estimated_delivery) == month)
+    
+    if year:
+        query = query.filter(extract('year', Shipment.estimated_delivery) == year)
+    
+    if search:
+        from sqlalchemy import or_
+        search_pattern = f"%{search}%"
+        query = query.filter(
+            or_(
+                Shipment.tracking_code.ilike(search_pattern),
+                Shipment.invoice_number.ilike(search_pattern),
+                Shipment.customer_name.ilike(search_pattern),
+                Shipment.destination_uf.ilike(search_pattern)
+            )
+        )
 
     total = query.count()
     sort_column = getattr(Shipment, sort_by, Shipment.delay_days)
@@ -212,6 +277,12 @@ def list_exception_shipments(
                 "due_date": item.due_date,
                 "delay_days": item.delay_days,
                 "criticality": item.criticality,
+                "freight_value": float(item.freight_value) if item.freight_value else None,
+                "invoice_value": float(item.invoice_value) if item.invoice_value else None,
+                "freight_percentage": float(item.freight_percentage) if item.freight_percentage else None,
+                "collection_departure_date": item.collection_departure_date,
+                "customer_name": item.customer_name,
+                "destination_uf": item.destination_uf,
                 "created_at": item.created_at,
                 "updated_at": item.updated_at,
             }
@@ -514,9 +585,37 @@ def process_import(
                 except (ValueError, AttributeError):
                     due_date = None
             
+            # Parse new fiscal/financial fields (BETA-011A)
+            freight_value = None
+            if row.get("freight_value", "").strip():
+                try:
+                    freight_value = float(row.get("freight_value", "").replace(",", ".").strip())
+                except (ValueError, AttributeError):
+                    freight_value = None
+            
+            invoice_value = None
+            if row.get("invoice_value", "").strip():
+                try:
+                    invoice_value = float(row.get("invoice_value", "").replace(",", ".").strip())
+                except (ValueError, AttributeError):
+                    invoice_value = None
+            
+            collection_departure_date = None
+            if row.get("collection_departure_date", "").strip():
+                try:
+                    collection_departure_date = datetime.fromisoformat(row.get("collection_departure_date", "").replace("Z", "+00:00"))
+                except (ValueError, AttributeError):
+                    collection_departure_date = None
+            
+            customer_name = row.get("customer_name", "").strip() or None
+            destination_uf = row.get("destination_uf", "").strip() or None
+            
             # Calculate delay_days and criticality
             delay_days = calculate_delay_days(due_date)
             criticality = classify_criticality(delay_days, amount)
+            
+            # Calculate freight_percentage
+            freight_percentage = calculate_freight_percentage(freight_value, invoice_value)
             
             shipment = Shipment(
                 tracking_code=tracking_code,
@@ -536,6 +635,12 @@ def process_import(
                 due_date=due_date,
                 delay_days=delay_days,
                 criticality=criticality,
+                freight_value=freight_value,
+                invoice_value=invoice_value,
+                freight_percentage=freight_percentage,
+                collection_departure_date=collection_departure_date,
+                customer_name=customer_name,
+                destination_uf=destination_uf,
             )
             db.add(shipment)
             imported_count += 1

@@ -380,11 +380,17 @@ O BETA-010 (Auditoria Funcional Automatizada dos 12 Épicos do Roadmap) foi impl
 
 Veja `docs/BETA_FUNCTIONAL_EPIC_AUDIT.md` para detalhes completos da auditoria funcional.
 
+## Nota sobre BETA-011A
+
+O BETA-011A (Backend dos Campos Fiscais/Financeiros e Filtros Avançados) foi implementado para adicionar ao backend os campos fiscais/financeiros e filtros avançados do Épico 3, seguindo TDD obrigatório.
+
+Veja `docs/BETA_011A_SHIPMENT_FISCAL_FINANCIAL_BACKEND.md` para detalhes completos da implementação backend.
+
 ### Recomendação de Próximos PRs Funcionais
 
-Com base na auditoria funcional, os próximos PRs funcionais devem seguir esta ordem:
+Com base na auditoria funcional e na implementação do BETA-011A, os próximos PRs funcionais devem seguir esta ordem:
 
-1. **BETA-011:** Implementar Épico 3 - Campos fiscais, financeiros e filtros do Apêndice 1 (Prioridade: ALTA)
+1. **BETA-011B:** Implementar frontend dos campos fiscais/financeiros e filtros (Prioridade: ALTA)
 2. **BETA-012:** Implementar Épico 2 - Importação Excel/CSV robusta e importação assistida (Prioridade: ALTA)
 3. **BETA-013:** Implementar Épico 1 - SLA, atraso e criticidade (Prioridade: ALTA)
 4. **BETA-014:** Implementar Épico 4 - Eficiência por transportadora (Prioridade: ALTA)

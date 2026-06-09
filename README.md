@@ -85,6 +85,29 @@ Para detalhes adicionais:
 - Infra: `docker compose up -d`, checks locais em `infra/infra_checks.py`
 - Docs: atualização de artefatos em `docs/` conforme governança interna
 
+## Validação Beta
+
+Para validação automatizada da fase beta, consulte:
+
+- [Comandos Oficiais](docs/BETA_COMMANDS.md)
+- [Checklist Beta](docs/BETA_CHECKLIST.md)
+- [Gates de Liberação](docs/BETA_RELEASE_GATE.md)
+
+### Comandos Rápidos
+
+```bash
+# Secret scan
+python scripts/check_secrets.py --repo-root .
+
+# Migrations
+python scripts/validate_migrations.py
+
+# Validação beta agregada
+python scripts/beta_validate.py
+```
+
+Para detalhes completos, veja a documentação beta em `docs/`.
+
 ## Fluxo de Contribuição
 
 1. Crie branch a partir de `main`:

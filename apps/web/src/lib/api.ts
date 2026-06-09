@@ -7,6 +7,7 @@ import type {
   DeliveryListResponse,
   ExceptionShipmentListResponse,
   ImportConfirmResponse,
+  ImportPreviewV2Response,
   PromoteDeliveryRequest,
   PromoteDeliveryResponse,
   ShipmentDetail,
@@ -113,8 +114,19 @@ export async function uploadShipmentsCsv(token: string, file: File): Promise<Upl
   return requestMultipart<UploadResponse>("/shipments/upload", formData, token);
 }
 
+// BETA-012B: New preview endpoint using /api/v1/imports/preview
+// BETA-012C: Added optional source parameter for layout-specific mapping
+export async function previewShipmentImport(token: string, file: File, source?: string): Promise<ImportPreviewV2Response> {
+  const formData = new FormData();
+  formData.append("file", file);
+  if (source) {
+    formData.append("source", source);
+  }
+  return requestMultipart<ImportPreviewV2Response>("/imports/preview", formData, token);
+}
+
 export async function confirmShipmentsImport(token: string, importId: number): Promise<ImportConfirmResponse> {
-  return request<ImportConfirmResponse>("/shipments/import", {
+  return request<ImportConfirmResponse>("/imports/confirm", {
     method: "POST",
     headers: { Authorization: `Bearer ${token}` },
     body: JSON.stringify({ import_id: importId, confirm: true }),
@@ -135,6 +147,11 @@ export async function listShipments(token: string, params: ShipmentListParams = 
   if (params.estimated_delivery_to) searchParams.append("estimated_delivery_to", params.estimated_delivery_to);
   if (params.due_date_from) searchParams.append("due_date_from", params.due_date_from);
   if (params.due_date_to) searchParams.append("due_date_to", params.due_date_to);
+  if (params.customer_name) searchParams.append("customer_name", params.customer_name);
+  if (params.destination_uf) searchParams.append("destination_uf", params.destination_uf);
+  if (params.month) searchParams.append("month", params.month.toString());
+  if (params.year) searchParams.append("year", params.year.toString());
+  if (params.search) searchParams.append("search", params.search);
   if (params.sort_by) searchParams.append("sort_by", params.sort_by);
   if (params.sort_order) searchParams.append("sort_order", params.sort_order);
 
@@ -221,14 +238,6 @@ export async function updateUser(
   });
 }
 
-export async function inactivateUser(token: string, userId: number): Promise<UserListItem> {
-  return request<UserListItem>(`/users/${userId}/inactivate`, {
-    method: "POST",
-    headers: { Authorization: `Bearer ${token}` },
-  });
-}
-
-// LOG-011: Listagem de entregas
 export async function listDeliveries(token: string, params: DeliveryListParams = {}): Promise<DeliveryListResponse> {
   const searchParams = new URLSearchParams();
   if (params.page) searchParams.append("page", params.page.toString());
@@ -238,25 +247,23 @@ export async function listDeliveries(token: string, params: DeliveryListParams =
   if (params.data_coleta) searchParams.append("data_coleta", params.data_coleta);
 
   const query = searchParams.toString();
-  return request<DeliveryListResponse>(`/imports/deliveries${query ? `?${query}` : ""}`, {
+  return request<DeliveryListResponse>(`/deliveries${query ? `?${query}` : ""}`, {
     headers: { Authorization: `Bearer ${token}` },
   });
 }
 
-// LOG-012: Detalhe de entrega
 export async function getDeliveryDetail(token: string, deliveryId: number): Promise<DeliveryDetail> {
-  return request<DeliveryDetail>(`/imports/deliveries/${deliveryId}`, {
+  return request<DeliveryDetail>(`/deliveries/${deliveryId}`, {
     headers: { Authorization: `Bearer ${token}` },
   });
 }
 
-// LOG-022: Promover Delivery para Shipment
-export async function promoteDeliveryToShipment(
+export async function promoteDelivery(
   token: string,
   deliveryId: number,
   payload: PromoteDeliveryRequest,
 ): Promise<PromoteDeliveryResponse> {
-  return request<PromoteDeliveryResponse>(`/imports/deliveries/${deliveryId}/promote`, {
+  return request<PromoteDeliveryResponse>(`/deliveries/${deliveryId}/promote`, {
     method: "POST",
     headers: { Authorization: `Bearer ${token}` },
     body: JSON.stringify(payload),

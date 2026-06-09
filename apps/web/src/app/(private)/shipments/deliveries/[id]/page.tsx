@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 
-import { getDeliveryDetail, listCarriers, promoteDeliveryToShipment } from "@/lib/api";
+import { getDeliveryDetail, listCarriers, promoteDelivery } from "@/lib/api";
 import { useAuth } from "@/features/auth/auth-provider";
 import type { Carrier, DeliveryDetail, PromoteDeliveryRequest } from "@/lib/types";
 
@@ -103,7 +103,7 @@ export default function DeliveryDetailPage({ params }: { params: { id: string } 
         shipment_status: shipmentStatus || undefined,
       };
 
-      const response = await promoteDeliveryToShipment(session.accessToken, item.id, payload);
+      const response = await promoteDelivery(session.accessToken, item.id, payload);
       setPromoteSuccess(true);
       setShipmentCreated({
         id: response.id,

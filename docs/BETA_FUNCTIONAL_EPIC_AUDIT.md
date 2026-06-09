@@ -13,7 +13,7 @@ Esta auditoria funcional automatizada inspecionou a estrutura do repositório pa
 | Épico | Status | Implementado | Parcial | Ausente |
 |-------|--------|--------------|---------|---------|
 | 1 - SLA, atraso e criticidade | PARCIAL | 2/10 (20%) | 0/10 (0%) | 8/10 (80%) |
-| 2 - Importação Excel/CSV | PARCIAL | 6/12 (50%) | 1/12 (8%) | 5/12 (42%) |
+| 2 - Importação Excel/CSV | PARCIAL | 12/12 (100%) | 0/12 (0%) | 0/12 (0%) |
 | 3 - Campos fiscais/financeiros | PARCIAL | 13/15 (87%) | 1/15 (7%) | 1/15 (7%) |
 | 4 - Eficiência por transportadora | AUSENTE | 0/6 (0%) | 0/6 (0%) | 6/6 (100%) |
 | 5 - Alertas e notificações | PARCIAL | 0/10 (0%) | 2/10 (20%) | 8/10 (80%) |
@@ -26,13 +26,13 @@ Esta auditoria funcional automatizada inspecionou a estrutura do repositório pa
 | 12 - Documentação beta | PARCIAL | 6/14 (43%) | 0/14 (0%) | 8/14 (57%) |
 
 **Resumo Geral:**
-- Implementados: 35/120 (29%)
-- Parciais: 10/120 (8%)
-- Ausentes: 75/120 (63%)
+- Implementados: 41/120 (34%)
+- Parciais: 9/120 (8%)
+- Ausentes: 70/120 (58%)
 
-**Nota:** 
+**Nota:**
 - O Épico 3 teve progresso significativo com o BETA-011A (backend) e BETA-011B (frontend). Veja `docs/BETA_011A_SHIPMENT_FISCAL_FINANCIAL_BACKEND.md` e `docs/BETA_011B_SHIPMENT_FISCAL_FINANCIAL_FRONTEND.md` para detalhes.
-- O Épico 2 teve progresso significativo com o BETA-012A (backend). Veja `docs/BETA_012A_IMPORT_CSV_XLSX_BACKEND.md` para detalhes.
+- O Épico 2 teve progresso significativo com o BETA-012A (backend), BETA-012B (frontend) e BETA-012C (Braspress assistido). Veja `docs/BETA_012A_IMPORT_CSV_XLSX_BACKEND.md`, `docs/BETA_012B_IMPORT_UPLOAD_PREVIEW_CONFIRM_FRONTEND.md` e `docs/BRASPRESS_IMPORTACAO_ASSISTIDA.md` para detalhes.
 
 ## Tabela dos 12 Épicos
 
@@ -69,7 +69,7 @@ Esta auditoria funcional automatizada inspecionou a estrutura do repositório pa
 
 ### Épico 2 — Importação Excel/CSV robusta e importação assistida
 
-**Status:** PARCIAL (atualizado com BETA-012A)
+**Status:** PARCIAL (atualizado com BETA-012A, BETA-012B e BETA-012C)
 
 **Implementados:**
 - histórico
@@ -78,16 +78,22 @@ Esta auditoria funcional automatizada inspecionou a estrutura do repositório pa
 - validação linha a linha (BETA-012A)
 - duplicidade (BETA-012A)
 - layout mapper preparado para Braspress (BETA-012A)
-- testes backend (BETA-012A - 63 testes)
-- docs (BETA-012A)
-
-**Parciais:**
-- preview (BETA-012A - endpoint implementado, confirmação requer gerenciamento de estado)
+- preview endpoint (BETA-012A)
+- confirmação endpoint (BETA-012A)
+- tela upload (frontend) (BETA-012B)
+- preview UI (BETA-012B)
+- erros por linha UI (BETA-012B)
+- confirmação UI (BETA-012B)
+- layout Braspress assistido beta (BETA-012C)
+- mapper específico Braspress (BETA-012C)
+- seletor de layout no frontend (BETA-012C)
+- fixtures fake para testes (BETA-012C)
+- testes backend (BETA-012A - 63 testes, BETA-012C - 2 testes)
+- testes frontend (BETA-012B - 17 testes)
+- docs (BETA-012A, BETA-012B, BRASPRESS_IMPORTACAO_ASSISTIDA)
 
 **Ausentes:**
-- tela upload (frontend)
-- testes frontend
-- layout Braspress específico (mapper preparado mas não implementado)
+- Nenhum item ausente no escopo beta
 
 **Evidências:**
 - apps/api/app/modules/imports/router.py
@@ -98,6 +104,13 @@ Esta auditoria funcional automatizada inspecionou a estrutura do repositório pa
 - apps/api/tests/test_import_preview_confirm.py (BETA-012A)
 - apps/api/tests/test_import_duplicate_detection.py (BETA-012A)
 - apps/api/migrations/versions/20260610_01_add_import_history_metadata.py (BETA-012A)
+- apps/web/src/app/(private)/shipments/import/page.tsx (BETA-012B)
+- apps/web/src/app/(private)/shipments/import/page.test.tsx (BETA-012B)
+- apps/web/src/lib/types.ts (BETA-012B)
+- apps/web/src/lib/api.ts (BETA-012B)
+- apps/web/src/lib/shipment-utils.ts (BETA-012B)
+- docs/BETA_012A_IMPORT_CSV_XLSX_BACKEND.md
+- docs/BETA_012B_IMPORT_UPLOAD_PREVIEW_CONFIRM_FRONTEND.md
 - docs/BETA_012A_IMPORT_CSV_XLSX_BACKEND.md (BETA-012A)
 - docs/BETA_CHECKLIST.md
 

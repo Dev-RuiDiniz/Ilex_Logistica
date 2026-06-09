@@ -37,3 +37,9 @@ jobs:
 
       - name: Run tests
         run: python -m pytest -q
+
+      - name: Test migrations
+        run: python3 ../../scripts/check_secrets.py --repo-root $GITHUB_WORKSPACE && python -m pytest tests/test_migrations.py -v
+
+      - name: Check secrets
+        run: python3 ../../scripts/check_secrets.py --repo-root $GITHUB_WORKSPACE

@@ -75,10 +75,9 @@ SCRIPT_EXCEPTIONS = {
     "check_secrets.sh",
     "check_secrets.ps1",
     "check_secrets_core.py",  # self-test usa este arquivo
-    "validate_docs.py",  # validation script uses secret patterns for testing
 }
 
-# Arquivos a ignorar por nome
+# Arquivos a ignorar
 IGNORE_FILE_NAMES = {
     ".env.example",
 }

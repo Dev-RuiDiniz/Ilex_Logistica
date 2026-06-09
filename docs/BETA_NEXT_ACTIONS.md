@@ -1,762 +1,453 @@
 # BETA NEXT ACTIONS
 
+<<<<<<< HEAD
 Próximas ações pós BETA-009S para o projeto Ilex Logística.
+=======
+Próximas ações pós BETA-005 para o projeto Ilex Logística.
+>>>>>>> origin/main
 
-## Ações Recentes (BETA-018A)
+## Ações Imediatas (Antes de Merge dos PRs Beta)
 
-### BETA-018A: Relatório Diário Backend/API
-**Status:** ✅ Implementado
-**Branch:** `feature/beta-018a-daily-report-backend-api`
-**Data:** 2025-01-21
+### 1. Revisar Draft PRs na Ordem Correta
+**Ordem Sugerida:**
+1. PR #6: BETA-000 - Plano de Execução TDD Fase Beta
+2. PR #7: BETA-001 - Smoke UI Automatizado com Playwright
+3. PR #8: BETA-001-FIX - Marca Testes E2E como Skip
+4. PR #9: BETA-002 - Scripts de Smoke/CI e Validação Beta Automatizada
+5. PR #10: BETA-003 - Cobertura de Testes e Relatórios
+6. PR #11: BETA-004 - Testes de Migrations e Rollback
+7. PR #12: BETA-005 - Documentação Final, Checklists e Consolidação Beta
+<<<<<<< HEAD
+8. PR #13: BETA-006 - Auditoria de PRs, CI e Plano de Merge Seguro
+9. PR #14: BETA-007 - Convergência de PRs e Validação Integrada
+10. PR #15: BETA-008 - Bootstrap de CI Base e Plano de Conversão Draft para Ready
+11. PR #17: BETA-009S - Revalidação Empilhada sobre CI Bootstrap
+=======
+>>>>>>> origin/main
 
-**Implementado:**
-- ✅ Model DailyReport com campos necessários
-- ✅ Migration para tabela daily_reports
-- ✅ Service de geração de relatório diário
-- ✅ Endpoints POST /reports/daily/generate, GET /reports/daily, GET /reports/daily/{id}, GET /reports/daily/by-date/{date}
-- ✅ Schemas/DTOs para relatório diário
-- ✅ 51 testes TDD implementados (10 model + 19 generation + 11 API + 6 integration + 5 logging middleware)
-- ✅ Documentação completa
-- ✅ Correção do conftest.py para fixar fixture de banco
-- ✅ Remoção de autenticação dos endpoints para seguir padrão do projeto atual
-- ✅ Remoção de endpoint legado /daily/legacy
-- ✅ Correção do middleware de logging usando variável de ambiente ENABLE_LOGGING_MIDDLEWARE
+**Comando:**
+```bash
+gh pr list --draft
+gh pr view <pr-number>
+```
 
-**Arquivos Criados:**
-- `apps/api/app/modules/reports/models.py`
-- `apps/api/app/modules/reports/service.py`
-- `apps/api/app/modules/reports/schemas.py`
-- `apps/api/app/modules/reports/__init__.py`
-- `apps/api/migrations/versions/20260621_01_create_daily_reports.py`
-- `apps/api/tests/test_daily_report_model.py`
-- `apps/api/tests/test_daily_report_generation.py`
-- `apps/api/tests/test_daily_report_api.py`
-- `apps/api/tests/test_daily_report_integration.py`
-- `apps/api/tests/test_logging_middleware.py`
-- `docs/BETA_018A_DAILY_REPORT_BACKEND_API.md`
-
-**Arquivos Modificados:**
-- `apps/api/app/main.py` (middleware de logging configurado via variável de ambiente)
-- `apps/api/app/modules/reports/router.py` (autenticação removida, endpoint legado removido)
-- `apps/api/tests/conftest.py` (fixture de banco corrigida, middleware desabilitado via env var)
-- `apps/api/tests/test_daily_report_api.py` (skips removidos, novos testes adicionados)
-
-**Limitações Conhecidas:**
-- Sem envio de e-mail (backend-only)
-- Sem WhatsApp/webhook (fora do escopo beta)
-- Sem frontend (BETA-018B)
-- Sem agendamento externo com cron (fora do escopo beta)
-- Auth temporariamente removida dos endpoints (será implementado no Épico 9)
-- Middleware de logging configurado via variável de ambiente (solução segura, não compromete produção)
-
-**Documentação:** `docs/BETA_018A_DAILY_REPORT_BACKEND_API.md`
+**Responsável:** Mantenedor
+**Status:** Pendente
 
 ---
 
-## Ações Recentes (BETA-015A)
+### 2. Garantir CI Verde em Todos os PRs
+**Validação:**
+- Todos os workflows de CI passam
+- Nenhum teste falha
+- Nenhum erro de build
+<<<<<<< HEAD
+- Nenhum warning crítico
+=======
+>>>>>>> origin/main
 
-### BETA-012A: Importação CSV/XLSX Backend com Preview, Validação e Confirmação
-**Status:** ✅ Implementado  
-**Branch:** `feature/beta-012a-import-csv-xlsx-backend-preview-confirm`  
-**Data:** 2026-06-10
+**Comando:**
+```bash
+gh workflow list
+gh run list --workflow=<workflow-name>
+```
 
-**Implementado:**
-- ✅ Parser CSV/XLSX melhorado com suporte a formatos brasileiros
-- ✅ Layout mapper para campos fiscais/financeiros
-- ✅ Validação linha a linha com erro/warning reporting
-- ✅ Detecção de duplicidade (in-file e contra banco)
-- ✅ Preview endpoint (sem persistência)
-- ✅ Confirmação endpoint (service implementado, endpoint placeholder)
-- ✅ Migration para ImportHistory (source, metadata, imported_by)
-- ✅ Integração com Shipment (campos BETA-011A)
-- ✅ 63 testes TDD implementados
-- ✅ Documentação completa
-
-**Arquivos Criados:**
-- `apps/api/app/modules/imports/mapper.py`
-- `apps/api/app/modules/imports/service_v2.py`
-- `apps/api/migrations/versions/20260610_01_add_import_history_metadata.py`
-- `apps/api/tests/test_import_csv_validation.py`
-- `apps/api/tests/test_import_xlsx_validation.py`
-- `apps/api/tests/test_import_preview_confirm.py`
-- `apps/api/tests/test_import_duplicate_detection.py`
-- `docs/BETA_012A_IMPORT_CSV_XLSX_BACKEND.md`
-
-**Limitações Conhecidas:**
-- Endpoint de confirmação requer gerenciamento de estado (Redis) - atualmente retorna 501
-- Preview não é persistido entre chamadas
-
-**Documentação:** `docs/BETA_012A_IMPORT_CSV_XLSX_BACKEND.md`
+**Responsável:** Mantenedor
+**Status:** Pendente
 
 ---
 
-### BETA-014B: Painel Frontend de Eficiência por Transportadora
-**Status:** ✅ Implementado (Testes de interação de filtros adicionados)
-**Branch:** `feature/beta-014b-carrier-efficiency-frontend`
-**Data:** 2026-06-15
+### 3. Resolver Conflitos Entre PRs
+**Validação:**
+- Nenhum conflito entre PRs
+- Merge limpo possível
+- Branches atualizadas
 
-**Implementado:**
-- ✅ Tipos TypeScript para Carrier Efficiency
-- ✅ API client function getCarrierEfficiency
-- ✅ Página de eficiência por transportadora
-- ✅ Tabela com métricas (total NFs, total entregas, no prazo, atrasadas, frete total, frete médio)
-- ✅ Exibição de rankings (eficiência, custo, volume)
-- ✅ Estados de UX (loading, erro, vazio, sucesso)
-- ✅ Formatação BRL e percentual
-- ✅ 11 testes TDD implementados (6 API + 5 página)
-- ✅ Testes de interação de filtros: 8 testes novos
-- ✅ Documentação completa
+**Comando:**
+```bash
+git checkout <branch>
+git pull origin main
+git merge main
+# Resolver conflitos se houver
+git push
+```
 
-**Arquivos Criados:**
-- `apps/web/src/lib/carrier-efficiency-api.test.ts`
-- `apps/web/src/app/(private)/shipments/analytics/carrier-efficiency/page.tsx`
-- `apps/web/src/app/(private)/shipments/analytics/carrier-efficiency/carrier-efficiency-page.test.tsx`
-- `apps/web/src/app/(private)/shipments/analytics/carrier-efficiency/carrier-efficiency-page-filters.test.tsx`
-- `docs/BETA_014B_CARRIER_EFFICIENCY_FRONTEND.md`
-
-**Arquivos Atualizados:**
-- `apps/web/src/lib/types.ts` (CarrierEfficiencyMetrics, CarrierEfficiencyResponse, CarrierEfficiencyFilters)
-- `apps/web/src/lib/api.ts` (getCarrierEfficiency function)
-
-**Limitações Conhecidas:**
-- Sem componentes de UI avançados (cards, gráficos)
-- Sem integração com dashboard geral
-- Sem E2E (Playwright não configurado)
-
-**Documentação:** `docs/BETA_014B_CARRIER_EFFICIENCY_FRONTEND.md`
+**Responsável:** Mantenedor
+**Status:** Pendente
 
 ---
 
-### BETA-012B: Frontend de Upload, Preview, Erros por Linha e Confirmação de Importação
-**Status:** ✅ Implementado
-**Branch:** `feature/beta-012b-import-upload-preview-confirm-frontend`
-**Data:** 2026-06-10
+### 4. Validar Documentação
+**Validação:**
+- Documentos obrigatórios existem
+- Documentos são consistentes entre si
+- Comandos oficiais documentados
+- Limitações conhecidas documentadas
 
-**Implementado:**
-- ✅ Atualização de tipos TypeScript (RowValidationError, ValidatedRowData, ImportPreviewV2Response, ImportConfirmResponse)
-- ✅ Nova função previewShipmentImport no API client
-- ✅ Atualização de confirmShipmentsImport para usar /api/v1/imports/confirm
-- ✅ Extração de helpers de formatação (formatCurrencyBRL, formatPercentage, formatDateBR, formatUnavailable)
-- ✅ Atualização da tela de importação com novos estados e fluxos
-- ✅ Suporte a CSV e XLSX
-- ✅ Preview com tabela de dados fiscais/financeiros
-- ✅ Exibição de erros por linha com severidade
-- ✅ Exibição de warnings separados
-- ✅ Bloqueio de confirmação quando há erro bloqueante
-- ✅ Exibição de resultado final com created_shipments
-- ✅ 17 testes TDD implementados (15 page.test.tsx + 2 api.test.ts)
-- ✅ Documentação completa
+**Comando:**
+```bash
+python scripts/validate_docs.py
+```
 
-**Arquivos Criados:**
-- `apps/web/src/app/(private)/shipments/import/page.test.tsx`
-- `docs/BETA_012B_IMPORT_UPLOAD_PREVIEW_CONFIRM_FRONTEND.md`
-
-**Arquivos Atualizados:**
-- `apps/web/src/lib/types.ts`
-- `apps/web/src/lib/api.ts`
-- `apps/web/src/lib/shipment-utils.ts`
-- `apps/web/src/app/(private)/shipments/import/page.tsx`
-- `apps/web/src/lib/api.test.ts`
-- `apps/web/src/app/(private)/shipments/page.tsx` (import de helpers)
-
-**Limitações Conhecidas:**
-- Nenhuma limitação conhecida
-
-**Documentação:** `docs/BETA_012B_IMPORT_UPLOAD_PREVIEW_CONFIRM_FRONTEND.md`
+**Responsável:** Mantenedor
+**Status:** Pendente
 
 ---
 
-### BETA-014B: Painel Frontend de Eficiência por Transportadora
-**Status:** ✅ Implementado (Testes de interação de filtros adicionados)
-**Branch:** `feature/beta-014b-carrier-efficiency-frontend`
-**Data:** 2026-06-15
+## Ações de Merge (Se Aprovado pelo Mantenedor)
 
-**Implementado:**
-- ✅ Tipos TypeScript para Carrier Efficiency
-- ✅ API client function getCarrierEfficiency
-- ✅ Página de eficiência por transportadora
-- ✅ Tabela com métricas (total NFs, total entregas, no prazo, atrasadas, frete total, frete médio)
-- ✅ Exibição de rankings (eficiência, custo, volume)
-- ✅ Estados de UX (loading, erro, vazio, sucesso)
-- ✅ Formatação BRL e percentual
-- ✅ 11 testes TDD implementados (6 API + 5 página)
-- ✅ Testes de interação de filtros: 8 testes novos
-- ✅ Documentação completa
+### 1. Merge Manual Planejado
+**Processo:**
+<<<<<<< HEAD
+1. Merge PR #15 BETA-008 primeiro (se aprovado pelo mantenedor)
+2. Merge PR #17 BETA-009S (se aprovado pelo mantenedor)
+3. Merge PR #6 BETA-000
+4. Merge PR #7 BETA-001
+5. Merge PR #9 BETA-002
+6. Merge PR #10 BETA-003
+7. Merge PR #11 BETA-004
+8. Merge PR #12 BETA-005
+9. Merge PR #13 BETA-006
+10. Merge PR #14 BETA-007
+=======
+1. Merge PR #6 (BETA-000) primeiro
+2. Merge PR #7 e PR #8 (BETA-001) juntos
+3. Merge PR #9 (BETA-002)
+4. Merge PR #10 (BETA-003)
+5. Merge PR #11 (BETA-004)
+6. Merge PR #12 (BETA-005)
+>>>>>>> origin/main
 
-**Arquivos Criados:**
-- `apps/web/src/lib/carrier-efficiency-api.test.ts`
-- `apps/web/src/app/(private)/shipments/analytics/carrier-efficiency/page.tsx`
-- `apps/web/src/app/(private)/shipments/analytics/carrier-efficiency/carrier-efficiency-page.test.tsx`
-- `apps/web/src/app/(private)/shipments/analytics/carrier-efficiency/carrier-efficiency-page-filters.test.tsx`
-- `docs/BETA_014B_CARRIER_EFFICIENCY_FRONTEND.md`
+**Comando:**
+```bash
+gh pr merge <pr-number> --merge --delete-branch
+```
 
-**Arquivos Atualizados:**
-- `apps/web/src/lib/types.ts` (CarrierEfficiencyMetrics, CarrierEfficiencyResponse, CarrierEfficiencyFilters)
-- `apps/web/src/lib/api.ts` (getCarrierEfficiency function)
-
-**Limitações Conhecidas:**
-- Sem componentes de UI avançados (cards, gráficos)
-- Sem integração com dashboard geral
-- Sem E2E (Playwright não configurado)
-
-**Documentação:** `docs/BETA_014B_CARRIER_EFFICIENCY_FRONTEND.md`
-
----
-
-### BETA-012C: Importação Assistida Braspress - Layout, Fixtures e Documentação
-**Status:** ✅ Implementado
-**Branch:** `feature/beta-012c-braspress-assisted-import`
-**Data:** 2026-06-10
-
-**Implementado:**
-- ✅ Layout Braspress assistido beta documentado
-- ✅ Mapper específico para Braspress (braspress_mapper.py)
-- ✅ Integração de source/layout ao preview endpoint
-- ✅ Fixtures fake (CSV) para testes
-- ✅ Testes TDD para Braspress assisted import
-- ✅ Documentação completa
-
-**Arquivos Criados:**
-- `apps/api/app/modules/imports/braspress_mapper.py`
-- `apps/api/tests/fixtures/braspress_sample.csv`
-- `apps/api/tests/test_braspress_assisted_import.py`
-- `docs/BETA_012C_BRASPRESS_ASSISTED_IMPORT.md`
-
-**Arquivos Atualizados:**
-- `apps/api/app/modules/imports/service_v2.py` (integração com braspress_mapper)
-- `apps/api/app/modules/imports/router.py` (source/layout params)
-
-**Limitações Conhecidas:**
-- Nenhuma limitação conhecida
-
-**Documentação:** `docs/BETA_012C_BRASPRESS_ASSISTED_IMPORT.md`
+<<<<<<< HEAD
+**Responsível:** Mantenedor
+=======
+**Responsável:** Mantenedor
+>>>>>>> origin/main
+**Status:** Pendente aprovação
 
 ---
 
-## Ações Recentes (BETA-017B)
+### 2. Backup Antes de Merge
+**Processo:**
+1. Criar tag de backup antes do merge
+2. Documentar estado do repositório
+3. Criar branch de fallback
 
-### BETA-017B: Alerts Frontend and Dashboard Integration
-**Status:** ✅ Implementado
-**Branch:** `feature/beta-017b-alerts-frontend-dashboard-integration`
-**Data:** 2026-06-20
+**Comando:**
+```bash
+git tag pre-beta-backup-$(date +%Y%m%d_%H%M%S)
+git push origin --tags
+```
 
-**Implementado:**
-- ✅ Frontend de alerts (página, API client, tipos)
-- ✅ Integração de alerts no dashboard summary
-- ✅ Testes TDD (alerts page, dashboard integration)
-- ✅ Documentação completa
-
-**Arquivos Criados:**
-- `apps/web/src/app/(private)/alerts/page.tsx`
-- `apps/web/src/app/(private)/alerts/alerts-page.test.tsx`
-- `apps/web/src/lib/alerts-api.test.ts`
-- `docs/BETA_017B_ALERTS_FRONTEND_DASHBOARD_INTEGRATION.md`
-
-**Arquivos Atualizados:**
-- `apps/web/src/lib/types.ts` (Alert, AlertResponse, AlertFilters)
-- `apps/web/src/lib/api.ts` (getAlerts, postAlertsGenerate, patchAlertsRead, patchAlertsResolve)
-- `apps/web/src/app/(private)/dashboard/dashboard-page.test.tsx` (integração com alerts)
-
-**Limitações Conhecidas:**
-- Nenhuma limitação conhecida
-
-**Documentação:** `docs/BETA_017B_ALERTS_FRONTEND_DASHBOARD_INTEGRATION.md`
+<<<<<<< HEAD
+**Responsível:** Mantenedor
+=======
+**Responsável:** Mantenedor
+>>>>>>> origin/main
+**Status:** Pendente
 
 ---
 
-## Ações Recentes (BETA-017A)
+### 3. Monitoramento Após Merge
+**Processo:**
+1. Validar que CI verde após merge
+2. Validar que documentação está correta
+3. Validar que comandos funcionam
+4. Comunicar com equipe
 
-### BETA-017A: Alertas Backend/API
-**Status:** ✅ Implementado
-**Branch:** `feature/beta-017a-alerts-backend-api`
-**Data:** 2026-06-20
+**Comando:**
+```bash
+gh run list
+python scripts/beta_validate.py
+```
 
-**Implementado:**
-- ✅ Model Alert com campos necessários
-- ✅ Migration para tabela alerts
-- ✅ Service de geração de alertas
-- ✅ Endpoints POST /alerts/generate, GET /alerts, PATCH /alerts/{id}/read, PATCH /alerts/{id}/resolve
-- ✅ Schemas/DTOs para alertas
-- ✅ 15 testes TDD implementados (8 model + 7 generation + 8 API)
-- ✅ Documentação completa
-
-**Arquivos Criados:**
-- `apps/api/app/modules/alerts/models.py`
-- `apps/api/app/modules/alerts/service.py`
-- `apps/api/app/modules/alerts/schemas.py`
-- `apps/api/app/modules/alerts/__init__.py`
-- `apps/api/migrations/versions/20260620_01_create_alerts.py`
-- `apps/api/tests/test_alerts_model.py`
-- `apps/api/tests/test_alerts_generation.py`
-- `apps/api/tests/test_alerts_api.py`
-- `docs/BETA_017A_ALERTS_BACKEND_API.md`
-
-**Limitações Conhecidas:**
-- Sem envio de e-mail (backend-only)
-- Sem WhatsApp/webhook (fora do escopo beta)
-- Sem frontend (BETA-017B)
-- Sem agendamento externo com cron (fora do escopo beta)
-
-**Documentação:** `docs/BETA_017A_ALERTS_BACKEND_API.md`
+<<<<<<< HEAD
+**Responsível:** Mantenedor
+=======
+**Responsável:** Mantenedor
+>>>>>>> origin/main
+**Status:** Pendente
 
 ---
 
-## Ações Recentes (BETA-016B)
+## Ações Pós-Beta (Iniciar Roadmap Funcional Restante)
 
-### BETA-016B: Dashboard Beta Frontend e UX Operacional
-**Status:** ✅ Implementado
-**Branch:** `feature/beta-016b-dashboard-beta-frontend-ux`
-**Data:** 2026-06-19
+### 1. Aumentar Cobertura Web
+**Objetivo:** Aumentar cobertura de 20.8% para pelo menos 50%
 
-**Implementado:**
-- ✅ Frontend de dashboard beta (página, API client, tipos)
-- ✅ UX operacional (loading, erro, vazio, sucesso)
-- ✅ Testes TDD (dashboard page, API client)
-- ✅ Documentação completa
+**Foco:**
+- lib/api.ts
+- login/page.tsx
+- Componentes críticos
 
-**Arquivos Criados:**
-- `apps/web/src/app/(private)/dashboard/page.tsx`
-- `apps/web/src/app/(private)/dashboard/dashboard-page.test.tsx`
-- `apps/web/src/lib/dashboard-api.test.ts`
-- `docs/BETA_016B_DASHBOARD_BETA_FRONTEND_UX.md`
+**Comando:**
+```bash
+cd apps/web
+npm run test:coverage
+```
 
-**Arquivos Atualizados:**
-- `apps/web/src/lib/types.ts` (DashboardSummary, DashboardFilters)
-- `apps/web/src/lib/api.ts` (getDashboardSummary)
-
-**Limitações Conhecidas:**
-- Nenhuma limitação conhecida
-
-**Documentação:** `docs/BETA_016B_DASHBOARD_BETA_FRONTEND_UX.md`
+**Responsável:** Desenvolvedor
+**Status:** Pendente
 
 ---
 
-## Ações Recentes (BETA-016A)
+### 2. Implementar Migrations Incrementais Reversíveis
+**Objetivo:** Implementar migrations que preservam dados
 
-### BETA-016A: Dashboard Beta Backend/API
-**Status:** ✅ Implementado
-**Branch:** `feature/beta-016a-dashboard-beta-backend-api`
-**Data:** 2026-06-19
+**Foco:**
+- Migrations incrementais
+- Downgrade seguro
+- Preservação de dados
 
-**Implementado:**
-- ✅ Service de dashboard summary
-- ✅ Endpoint GET /dashboard/summary
-- ✅ Schemas/DTOs para dashboard
-- ✅ 30 testes TDD implementados
-- ✅ Documentação completa
+**Comando:**
+```bash
+cd apps/api
+python -m pytest tests/test_migrations.py -v
+```
 
-**Arquivos Criados:**
-- `apps/api/app/modules/dashboard/service.py`
-- `apps/api/app/modules/dashboard/schemas.py`
-- `apps/api/app/modules/dashboard/__init__.py`
-- `apps/api/tests/test_dashboard_summary.py`
-- `apps/api/tests/test_dashboard_api.py`
-- `docs/BETA_016A_DASHBOARD_BETA_BACKEND_API.md`
-
-**Arquivos Atualizados:**
-- `apps/api/app/modules/dashboard/router.py` (endpoint summary)
-
-**Limitações Conhecidas:**
-- Nenhuma limitação conhecida
-
-**Documentação:** `docs/BETA_016A_DASHBOARD_BETA_BACKEND_API.md`
+<<<<<<< HEAD
+**Responsível:** Desenvolvedor
+=======
+**Responsável:** Desenvolvedor
+>>>>>>> origin/main
+**Status:** Pendente
 
 ---
 
-## Ações Recentes (BETA-015A)
+### 3. Implementar Autenticação Real em E2E
+**Objetivo:** Implementar autenticação real em testes E2E
 
-### BETA-015A: Exceptions Panel Backend/API
-**Status:** ✅ Implementado
-**Branch:** `feature/beta-015a-exceptions-panel-backend-api`
-**Data:** 2026-06-18
+**Foco:**
+- Autenticação real com backend
+- Banco de dados real para E2E
+- Remover mocks de localStorage
 
-**Implementado:**
-- ✅ Service de exceptions panel
-- ✅ Endpoint GET /exceptions/do
-- ✅ Schemas/DTOs para exceptions
-- ✅ 35 testes TDD implementados
-- ✅ Documentação completa
+**Comando:**
+```bash
+cd apps/web
+npx playwright test
+```
 
-**Arquivos Criados:**
-- `apps/api/app/modules/exceptions/service.py`
-- `apps/api/app/modules/exceptions/schemas.py`
-- `apps/api/app/modules/exceptions/__init__.py`
-- `apps/api/tests/test_exceptions_panel_sla.py`
-- `apps/api/tests/test_exceptions_panel_api.py`
-- `docs/BETA_015A_EXCEPTIONS_PANEL_BACKEND_API.md`
-
-**Arquivos Atualizados:**
-- `apps/api/app/modules/exceptions/router.py` (endpoint do)
-
-**Limitações Conhecidas:**
-- Nenhuma limitação conhecida
-
-**Documentação:** `docs/BETA_015A_EXCEPTIONS_PANEL_BACKEND_API.md`
+<<<<<<< HEAD
+**Responsível:** Desenvolvedor
+=======
+**Responsável:** Desenvolvedor
+>>>>>>> origin/main
+**Status:** Pendente
 
 ---
 
-## Ações Recentes (BETA-014A)
+### 4. Implementar UI Completa
+**Objetivo:** Implementar UI para fluxos não implementados
 
-### BETA-014A: Carrier Efficiency Backend/API
-**Status:** ✅ Implementado
-**Branch:** `feature/beta-014a-carrier-efficiency-backend-api`
-**Data:** 2026-06-17
+**Foco:**
+- Remover testes marcados como skip
+- Implementar UI faltante
+- Validar todos os fluxos
 
-**Implementado:**
-- ✅ Service de carrier efficiency
-- ✅ Endpoint GET /shipments/carrier-efficiency
-- ✅ Schemas/DTOs para carrier efficiency
-- ✅ 30 testes TDD implementados
-- ✅ Documentação completa
+**Comando:**
+```bash
+cd apps/web
+npx playwright test
+```
 
-**Arquivos Criados:**
-- `apps/api/app/modules/carriers/service.py`
-- `apps/api/app/modules/carriers/schemas.py`
-- `apps/api/app/modules/carriers/__init__.py`
-- `apps/api/tests/test_carrier_efficiency_report.py`
-- `apps/api/tests/test_carrier_efficiency_api.py`
-- `docs/BETA_014A_CARRIER_EFFICIENCY_BACKEND_API.md`
-
-**Arquivos Atualizados:**
-- `apps/api/app/modules/carriers/router.py` (endpoint carrier-efficiency)
-
-**Limitações Conhecidas:**
-- Nenhuma limitação conhecida
-
-**Documentação:** `docs/BETA_014A_CARRIER_EFFICIENCY_BACKEND_API.md`
+<<<<<<< HEAD
+**Responsível:** Desenvolvedor
+=======
+**Responsável:** Desenvolvedor
+>>>>>>> origin/main
+**Status:** Pendente
 
 ---
 
-## Ações Recentes (BETA-013A)
+### 5. Implementar Monitoramento de Performance
+**Objetivo:** Implementar monitoramento de performance
 
-### BETA-013A: SLA Backend/API
-**Status:** ✅ Implementado
-**Branch:** `feature/beta-013a-sla-backend-api`
-**Data:** 2026-06-16
+**Foco:**
+- Profiling de API
+- Profiling de Web
+- Alertas de gargalos
 
-**Implementado:**
-- ✅ Service de SLA
-- ✅ Endpoints GET /shipments/sla, POST /shipments/sla/rules, PATCH /shipments/{id}/sla
-- ✅ Schemas/DTOs para SLA
-- ✅ 42 testes TDD implementados
-- ✅ Documentação completa
-
-**Arquivos Criados:**
-- `apps/api/app/modules/sla/service.py`
-- `apps/api/app/modules/sla/schemas.py`
-- `apps/api/app/modules/sla/__init__.py`
-- `apps/api/tests/test_sla_calculation.py`
-- `apps/api/tests/test_sla_rules.py`
-- `apps/api/tests/test_sla_api.py`
-- `docs/BETA_013A_SLA_BACKEND_API.md`
-
-**Arquivos Atualizados:**
-- `apps/api/app/modules/sla/router.py` (endpoints sla)
-
-**Limitações Conhecidas:**
-- Nenhuma limitação conhecida
-
-**Documentação:** `docs/BETA_013A_SLA_BACKEND_API.md`
+<<<<<<< HEAD
+**Responsível:** Desenvolvedor
+=======
+**Responsável:** Desenvolvedor
+>>>>>>> origin/main
+**Status:** Pendente
 
 ---
 
-## Ações Recentes (BETA-012C)
+### 6. Implementar Acessibilidade
+**Objetivo:** Implementar acessibilidade
 
-### BETA-012C: Importação Assistida Braspress - Layout, Fixtures e Documentação
-**Status:** ✅ Implementado
-**Branch:** `feature/beta-012c-braspress-assisted-import`
-**Data:** 2026-06-10
+**Foco:**
+- Contraste
+- Navegação por teclado
+- Screen reader
 
-**Implementado:**
-- ✅ Layout Braspress assistido beta documentado
-- ✅ Mapper específico para Braspress (braspress_mapper.py)
-- ✅ Integração de source/layout ao preview endpoint
-- ✅ Fixtures fake (CSV) para testes
-- ✅ Testes TDD para Braspress assisted import
-- ✅ Documentação completa
-
-**Arquivos Criados:**
-- `apps/api/app/modules/imports/braspress_mapper.py`
-- `apps/api/tests/fixtures/braspress_sample.csv`
-- `apps/api/tests/test_braspress_assisted_import.py`
-- `docs/BETA_012C_BRASPRESS_ASSISTED_IMPORT.md`
-
-**Arquivos Atualizados:**
-- `apps/api/app/modules/imports/service_v2.py` (integração com braspress_mapper)
-- `apps/api/app/modules/imports/router.py` (source/layout params)
-
-**Limitações Conhecidas:**
-- Nenhuma limitação conhecida
-
-**Documentação:** `docs/BETA_012C_BRASPRESS_ASSISTED_IMPORT.md`
+<<<<<<< HEAD
+**Responsível:** Desenvolvedor
+=======
+**Responsável:** Desenvolvedor
+>>>>>>> origin/main
+**Status:** Pendente
 
 ---
 
-## Ações Recentes (BETA-012B)
+### 7. Implementar Internacionalização
+**Objetivo:** Implementar suporte a múltiplos idiomas
 
-### BETA-012B: Frontend de Upload, Preview, Erros por Linha e Confirmação de Importação
-**Status:** ✅ Implementado
-**Branch:** `feature/beta-012b-import-upload-preview-confirm-frontend`
-**Data:** 2026-06-10
+**Foco:**
+- i18n
+- Traduções
+- Formatação localizada
 
-**Implementado:**
-- ✅ Atualização de tipos TypeScript (RowValidationError, ValidatedRowData, ImportPreviewV2Response, ImportConfirmResponse)
-- ✅ Nova função previewShipmentImport no API client
-- ✅ Atualização de confirmShipmentsImport para usar /api/v1/imports/confirm
-- ✅ Extração de helpers de formatação (formatCurrencyBRL, formatPercentage, formatDateBR, formatUnavailable)
-- ✅ Atualização da tela de importação com novos estados e fluxos
-- ✅ Suporte a CSV e XLSX
-- ✅ Preview com tabela de dados fiscais/financeiros
-- ✅ Exibição de erros por linha com severidade
-- ✅ Exibição de warnings separados
-- ✅ Bloqueio de confirmação quando há erro bloqueante
-- ✅ Exibição de resultado final com created_shipments
-- ✅ 17 testes TDD implementados (15 page.test.tsx + 2 api.test.ts)
-- ✅ Documentação completa
-
-**Arquivos Criados:**
-- `apps/web/src/app/(private)/shipments/import/page.test.tsx`
-- `docs/BETA_012B_IMPORT_UPLOAD_PREVIEW_CONFIRM_FRONTEND.md`
-
-**Arquivos Atualizados:**
-- `apps/web/src/lib/types.ts`
-- `apps/web/src/lib/api.ts`
-- `apps/web/src/lib/shipment-utils.ts`
-- `apps/web/src/app/(private)/shipments/import/page.tsx`
-- `apps/web/src/lib/api.test.ts`
-- `apps/web/src/app/(private)/shipments/page.tsx` (import de helpers)
-
-**Limitações Conhecidas:**
-- Nenhuma limitação conhecida
-
-**Documentação:** `docs/BETA_012B_IMPORT_UPLOAD_PREVIEW_CONFIRM_FRONTEND.md`
+<<<<<<< HEAD
+**Responsível:** Desenvolvedor
+=======
+**Responsável:** Desenvolvedor
+>>>>>>> origin/main
+**Status:** Pendente
 
 ---
 
-## Ações Recentes (BETA-012A)
+## Ações de Manutenção
 
-### BETA-012A: Importação CSV/XLSX Backend com Preview, Validação e Confirmação
-**Status:** ✅ Implementado
-**Branch:** `feature/beta-012a-import-csv-xlsx-backend-preview-confirm`
-**Data:** 2026-06-10
-
-**Implementado:**
-- ✅ Parser CSV/XLSX melhorado com suporte a formatos brasileiros
-- ✅ Layout mapper para campos fiscais/financeiros
-- ✅ Validação linha a linha com erro/warning reporting
-- ✅ Detecção de duplicidade (in-file e contra banco)
-- ✅ Preview endpoint (sem persistência)
-- ✅ Confirmação endpoint (service implementado, endpoint placeholder)
-- ✅ Migration para ImportHistory (source, metadata, imported_by)
-- ✅ Integração com Shipment (campos BETA-011A)
-- ✅ 63 testes TDD implementados
-- ✅ Documentação completa
-
-**Arquivos Criados:**
-- `apps/api/app/modules/imports/mapper.py`
-- `apps/api/app/modules/imports/service_v2.py`
-- `apps/api/migrations/versions/20260610_01_add_import_history_metadata.py`
-- `apps/api/tests/test_import_csv_validation.py`
-- `apps/api/tests/test_import_xlsx_validation.py`
-- `apps/api/tests/test_import_preview_confirm.py`
-- `apps/api/tests/test_import_duplicate_detection.py`
-- `docs/BETA_012A_IMPORT_CSV_XLSX_BACKEND.md`
-
-**Limitações Conhecidas:**
-- Endpoint de confirmação requer gerenciamento de estado (Redis) - atualmente retorna 501
-- Preview não é persistido entre chamadas
-
-**Documentação:** `docs/BETA_012A_IMPORT_CSV_XLSX_BACKEND.md`
-
----
-
-## Ações Recentes (BETA-011A)
-
-### BETA-011A: Shipment Model Expansion - Campos Fiscais/Financeiros
-**Status:** ✅ Implementado
-**Branch:** `feature/beta-011a-shipment-fiscal-financial-fields`
-**Data:** 2026-06-09
-
-**Implementado:**
-- ✅ Campos fiscais/financeiros adicionados ao model Shipment
-- ✅ Migration para novos campos
-- ✅ Testes TDD para novos campos
-- ✅ Documentação completa
-
-**Arquivos Criados:**
-- `apps/api/migrations/versions/20260609_01_add_fiscal_financial_fields.py`
-- `apps/api/tests/test_shipment_fiscal_financial_fields.py`
-- `docs/BETA_011A_SHIPMENT_FISCAL_FINANCIAL_FIELDS.md`
-
-**Arquivos Atualizados:**
-- `apps/api/app/modules/shipments/models.py` (novos campos)
-
-**Limitações Conhecidas:**
-- Nenhuma limitação conhecida
-
-**Documentação:** `docs/BETA_011A_SHIPMENT_FISCAL_FINANCIAL_FIELDS.md`
-
----
-
-## Ações Recentes (BETA-010A)
-
-### BETA-010A: Carrier Model Expansion - Campos Fiscais/Financeiros
-**Status:** ✅ Implementado
-**Branch:** `feature/beta-010a-carrier-fiscal-financial-fields`
-**Data:** 2026-06-08
-
-**Implementado:**
-- ✅ Campos fiscais/financeiros adicionados ao model Carrier
-- ✅ Migration para novos campos
-- ✅ Testes TDD para novos campos
-- ✅ Documentação completa
-
-**Arquivos Criados:**
-- `apps/api/migrations/versions/20260608_01_add_carrier_fiscal_financial_fields.py`
-- `apps/api/tests/test_carrier_fiscal_financial_fields.py`
-- `docs/BETA_010A_CARRIER_FISCAL_FINANCIAL_FIELDS.md`
-
-**Arquivos Atualizados:**
-- `apps/api/app/modules/carriers/models.py` (novos campos)
-
-**Limitações Conhecidas:**
-- Nenhuma limitação conhecida
-
-**Documentação:** `docs/BETA_010A_CARRIER_FISCAL_FINANCIAL_FIELDS.md`
-
----
-
-## Ações Recentes (BETA-009S)
-
-### BETA-009S: Setup de Projeto e Governança
-**Status:** ✅ Implementado
-**Branch:** `main`
-**Data:** 2026-06-07
-
-**Implementado:**
-- ✅ Scripts de validação (check_secrets.py, validate_migrations.py, validate_docs.py, beta_validate.py)
-- ✅ Documentação de governança (BETA_CHECKLIST.md, BETA_VALIDATION_EVIDENCE.md, BETA_COMMANDS.md, BETA_RELEASE_GATE.md, BETA_KNOWN_LIMITATIONS.md, BETA_NEXT_ACTIONS.md)
-- ✅ Configuração de testes (pytest, vitest)
-- ✅ Configuração de lint (eslint, ruff)
-- ✅ Configuração de migrations (alembic)
-- ✅ Configuração de CI/CD (GitHub Actions - placeholder)
-
-**Arquivos Criados:**
-- `scripts/check_secrets.py`
-- `scripts/check_secrets_core.py`
-- `scripts/validate_migrations.py`
-- `scripts/validate_docs.py`
-- `scripts/beta_validate.py`
-- `docs/BETA_CHECKLIST.md`
-- `docs/BETA_VALIDATION_EVIDENCE.md`
-- `docs/BETA_COMMANDS.md`
-- `docs/BETA_RELEASE_GATE.md`
-- `docs/BETA_KNOWN_LIMITATIONS.md`
-- `docs/BETA_NEXT_ACTIONS.md`
-- `.github/workflows/ci.yml` (placeholder)
-
-**Limitações Conhecidas:**
-- CI/CD não configurado completamente (placeholder)
-- E2E tests não configurados (Playwright não configurado)
-
-**Documentação:** `docs/BETA_CHECKLIST.md`
-
----
-
-## Próximas Ações
-
-### BETA-018B: Relatório Diário Frontend
-**Status:** ⏳ Pendente
-**Prioridade:** Alta
-**Épico:** 6 - Relatório diário automático
+### 1. Atualizar Documentação
+**Frequência:** Após cada merge significativo
 
 **Tarefas:**
-- [ ] Criar página de relatório diário
-- [ ] Criar API client functions
-- [ ] Criar tipos TypeScript
-- [ ] Implementar visualização histórica
-- [ ] Implementar filtros visuais
-- [ ] Implementar botão gerar/regenerar
-- [ ] Implementar exportação (se desejada e segura)
-- [ ] Testes TDD (frontend)
-- [ ] Documentação
+- Atualizar docs/BETA_CHECKLIST.md
+- Atualizar docs/BETA_VALIDATION_EVIDENCE.md
+- Atualizar docs/BETA_COMMANDS.md
 
-**Dependências:**
-- BETA-018A (Backend/API)
+**Responsável:** Desenvolvedor
+**Status:** Recorrente
 
 ---
 
-### BETA-019A: Agendamento Automático de Relatórios
-**Status:** ⏳ Pendente
-**Prioridade:** Média
-**Épico:** 6 - Relatório diário automático
+### 2. Manter CI Verde
+**Frequência:** Contínua
 
 **Tarefas:**
-- [ ] Implementar agendamento com cron
-- [ ] Implementar envio automático por e-mail
-- [ ] Implementar integração com WhatsApp/webhook (se desejado)
-- [ ] Testes TDD
-- [ ] Documentação
+- Monitorar workflows
+- Corrigir falhas
+- Atualizar dependências
 
-**Dependências:**
-- BETA-018A (Backend/API)
-- BETA-018B (Frontend)
+<<<<<<< HEAD
+**Responsível:** Desenvolvedor
+=======
+**Responsável:** Desenvolvedor
+>>>>>>> origin/main
+**Status:** Recorrente
 
 ---
 
-### BETA-020A: Auditoria Completa
-**Status:** ⏳ Pendente
-**Prioridade:** Baixa
-**Épico:** 9 - Auditoria e Compliance
+### 3. Manter Secret Scan Passando
+**Frequência:** Contínua
 
 **Tarefas:**
-- [ ] Implementar auditoria completa
-- [ ] Implementar logs de auditoria
-- [ ] Implementar relatórios de auditoria
-- [ ] Testes TDD
-- [ ] Documentação
+- Rodar secret scan regularmente
+- Revisar falsos positivos
+- Atualizar allowlist se necessário
 
-**Dependências:**
-- BETA-018A (Backend/API)
+<<<<<<< HEAD
+**Responsível:** Desenvolvedor
+**Status:** Recorrente
 
 ---
 
-### BETA-021A: RBAC Granular
-**Status:** ⏳ Pendente
-**Prioridade:** Alta
-**Épico:** 9 - Auditoria e Compliance
+### 4. Manter Documentação de Convergência
+**Frequência:** Após cada merge significativo
 
 **Tarefas:**
-- [ ] Implementar RBAC granular
-- [ ] Implementar permissões por endpoint
-- [ ] Implementar permissões por módulo
-- [ ] Testes TDD
-- [ ] Documentação
+- Atualizar docs/BETA_INTEGRATION_CONVERGENCE_REPORT.md
+- Atualizar docs/BETA_PR_REVALIDATION_AFTER_CI_BOOTSTRAP.md
+- Atualizar docs/BETA_STACKED_VALIDATION_REPORT.md
 
-**Dependências:**
-- BETA-018A (Backend/API)
+**Responsível:** Desenvolvedor
+=======
+**Responsável:** Desenvolvedor
+>>>>>>> origin/main
+**Status:** Recorrente
 
 ---
 
-### BETA-022A: Correção do validate_docs.py
-**Status:** ⏳ Pendente
-**Prioridade:** Média
-**Épico:** 11 - QA, CI/CD e Validação
+## Ações de Comunicação
+
+### 1. Comunicar com Equipe
+**Frequência:** Após merge dos PRs beta
 
 **Tarefas:**
-- [ ] Corrigir UnicodeDecodeError em validate_docs.py
-- [ ] Usar encoding UTF-8 ao ler arquivos
-- [ ] Testes TDD
-- [ ] Documentação
+- Comunicar estado beta
+- Compartilhar documentação
+- Compartilhar comandos oficiais
 
-**Dependências:**
-- Nenhuma
+<<<<<<< HEAD
+**Responsível:** Mantenedor
+=======
+**Responsável:** Mantenedor
+>>>>>>> origin/main
+**Status:** Pendente
 
 ---
 
-## Notas
+### 2. Documentar Decisões
+**Frequência:** Após cada decisão significativa
 
-- Todas as ações devem seguir o BETA_CHECKLIST.md
-- Todas as ações devem ser documentadas em BETA_VALIDATION_EVIDENCE.md
-- Todas as ações devem seguir o BETA_RELEASE_GATE.md
-- Todas as limitações devem ser documentadas em BETA_KNOWN_LIMITATIONS.md
+**Tarefas:**
+- Documentar decisões de arquitetura
+- Documentar decisões de tecnologia
+- Documentar decisões de processo
+
+<<<<<<< HEAD
+**Responsível:** Desenvolvedor
+=======
+**Responsável:** Desenvolvedor
+>>>>>>> origin/main
+**Status:** Recorrente
+
+---
+
+## Resumo de Ações
+
+| Ação | Responsável | Status | Prioridade |
+|------|-------------|--------|-----------|
+| Revisar Draft PRs | Mantenedor | Pendente | Alta |
+| Garantir CI verde | Mantenedor | Pendente | Alta |
+| Resolver conflitos | Mantenedor | Pendente | Alta |
+| Validar documentação | Mantenedor | Pendente | Alta |
+| Merge manual planejado | Mantenedor | Pendente aprovação | Alta |
+| Backup antes de merge | Mantenedor | Pendente | Alta |
+| Monitoramento após merge | Mantenedor | Pendente | Alta |
+| Aumentar cobertura Web | Desenvolvedor | Pendente | Média |
+| Migrations incrementais | Desenvolvedor | Pendente | Média |
+| Autenticação real E2E | Desenvolvedor | Pendente | Média |
+| UI completa | Desenvolvedor | Pendente | Média |
+| Monitoramento performance | Desenvolvedor | Pendente | Baixa |
+| Acessibilidade | Desenvolvedor | Pendente | Baixa |
+| Internacionalização | Desenvolvedor | Pendente | Baixa |
+| Atualizar documentação | Desenvolvedor | Recorrente | Média |
+| Manter CI verde | Desenvolvedor | Recorrente | Alta |
+| Manter secret scan | Desenvolvedor | Recorrente | Alta |
+<<<<<<< HEAD
+| Manter documentação de convergência | Desenvolvedor | Recorrente | Média |
+=======
+>>>>>>> origin/main
+| Comunicar com equipe | Mantenedor | Pendente | Alta |
+| Documentar decisões | Desenvolvedor | Recorrente | Média |
+
+---
+
+**Assinatura:** Devin (SWE-1.6)  
+**Data:** 2026-06-08  
+<<<<<<< HEAD
+**Status:** 🔄 Em execução (BETA-009S - Revalidação Empilhada)
+=======
+**Status:** 🔄 Em execução (BETA-005)
+>>>>>>> origin/main

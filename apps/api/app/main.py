@@ -1,5 +1,8 @@
 ﻿import logging
+<<<<<<< HEAD
 import os
+=======
+>>>>>>> origin/main
 
 from fastapi import FastAPI, Request
 
@@ -23,6 +26,7 @@ def create_app() -> FastAPI:
         format="%(asctime)s %(levelname)s %(name)s %(message)s",
     )
 
+<<<<<<< HEAD
     # Enable logging middleware unless explicitly disabled for testing
     enable_logging = os.getenv("ENABLE_LOGGING_MIDDLEWARE", "true").lower() == "true"
     
@@ -39,6 +43,20 @@ def create_app() -> FastAPI:
                 response.status_code,
             )
             return response
+=======
+    @app.middleware("http")
+    async def log_requests(request: Request, call_next):
+        logger = logging.getLogger("ilex.api.requests")
+        logger.info("request_started method=%s path=%s", request.method, request.url.path)
+        response = await call_next()
+        logger.info(
+            "request_finished method=%s path=%s status_code=%s",
+            request.method,
+            request.url.path,
+            response.status_code,
+        )
+        return response
+>>>>>>> origin/main
 
     register_exception_handlers(app)
     app.include_router(health_router, prefix="/api/v1")

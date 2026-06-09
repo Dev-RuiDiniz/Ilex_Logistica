@@ -124,6 +124,113 @@ Próximas ações pós BETA-009S para o projeto Ilex Logística.
 
 ---
 
+### BETA-013A: SLA, Atraso e Criticidade Backend
+**Status:** ✅ Implementado
+**Branch:** `feature/beta-013a-sla-delay-criticality-backend`
+**Data:** 2026-06-15
+
+**Implementado:**
+- ✅ Model/tabela de regras SLA
+- ✅ Endpoint CRUD de regras SLA
+- ✅ Cálculo de atraso/criticidade
+- ✅ Reprocessamento SLA
+- ✅ 14 testes TDD implementados
+- ✅ Documentação completa
+
+**Arquivos Criados:**
+- `apps/api/app/modules/sla/models.py`
+- `apps/api/app/modules/sla/router.py`
+- `apps/api/app/modules/sla/service.py`
+- `apps/api/app/modules/sla/schemas.py`
+- `apps/api/migrations/versions/20260615_01_add_sla_fields.py`
+- `apps/api/migrations/versions/20260615_01_create_sla_rules.py`
+- `apps/api/tests/test_sla_calculation.py`
+- `apps/api/tests/test_sla_rules.py`
+- `docs/BETA_013A_SLA_DELAY_CRITICALITY_BACKEND.md`
+
+**Limitações Conhecidas:**
+- Nenhuma limitação conhecida
+
+**Documentação:** `docs/BETA_013A_SLA_DELAY_CRITICALITY_BACKEND.md`
+
+---
+
+### BETA-013B: Frontend SLA - Badges, Filtros e Tela de Regras
+**Status:** ✅ Implementado
+**Branch:** `feature/beta-013b-sla-frontend-badges-filters-rules`
+**Data:** 2026-06-15
+
+**Implementado:**
+- ✅ Tipos TypeScript para SLA
+- ✅ Helpers de apresentação SLA
+- ✅ API client functions SLA
+- ✅ Componente SlaBadge
+- ✅ Componente SlaFilters
+- ✅ Integração na listagem de shipments
+- ✅ Tela de regras SLA
+- ✅ Seção SLA no detalhe da entrega
+- ✅ Reprocessamento SLA na UI
+- ✅ 143 testes TDD implementados
+- ✅ Documentação completa
+
+**Arquivos Criados:**
+- `apps/web/src/lib/sla-helpers.ts`
+- `apps/web/src/components/SlaBadge.tsx`
+- `apps/web/src/components/SlaFilters.tsx`
+- `apps/web/src/app/(private)/settings/sla/page.tsx`
+- `apps/web/src/app/(private)/shipments/delivery-sla-detail.test.tsx`
+- `apps/web/src/app/(private)/settings/sla/sla-rules-page.test.tsx`
+- `docs/BETA_013B_SLA_FRONTEND_BADGES_FILTERS_RULES.md`
+
+**Arquivos Atualizados:**
+- `apps/web/src/lib/types.ts`
+- `apps/web/src/lib/api.ts`
+- `apps/web/src/app/(private)/shipments/page.tsx`
+- `apps/web/src/app/(private)/shipments/[id]/page.tsx`
+
+**Limitações Conhecidas:**
+- Filtros SLA aplicados em memória após paginação
+- Performance pode ser afetada em grandes volumes
+
+**Documentação:** `docs/BETA_013B_SLA_FRONTEND_BADGES_FILTERS_RULES.md`
+
+---
+
+### BETA-014A: Eficiência por Transportadora Backend
+**Status:** ✅ Implementado
+**Branch:** `feature/beta-014a-carrier-efficiency-backend`
+**Data:** 2026-06-15
+
+**Implementado:**
+- ✅ Service de agregação por transportadora
+- ✅ Endpoint GET /api/v1/shipments/analytics/carrier-efficiency
+- ✅ Métricas calculadas (total_shipments, on_time_count, late_count, critical_count, lost_count)
+- ✅ Percentuais calculados (on_time_percentage, late_percentage, lost_percentage)
+- ✅ Rankings implementados (efficiency, cost, volume)
+- ✅ Filtros aplicados (período, mês/ano, cliente, UF, transportadora, status, criticality, sla_status, is_late)
+- ✅ 30 testes TDD implementados (26 service + 4 API)
+- ✅ Documentação completa
+
+**Arquivos Criados:**
+- `apps/api/app/modules/shipments/analytics_service.py`
+- `apps/api/app/modules/shipments/analytics_schemas.py`
+- `apps/api/tests/test_carrier_efficiency_report.py`
+- `apps/api/tests/test_carrier_efficiency_api.py`
+- `docs/BETA_014A_CARRIER_EFFICIENCY_BACKEND.md`
+- `docs/BETA_014A_DOMAIN_DIAGNOSIS.md`
+
+**Arquivos Atualizados:**
+- `apps/api/app/modules/shipments/router.py`
+
+**Limitações Conhecidas:**
+- Status de extraviada não existe no domínio (lost_count sempre 0)
+- Performance pode ser afetada em grandes volumes (cálculo on-demand por shipment)
+- Filtros SLA aplicados em memória após consulta SQL
+
+**Documentação:** `docs/BETA_014A_CARRIER_EFFICIENCY_BACKEND.md`
+
+---
+
 ## Ações Imediatas (Antes de Merge dos PRs Beta)
 
 ### 1. Revisar Draft PRs na Ordem Correta

@@ -11,6 +11,7 @@ from sqlalchemy.orm import Session
 
 from app.modules.shipments.models import Shipment
 from app.modules.shipments.service import list_shipments
+from app.modules.sla.models import SlaRule
 
 
 def test_filter_by_customer_name(db_session: Session):
@@ -456,4 +457,244 @@ def test_respect_existing_authentication_authorization(db_session: Session):
     assert "items" in result
     assert "total" in result
     assert "page" in result
+
+
+# Testes de filtros SLA - BETA-013A
+
+def test_filter_by_sla_status_on_time(db_session: Session):
+    """Deve filtrar por sla_status=on_time."""
+    # Criar regra SLA
+    rule = SlaRule(
+        transit_days=5,
+        warning_threshold_days=2,
+        critical_delay_days=3,
+        is_active=True,
+    )
+    db_session.add(rule)
+    db_session.commit()
+
+    # Criar shipment on_time
+    shipment = Shipment(
+        tracking_code="SLA001",
+        carrier_id=1,
+        status="pending",
+        estimated_delivery=datetime(2025, 1, 25, tzinfo=UTC),
+        collection_departure_date=datetime(2025, 1, 20, tzinfo=UTC),
+        recipient_name="Test Customer",
+        recipient_phone="11999999999",
+        origin_address="Origin",
+        destination_address="Destination",
+    )
+    db_session.add(shipment)
+    db_session.commit()
+
+    # Filtrar por sla_status=on_time
+    result = list_shipments(db_session, sla_status="on_time")
+
+    # Verificar que o filtro foi aplicado
+    assert all(item["sla_status"] == "on_time" for item in result["items"])
+
+
+def test_filter_by_sla_status_late(db_session: Session):
+    """Deve filtrar por sla_status=late."""
+    # Criar regra SLA
+    rule = SlaRule(
+        transit_days=5,
+        warning_threshold_days=2,
+        critical_delay_days=3,
+        is_active=True,
+    )
+    db_session.add(rule)
+    db_session.commit()
+
+    # Criar shipment late
+    shipment = Shipment(
+        tracking_code="SLA002",
+        carrier_id=1,
+        status="in_transit",
+        estimated_delivery=datetime(2025, 1, 15, tzinfo=UTC),
+        collection_departure_date=datetime(2025, 1, 10, tzinfo=UTC),
+        recipient_name="Test Customer",
+        recipient_phone="11999999999",
+        origin_address="Origin",
+        destination_address="Destination",
+    )
+    db_session.add(shipment)
+    db_session.commit()
+
+    # Filtrar por sla_status=late
+    result = list_shipments(db_session, sla_status="late")
+
+    # Verificar que o filtro foi aplicado
+    assert all(item["sla_status"] == "late" for item in result["items"])
+
+
+def test_filter_by_sla_status_unknown(db_session: Session):
+    """Deve filtrar por sla_status=unknown."""
+    # Criar shipment sem collection_date
+    shipment = Shipment(
+        tracking_code="SLA003",
+        carrier_id=1,
+        status="pending",
+        estimated_delivery=datetime(2025, 1, 20, tzinfo=UTC),
+        recipient_name="Test Customer",
+        recipient_phone="11999999999",
+        origin_address="Origin",
+        destination_address="Destination",
+    )
+    db_session.add(shipment)
+    db_session.commit()
+
+    # Filtrar por sla_status=unknown
+    result = list_shipments(db_session, sla_status="unknown")
+
+    # Verificar que o filtro foi aplicado
+    assert all(item["sla_status"] == "unknown" for item in result["items"])
+
+
+def test_filter_by_is_late_true(db_session: Session):
+    """Deve filtrar por is_late=true."""
+    # Criar regra SLA
+    rule = SlaRule(
+        transit_days=5,
+        warning_threshold_days=2,
+        critical_delay_days=3,
+        is_active=True,
+    )
+    db_session.add(rule)
+    db_session.commit()
+
+    # Criar shipment atrasado
+    shipment = Shipment(
+        tracking_code="SLA004",
+        carrier_id=1,
+        status="in_transit",
+        estimated_delivery=datetime(2025, 1, 15, tzinfo=UTC),
+        collection_departure_date=datetime(2025, 1, 10, tzinfo=UTC),
+        recipient_name="Test Customer",
+        recipient_phone="11999999999",
+        origin_address="Origin",
+        destination_address="Destination",
+    )
+    db_session.add(shipment)
+    db_session.commit()
+
+    # Filtrar por is_late=true
+    result = list_shipments(db_session, is_late=True)
+
+    # Verificar que o filtro foi aplicado
+    assert all(item["is_late"] is True for item in result["items"])
+
+
+def test_filter_by_is_late_false(db_session: Session):
+    """Deve filtrar por is_late=false."""
+    # Criar regra SLA
+    rule = SlaRule(
+        transit_days=5,
+        warning_threshold_days=2,
+        critical_delay_days=3,
+        is_active=True,
+    )
+    db_session.add(rule)
+    db_session.commit()
+
+    # Criar shipment no prazo
+    shipment = Shipment(
+        tracking_code="SLA005",
+        carrier_id=1,
+        status="pending",
+        estimated_delivery=datetime(2025, 1, 25, tzinfo=UTC),
+        collection_departure_date=datetime(2025, 1, 20, tzinfo=UTC),
+        recipient_name="Test Customer",
+        recipient_phone="11999999999",
+        origin_address="Origin",
+        destination_address="Destination",
+    )
+    db_session.add(shipment)
+    db_session.commit()
+
+    # Filtrar por is_late=false
+    result = list_shipments(db_session, is_late=False)
+
+    # Verificar que o filtro foi aplicado
+    assert all(item["is_late"] is False for item in result["items"])
+
+
+def test_combine_sla_with_existing_filters(db_session: Session):
+    """Deve combinar SLA com filtros existentes sem quebrar."""
+    # Criar regra SLA
+    rule = SlaRule(
+        transit_days=5,
+        warning_threshold_days=2,
+        critical_delay_days=3,
+        is_active=True,
+    )
+    db_session.add(rule)
+    db_session.commit()
+
+    # Criar shipment atrasado em SP, carrier_id=1
+    shipment = Shipment(
+        tracking_code="SLA006",
+        carrier_id=1,
+        status="in_transit",
+        estimated_delivery=datetime(2025, 1, 15, tzinfo=UTC),
+        collection_departure_date=datetime(2025, 1, 10, tzinfo=UTC),
+        recipient_name="Test Customer",
+        recipient_phone="11999999999",
+        origin_address="Origin",
+        destination_address="Destination",
+        destination_uf="SP",
+    )
+    db_session.add(shipment)
+    db_session.commit()
+
+    # Filtrar por sla_status=late, carrier_id=1 e destination_uf=SP
+    result = list_shipments(db_session, sla_status="late", carrier_id=1, destination_uf="SP")
+
+    # Verificar que os filtros foram aplicados
+    assert all(
+        item["sla_status"] == "late" and 
+        item["carrier_id"] == 1 and 
+        item["destination_uf"] == "SP" 
+        for item in result["items"]
+    )
+
+
+def test_expose_sla_fields_in_list(db_session: Session):
+    """Deve expor campos SLA na listagem."""
+    # Criar regra SLA
+    rule = SlaRule(
+        transit_days=5,
+        warning_threshold_days=2,
+        critical_delay_days=3,
+        is_active=True,
+    )
+    db_session.add(rule)
+    db_session.commit()
+
+    # Criar shipment
+    shipment = Shipment(
+        tracking_code="SLA007",
+        carrier_id=1,
+        status="pending",
+        estimated_delivery=datetime(2025, 1, 25, tzinfo=UTC),
+        collection_departure_date=datetime(2025, 1, 20, tzinfo=UTC),
+        recipient_name="Test Customer",
+        recipient_phone="11999999999",
+        origin_address="Origin",
+        destination_address="Destination",
+    )
+    db_session.add(shipment)
+    db_session.commit()
+
+    # Listar shipments
+    result = list_shipments(db_session)
+
+    assert len(result["items"]) >= 1
+    item = result["items"][0]
+    assert "sla_due_date" in item
+    assert "sla_status" in item
+    assert "is_late" in item
+    assert "sla_rule_id" in item
+
     assert "page_size" in result

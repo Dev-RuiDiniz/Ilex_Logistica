@@ -85,3 +85,10 @@ def seed_braspress_carrier(db_session: Session):
     db_session.commit()
     db_session.refresh(carrier)
     return carrier
+
+
+def login(client: TestClient, email: str, password: str) -> str:
+    """Helper function to login and return access token."""
+    response = client.post("/api/v1/auth/login", json={"email": email, "password": password})
+    assert response.status_code == 200
+    return response.json()["access_token"]

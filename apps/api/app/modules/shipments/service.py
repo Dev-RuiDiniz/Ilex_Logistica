@@ -51,6 +51,8 @@ def list_shipments(
     month: int | None = None,
     year: int | None = None,
     search: str | None = None,
+    sla_status: str | None = None,
+    is_late: bool | None = None,
     sort_by: str = "created_at",
     sort_order: str = "desc",
 ) -> dict[str, Any]:
@@ -140,11 +142,17 @@ def list_shipments(
     offset = (page - 1) * page_size
     items = query.offset(offset).limit(page_size).all()
 
-    # Convert to dict format
+    # Convert to dict format with SLA calculation and filtering
     items_data = []
     for item in items:
         # Calculate SLA on-demand
         sla_result = calculate_shipment_sla(db, item.id)
+        
+        # Apply SLA filters (on-demand filtering)
+        if sla_status and sla_result.get("sla_status") != sla_status:
+            continue
+        if is_late is not None and sla_result.get("is_late") != is_late:
+            continue
         
         items_data.append({
             "id": item.id,
@@ -180,7 +188,7 @@ def list_shipments(
 
     return {
         "items": items_data,
-        "total": total,
+        "total": len(items_data),  # Adjusted total for filtered results
         "page": page,
         "page_size": page_size,
     }
@@ -395,20 +403,6 @@ def list_treatments(db: Session, shipment_id: int) -> list[dict[str, Any]]:
     ]
 
 
-def parse_csv_file(file_content: bytes) -> tuple[list[dict[str, Any]], list[CSVRowError]]:
-    """Parse CSV file and return rows and errors."""
-    content_str = file_content.decode('utf-8')
-    csv_reader = csv.DictReader(io.StringIO(content_str))
-    
-    rows = []
-    errors = []
-    
-    for row_num, row in enumerate(csv_reader, start=1):
-        rows.append(row)
-    
-    return rows, errors
-
-
 def process_import(
     db: Session,
     file_name: str,
@@ -438,3 +432,17 @@ def build_daily_report(db: Session) -> dict[str, Any]:
         "pending_shipments": pending_shipments,
         "delivery_rate": (delivered_shipments / total_shipments * 100) if total_shipments > 0 else 0,
     }
+
+
+def parse_csv_file(file_content: bytes) -> tuple[list[dict[str, Any]], list[CSVRowError]]:
+    """Parse CSV file and return rows and errors."""
+    content_str = file_content.decode('utf-8')
+    csv_reader = csv.DictReader(io.StringIO(content_str))
+    
+    rows = []
+    errors = []
+    
+    for row_num, row in enumerate(csv_reader, start=1):
+        rows.append(row)
+    
+    return rows, errors

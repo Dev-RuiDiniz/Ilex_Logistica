@@ -115,9 +115,13 @@ export async function uploadShipmentsCsv(token: string, file: File): Promise<Upl
 }
 
 // BETA-012B: New preview endpoint using /api/v1/imports/preview
-export async function previewShipmentImport(token: string, file: File): Promise<ImportPreviewV2Response> {
+// BETA-012C: Added optional source parameter for layout-specific mapping
+export async function previewShipmentImport(token: string, file: File, source?: string): Promise<ImportPreviewV2Response> {
   const formData = new FormData();
   formData.append("file", file);
+  if (source) {
+    formData.append("source", source);
+  }
   return requestMultipart<ImportPreviewV2Response>("/imports/preview", formData, token);
 }
 

@@ -46,6 +46,7 @@ export default function ShipmentsImportPage() {
   const [fileName, setFileName] = useState("");
   const [previewResponse, setPreviewResponse] = useState<ImportPreviewV2Response | null>(null);
   const [confirmResponse, setConfirmResponse] = useState<ImportConfirmResponse | null>(null);
+  const [layout, setLayout] = useState<"generic" | "braspress_assisted">("generic"); // BETA-012C: Layout selector
 
   const editable = canEditShipments(session?.role ?? "auditoria");
 
@@ -85,7 +86,8 @@ export default function ShipmentsImportPage() {
     setState("preview_loading");
     setError("");
     try {
-      const response = await previewShipmentImport(session.accessToken, file);
+      const source = layout === "braspress_assisted" ? "braspress_assisted" : undefined;
+      const response = await previewShipmentImport(session.accessToken, file, source);
       setPreviewResponse(response);
       if (response.errors.some((err) => err.is_blocking)) {
         setState("preview_with_errors");
@@ -125,6 +127,7 @@ export default function ShipmentsImportPage() {
     setPreviewResponse(null);
     setConfirmResponse(null);
     setError("");
+    setLayout("generic"); // BETA-012C: Reset layout
     setState("idle");
   };
 
@@ -142,16 +145,30 @@ export default function ShipmentsImportPage() {
       {!editable && <p className="rounded bg-amber-50 px-3 py-2 text-sm text-amber-700">Perfil com permissão somente leitura.</p>}
 
       {state === "idle" && (
-        <div className="rounded border bg-white p-4">
-          <label className="block text-sm font-medium">Arquivo CSV ou XLSX</label>
-          <input
-            type="file"
-            accept=".csv,.xlsx,text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-            onChange={onFileChange}
-            disabled={!editable || isLoading}
-            className="mt-1 w-full rounded border px-3 py-2 disabled:opacity-60"
-          />
-          {error && <p className="mt-2 text-sm text-red-600">{error}</p>}
+        <div className="rounded border bg-white p-4 space-y-4">
+          <div>
+            <label className="block text-sm font-medium">Layout de importação</label>
+            <select
+              value={layout}
+              onChange={(e) => setLayout(e.target.value as "generic" | "braspress_assisted")}
+              disabled={!editable || isLoading}
+              className="mt-1 w-full rounded border px-3 py-2 disabled:opacity-60"
+            >
+              <option value="generic">Genérico</option>
+              <option value="braspress_assisted">Braspress assistido</option>
+            </select>
+          </div>
+          <div>
+            <label className="block text-sm font-medium">Arquivo CSV ou XLSX</label>
+            <input
+              type="file"
+              accept=".csv,.xlsx,text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+              onChange={onFileChange}
+              disabled={!editable || isLoading}
+              className="mt-1 w-full rounded border px-3 py-2 disabled:opacity-60"
+            />
+          </div>
+          {error && <p className="text-sm text-red-600">{error}</p>}
         </div>
       )}
 

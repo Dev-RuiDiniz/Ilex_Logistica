@@ -114,6 +114,6 @@ describe("api exports e assinaturas", () => {
   });
 
   it("previewShipmentImport recebe token e file (BETA-012B)", () => {
-    expect(previewShipmentImport.length).toBe(2);
+    expect(previewShipmentImport.length).toBeGreaterThanOrEqual(2); // BETA-012C: source is optional 3rd parameter
   });
 });

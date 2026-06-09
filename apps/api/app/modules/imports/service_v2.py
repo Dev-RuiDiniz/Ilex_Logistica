@@ -25,6 +25,7 @@ from zipfile import BadZipFile, ZipFile
 from fastapi import HTTPException, UploadFile, status as http_status
 from sqlalchemy.orm import Session
 
+from app.modules.carriers.models import Carrier
 from app.modules.imports.mapper import map_column, normalize_column_name, get_required_columns
 from app.modules.imports.models import ImportHistory
 from app.modules.shipments.models import Shipment
@@ -216,11 +217,13 @@ def parse_brazilian_monetary(value: str) -> Decimal | None:
 
 def parse_uploaded_file_v2(
     upload: UploadFile,
+    use_braspress_mapper: bool = False,
 ) -> tuple[list[str], list[dict[str, str]], str, str]:
     """Parse uploaded CSV/XLSX file with column mapping.
     
     Args:
         upload: Uploaded file
+        use_braspress_mapper: If True, use Braspress-specific mapper (BETA-012C)
         
     Returns:
         Tuple of (columns, rows, file_type, file_hash)
@@ -237,15 +240,23 @@ def parse_uploaded_file_v2(
         raise HTTPException(status_code=http_status.HTTP_400_BAD_REQUEST, detail="arquivo vazio")
 
     if ext == ".csv":
-        columns, rows = _parse_csv_v2(raw)
+        columns, rows = _parse_csv_v2(raw, use_braspress_mapper=use_braspress_mapper)
     else:
-        columns, rows = _parse_xlsx_v2(raw)
+        columns, rows = _parse_xlsx_v2(raw, use_braspress_mapper=use_braspress_mapper)
     
     return columns, rows, ext.replace(".", ""), _hash_bytes(raw)
 
 
-def _parse_csv_v2(raw: bytes) -> tuple[list[str], list[dict[str, str]]]:
-    """Parse CSV with column mapping."""
+def _parse_csv_v2(raw: bytes, use_braspress_mapper: bool = False) -> tuple[list[str], list[dict[str, str]]]:
+    """Parse CSV with column mapping.
+    
+    Args:
+        raw: Raw file bytes
+        use_braspress_mapper: If True, use Braspress-specific mapper (BETA-012C)
+        
+    Returns:
+        Tuple of (columns, rows)
+    """
     try:
         text = raw.decode("utf-8-sig")
     except UnicodeDecodeError as exc:
@@ -255,15 +266,22 @@ def _parse_csv_v2(raw: bytes) -> tuple[list[str], list[dict[str, str]]]:
     if not reader.fieldnames:
         raise HTTPException(status_code=http_status.HTTP_400_BAD_REQUEST, detail="csv sem cabecalho")
     
+    # BETA-012C: Use appropriate mapper based on source
+    if use_braspress_mapper:
+        from app.modules.imports.braspress_mapper import map_braspress_column
+        map_func = map_braspress_column
+    else:
+        map_func = map_column
+    
     # Map column names using the mapper
-    columns = [map_column(c) for c in reader.fieldnames if c and c.strip()]
+    columns = [map_func(c) for c in reader.fieldnames if c and c.strip()]
     
     rows = []
     for row_idx, row in enumerate(reader, start=2):  # Start at 2 (header is row 1)
         row_map = {}
         for k, v in row.items():
             if k and k.strip():
-                mapped_name = map_column(k)
+                mapped_name = map_func(k)
                 row_map[mapped_name] = (v or "").strip()
         rows.append(row_map)
     
@@ -273,8 +291,16 @@ def _parse_csv_v2(raw: bytes) -> tuple[list[str], list[dict[str, str]]]:
     return columns, rows
 
 
-def _parse_xlsx_v2(raw: bytes) -> tuple[list[str], list[dict[str, str]]]:
-    """Parse XLSX with column mapping."""
+def _parse_xlsx_v2(raw: bytes, use_braspress_mapper: bool = False) -> tuple[list[str], list[dict[str, str]]]:
+    """Parse XLSX with column mapping.
+    
+    Args:
+        raw: Raw file bytes
+        use_braspress_mapper: If True, use Braspress-specific mapper (BETA-012C)
+        
+    Returns:
+        Tuple of (columns, rows)
+    """
     try:
         with ZipFile(BytesIO(raw), "r") as zf:
             xml_bytes = zf.read("xl/worksheets/sheet1.xml")
@@ -301,9 +327,16 @@ def _parse_xlsx_v2(raw: bytes) -> tuple[list[str], list[dict[str, str]]]:
     if not rows_data:
         raise HTTPException(status_code=http_status.HTTP_400_BAD_REQUEST, detail="xlsx vazio")
 
+    # BETA-012C: Use appropriate mapper based on source
+    if use_braspress_mapper:
+        from app.modules.imports.braspress_mapper import map_braspress_column
+        map_func = map_braspress_column
+    else:
+        map_func = map_column
+    
     # Map column names using the mapper
     raw_columns = rows_data[0]
-    columns = [map_column(c) for c in raw_columns if c.strip()]
+    columns = [map_func(c) for c in raw_columns if c.strip()]
     
     rows = []
     for row_idx, values in enumerate(rows_data[1:], start=2):  # Start at 2 (header is row 1)
@@ -326,7 +359,7 @@ def validate_row(
     Args:
         row: Row data with mapped column names
         row_number: Row number in the file (1-indexed, header is row 1)
-        db: Database session for duplicate checking (optional)
+        db: Database session for carrier name resolution and duplicate checking (optional)
         
     Returns:
         ValidatedRow with errors and warnings
@@ -350,16 +383,12 @@ def validate_row(
     else:
         normalized_data["tracking_code"] = tracking_code
     
-    # Validate carrier_id
+    # Validate carrier_id or resolve carrier_name
     carrier_id_str = row.get("carrier_id", "").strip()
-    if not carrier_id_str:
-        errors.append(RowValidationError(
-            row_number=row_number,
-            field="carrier_id",
-            message="carrier_id obrigatorio",
-            value=carrier_id_str,
-        ))
-    else:
+    carrier_name = row.get("carrier_name", "").strip()
+    
+    if carrier_id_str:
+        # Use carrier_id directly
         try:
             carrier_id = int(carrier_id_str)
             if carrier_id <= 0:
@@ -378,6 +407,26 @@ def validate_row(
                 message="carrier_id deve ser um numero inteiro",
                 value=carrier_id_str,
             ))
+    elif carrier_name and db:
+        # Resolve carrier_name to carrier_id
+        resolved_carrier_id = resolve_carrier_name_to_id(db, carrier_name)
+        if resolved_carrier_id:
+            normalized_data["carrier_id"] = resolved_carrier_id
+        else:
+            errors.append(RowValidationError(
+                row_number=row_number,
+                field="carrier_name",
+                message=f"transportadora '{carrier_name}' nao encontrada",
+                value=carrier_name,
+            ))
+    else:
+        # Neither carrier_id nor carrier_name provided
+        errors.append(RowValidationError(
+            row_number=row_number,
+            field="carrier_id",
+            message="carrier_id ou carrier_name obrigatorio",
+            value=carrier_id_str,
+        ))
     
     # Validate invoice_number
     invoice_number = row.get("invoice_number", "").strip()
@@ -510,6 +559,22 @@ def validate_row(
     )
 
 
+def resolve_carrier_name_to_id(db: Session, carrier_name: str) -> int | None:
+    """Resolve carrier name to carrier_id.
+    
+    Args:
+        db: Database session
+        carrier_name: Carrier name to resolve
+        
+    Returns:
+        carrier_id if found, None otherwise
+    """
+    if not carrier_name:
+        return None
+    carrier = db.query(Carrier).filter(Carrier.name == carrier_name).first()
+    return carrier.id if carrier else None
+
+
 def detect_duplicates_in_file(rows: list[ValidatedRow]) -> int:
     """Detect duplicate rows within the file.
     
@@ -593,6 +658,7 @@ def preview_import(
     db: Session,
     upload: UploadFile,
     user_id: int | None = None,
+    source: str | None = None,
 ) -> ImportPreview:
     """Preview import without persisting shipments.
     
@@ -602,11 +668,16 @@ def preview_import(
         db: Database session
         upload: Uploaded file
         user_id: User ID performing the import (optional)
+        source: Import source identifier (e.g., "braspress_assisted") (optional)
         
     Returns:
         ImportPreview with validation results
     """
-    columns, rows, file_type, file_hash = parse_uploaded_file_v2(upload)
+    # BETA-012C: Use Braspress mapper if source is braspress_assisted
+    if source == "braspress_assisted":
+        columns, rows, file_type, file_hash = parse_uploaded_file_v2(upload, use_braspress_mapper=True)
+    else:
+        columns, rows, file_type, file_hash = parse_uploaded_file_v2(upload)
     
     validated_rows: list[ValidatedRow] = []
     all_errors: list[RowValidationError] = []
@@ -640,6 +711,9 @@ def preview_import(
                     row_data[key] = value.isoformat()
             valid_rows_serializable.append(row_data)
     
+    # BETA-012C: Use provided source or default
+    import_source = source or "csv_xlsx_import"
+    
     history = ImportHistory(
         filename=upload.filename or "unknown",
         file_type=file_type,
@@ -649,12 +723,13 @@ def preview_import(
         imported_count=0,
         rejected_count=0,
         status="pending",
-        source="csv_xlsx_import",
+        source=import_source,
         import_metadata=json.dumps({
             "valid_rows": valid_rows_serializable,
             "invalid_rows": invalid_rows,
             "errors": [error.to_dict() for error in all_errors],
             "warnings": [warning.to_dict() for warning in all_warnings],
+            "layout": "braspress_assisted" if source == "braspress_assisted" else "generic",
         }),
         imported_by=user_id,
     )

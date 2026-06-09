@@ -358,6 +358,15 @@ python scripts/validate_docs.py
 - Alertas/relatório diário
 - Layout Braspress completo
 
+### Implementado em BETA-012C
+- ✅ Layout Braspress assistido beta
+- ✅ Mapper específico para Braspress
+- ✅ Seletor de layout no frontend (Genérico / Braspress assistido)
+- ✅ Fixtures fake para testes
+- ✅ Documentação específica Braspress
+- **Branch:** `feature/beta-012c-braspress-assisted-import`
+- **Documentação:** `docs/BRASPRESS_IMPORTACAO_ASSISTIDA.md`
+
 ### Futuras Melhorias
 - Progresso em tempo real da importação
 - Download de template de importação

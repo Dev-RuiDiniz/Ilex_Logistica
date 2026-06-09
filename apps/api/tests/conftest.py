@@ -52,6 +52,17 @@ def seed_roles(db_session: Session) -> None:
     db_session.commit()
 
 
+@pytest.fixture
+def seed_carrier(db_session: Session):
+    """Seed a test carrier for import tests."""
+    from app.modules.carriers.models import Carrier
+    carrier = Carrier(name="Test Carrier")
+    db_session.add(carrier)
+    db_session.commit()
+    db_session.refresh(carrier)
+    return carrier
+
+
 def create_user_with_roles(db: Session, email: str, password: str, roles: list[str]) -> User:
     user = User(email=email, full_name=email.split("@")[0], password_hash=hash_password(password), is_active=True)
     db.add(user)
@@ -62,3 +73,15 @@ def create_user_with_roles(db: Session, email: str, password: str, roles: list[s
     db.commit()
     db.refresh(user)
     return user
+
+
+
+@pytest.fixture
+def seed_braspress_carrier(db_session: Session):
+    """Seed a fake Braspress carrier for Braspress import tests."""
+    from app.modules.carriers.models import Carrier
+    carrier = Carrier(name="Braspress")
+    db_session.add(carrier)
+    db_session.commit()
+    db_session.refresh(carrier)
+    return carrier

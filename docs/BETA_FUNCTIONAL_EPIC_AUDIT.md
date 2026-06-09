@@ -13,7 +13,7 @@ Esta auditoria funcional automatizada inspecionou a estrutura do repositório pa
 | Épico | Status | Implementado | Parcial | Ausente |
 |-------|--------|--------------|---------|---------|
 | 1 - SLA, atraso e criticidade | PARCIAL | 2/10 (20%) | 0/10 (0%) | 8/10 (80%) |
-| 2 - Importação Excel/CSV | PARCIAL | 8/12 (67%) | 0/12 (0%) | 4/12 (33%) |
+| 2 - Importação Excel/CSV | PARCIAL | 12/12 (100%) | 0/12 (0%) | 0/12 (0%) |
 | 3 - Campos fiscais/financeiros | PARCIAL | 13/15 (87%) | 1/15 (7%) | 1/15 (7%) |
 | 4 - Eficiência por transportadora | AUSENTE | 0/6 (0%) | 0/6 (0%) | 6/6 (100%) |
 | 5 - Alertas e notificações | PARCIAL | 0/10 (0%) | 2/10 (20%) | 8/10 (80%) |
@@ -26,13 +26,13 @@ Esta auditoria funcional automatizada inspecionou a estrutura do repositório pa
 | 12 - Documentação beta | PARCIAL | 6/14 (43%) | 0/14 (0%) | 8/14 (57%) |
 
 **Resumo Geral:**
-- Implementados: 37/120 (31%)
+- Implementados: 41/120 (34%)
 - Parciais: 9/120 (8%)
-- Ausentes: 74/120 (62%)
+- Ausentes: 70/120 (58%)
 
 **Nota:**
 - O Épico 3 teve progresso significativo com o BETA-011A (backend) e BETA-011B (frontend). Veja `docs/BETA_011A_SHIPMENT_FISCAL_FINANCIAL_BACKEND.md` e `docs/BETA_011B_SHIPMENT_FISCAL_FINANCIAL_FRONTEND.md` para detalhes.
-- O Épico 2 teve progresso significativo com o BETA-012A (backend) e BETA-012B (frontend). Veja `docs/BETA_012A_IMPORT_CSV_XLSX_BACKEND.md` e `docs/BETA_012B_IMPORT_UPLOAD_PREVIEW_CONFIRM_FRONTEND.md` para detalhes.
+- O Épico 2 teve progresso significativo com o BETA-012A (backend), BETA-012B (frontend) e BETA-012C (Braspress assistido). Veja `docs/BETA_012A_IMPORT_CSV_XLSX_BACKEND.md`, `docs/BETA_012B_IMPORT_UPLOAD_PREVIEW_CONFIRM_FRONTEND.md` e `docs/BRASPRESS_IMPORTACAO_ASSISTIDA.md` para detalhes.
 
 ## Tabela dos 12 Épicos
 
@@ -69,7 +69,7 @@ Esta auditoria funcional automatizada inspecionou a estrutura do repositório pa
 
 ### Épico 2 — Importação Excel/CSV robusta e importação assistida
 
-**Status:** PARCIAL (atualizado com BETA-012A e BETA-012B)
+**Status:** PARCIAL (atualizado com BETA-012A, BETA-012B e BETA-012C)
 
 **Implementados:**
 - histórico
@@ -84,12 +84,16 @@ Esta auditoria funcional automatizada inspecionou a estrutura do repositório pa
 - preview UI (BETA-012B)
 - erros por linha UI (BETA-012B)
 - confirmação UI (BETA-012B)
-- testes backend (BETA-012A - 63 testes)
+- layout Braspress assistido beta (BETA-012C)
+- mapper específico Braspress (BETA-012C)
+- seletor de layout no frontend (BETA-012C)
+- fixtures fake para testes (BETA-012C)
+- testes backend (BETA-012A - 63 testes, BETA-012C - 2 testes)
 - testes frontend (BETA-012B - 17 testes)
-- docs (BETA-012A, BETA-012B)
+- docs (BETA-012A, BETA-012B, BRASPRESS_IMPORTACAO_ASSISTIDA)
 
 **Ausentes:**
-- layout Braspress específico (mapper preparado mas não implementado)
+- Nenhum item ausente no escopo beta
 
 **Evidências:**
 - apps/api/app/modules/imports/router.py

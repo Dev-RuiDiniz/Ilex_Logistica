@@ -1,17 +1,17 @@
-import { defineConfig } from "vitest/config";
-import path from "node:path";
+import { defineConfig } from 'vitest/config';
+import path from 'path';
 
 export default defineConfig({
+  test: {
+    environment: 'jsdom',
+    exclude: [
+      'node_modules',
+      'e2e/**', // Excluir testes E2E do Playwright
+    ],
+  },
   resolve: {
     alias: {
-      "@": path.resolve(__dirname, "./src"),
-    },
-  },
-  test: {
-    environment: "jsdom",
-    setupFiles: ["./vitest.setup.ts"],
-    coverage: {
-      reporter: ["text", "html"],
+      '@': path.resolve(__dirname, './src'),
     },
   },
 });

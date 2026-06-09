@@ -2182,6 +2182,43 @@ Com base na auditoria funcional e na implementação do BETA-011A e BETA-011B, o
 
 ---
 
+### BETA-017B: Alerts Frontend and Dashboard Integration
+**Status:** ✅ Implementado
+**Branch:** `feature/beta-017b-alerts-frontend-dashboard-integration`
+**Data:** 2025-01-20
+
+**Implementado:**
+- ✅ API client alerts-api.ts com funções getAlerts, getAlertsSummary, generateAlerts, markAlertAsRead, resolveAlert
+- ✅ Types TypeScript para alerts (AlertItem, AlertsFilters, AlertsSummary, etc.)
+- ✅ Página /alerts com cards de resumo, filtros e tabela de alertas
+- ✅ Filtros: status, severity, alert_type, is_read, is_resolved
+- ✅ Ações: Gerar Alertas, Marcar como lido, Resolver
+- ✅ Integração visual com dashboard Beta (card "Alertas Ativos" com link)
+- ✅ 19 testes TDD implementados (9 API + 10 página)
+- ✅ Testes de integração com dashboard (2 testes novos)
+- ✅ Documentação completa
+
+**Arquivos Criados:**
+- `apps/web/src/lib/alerts-api.ts`
+- `apps/web/src/lib/alerts-api.test.ts`
+- `apps/web/src/app/(private)/alerts/page.tsx`
+- `apps/web/src/app/(private)/alerts/alerts-page.test.tsx`
+- `docs/BETA_017B_ALERTS_FRONTEND_DASHBOARD_INTEGRATION.md`
+
+**Arquivos Atualizados:**
+- `apps/web/src/app/(private)/dashboard/page.tsx` (integração visual)
+- `apps/web/src/app/(private)/dashboard/dashboard-page.test.tsx` (testes de integração)
+
+**Limitações Conhecidas:**
+- Sem atualizações em tempo real (WebSocket/SSE)
+- Sem notificações/toasts na UI
+- Sem preferências de usuário para alertas
+- Sem histórico/arquivamento de alertas
+
+**Documentação:** `docs/BETA_017B_ALERTS_FRONTEND_DASHBOARD_INTEGRATION.md`
+
+---
+
 **Assinatura:** Devin (SWE-1.6)  
 **Data:** 2026-06-08  
 **Status:** ✅ Concluído (BETA-010 - Auditoria Funcional Automatizada)

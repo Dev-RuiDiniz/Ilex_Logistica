@@ -17,7 +17,7 @@ Esta auditoria funcional automatizada inspecionou a estrutura do repositório pa
 | 3 - Campos fiscais/financeiros | PARCIAL | 13/15 (87%) | 1/15 (7%) | 1/15 (7%) |
 | 4 - Eficiência por transportadora | COMPLETO | 6/6 (100%) | 0/6 (0%) | 0/6 (0%) |
 | 5 - Painel de Exceções com SLA | EM ANDAMENTO | 4/6 (67%) | 0/6 (0%) | 2/6 (33%) |
-| 5 - Alertas e notificações | EM ANDAMENTO (atualizado com BETA-017A) | 0/10 (0%) | 2/10 (20%) | 8/10 (80%) |
+| 5 - Alertas e notificações | EM ANDAMENTO (atualizado com BETA-017A e BETA-017B) | 4/10 (40%) | 0/10 (0%) | 6/10 (60%) |
 | 6 - Relatório diário automático | AUSENTE | 0/6 (0%) | 0/6 (0%) | 6/6 (100%) |
 | 7 - Logs e auditoria | PARCIAL | 0/9 (0%) | 2/9 (22%) | 7/9 (78%) |
 | 8 - Integrações assistidas | PARCIAL | 0/9 (0%) | 1/9 (11%) | 8/9 (89%) |
@@ -27,9 +27,9 @@ Esta auditoria funcional automatizada inspecionou a estrutura do repositório pa
 | 12 - Documentação beta | PARCIAL | 6/14 (43%) | 0/14 (0%) | 8/14 (57%) |
 
 **Resumo Geral:**
-- Implementados: 54/126 (43%)
+- Implementados: 58/126 (46%)
 - Parciais: 7/126 (6%)
-- Ausentes: 65/126 (52%)
+- Ausentes: 61/126 (48%)
 
 **Nota:**
 - O Épico 3 teve progresso significativo com o BETA-011A (backend) e BETA-011B (frontend). Veja `docs/BETA_011A_SHIPMENT_FISCAL_FINANCIAL_BACKEND.md` e `docs/BETA_011B_SHIPMENT_FISCAL_FINANCIAL_FRONTEND.md` para detalhes.
@@ -224,7 +224,7 @@ Esta auditoria funcional automatizada inspecionou a estrutura do repositório pa
 
 ### Épico 5 — Alertas e notificações
 
-**Status:** EM ANDAMENTO (atualizado com BETA-017A)
+**Status:** EM ANDAMENTO (atualizado com BETA-017A e BETA-017B)
 
 **Implementados:**
 - model Alert (BETA-017A)
@@ -233,10 +233,12 @@ Esta auditoria funcional automatizada inspecionou a estrutura do repositório pa
 - endpoints de listagem/summary/generate/read/resolve (BETA-017A)
 - integração com dashboard (BETA-017A)
 - testes backend (BETA-017A - 27 testes: 9 model + 7 generation + 8 API + 3 integration)
-- docs (BETA-017A)
-
-**Parciais:**
-- painel/badge frontend (BETA-017B)
+- API client alerts-api.ts (BETA-017B)
+- types TypeScript para alerts (BETA-017B)
+- página /alerts com filtros e ações (BETA-017B)
+- integração visual com dashboard Beta (BETA-017B)
+- testes frontend (BETA-017B - 19 testes: 9 API + 10 página)
+- docs (BETA-017A, BETA-017B)
 
 **Ausentes:**
 - AlertDeliveryLog
@@ -255,10 +257,15 @@ Esta auditoria funcional automatizada inspecionou a estrutura do repositório pa
 - apps/api/tests/test_alerts_generation.py (BETA-017A)
 - apps/api/tests/test_alerts_api.py (BETA-017A)
 - apps/api/tests/test_dashboard_alerts_integration.py (BETA-017A)
+- apps/web/src/lib/alerts-api.ts (BETA-017B)
+- apps/web/src/app/(private)/alerts/page.tsx (BETA-017B)
+- apps/web/src/lib/alerts-api.test.ts (BETA-017B)
+- apps/web/src/app/(private)/alerts/alerts-page.test.tsx (BETA-017B)
+- apps/web/src/app/(private)/dashboard/page.tsx (BETA-017B)
 - docs/BETA_017A_ALERTS_BACKEND_API.md (BETA-017A)
+- docs/BETA_017B_ALERTS_FRONTEND_DASHBOARD_INTEGRATION.md (BETA-017B)
 
 **Gaps Críticos:**
-- Falta painel/badge frontend (BETA-017B)
 - Falta e-mail/WhatsApp/webhook (fora do escopo beta)
 - Falta RBAC granular (Épico 9)
 

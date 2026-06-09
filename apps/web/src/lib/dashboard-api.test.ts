@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { getDashboardSummary, type DashboardFilters } from "./dashboard-api";
 
@@ -164,3 +165,4 @@ describe("dashboard-api", () => {
     expect(result.top_exceptions).toHaveLength(1);
   });
 });
+/* eslint-enable @typescript-eslint/no-explicit-any */

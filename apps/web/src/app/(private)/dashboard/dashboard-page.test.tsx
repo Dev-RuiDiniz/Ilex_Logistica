@@ -284,7 +284,7 @@ describe("DashboardPage", () => {
     });
   });
 
-  it("exibe alertas ativos como zero ou módulo não habilitado", async () => {
+  it("exibe alertas ativos como nenhum alerta ativo", async () => {
     vi.mocked(getDashboardSummary).mockResolvedValueOnce({
       total_shipments: 100,
       on_time_count: 80,
@@ -307,7 +307,37 @@ describe("DashboardPage", () => {
     render(<DashboardPage />);
 
     await waitFor(() => {
-      expect(screen.getByText("Alertas Ativos")).toBeInTheDocument();
+      expect(screen.getByText("Nenhum alerta ativo")).toBeInTheDocument();
+    });
+  });
+
+  it("exibe alertas ativos com contador real e link para tela de alertas", async () => {
+    vi.mocked(getDashboardSummary).mockResolvedValueOnce({
+      total_shipments: 100,
+      on_time_count: 80,
+      late_count: 15,
+      critical_count: 3,
+      warning_count: 2,
+      unknown_sla_count: 0,
+      resolved_count: 0,
+      no_update_count: 0,
+      exceptions_count: 20,
+      import_failure_count: 7,
+      active_alerts_count: 5,
+      carriers_count: 10,
+      top_carriers_by_efficiency: [],
+      top_exceptions: [],
+      generated_at: "2025-01-15T00:00:00Z",
+      filters_applied: {},
+    });
+
+    render(<DashboardPage />);
+
+    await waitFor(() => {
+      const kpiSection = screen.getByTestId("dashboard-kpi-cards");
+      within(kpiSection).getByText("5");
+      expect(screen.getByText("Ver alertas →")).toBeInTheDocument();
+      expect(screen.getByText("Ver alertas →").closest("a")).toHaveAttribute("href", "/alerts");
     });
   });
 

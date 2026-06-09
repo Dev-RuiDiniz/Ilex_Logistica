@@ -88,6 +88,53 @@ COLUMN_MAPPER: Dict[str, str] = {
     # Legacy fields (for backward compatibility)
     "transportadora": "carrier_name",  # Will be resolved to carrier_id
     "percentual_frete": "freight_percentage",  # Will be calculated from freight_value/invoice_value
+<<<<<<< HEAD
+    
+    # BETA-012C: Braspress assisted layout specific mappings
+    # These are Brazilian Portuguese column names commonly used in Braspress exports
+    "numero_da_entrega_ou_rastreio": "tracking_code",
+    "numero_da_entrega": "tracking_code",
+    "numero_rastreio": "tracking_code",
+    "numero_do_rastreio": "tracking_code",
+    
+    "numero_da_nf": "invoice_number",
+    "numero_nf": "invoice_number",
+    "nota_fiscal": "invoice_number",
+    
+    "cliente": "customer_name",
+    "nome_do_cliente": "customer_name",
+    "destinatario": "customer_name",
+    "nome_destinatario": "customer_name",
+    
+    "uf_destino": "destination_uf",
+    "uf": "destination_uf",
+    "estado_destino": "destination_uf",
+    "estado": "destination_uf",
+    
+    "data_coleta_saida": "collection_departure_date",
+    "data_de_coleta_saida": "collection_departure_date",
+    "data_saida": "collection_departure_date",
+    
+    "valor_nf": "invoice_value",
+    "valor_nota_fiscal": "invoice_value",
+    "valor_nota": "invoice_value",
+    "valor_mercadoria": "invoice_value",
+    
+    "valor_frete": "freight_value",
+    "vlr_frete": "freight_value",
+    
+    "transportadora": "carrier_name",  # Will be resolved to carrier_id
+    "nome_transportadora": "carrier_name",
+    
+    # BETA-012C: Optional fields for Braspress
+    "previsao_de_entrega": "expected_delivery_date",
+    "data_prevista_entrega": "expected_delivery_date",
+    "previsao_entrega": "expected_delivery_date",
+    
+    "status": "status",
+    "situacao": "status",
+=======
+>>>>>>> origin/main
 }
 
 
@@ -169,5 +216,10 @@ def get_optional_columns() -> set[str]:
         Set of optional internal field names
     """
     return {
+<<<<<<< HEAD
+        "expected_delivery_date",  # BETA-012C: Optional for Braspress
+        "status",  # BETA-012C: Optional for Braspress
+=======
         # Currently no optional columns, but this allows for future expansion
+>>>>>>> origin/main
     }

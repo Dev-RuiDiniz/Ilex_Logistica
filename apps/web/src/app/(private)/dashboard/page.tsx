@@ -196,8 +196,13 @@ export default function DashboardPage() {
         <div className="bg-indigo-50 p-4 rounded-lg shadow border border-indigo-200">
           <div className="text-sm text-indigo-600">Alertas Ativos</div>
           <div className="text-2xl font-bold text-indigo-600">
-            {data.active_alerts_count === 0 ? "0 (módulo não habilitado)" : data.active_alerts_count}
+            {data.active_alerts_count === 0 ? "Nenhum alerta ativo" : data.active_alerts_count}
           </div>
+          {data.active_alerts_count > 0 && (
+            <a href="/alerts" className="text-sm text-indigo-800 hover:text-indigo-600 mt-1 block">
+              Ver alertas →
+            </a>
+          )}
         </div>
         <div className="bg-pink-50 p-4 rounded-lg shadow border border-pink-200">
           <div className="text-sm text-pink-600">Falhas Importação</div>

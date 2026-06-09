@@ -57,6 +57,22 @@ def upload_import_file(file: UploadFile = File(...), db: Session = Depends(get_d
 @router.post("/preview", response_model=ImportPreviewV2Response)
 def preview_import_endpoint(
     file: UploadFile = File(...),
+<<<<<<< HEAD
+    source: str | None = Query(default=None, description="Import source (e.g., braspress_assisted)"),
+    db: Session = Depends(get_db),
+) -> ImportPreviewV2Response:
+    """BETA-012A: Preview import without persisting shipments.
+
+    Creates a pending ImportHistory record with validated data in metadata.
+    Validates all rows, detects duplicates, and returns detailed error/warning information.
+
+    BETA-012C: Optional source parameter for layout-specific mapping (e.g., braspress_assisted).
+    """
+    preview = preview_import(db, file, source=source)
+    response_dict = preview.to_dict()
+    response_dict["import_id"] = preview.import_id
+    response_dict["source"] = source  # BETA-012C: Include source in response
+=======
     db: Session = Depends(get_db),
 ) -> ImportPreviewV2Response:
     """BETA-012A: Preview import without persisting shipments.
@@ -67,6 +83,7 @@ def preview_import_endpoint(
     preview = preview_import(db, file)
     response_dict = preview.to_dict()
     response_dict["import_id"] = preview.import_id
+>>>>>>> origin/main
     return ImportPreviewV2Response(**response_dict)
 
 

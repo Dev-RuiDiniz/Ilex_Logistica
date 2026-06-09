@@ -2,6 +2,43 @@
 
 Próximas ações pós BETA-009S para o projeto Ilex Logística.
 
+## Ações Recentes (BETA-012A)
+
+### BETA-012A: Importação CSV/XLSX Backend com Preview, Validação e Confirmação
+**Status:** ✅ Implementado  
+**Branch:** `feature/beta-012a-import-csv-xlsx-backend-preview-confirm`  
+**Data:** 2026-06-10
+
+**Implementado:**
+- ✅ Parser CSV/XLSX melhorado com suporte a formatos brasileiros
+- ✅ Layout mapper para campos fiscais/financeiros
+- ✅ Validação linha a linha com erro/warning reporting
+- ✅ Detecção de duplicidade (in-file e contra banco)
+- ✅ Preview endpoint (sem persistência)
+- ✅ Confirmação endpoint (service implementado, endpoint placeholder)
+- ✅ Migration para ImportHistory (source, metadata, imported_by)
+- ✅ Integração com Shipment (campos BETA-011A)
+- ✅ 63 testes TDD implementados
+- ✅ Documentação completa
+
+**Arquivos Criados:**
+- `apps/api/app/modules/imports/mapper.py`
+- `apps/api/app/modules/imports/service_v2.py`
+- `apps/api/migrations/versions/20260610_01_add_import_history_metadata.py`
+- `apps/api/tests/test_import_csv_validation.py`
+- `apps/api/tests/test_import_xlsx_validation.py`
+- `apps/api/tests/test_import_preview_confirm.py`
+- `apps/api/tests/test_import_duplicate_detection.py`
+- `docs/BETA_012A_IMPORT_CSV_XLSX_BACKEND.md`
+
+**Limitações Conhecidas:**
+- Endpoint de confirmação requer gerenciamento de estado (Redis) - atualmente retorna 501
+- Preview não é persistido entre chamadas
+
+**Documentação:** `docs/BETA_012A_IMPORT_CSV_XLSX_BACKEND.md`
+
+---
+
 ## Ações Imediatas (Antes de Merge dos PRs Beta)
 
 ### 1. Revisar Draft PRs na Ordem Correta

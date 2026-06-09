@@ -1,4 +1,5 @@
 from datetime import date, datetime
+from typing import Any
 
 from pydantic import BaseModel
 
@@ -21,6 +22,10 @@ class ImportHistoryResponse(BaseModel):
     rejected_count: int
     status: str
     created_at: datetime
+    # BETA-012A: Additional fields
+    source: str | None = None
+    import_metadata: str | None = None
+    imported_by: int | None = None
 
 
 class DeliveryListItem(BaseModel):
@@ -76,3 +81,56 @@ class PromoteDeliveryResponse(BaseModel):
     invoice_number: str | None
     created_at: datetime
     updated_at: datetime
+
+
+# BETA-012A: Schemas for preview/confirm with validation
+class RowValidationError(BaseModel):
+    row_number: int
+    field: str | None = None
+    message: str
+    value: Any = None
+    is_blocking: bool = True
+
+
+class ValidatedRowData(BaseModel):
+    row_number: int
+    data: dict[str, Any]
+    errors: list[RowValidationError]
+    warnings: list[RowValidationError]
+    is_valid: bool
+
+
+class ImportPreviewV2Response(BaseModel):
+    filename: str
+    file_type: str
+    file_hash: str
+    total_rows: int
+    valid_rows: int
+    invalid_rows: int
+    duplicate_rows: int
+    preview_items: list[ValidatedRowData]
+    errors: list[RowValidationError]
+    warnings: list[RowValidationError]
+    import_id: int | None = None
+
+
+class ImportConfirmRequest(BaseModel):
+    import_id: int
+    confirm: bool = True
+
+
+class ImportConfirmResponse(BaseModel):
+    id: int
+    filename: str
+    file_type: str
+    file_hash: str
+    rows_received: int
+    duplicates_count: int
+    imported_count: int
+    rejected_count: int
+    status: str
+    source: str | None = None
+    import_metadata: str | None = None
+    imported_by: int | None = None
+    created_at: datetime
+    created_shipments: list[int] = []

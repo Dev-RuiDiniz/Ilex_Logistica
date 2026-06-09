@@ -54,6 +54,8 @@ result = subprocess.run(
     text=True
 )
 print(result.stdout)
+if result.stderr:
+    print(result.stderr)
 if result.returncode != 0:
     print("ERROR: Migration tests failed")
     sys.exit(1)

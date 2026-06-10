@@ -1,10 +1,28 @@
-export type UserRole = "admin" | "logistica" | "gestor" | "auditoria";
+export type UserRole = "admin" | "manager" | "operator" | "viewer" | "logistica" | "gestor" | "auditoria";
+
+export type Permission =
+  | "audit:read"
+  | "reports:read"
+  | "reports:write"
+  | "alerts:read"
+  | "alerts:write"
+  | "sla:read"
+  | "sla:write"
+  | "shipments:read"
+  | "shipments:write"
+  | "imports:read"
+  | "imports:write"
+  | "carriers:read"
+  | "carriers:write"
+  | "users:read"
+  | "users:write";
 
 export interface SessionData {
   accessToken: string;
   refreshToken: string;
   role: UserRole;
   email: string;
+  permissions?: Permission[];
 }
 
 export interface Carrier {

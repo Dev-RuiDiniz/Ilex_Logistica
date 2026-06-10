@@ -3,18 +3,20 @@
 import { FormEvent, useEffect, useState } from "react";
 
 import { createUser, listUsers, updateUser } from "@/lib/api";
+import { canReadUsers, canWriteUsers } from "@/lib/permissions";
 import { useAuth } from "@/features/auth/auth-provider";
 import type { UserListItem, UserRole } from "@/lib/types";
 
-const roleOptions: UserRole[] = ["admin", "logistica", "gestor", "auditoria"];
+const roleOptions: UserRole[] = ["admin", "manager", "operator", "viewer", "logistica", "gestor", "auditoria"];
 
 export default function UsersPage() {
   const { session } = useAuth();
+  const role = session?.role ?? "auditoria";
   const [items, setItems] = useState<UserListItem[]>([]);
   const [error, setError] = useState("");
   const [email, setEmail] = useState("");
   const [fullName, setFullName] = useState("");
-  const [role, setRole] = useState<UserRole>("logistica");
+  const [selectedRole, setSelectedRole] = useState<UserRole>("logistica");
 
   useEffect(() => {
     let cancelled = false;
@@ -30,6 +32,14 @@ export default function UsersPage() {
     void run();
     return () => { cancelled = true; };
   }, [session]);
+
+  if (!canReadUsers(role)) {
+    return (
+      <div className="rounded border bg-red-50 p-4 text-center">
+        <p className="text-sm text-red-700">Você não tem permissão para acessar esta página.</p>
+      </div>
+    );
+  }
 
   const reloadUsers = async () => {
     if (!session) return;
@@ -47,7 +57,7 @@ export default function UsersPage() {
       await createUser(session.accessToken, { email, full_name: fullName, password: "123456", roles: [role] });
       setEmail("");
       setFullName("");
-      setRole("logistica");
+      setSelectedRole("logistica");
       await reloadUsers();
     } catch {
       setError("Falha ao criar usuário.");
@@ -84,10 +94,16 @@ export default function UsersPage() {
       <form onSubmit={onCreate} className="grid gap-2 rounded border p-4 md:grid-cols-4">
         <input value={email} onChange={(e) => setEmail(e.target.value)} className="rounded border px-3 py-2 text-sm" placeholder="E-mail" required />
         <input value={fullName} onChange={(e) => setFullName(e.target.value)} className="rounded border px-3 py-2 text-sm" placeholder="Nome completo" required />
-        <select value={role} onChange={(e) => setRole(e.target.value as UserRole)} className="rounded border px-3 py-2 text-sm">
+        <select value={selectedRole} onChange={(e) => setSelectedRole(e.target.value as UserRole)} className="rounded border px-3 py-2 text-sm">
           {roleOptions.map((item) => <option key={item} value={item}>{item}</option>)}
         </select>
-        <button className="rounded bg-slate-900 px-4 py-2 text-sm text-white" type="submit">Criar</button>
+        <button 
+          className={`rounded px-4 py-2 text-sm ${canWriteUsers(role) ? "bg-slate-900 text-white" : "bg-slate-300 text-slate-500 cursor-not-allowed"}`} 
+          type="submit" 
+          disabled={!canWriteUsers(role)}
+        >
+          Criar
+        </button>
       </form>
       <div className="overflow-hidden rounded border">
         <table className="w-full text-sm">
@@ -110,13 +126,19 @@ export default function UsersPage() {
                 <td className="px-3 py-2">
                   <div className="flex gap-2">
                     <select
-                      className="rounded border px-2 py-1 text-xs"
+                      className={`rounded border px-2 py-1 text-xs ${canWriteUsers(role) ? "" : "bg-slate-100 text-slate-400 cursor-not-allowed"}`}
                       defaultValue={item.roles[0] ?? "logistica"}
                       onChange={(e) => void onPromote(item, e.target.value as UserRole)}
+                      disabled={!canWriteUsers(role)}
                     >
                       {roleOptions.map((roleItem) => <option key={roleItem} value={roleItem}>{roleItem}</option>)}
                     </select>
-                    <button className="rounded border px-2 py-1 text-xs text-red-700" onClick={() => void onInactivate(item)} type="button">
+                    <button 
+                      className={`rounded border px-2 py-1 text-xs ${canWriteUsers(role) ? "text-red-700" : "text-slate-400 cursor-not-allowed"}`} 
+                      onClick={() => void onInactivate(item)} 
+                      type="button"
+                      disabled={!canWriteUsers(role)}
+                    >
                       Inativar
                     </button>
                   </div>

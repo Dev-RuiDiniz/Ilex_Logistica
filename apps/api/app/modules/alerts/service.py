@@ -1,5 +1,6 @@
 """Alerts generation service for BETA-017A."""
 
+import logging
 from datetime import UTC, datetime, timedelta
 from typing import Any
 
@@ -9,6 +10,10 @@ from app.modules.alerts.models import Alert
 from app.modules.shipments.exceptions_service import classify_exception_type
 from app.modules.shipments.models import Shipment
 from app.modules.sla.service import calculate_shipment_sla
+from app.modules.audit.service import AuditLogService
+from app.modules.audit.schemas import AuditLogCreateRequest
+
+logger = logging.getLogger(__name__)
 
 
 def generate_alerts(db: Session) -> dict[str, Any]:
@@ -100,6 +105,22 @@ def generate_alerts(db: Session) -> dict[str, Any]:
                 continue
 
         db.commit()
+        
+        # Audit log
+        try:
+            audit_log = AuditLogCreateRequest(
+                event_type="alert_generated",
+                entity_type="alert",
+                action="create",
+                source="system",
+                severity="info",
+                status="success",
+                message=f"Alertas gerados: {created_count} criados",
+                metadata_json=f'{{"created_count": {created_count}}}',
+            )
+            AuditLogService.create_log(db, audit_log)
+        except Exception as e:
+            logger.error(f"Failed to create audit log for alerts: {e}")
 
         return {
             "success": True,

@@ -18,7 +18,7 @@ Esta auditoria funcional automatizada inspecionou a estrutura do repositório pa
 | 4 - Eficiência por transportadora | AUSENTE | 0/6 (0%) | 0/6 (0%) | 6/6 (100%) |
 | 5 - Alertas e notificações | PARCIAL | 0/10 (0%) | 2/10 (20%) | 8/10 (80%) |
 | 6 - Relatório diário automático | AUSENTE | 0/6 (0%) | 0/6 (0%) | 6/6 (100%) |
-| 7 - Logs e auditoria | PARCIAL | 0/9 (0%) | 2/9 (22%) | 7/9 (78%) |
+| 7 - Logs e auditoria | PARCIAL | 4/9 (44%) | 2/9 (22%) | 3/9 (33%) |
 | 8 - Integrações assistidas | PARCIAL | 0/9 (0%) | 1/9 (11%) | 8/9 (89%) |
 | 9 - Usuários, permissões e segurança | PARCIAL | 1/11 (9%) | 1/11 (9%) | 9/11 (82%) |
 | 10 - Dashboard beta e UX | PARCIAL | 0/9 (0%) | 2/9 (22%) | 7/9 (78%) |

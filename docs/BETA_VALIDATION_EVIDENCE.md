@@ -1,10 +1,6 @@
 # BETA VALIDATION EVIDENCE
 
-<<<<<<< HEAD
 Evidências dos PRs BETA-000 a BETA-008 com comandos executados, status e limitações conhecidas.
-=======
-Evidências dos PRs BETA-000 a BETA-004 com comandos executados, status e limitações conhecidas.
->>>>>>> origin/main
 
 ## BETA-000 - Plano de Execução TDD Fase Beta
 
@@ -244,17 +240,12 @@ python -m pytest tests/test_migrations.py -v
 ## BETA-005 - Documentação Final, Checklists e Consolidação Beta
 
 ### PR
-<<<<<<< HEAD
 - **Número:** PR #12
-=======
-- **Número:** PR #12 (a ser criado)
->>>>>>> origin/main
 - **Branch:** feature/beta-005-docs-checklists
 - **Objetivo:** Consolidar documentação final, checklists e comandos oficiais
 
 ### Comandos Executados
 ```bash
-<<<<<<< HEAD
 # Secret scan
 python scripts/check_secrets.py --repo-root .
 # Resultado: OK: No potential secrets found
@@ -275,29 +266,10 @@ alembic history
 
 python -m pytest tests/test_migrations.py -v
 # Resultado: 4 passed, 1 warning
-=======
-# Criação de branch
-git checkout -b feature/beta-005-docs-checklists origin/main
-
-# Criação de documentos
-docs/BETA_CHECKLIST.md
-docs/BETA_VALIDATION_EVIDENCE.md
-docs/BETA_COMMANDS.md
-docs/BETA_RELEASE_GATE.md
-docs/BETA_KNOWN_LIMITATIONS.md
-docs/BETA_NEXT_ACTIONS.md
-
-# Criação de scripts
-scripts/validate_docs.py
-
-# Validação documental
-python scripts/validate_docs.py
->>>>>>> origin/main
 ```
 
 ### Status
 - **Estado:** DRAFT
-<<<<<<< HEAD
 - **CI:** Passando
 - **Merge:** Não realizado
 
@@ -545,21 +517,6 @@ git status
 
 ### Link
 - https://github.com/Dev-RuiDiniz/Ilex_Logistica/pull/17 (a ser criado)
-=======
-- **CI:** A ser testado
-- **Merge:** Não realizado
-
-### Limitações Conhecidas
-- Nenhuma (documento de consolidação)
-
-### Pendências Antes de Merge
-- Revisão de PR
-- Validação documental passando
-- Resolução de conflitos (se houver)
-
-### Link
-- https://github.com/Dev-RuiDiniz/Ilex_Logistica/pull/12 (a ser criado)
->>>>>>> origin/main
 
 ---
 
@@ -573,16 +530,12 @@ git status
 | #9 | feature/beta-002-smoke-ci-scripts | DRAFT | Passando | Revisão de PR |
 | #10 | feature/beta-003-test-coverage-reports | DRAFT | Passando | Revisão de PR |
 | #11 | feature/beta-004-migrations-rollback-tests | DRAFT | Passando | Revisão de PR |
-<<<<<<< HEAD
 | #12 | feature/beta-005-docs-checklists | DRAFT | Passando | Revisão de PR |
 | #13 | feature/beta-006-pr-audit-merge-plan | DRAFT | Passando | Revisão de PR |
 | #14 | feature/beta-007-integration-convergence | DRAFT | Passando | Revisão de PR |
 | #15 | feature/beta-008-ci-bootstrap-ready-plan | DRAFT | Passando | Revisão de PR |
 | #16 | feature/beta-009-pr-revalidation-after-ci-bootstrap | DRAFT | Bloqueado | Merge manual do BETA-008 |
 | #17 | feature/beta-009s-stacked-validation-on-ci-bootstrap | DRAFT | Passando | Revisão de PR |
-=======
-| #12 | feature/beta-005-docs-checklists | DRAFT | A ser testado | Revisão de PR |
->>>>>>> origin/main
 
 ## Limitações Globais
 
@@ -595,31 +548,17 @@ git status
 - Downgrade para base destrói dados por design
 - Não há validação de preservação real de dados
 
-<<<<<<< HEAD
 ### Scripts
 - Bash wrappers removidos ou não oficiais (instáveis no Windows/Git Bash)
 - Python oficial para máxima portabilidade
-
-=======
->>>>>>> origin/main
 ### E2E
 - Testes marcados como skip para UI não implementada
 - Autenticação mockada (localStorage)
 - Dados de teste mockados
 
-<<<<<<< HEAD
-=======
-### Scripts
-- Bash wrappers removidos (instáveis no Windows/Git Bash)
-- Python oficial para máxima portabilidade
 
->>>>>>> origin/main
 ---
 
 **Assinatura:** Devin (SWE-1.6)  
 **Data:** 2026-06-08  
-<<<<<<< HEAD
 **Status:** 🔄 Em execução (BETA-009S - Revalidação Empilhada)
-=======
-**Status:** 🔄 Em execução (BETA-005)
->>>>>>> origin/main

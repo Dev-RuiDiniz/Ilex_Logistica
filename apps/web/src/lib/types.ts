@@ -206,3 +206,161 @@ export interface PromoteDeliveryResponse {
   created_at: string;
   updated_at: string;
 }
+
+// Daily Report types (BETA-018B)
+export type DailyReportStatus = "pending" | "generating" | "generated" | "failed";
+
+export interface DailyReportKpis {
+  total_shipments: number;
+  total_exceptions: number;
+  avg_delay_days: number;
+  on_time_rate: number;
+  active_alerts_count?: number;
+  delivery_rate: number;
+  [key: string]: any;
+}
+
+export interface DailyReportSummary {
+  total_envios: number;
+  total_atrasos: number;
+  total_criticos: number;
+  percentual_atraso: number;
+  total_shipments?: number;
+  on_time_count?: number;
+  late_count?: number;
+  critical_count?: number;
+  exceptions_count?: number;
+  import_failures_count?: number;
+  [key: string]: any;
+}
+
+export interface DailyReportExceptionItem {
+  shipment_id: number;
+  tracking_code: string;
+  carrier_name: string;
+  status: string;
+  delay_days: number;
+  criticality: string;
+  [key: string]: any;
+}
+
+export interface DailyReportAlertItem {
+  id: number;
+  type: string;
+  message: string;
+  severity: string;
+  created_at: string;
+  [key: string]: any;
+}
+
+export interface DailyReportCarrierEfficiencyItem {
+  carrier_id: number;
+  carrier_name: string;
+  total_shipments: number;
+  on_time_count: number;
+  efficiency_rate: number;
+  [key: string]: any;
+}
+
+export interface DailyReportImportFailures {
+  total_imports: number;
+  failed_imports: number;
+  failure_rate: number;
+  top_errors: Array<{ error: string; count: number }>;
+  rejected_count?: number;
+  [key: string]: any;
+}
+
+export interface DailyReport {
+  id: number;
+  report_date: string;
+  status: DailyReportStatus;
+  summary_json: string;
+  kpis_json: string;
+  exceptions_json: string;
+  alerts_json: string;
+  carrier_efficiency_json: string;
+  import_failures_json: string;
+  generated_at: string;
+  period_start?: string;
+  period_end?: string;
+  notes?: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface DailyReportFilters {
+  date_from?: string;
+  date_to?: string;
+  status?: DailyReportStatus;
+  limit?: number;
+  offset?: number;
+}
+
+export interface DailyReportGenerateRequest {
+  report_date: string;
+  force_regenerate?: boolean;
+}
+
+export interface DailyReportListResponse {
+  reports: DailyReport[];
+  total: number;
+  limit: number;
+  offset: number;
+}
+
+// SLA Rule types (BETA-013A)
+export interface SlaRule {
+  id: number;
+  carrier_id: number;
+  destination_uf: string;
+  transit_days: number;
+  warning_threshold_days: number;
+  critical_delay_days: number;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface SlaRuleCreate {
+  carrier_id: number | null;
+  destination_uf: string | null;
+  transit_days: number;
+  warning_threshold_days: number;
+  critical_delay_days: number;
+  is_active?: boolean;
+}
+
+export interface SlaRuleUpdate {
+  carrier_id?: number;
+  destination_uf?: string;
+  transit_days?: number;
+  warning_threshold_days?: number;
+  critical_delay_days?: number;
+  is_active?: boolean;
+}
+
+export interface SlaRecalculateResponse {
+  processed_count: number;
+  updated_count: number;
+  skipped_count: number;
+  error_count: number;
+}
+
+// Carrier Efficiency types (BETA-014A)
+export interface CarrierEfficiencyFilters {
+  carrier_id?: number;
+  date_from?: string;
+  date_to?: string;
+}
+
+export interface CarrierEfficiencyResponse {
+  carrier_id: number;
+  carrier_name: string;
+  total_shipments: number;
+  on_time_count: number;
+  late_count: number;
+  critical_count: number;
+  efficiency_rate: number;
+  avg_delay_days: number;
+}

@@ -593,16 +593,18 @@ def preview_import(
     db: Session,
     upload: UploadFile,
     user_id: int | None = None,
+    source: str | None = None,
 ) -> ImportPreview:
     """Preview import without persisting shipments.
-    
+
     Creates a pending ImportHistory record with validated data in metadata.
-    
+
     Args:
         db: Database session
         upload: Uploaded file
         user_id: User ID performing the import (optional)
-        
+        source: Import source for layout-specific mapping (optional, e.g., braspress_assisted)
+
     Returns:
         ImportPreview with validation results
     """

@@ -35,6 +35,12 @@
 - `CONTEXTO.md` — Contexto vivo do projeto
 - `RELATORIO_DIA.md` — Registro diario de atividades
 
+### Commit e Push
+- **Commit:** `docs(governance): adiciona auditoria completa, regras de agentes e contexto do projeto`
+- **Hash:** `b991c14`
+- **Push:** `main -> origin/main` (6e6fc14..b991c14)
+- **Arquivos:** 4 criados, 895 linhas inseridas
+
 ### Arquivos Inspecionados (nao modificados)
 - `.github/workflows/beta-ci.yml`
 - `apps/api/app/main.py`

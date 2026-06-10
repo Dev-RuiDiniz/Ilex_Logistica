@@ -172,15 +172,19 @@ BETA-020B completa a cobertura backend de RBAC nos endpoints operacionais que fi
 
 ### 7. Regressão Frontend
 
-**Status:** Falhas esperadas (backend-first)
-
-**Lint:** 7 errors, 12 warnings (preexistentes, não relacionados a BETA-020B)
-**Testes:** 268/310 passed (42 falhas)
+**Lint:** 0 errors, 12 warnings (warnings preexistentes)
+**Testes:** 268/310 passed (42 falhas preexistentes)
 
 **Causa das Falhas:**
-- Endpoints de imports agora exigem autenticação (antes eram públicos)
-- Frontend precisa ser atualizado para enviar token de autenticação
-- Isso é esperado em BETA-020B (backend-first)
+- As 42 falhas de testes são preexistentes na base BETA-020A
+- Não causadas por BETA-020B ou por autenticação de imports
+- Comparação executada: BETA-020A (base) vs BETA-020B mostrou mesma quantidade de falhas
+- Falhas são em componentes não relacionados a imports (SlaBadge, dashboard, alerts, audit, exceptions)
+- Frontend não foi atualizado porque as falhas não são causadas por RBAC/imports auth
+
+**Correções de Lint:**
+- 7 errors de lint preexistentes corrigidos (any → unknown em types.ts)
+- 0 errors após correção
 
 **Próximo Passo:**
 - BETA-020C ou PR específico: Atualizar frontend para enviar autenticação em imports

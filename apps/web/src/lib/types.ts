@@ -221,7 +221,7 @@ export interface DailyReportKpis {
   on_time_rate?: number;
   active_alerts_count?: number;
   delivery_rate?: number;
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 export interface DailyReportSummary {
@@ -235,7 +235,7 @@ export interface DailyReportSummary {
   critical_count?: number;
   exceptions_count?: number;
   import_failures_count?: number;
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 export interface DailyReportExceptionItem {
@@ -245,7 +245,7 @@ export interface DailyReportExceptionItem {
   status: string;
   delay_days: number;
   criticality: string;
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 export interface DailyReportAlertItem {
@@ -254,7 +254,7 @@ export interface DailyReportAlertItem {
   message: string;
   severity: string;
   created_at: string;
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 export interface DailyReportCarrierEfficiencyItem {
@@ -263,7 +263,7 @@ export interface DailyReportCarrierEfficiencyItem {
   total_shipments: number;
   on_time_count: number;
   efficiency_rate: number;
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 export interface DailyReportImportFailures {
@@ -272,7 +272,7 @@ export interface DailyReportImportFailures {
   failure_rate?: number;
   top_errors?: Array<{ error: string; count: number }>;
   rejected_count?: number;
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 export interface DailyReport {
@@ -375,7 +375,7 @@ export interface ValidatedRowData {
     carrier_name?: string;
     expected_delivery_date?: string;
     status?: string;
-    [key: string]: any;
+    [key: string]: unknown;
   };
 }
 

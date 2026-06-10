@@ -155,18 +155,19 @@ Limitações conhecidas do projeto Ilex Logística na fase beta.
 
 **Status:** Limitação resolvida em BETA-020B
 
-### Frontend Não Atualizado para Autenticação de Imports (BETA-020B)
-**Limitação:** Frontend não envia autenticação em endpoints de imports
+### Frontend Testes Preexistentes (BETA-020B)
+**Limitação:** 42 testes frontend falhando são preexistentes na base BETA-020A
 
-**Impacto:** 42 testes frontend falhando, chamadas de imports retornam 401
+**Impacto:** 268/310 testes frontend passando
 
-**Causa:** Endpoints de imports agora exigem autenticação (antes eram públicos), frontend não atualizado
+**Causa:** Falhas são preexistentes, não causadas por BETA-020B ou autenticação de imports
 
 **Mitigação:**
 - Documentado em docs/BETA_020B_RBAC_OPERATIONAL_ENDPOINTS_BACKEND.md
-- BETA-020C ou PR específico: Atualizar frontend para enviar autenticação
-- Isso é uma melhoria de segurança (imports antes eram públicos)
-- Backend-first approach permite validação separada
+- Comparação executada: BETA-020A (base) vs BETA-020B mostrou mesma quantidade de falhas
+- Falhas são em componentes não relacionados a imports (SlaBadge, dashboard, alerts, audit, exceptions)
+- 7 errors de lint preexistentes corrigidos (any → unknown em types.ts)
+- BETA-020C: Corrigir testes frontend preexistentes
 
 **Status:** Limitação documentada
 

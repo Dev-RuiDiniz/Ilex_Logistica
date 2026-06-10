@@ -393,23 +393,33 @@ class TestBraspressConfirm:
 class TestGenericImportBackwardCompatibility:
     """Test that generic import still works after Braspress changes."""
 
-    def test_generic_csv_import_still_works(self, db_session: Session, braspress_valid_csv, seed_braspress_carrier):
+    def test_generic_csv_import_still_works(self, db_session: Session, seed_braspress_carrier):
         """Test that generic CSV import without source still works."""
-        upload = create_upload_file(braspress_valid_csv, "generic.csv")
+        csv_content = (
+            b"tracking_code,invoice_number,customer_name,destination_uf,collection_departure_date,invoice_value,freight_value,carrier_id\n"
+            b"TRK001,NF001,Cliente A,SP,2025-01-15,1234.56,123.45,1\n"
+            b"TRK002,NF002,Cliente B,RJ,2025-01-16,2345.67,234.56,1\n"
+        )
+        upload = create_upload_file(csv_content, "generic.csv")
         preview = preview_import(db_session, upload, source=None)
-        
-        assert preview.total_rows == 4  # Fixture has 4 data rows
+
+        assert preview.total_rows == 2
         history = db_session.query(ImportHistory).filter(ImportHistory.id == preview.import_id).first()
         assert history.source == "csv_xlsx_import"
 
-    def test_generic_csv_confirm_still_works(self, db_session: Session, braspress_valid_csv, seed_braspress_carrier):
+    def test_generic_csv_confirm_still_works(self, db_session: Session, seed_braspress_carrier):
         """Test that generic CSV confirmation still works."""
-        upload = create_upload_file(braspress_valid_csv, "generic.csv")
+        csv_content = (
+            b"tracking_code,invoice_number,customer_name,destination_uf,collection_departure_date,invoice_value,freight_value,carrier_id\n"
+            b"TRK001,NF001,Cliente A,SP,2025-01-15,1234.56,123.45,1\n"
+            b"TRK002,NF002,Cliente B,RJ,2025-01-16,2345.67,234.56,1\n"
+        )
+        upload = create_upload_file(csv_content, "generic.csv")
         preview = preview_import(db_session, upload, source=None)
         history = confirm_import(db_session, preview.import_id)
-        
+
         assert history.status == "completed"
-        assert history.imported_count == 4  # Fixture has 4 data rows
+        assert history.imported_count == 2
 
 
 # Tests for Data Validation

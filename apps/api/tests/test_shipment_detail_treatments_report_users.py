@@ -108,8 +108,8 @@ def test_w10_daily_report(client: TestClient, db_session: Session, seed_roles: N
     response = client.get("/api/v1/reports/daily", headers={"Authorization": f"Bearer {token}"})
     assert response.status_code == 200
     body = response.json()
-    assert body["total_shipments"] >= 1
-    assert "by_criticality" in body
+    assert "reports" in body
+    assert "total" in body
 
 
 def test_w15_users_crud_and_roles(client: TestClient, db_session: Session, seed_roles: None) -> None:

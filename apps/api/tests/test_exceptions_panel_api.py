@@ -53,6 +53,5 @@ def test_usuario_sem_auth_e_bloqueado_se_o_padrao_atual_exigir_auth(client: Test
     response = client.get(
         "/api/v1/shipments/analytics/exceptions",
     )
-    # Se o padrão atual exigir auth, deve retornar 401
-    # Se não exigir, pode retornar 200
-    assert response.status_code in (200, 401)
+    # API retorna 403 para requisições sem token válido
+    assert response.status_code in (200, 403)

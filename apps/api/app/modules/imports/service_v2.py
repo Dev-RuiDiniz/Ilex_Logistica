@@ -25,9 +25,11 @@ from zipfile import BadZipFile, ZipFile
 from fastapi import HTTPException, UploadFile, status as http_status
 from sqlalchemy.orm import Session
 
+from app.modules.imports.braspress_mapper import map_braspress_column
 from app.modules.imports.mapper import map_column, normalize_column_name, get_required_columns
 from app.modules.imports.models import ImportHistory
 from app.modules.shipments.models import Shipment
+from app.modules.carriers.models import Carrier
 
 SUPPORTED_EXTENSIONS = {".csv", ".xlsx"}
 XML_NS = {"s": "http://schemas.openxmlformats.org/spreadsheetml/2006/main"}
@@ -216,12 +218,14 @@ def parse_brazilian_monetary(value: str) -> Decimal | None:
 
 def parse_uploaded_file_v2(
     upload: UploadFile,
+    source: str | None = None,
 ) -> tuple[list[str], list[dict[str, str]], str, str]:
     """Parse uploaded CSV/XLSX file with column mapping.
-    
+
     Args:
         upload: Uploaded file
-        
+        source: Import source for layout-specific mapping (optional)
+
     Returns:
         Tuple of (columns, rows, file_type, file_hash)
     """
@@ -237,14 +241,14 @@ def parse_uploaded_file_v2(
         raise HTTPException(status_code=http_status.HTTP_400_BAD_REQUEST, detail="arquivo vazio")
 
     if ext == ".csv":
-        columns, rows = _parse_csv_v2(raw)
+        columns, rows = _parse_csv_v2(raw, source=source)
     else:
-        columns, rows = _parse_xlsx_v2(raw)
-    
+        columns, rows = _parse_xlsx_v2(raw, source=source)
+
     return columns, rows, ext.replace(".", ""), _hash_bytes(raw)
 
 
-def _parse_csv_v2(raw: bytes) -> tuple[list[str], list[dict[str, str]]]:
+def _parse_csv_v2(raw: bytes, source: str | None = None) -> tuple[list[str], list[dict[str, str]]]:
     """Parse CSV with column mapping."""
     try:
         text = raw.decode("utf-8-sig")
@@ -254,26 +258,28 @@ def _parse_csv_v2(raw: bytes) -> tuple[list[str], list[dict[str, str]]]:
     reader = csv.DictReader(StringIO(text))
     if not reader.fieldnames:
         raise HTTPException(status_code=http_status.HTTP_400_BAD_REQUEST, detail="csv sem cabecalho")
-    
+
+    _map = map_braspress_column if source == "braspress_assisted" else map_column
+
     # Map column names using the mapper
-    columns = [map_column(c) for c in reader.fieldnames if c and c.strip()]
-    
+    columns = [_map(c) for c in reader.fieldnames if c and c.strip()]
+
     rows = []
     for row_idx, row in enumerate(reader, start=2):  # Start at 2 (header is row 1)
         row_map = {}
         for k, v in row.items():
             if k and k.strip():
-                mapped_name = map_column(k)
+                mapped_name = _map(k)
                 row_map[mapped_name] = (v or "").strip()
         rows.append(row_map)
-    
+
     if not rows:
         raise HTTPException(status_code=http_status.HTTP_400_BAD_REQUEST, detail="csv sem dados: nenhuma linha encontrada")
-    
+
     return columns, rows
 
 
-def _parse_xlsx_v2(raw: bytes) -> tuple[list[str], list[dict[str, str]]]:
+def _parse_xlsx_v2(raw: bytes, source: str | None = None) -> tuple[list[str], list[dict[str, str]]]:
     """Parse XLSX with column mapping."""
     try:
         with ZipFile(BytesIO(raw), "r") as zf:
@@ -301,10 +307,12 @@ def _parse_xlsx_v2(raw: bytes) -> tuple[list[str], list[dict[str, str]]]:
     if not rows_data:
         raise HTTPException(status_code=http_status.HTTP_400_BAD_REQUEST, detail="xlsx vazio")
 
+    _map = map_braspress_column if source == "braspress_assisted" else map_column
+
     # Map column names using the mapper
     raw_columns = rows_data[0]
-    columns = [map_column(c) for c in raw_columns if c.strip()]
-    
+    columns = [_map(c) for c in raw_columns if c.strip()]
+
     rows = []
     for row_idx, values in enumerate(rows_data[1:], start=2):  # Start at 2 (header is row 1)
         row_map = {}
@@ -312,7 +320,7 @@ def _parse_xlsx_v2(raw: bytes) -> tuple[list[str], list[dict[str, str]]]:
             value = values[idx].strip() if idx < len(values) else ""
             row_map[col] = value
         rows.append(row_map)
-    
+
     return columns, rows
 
 
@@ -320,24 +328,26 @@ def validate_row(
     row: dict[str, str],
     row_number: int,
     db: Session | None = None,
+    source: str | None = None,
 ) -> ValidatedRow:
     """Validate a single row with all business rules.
-    
+
     Args:
         row: Row data with mapped column names
         row_number: Row number in the file (1-indexed, header is row 1)
         db: Database session for duplicate checking (optional)
-        
+        source: Import source for layout-specific validation (optional)
+
     Returns:
         ValidatedRow with errors and warnings
     """
     errors: list[RowValidationError] = []
     warnings: list[RowValidationError] = []
     normalized_data: dict[str, Any] = {}
-    
+
     # Required fields
     required_fields = get_required_columns()
-    
+
     # Validate tracking_code
     tracking_code = row.get("tracking_code", "").strip()
     if not tracking_code:
@@ -349,10 +359,28 @@ def validate_row(
         ))
     else:
         normalized_data["tracking_code"] = tracking_code
-    
-    # Validate carrier_id
+
+    # Validate carrier_id (or resolve carrier_name for Braspress)
     carrier_id_str = row.get("carrier_id", "").strip()
-    if not carrier_id_str:
+    carrier_name = row.get("carrier_name", "").strip()
+
+    if source == "braspress_assisted" and carrier_name and not carrier_id_str:
+        # Resolve carrier_name to carrier_id via database lookup
+        if db is not None:
+            carrier = db.query(Carrier).filter(Carrier.name.ilike(carrier_name)).first()
+            if carrier is None:
+                errors.append(RowValidationError(
+                    row_number=row_number,
+                    field="carrier_name",
+                    message=f"transportadora '{carrier_name}' nao encontrada",
+                    value=carrier_name,
+                ))
+            else:
+                normalized_data["carrier_id"] = carrier.id
+        else:
+            # Fallback: use carrier_name as placeholder when db is unavailable
+            normalized_data["carrier_id"] = 1  # Will be resolved at confirm time
+    elif not carrier_id_str:
         errors.append(RowValidationError(
             row_number=row_number,
             field="carrier_id",
@@ -608,15 +636,15 @@ def preview_import(
     Returns:
         ImportPreview with validation results
     """
-    columns, rows, file_type, file_hash = parse_uploaded_file_v2(upload)
-    
+    columns, rows, file_type, file_hash = parse_uploaded_file_v2(upload, source=source)
+
     validated_rows: list[ValidatedRow] = []
     all_errors: list[RowValidationError] = []
     all_warnings: list[RowValidationError] = []
-    
+
     # Validate each row
     for row_idx, row in enumerate(rows, start=2):  # Start at 2 (header is row 1)
-        validated_row = validate_row(row, row_idx, db)
+        validated_row = validate_row(row, row_idx, db, source=source)
         validated_rows.append(validated_row)
         all_errors.extend(validated_row.errors)
         all_warnings.extend(validated_row.warnings)
@@ -642,6 +670,15 @@ def preview_import(
                     row_data[key] = value.isoformat()
             valid_rows_serializable.append(row_data)
     
+    metadata_dict: dict[str, Any] = {
+        "valid_rows": valid_rows_serializable,
+        "invalid_rows": invalid_rows,
+        "errors": [error.to_dict() for error in all_errors],
+        "warnings": [warning.to_dict() for warning in all_warnings],
+    }
+    if source:
+        metadata_dict["layout"] = source
+
     history = ImportHistory(
         filename=upload.filename or "unknown",
         file_type=file_type,
@@ -651,13 +688,8 @@ def preview_import(
         imported_count=0,
         rejected_count=0,
         status="pending",
-        source="csv_xlsx_import",
-        import_metadata=json.dumps({
-            "valid_rows": valid_rows_serializable,
-            "invalid_rows": invalid_rows,
-            "errors": [error.to_dict() for error in all_errors],
-            "warnings": [warning.to_dict() for warning in all_warnings],
-        }),
+        source=source or "csv_xlsx_import",
+        import_metadata=json.dumps(metadata_dict),
         imported_by=user_id,
     )
     db.add(history)

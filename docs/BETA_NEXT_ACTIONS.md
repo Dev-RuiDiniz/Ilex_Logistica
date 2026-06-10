@@ -2,6 +2,56 @@
 
 Próximas ações pós BETA-009S para o projeto Ilex Logística.
 
+## Status Atual do Roadmap Beta
+
+**Épico 7 — Logs e Auditoria Operacional:**
+- ✅ BETA-019A: Backend de auditoria operacional (concluído)
+- ⏳ BETA-019B: Frontend de auditoria operacional (próximo)
+
+**Épicos Concluídos:**
+- Sprint Beta 1: SLA, importação CSV/XLSX/Braspress, campos fiscais/financeiros
+- Sprint Beta 2: eficiência por transportadora, painel de exceções, dashboard beta
+- Épico 5: Alertas internos
+- Épico 6: Relatório diário
+
+**Progresso Total:** ~74% do roadmap técnico beta
+
+## Próximas Ações Imediatas
+
+### 1. BETA-019B — Frontend de Auditoria Operacional
+
+**Objetivo:** Implementar frontend para visualização e consulta de logs de auditoria.
+
+**Escopo:**
+- Interface para visualizar logs de auditoria
+- Filtros visuais (event_type, entity_type, severity, status, período)
+- Detalhe do log com before/after/metadata
+- Timeline por entrega/entidade
+- Exportação de logs (CSV/JSON) se aprovado
+
+**Base:** BETA-019A (backend já implementado)
+
+**Status:** Próximo
+
+---
+
+### 2. Épico 9 — Segurança e RBAC Avançado
+
+**Objetivo:** Implementar segurança avançada e RBAC granular.
+
+**Escopo:**
+- RBAC granular para endpoints de auditoria
+- Sanitização completa de secrets em logs
+- Política de retenção de logs
+- Trilha imutável com assinatura criptográfica
+- Auditoria de login/logout
+- Auditoria de tentativas de acesso não autorizado
+
+**Status:** Futuro
+
+---
+
+
 ## Ações Imediatas (Antes de Merge dos PRs Beta)
 
 ### 1. Revisar Draft PRs na Ordem Correta

@@ -1,3 +1,4 @@
+import os
 from collections.abc import Generator
 
 import pytest
@@ -10,6 +11,9 @@ from app.database.base import Base
 from app.database.session import get_db
 from app.main import app
 from app.modules.users.models import Role, User
+
+# Set environment variable for logging middleware
+os.environ["ENABLE_LOGGING_MIDDLEWARE"] = "false"
 
 TEST_DB_URL = "sqlite:///./test.db"
 engine = create_engine(TEST_DB_URL, connect_args={"check_same_thread": False}, future=True)
@@ -73,7 +77,6 @@ def create_user_with_roles(db: Session, email: str, password: str, roles: list[s
     db.commit()
     db.refresh(user)
     return user
-
 
 
 @pytest.fixture

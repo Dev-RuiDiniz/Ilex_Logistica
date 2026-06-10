@@ -246,7 +246,7 @@ export default function DailyReportPage() {
           </div>
 
           {/* Report List */}
-          <div className="rounded border p-4">
+          <div className="rounded border p-4" data-testid="daily-report-list">
             <h3 className="mb-3 text-base font-semibold">Histórico de Relatórios</h3>
             {loading ? (
               <p className="text-sm text-slate-600">Carregando...</p>
@@ -318,7 +318,7 @@ export default function DailyReportPage() {
       ) : (
         <>
           {/* Report Detail */}
-          <div className="rounded border p-4">
+          <div className="rounded border p-4" data-testid="daily-report-detail">
             <div className="mb-4 flex items-center justify-between">
               <div>
                 <h3 className="text-lg font-semibold">
@@ -356,7 +356,7 @@ export default function DailyReportPage() {
 
             {/* KPIs */}
             {summary && kpis && (
-              <div className="mb-6 grid gap-3 md:grid-cols-4">
+              <div className="mb-6 grid gap-3 md:grid-cols-4" data-testid="daily-report-kpis">
                 <div className="rounded border p-3">
                   <div className="text-sm text-slate-600">Total de Envios</div>
                   <div className="text-2xl font-semibold">{summary.total_shipments}</div>
@@ -393,8 +393,8 @@ export default function DailyReportPage() {
             )}
 
             {/* Exceptions */}
-            {exceptions.length > 0 && (
-              <div className="mb-6 rounded border p-4">
+            {exceptions && exceptions.length > 0 && (
+              <div className="mb-6 rounded border p-4" data-testid="daily-report-exceptions">
                 <h4 className="mb-3 text-base font-semibold">Exceções Priorizadas</h4>
                 <div className="max-h-64 overflow-y-auto">
                   <table className="w-full text-sm">
@@ -426,8 +426,8 @@ export default function DailyReportPage() {
             )}
 
             {/* Alerts */}
-            {alerts.length > 0 && (
-              <div className="mb-6 rounded border p-4">
+            {alerts && alerts.length > 0 && (
+              <div className="mb-6 rounded border p-4" data-testid="daily-report-alerts">
                 <h4 className="mb-3 text-base font-semibold">Alertas Críticos/Ativos</h4>
                 <div className="max-h-64 overflow-y-auto space-y-2">
                   {alerts.slice(0, 10).map((alert) => (
@@ -441,7 +441,7 @@ export default function DailyReportPage() {
                           : "border-gray-200 bg-gray-50"
                       }`}
                     >
-                      <div className="font-semibold">{alert.title}</div>
+                      <div className="font-semibold">{alert.alert_type}</div>
                       <div className="text-slate-600">{alert.message}</div>
                     </div>
                   ))}
@@ -449,9 +449,34 @@ export default function DailyReportPage() {
               </div>
             )}
 
+            {/* Import Failures */}
+            {importFailures && importFailures.rejected_count > 0 && (
+              <div className="mb-6 rounded border p-4" data-testid="daily-report-import-failures">
+                <h4 className="mb-3 text-base font-semibold">Falhas de Importação</h4>
+                <div className="max-h-64 overflow-y-auto">
+                  <table className="w-full text-sm">
+                    <thead>
+                      <tr className="border-b">
+                        <th className="px-2 py-1 text-left">Linha</th>
+                        <th className="px-2 py-1 text-left">Erro</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {importFailures.rejected_rows.slice(0, 10).map((failure, index) => (
+                        <tr key={index} className="border-b">
+                          <td className="px-2 py-1">{failure.row_number}</td>
+                          <td className="px-2 py-1">{failure.error}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
+
             {/* Carrier Efficiency */}
-            {carrierEfficiency.length > 0 && (
-              <div className="mb-6 rounded border p-4">
+            {carrierEfficiency && carrierEfficiency.length > 0 && (
+              <div className="mb-6 rounded border p-4" data-testid="daily-report-carriers">
                 <h4 className="mb-3 text-base font-semibold">Top Transportadoras por Eficiência</h4>
                 <div className="max-h-64 overflow-y-auto">
                   <table className="w-full text-sm">
@@ -466,12 +491,12 @@ export default function DailyReportPage() {
                     </thead>
                     <tbody>
                       {carrierEfficiency.slice(0, 10).map((carrier) => (
-                        <tr key={carrier.carrier_id} className="border-b">
+                        <tr key={carrier.carrier_name} className="border-b">
                           <td className="px-2 py-1">{carrier.carrier_name}</td>
                           <td className="px-2 py-1">{carrier.total_shipments}</td>
                           <td className="px-2 py-1">{carrier.on_time_count}</td>
                           <td className="px-2 py-1">{carrier.late_count}</td>
-                          <td className="px-2 py-1">{(carrier.efficiency * 100).toFixed(1)}%</td>
+                          <td className="px-2 py-1">{(carrier.efficiency_rate * 100).toFixed(1)}%</td>
                         </tr>
                       ))}
                     </tbody>

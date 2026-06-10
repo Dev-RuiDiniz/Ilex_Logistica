@@ -244,11 +244,8 @@ npm run test:coverage
 
 **Status:** Opcional (não implementado ainda)
 
-<<<<<<< HEAD
-=======
 ---
 
->>>>>>> origin/main
 ### 3. Internacionalização
 
 **Gate:** Internacionalização deve ser suportada.
@@ -266,11 +263,8 @@ npm run test:coverage
 
 ### Antes de Merge
 
-<<<<<<< HEAD
 - [ ] CI verde em todos os PRs
-=======
 - [ ] CI verde em todos os PRs beta
->>>>>>> origin/main
 - [ ] Validação técnica automatizada passando
 - [ ] Secret scan passando
 - [ ] Nenhum artefato gerado commitado
@@ -311,15 +305,12 @@ npm run test:coverage
 - Backup antes de merge
 - Monitoramento após merge
 
-<<<<<<< HEAD
-=======
 ### 4. Validação Pós-Merge
 - Validar que tudo funciona
 - Verificar CI verde
 - Validar documentação
 - Comunicação com equipe
 
->>>>>>> origin/main
 ---
 
 ## Riscos
@@ -344,8 +335,5 @@ npm run test:coverage
 
 **Assinatura:** Devin (SWE-1.6)  
 **Data:** 2026-06-08  
-<<<<<<< HEAD
 **Status:** 🔄 Em execução (BETA-009S - Revalidação Empilhada)
-=======
 **Status:** 🔄 Em execução (BETA-005)
->>>>>>> origin/main

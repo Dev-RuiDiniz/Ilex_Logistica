@@ -8,6 +8,7 @@ export default defineConfig({
       'node_modules',
       'e2e/**', // Excluir testes E2E do Playwright
     ],
+    setupFiles: ['./src/test-setup.ts'],
   },
   resolve: {
     alias: {

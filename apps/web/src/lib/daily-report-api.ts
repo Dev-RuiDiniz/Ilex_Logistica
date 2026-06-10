@@ -200,6 +200,7 @@ export function parseImportFailures(
     // Silent error handling for production
     return {
       rejected_count: 0,
+      rejected_rows: [],
     };
   }
 }

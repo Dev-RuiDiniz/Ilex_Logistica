@@ -465,6 +465,7 @@ describe("daily-report-api", () => {
 
       expect(result).toEqual({
         rejected_count: 0,
+        rejected_rows: [],
       });
     });
   });

@@ -593,6 +593,7 @@ def preview_import(
     db: Session,
     upload: UploadFile,
     user_id: int | None = None,
+    source: str | None = None,
 ) -> ImportPreview:
     """Preview import without persisting shipments.
     
@@ -602,6 +603,7 @@ def preview_import(
         db: Database session
         upload: Uploaded file
         user_id: User ID performing the import (optional)
+        source: Source of the import (optional)
         
     Returns:
         ImportPreview with validation results
@@ -649,7 +651,7 @@ def preview_import(
         imported_count=0,
         rejected_count=0,
         status="pending",
-        source="csv_xlsx_import",
+        source=source or "csv_xlsx_import",
         import_metadata=json.dumps({
             "valid_rows": valid_rows_serializable,
             "invalid_rows": invalid_rows,

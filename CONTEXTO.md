@@ -54,7 +54,7 @@ Projeto de plataforma web para rastreio de entregas, gestao de excecoes operacio
 | ~~Conflitos de merge nao resolvidos~~ | ~~CRITICO~~ | **RESOLVIDO** em 2026-06-10 |
 | ~~CI quebrado~~ | ~~CRITICO~~ | **RESOLVIDO** — workflow `beta-ci.yml` corrigido |
 | ~~Documentacao ilegivel~~ | ~~ALTO~~ | **RESOLVIDO** — 6 documentos BETA_*.md limpos |
-| Build frontend com erros de tipo | MEDIO | BETA-018B mergeado sem tipos completos em `types.ts` |
+| ~~Build frontend com erros de tipo~~ | ~~MEDIO~~ | **RESOLVIDO** — tipos completos adicionados em `types.ts`, build passando |
 | Cobertura Web baixa | MEDIO | 20.8% — limita confianca no frontend |
 | E2E incompletos | MEDIO | Testes skipados para telas nao implementadas |
 
@@ -64,9 +64,9 @@ Projeto de plataforma web para rastreio de entregas, gestao de excecoes operacio
 
 1. ~~Resolver todos os conflitos de merge nao resolvidos~~ **(FEITO 2026-06-10)**
 2. ~~Corrigir e consolidar CI/CD na raiz~~ **(FEITO 2026-06-10)**
-3. Corrigir build do frontend — tipos incompletos em `types.ts` (DailyReport, SlaRule, etc.)
-4. Rodar suite completa de testes e gerar novo relatorio de cobertura
-5. Atualizar `BETA_FUNCTIONAL_EPIC_AUDIT.md` (desatualizado pos-merge)
+3. ~~Corrigir build do frontend — tipos incompletos em `types.ts`~~ **(FEITO 2026-06-10)**
+4. ~~Rodar suite completa de testes e gerar novo relatorio de cobertura~~ **(FEITO — 489 passed, 0 failed)**
+5. ~~Atualizar `BETA_FUNCTIONAL_EPIC_AUDIT.md`~~ **(FEITO 2026-06-10)**
 6. Implementar tela administrativa de usuarios (W15)
 7. Implementar tela de auditoria de alteracoes (W18)
 8. Desenvolver conectores de transportadoras (LOG-021/022)

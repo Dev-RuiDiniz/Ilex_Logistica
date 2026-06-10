@@ -93,14 +93,15 @@
 
 ### Bloqueios
 - ~~Build do frontend falha~~ **(RESOLVIDO)**
-- 13 testes preexistentes falhando (8 Braspress, 3 auth 401/403, 1 daily report, 1 logging)
+- ~~13 testes preexistentes falhando~~ **(RESOLVIDO — 489 passed, 0 failed)**
 
 ### Proximos Passos
 1. ~~Finalizar correcao de tipos no frontend para build passar~~ **(FEITO)**
-2. ~~Rodar suite completa de testes de backend~~ **(FEITO — 476 passed, 13 falhas preexistentes)**
+2. ~~Rodar suite completa de testes de backend~~ **(FEITO — 489 passed, 0 failed)**
 3. ~~Verificar testes unitarios do frontend (Vitest)~~ **(FEITO — build passando)**
 4. ~~Atualizar AUDITORIA.md com novo estado pos-correcoes~~ **(FEITO)**
-5. Corrigir 13 testes preexistentes (8 Braspress, 3 auth 401/403, 1 daily report, 1 logging)
+5. ~~Corrigir 13 testes preexistentes~~ **(FEITO)**
+6. ~~Atualizar README.md com apresentacao comercial~~ **(FEITO)**
 
 ---
 

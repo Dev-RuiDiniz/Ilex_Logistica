@@ -14,14 +14,13 @@ Esta auditoria funcional automatizada inspecionou a estrutura do repositório pa
 
 | Épico | Status | Implementado | Parcial | Ausente |
 |-------|--------|--------------|---------|---------|
-<<<<<<< HEAD
 | 1 - SLA, atraso e criticidade | PARCIAL | 7/10 (70%) | 2/10 (20%) | 1/10 (10%) |
 | 2 - Importação Excel/CSV | IMPLEMENTADO | 12/12 (100%) | 0/12 (0%) | 0/12 (0%) |
 | 3 - Campos fiscais/financeiros | IMPLEMENTADO | 14/15 (93%) | 1/15 (7%) | 0/15 (0%) |
 | 4 - Eficiência por transportadora | PARCIAL | 3/6 (50%) | 2/6 (33%) | 1/6 (17%) |
 | 5 - Alertas e notificações | PARCIAL | 4/10 (40%) | 2/10 (20%) | 4/10 (40%) |
 | 6 - Relatório diário automático | PARCIAL | 3/6 (50%) | 2/6 (33%) | 1/6 (17%) |
-| 7 - Logs e auditoria | PARCIAL | 2/9 (22%) | 3/9 (33%) | 4/9 (45%) |
+| 7 - Logs e auditoria | CONCLUÍDO | 9/9 (100%) | 0/9 (0%) | 0/9 (0%) |
 | 8 - Integrações assistidas | PARCIAL | 4/9 (44%) | 3/9 (33%) | 2/9 (22%) |
 | 9 - Usuários, permissões e segurança | PARCIAL | 6/11 (55%) | 2/11 (18%) | 3/11 (27%) |
 | 10 - Dashboard beta e UX | PARCIAL | 3/9 (33%) | 3/9 (33%) | 3/9 (33%) |

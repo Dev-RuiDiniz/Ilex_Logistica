@@ -6,7 +6,7 @@ Próximas ações pós BETA-009S para o projeto Ilex Logística.
 
 **Épico 7 — Logs e Auditoria Operacional:**
 - ✅ BETA-019A: Backend de auditoria operacional (concluído)
-- ⏳ BETA-019B: Frontend de auditoria operacional (próximo)
+- ✅ BETA-019B: Frontend de auditoria operacional (concluído)
 
 **Épicos Concluídos:**
 - Sprint Beta 1: SLA, importação CSV/XLSX/Braspress, campos fiscais/financeiros

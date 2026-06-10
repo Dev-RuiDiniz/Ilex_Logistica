@@ -245,12 +245,16 @@ export interface DailyReportExceptionItem {
   status: string;
   delay_days: number;
   criticality: string;
+  customer_name: string | null;
+  destination_uf: string | null;
+  exception_type: string | null;
   [key: string]: unknown;
 }
 
 export interface DailyReportAlertItem {
   id: number;
   type: string;
+  title: string;
   message: string;
   severity: string;
   created_at: string;
@@ -262,6 +266,7 @@ export interface DailyReportCarrierEfficiencyItem {
   carrier_name: string;
   total_shipments: number;
   on_time_count: number;
+  late_count: number;
   efficiency_rate: number;
   [key: string]: unknown;
 }

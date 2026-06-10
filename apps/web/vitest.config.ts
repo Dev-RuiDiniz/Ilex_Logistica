@@ -4,6 +4,7 @@ import path from 'path';
 export default defineConfig({
   test: {
     environment: 'jsdom',
+    setupFiles: ['./vitest.setup.ts'],
     exclude: [
       'node_modules',
       'e2e/**', // Excluir testes E2E do Playwright

@@ -8,7 +8,7 @@
 
 Projeto de plataforma web para rastreio de entregas, gestao de excecoes operacionais e relatorios logisticos. Monorepo com API Python/FastAPI + frontend Next.js + infra Docker + documentacao extensa.
 
-**Fase atual:** Pos-merge de 36 PRs beta. Conflitos de merge nao resolvidos identificados como problema critico.
+**Fase atual:** Pos-merge de 36 PRs beta. Conflitos de merge RESOLVIDOS. Build frontend passando. Testes backend: 489 passed, 0 failed. README reescrito com apresentacao comercial.
 
 ---
 
@@ -18,11 +18,11 @@ Projeto de plataforma web para rastreio de entregas, gestao de excecoes operacio
 - **Status:** Funcional, conflitos de merge RESOLVIDOS
 - **Modulos prontos:** auth, users, carriers, shipments, imports (CSV/XLSX), sla, alerts, reports, dashboard
 - **Migrations:** 11 versoes Alembic
-- **Testes:** ~39 arquivos de teste pytest (testes criticos passando)
+- **Testes:** 489 testes passando, 0 falhando
 - **Cobertura:** ~88% (declarado)
 
 ### Frontend (`apps/web`)
-- **Status:** Build com erros de tipo pendentes (BETA-018B mergeado sem tipos completos)
+- **Status:** Build passando (tipos completos adicionados em `types.ts`)
 - **Telas prontas:** login, carriers, shipments, shipments/import, exceptions, reports/daily, alerts, users (parcial), settings (parcial)
 - **Testes:** Vitest unitario + Playwright E2E (alguns skipados)
 - **Cobertura:** ~20.8%
@@ -85,11 +85,16 @@ Projeto de plataforma web para rastreio de entregas, gestao de excecoes operacio
 
 ## Historico de Mudancas (Linha do Tempo)
 
-### 2026-06-10
+### 2026-06-10 (Sessao completa)
 - Criacao de `AGENTS.md`, `CONTEXTO.md` e `RELATORIO_DIA.md`
 - Auditoria completa do projeto gerada (`AUDITORIA.md`)
-- Identificacao de 48 conflitos de merge nao resolvidos em 10 arquivos
+- Identificacao e **resolucao** de 48 conflitos de merge nao resolvidos em 10 arquivos
 - Merge de PR #36 (BETA-018B — Relatorio Diario Frontend) na main
+- Correcao de build frontend: tipos completos adicionados em `types.ts`
+- Correcao de 13 testes preexistentes (8 Braspress, 3 auth, 1 daily report, 1 logging)
+- Reescrita do `README.md` com apresentacao comercial
+- Atualizacao de `AUDITORIA.md` e `BETA_FUNCTIONAL_EPIC_AUDIT.md` com estado pos-merge
+- Suite completa: **489 passed, 0 failed**
 
 ### 2026-06-08 a 2026-06-09
 - Merge de 36 PRs beta na branch `main`

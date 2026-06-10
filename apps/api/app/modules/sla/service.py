@@ -1,5 +1,6 @@
 """SLA service for BETA-013A."""
 
+import logging
 from datetime import UTC, datetime, timedelta
 from typing import Any
 
@@ -7,6 +8,10 @@ from sqlalchemy.orm import Session
 
 from app.modules.sla.models import SlaRule
 from app.modules.shipments.models import Shipment
+from app.modules.audit.service import AuditLogService
+from app.modules.audit.schemas import AuditLogCreateRequest
+
+logger = logging.getLogger(__name__)
 
 
 def get_applicable_sla_rule(
@@ -328,6 +333,22 @@ def recalculate_all_shipments_sla(
                 skipped_count += 1
         except Exception:
             error_count += 1
+
+    # Audit log
+    try:
+        audit_log = AuditLogCreateRequest(
+            event_type="sla_recalculated",
+            entity_type="shipment",
+            action="update",
+            source="system",
+            severity="info",
+            status="success",
+            message=f"SLA recalculado para {updated_count} shipments",
+            metadata_json=f'{{"recalculated_count": {updated_count}}}',
+        )
+        AuditLogService.create_log(db, audit_log)
+    except Exception as e:
+        logger.error(f"Failed to create audit log for SLA recalculation: {e}")
 
     return {
         "processed_count": processed_count,

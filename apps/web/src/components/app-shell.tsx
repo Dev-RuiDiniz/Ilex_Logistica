@@ -77,6 +77,12 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               Relatório Diário
             </Link>
             <Link
+              href="/audit"
+              className={`block rounded px-3 py-2 text-sm ${pathname.startsWith("/audit") ? "bg-slate-900 text-white" : "hover:bg-slate-100"}`}
+            >
+              Auditoria
+            </Link>
+            <Link
               href="/users"
               className={`block rounded px-3 py-2 text-sm ${pathname.startsWith("/users") ? "bg-slate-900 text-white" : "hover:bg-slate-100"}`}
             >

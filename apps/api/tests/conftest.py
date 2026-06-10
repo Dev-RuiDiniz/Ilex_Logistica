@@ -19,10 +19,23 @@ TestingSessionLocal = sessionmaker(bind=engine, autoflush=False, autocommit=Fals
 
 @pytest.fixture(autouse=True)
 def reset_database() -> Generator[None, None, None]:
-    Base.metadata.drop_all(bind=engine)
+    # Drop all tables safely
+    try:
+        Base.metadata.drop_all(bind=engine)
+    except Exception:
+        # If drop fails, continue (tables may not exist)
+        pass
+    
+    # Create all tables
     Base.metadata.create_all(bind=engine)
     yield
-    Base.metadata.drop_all(bind=engine)
+    
+    # Drop all tables safely
+    try:
+        Base.metadata.drop_all(bind=engine)
+    except Exception:
+        # If drop fails, continue (tables may not exist)
+        pass
 
 
 @pytest.fixture(autouse=True)

@@ -36,7 +36,7 @@ export function buildApiUrl(path: string, envValue = process.env.NEXT_PUBLIC_API
   return `${getApiBaseUrl(envValue)}${normalizedPath}`;
 }
 
-async function request<T>(path: string, init?: RequestInit): Promise<T> {
+export async function request<T>(path: string, init?: RequestInit): Promise<T> {
   const response = await fetch(buildApiUrl(path), {
     ...init,
     headers: {

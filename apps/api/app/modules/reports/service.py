@@ -1,6 +1,7 @@
 """Service de geração de relatório diário para BETA-018A."""
 
 import json
+import logging
 from datetime import UTC, datetime
 from typing import Any
 
@@ -9,6 +10,10 @@ from sqlalchemy.orm import Session
 from app.modules.dashboard.service import calculate_dashboard_summary
 from app.modules.alerts.service import get_active_alerts_count
 from app.modules.reports.models import DailyReport
+from app.modules.audit.service import AuditLogService
+from app.modules.audit.schemas import AuditLogCreateRequest
+
+logger = logging.getLogger(__name__)
 
 
 def generate_daily_report(
@@ -101,6 +106,24 @@ def generate_daily_report(
         existing_report.import_failures_json = json.dumps(import_failures_json)
         db.commit()
         db.refresh(existing_report)
+        
+        # Audit log
+        try:
+            audit_log = AuditLogCreateRequest(
+                event_type="daily_report_generated",
+                entity_type="daily_report",
+                entity_id=existing_report.id if existing_report else None,
+                action="create",
+                source="system",
+                severity="info",
+                status="success",
+                message=f"Relatório diário gerado para {report_date}",
+                metadata_json=f'{{"report_date": "{report_date}"}}',
+            )
+            AuditLogService.create_log(db, audit_log)
+        except Exception as e:
+            logger.error(f"Failed to create audit log for daily report: {e}")
+        
         return existing_report
     else:
         # Criar novo relatório
@@ -121,6 +144,24 @@ def generate_daily_report(
         db.add(report)
         db.commit()
         db.refresh(report)
+        
+        # Audit log
+        try:
+            audit_log = AuditLogCreateRequest(
+                event_type="daily_report_generated",
+                entity_type="daily_report",
+                entity_id=report.id if report else None,
+                action="create",
+                source="system",
+                severity="info",
+                status="success",
+                message=f"Relatório diário gerado para {report_date}",
+                metadata_json=f'{{"report_date": "{report_date}"}}',
+            )
+            AuditLogService.create_log(db, audit_log)
+        except Exception as e:
+            logger.error(f"Failed to create audit log for daily report: {e}")
+        
         return report
 
 

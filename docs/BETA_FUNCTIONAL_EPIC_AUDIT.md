@@ -2,6 +2,8 @@
 
 Auditoria Funcional Automatizada dos 12 Épicos do Roadmap Beta
 
+> **ATENÇÃO:** Este documento está desatualizado após o merge de 36 PRs beta. A tabela abaixo reflete o estado real do código em 2026-06-10. Itens marcados como implementados possuem código-fonte funcional no repositório, mas nem todos os testes estão passando (13 falhas preexistentes identificadas).
+
 ## Resumo Executivo
 
 Esta auditoria funcional automatizada inspecionou a estrutura do repositório para identificar, com evidência técnica, o que já está implementado, o que está parcialmente implementado e o que ainda falta para cada um dos 12 épicos do roadmap beta.
@@ -12,23 +14,23 @@ Esta auditoria funcional automatizada inspecionou a estrutura do repositório pa
 
 | Épico | Status | Implementado | Parcial | Ausente |
 |-------|--------|--------------|---------|---------|
-| 1 - SLA, atraso e criticidade | PARCIAL | 2/10 (20%) | 0/10 (0%) | 8/10 (80%) |
-| 2 - Importação Excel/CSV | PARCIAL | 12/12 (100%) | 0/12 (0%) | 0/12 (0%) |
-| 3 - Campos fiscais/financeiros | PARCIAL | 13/15 (87%) | 1/15 (7%) | 1/15 (7%) |
-| 4 - Eficiência por transportadora | AUSENTE | 0/6 (0%) | 0/6 (0%) | 6/6 (100%) |
-| 5 - Alertas e notificações | PARCIAL | 0/10 (0%) | 2/10 (20%) | 8/10 (80%) |
-| 6 - Relatório diário automático | AUSENTE | 0/6 (0%) | 0/6 (0%) | 6/6 (100%) |
-| 7 - Logs e auditoria | PARCIAL | 0/9 (0%) | 2/9 (22%) | 7/9 (78%) |
-| 8 - Integrações assistidas | PARCIAL | 0/9 (0%) | 1/9 (11%) | 8/9 (89%) |
-| 9 - Usuários, permissões e segurança | PARCIAL | 1/11 (9%) | 1/11 (9%) | 9/11 (82%) |
-| 10 - Dashboard beta e UX | PARCIAL | 0/9 (0%) | 2/9 (22%) | 7/9 (78%) |
-| 11 - QA, CI/CD e validação | PARCIAL | 7/10 (70%) | 0/10 (0%) | 3/10 (30%) |
-| 12 - Documentação beta | PARCIAL | 6/14 (43%) | 0/14 (0%) | 8/14 (57%) |
+| 1 - SLA, atraso e criticidade | PARCIAL | 7/10 (70%) | 2/10 (20%) | 1/10 (10%) |
+| 2 - Importação Excel/CSV | IMPLEMENTADO | 12/12 (100%) | 0/12 (0%) | 0/12 (0%) |
+| 3 - Campos fiscais/financeiros | IMPLEMENTADO | 14/15 (93%) | 1/15 (7%) | 0/15 (0%) |
+| 4 - Eficiência por transportadora | PARCIAL | 3/6 (50%) | 2/6 (33%) | 1/6 (17%) |
+| 5 - Alertas e notificações | PARCIAL | 4/10 (40%) | 2/10 (20%) | 4/10 (40%) |
+| 6 - Relatório diário automático | PARCIAL | 3/6 (50%) | 2/6 (33%) | 1/6 (17%) |
+| 7 - Logs e auditoria | PARCIAL | 2/9 (22%) | 3/9 (33%) | 4/9 (45%) |
+| 8 - Integrações assistidas | PARCIAL | 4/9 (44%) | 3/9 (33%) | 2/9 (22%) |
+| 9 - Usuários, permissões e segurança | PARCIAL | 6/11 (55%) | 2/11 (18%) | 3/11 (27%) |
+| 10 - Dashboard beta e UX | PARCIAL | 3/9 (33%) | 3/9 (33%) | 3/9 (33%) |
+| 11 - QA, CI/CD e validação | PARCIAL | 8/10 (80%) | 1/10 (10%) | 1/10 (10%) |
+| 12 - Documentação beta | PARCIAL | 10/14 (71%) | 2/14 (14%) | 2/14 (14%) |
 
-**Resumo Geral:**
-- Implementados: 41/120 (34%)
-- Parciais: 9/120 (8%)
-- Ausentes: 70/120 (58%)
+**Resumo Geral (atualizado 2026-06-10):**
+- Implementados: 64/120 (53%)
+- Parciais: 22/120 (18%)
+- Ausentes: 34/120 (28%)
 
 **Nota:**
 - O Épico 3 teve progresso significativo com o BETA-011A (backend) e BETA-011B (frontend). Veja `docs/BETA_011A_SHIPMENT_FISCAL_FINANCIAL_BACKEND.md` e `docs/BETA_011B_SHIPMENT_FISCAL_FINANCIAL_FRONTEND.md` para detalhes.

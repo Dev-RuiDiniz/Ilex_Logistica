@@ -1,3 +1,4 @@
+import os
 from collections.abc import Generator
 
 import pytest
@@ -22,6 +23,13 @@ def reset_database() -> Generator[None, None, None]:
     Base.metadata.create_all(bind=engine)
     yield
     Base.metadata.drop_all(bind=engine)
+
+
+@pytest.fixture(autouse=True)
+def disable_logging_middleware() -> Generator[None, None, None]:
+    os.environ["ENABLE_LOGGING_MIDDLEWARE"] = "false"
+    yield
+    os.environ.pop("ENABLE_LOGGING_MIDDLEWARE", None)
 
 
 @pytest.fixture

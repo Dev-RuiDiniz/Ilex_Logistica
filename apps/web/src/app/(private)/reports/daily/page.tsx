@@ -375,11 +375,11 @@ export default function DailyReportPage() {
                 </div>
                 <div className="rounded border p-3">
                   <div className="text-sm text-slate-600">Alertas Ativos</div>
-                  <div className="text-2xl font-semibold text-purple-600">{kpis.active_alerts_count}</div>
+                  <div className="text-2xl font-semibold text-purple-600">{kpis.active_alerts_count ?? 0}</div>
                 </div>
                 <div className="rounded border p-3">
                   <div className="text-sm text-slate-600">Taxa de Entrega</div>
-                  <div className="text-2xl font-semibold">{(kpis.delivery_rate * 100).toFixed(1)}%</div>
+                  <div className="text-2xl font-semibold">{((kpis.delivery_rate ?? 0) * 100).toFixed(1)}%</div>
                 </div>
                 <div className="rounded border p-3">
                   <div className="text-sm text-slate-600">Exceções</div>

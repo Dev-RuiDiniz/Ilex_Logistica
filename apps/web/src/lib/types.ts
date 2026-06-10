@@ -75,6 +75,8 @@ export interface ImportConfirmResponse {
   invalid_rows: number;
   imported_count: number;
   rejected_count: number;
+  duplicates_count: number;
+  created_shipments: number[];
   errors: CSVRowError[];
 }
 
@@ -99,6 +101,8 @@ export interface ShipmentListParams {
   month?: number;
   year?: number;
   search?: string;
+  sla_status?: string;
+  is_late?: boolean;
 }
 
 export interface ShipmentListResponse {
@@ -211,20 +215,20 @@ export interface PromoteDeliveryResponse {
 export type DailyReportStatus = "pending" | "generating" | "generated" | "failed";
 
 export interface DailyReportKpis {
-  total_shipments: number;
-  total_exceptions: number;
-  avg_delay_days: number;
-  on_time_rate: number;
+  total_shipments?: number;
+  total_exceptions?: number;
+  avg_delay_days?: number;
+  on_time_rate?: number;
   active_alerts_count?: number;
-  delivery_rate: number;
+  delivery_rate?: number;
   [key: string]: any;
 }
 
 export interface DailyReportSummary {
-  total_envios: number;
-  total_atrasos: number;
-  total_criticos: number;
-  percentual_atraso: number;
+  total_envios?: number;
+  total_atrasos?: number;
+  total_criticos?: number;
+  percentual_atraso?: number;
   total_shipments?: number;
   on_time_count?: number;
   late_count?: number;
@@ -263,10 +267,10 @@ export interface DailyReportCarrierEfficiencyItem {
 }
 
 export interface DailyReportImportFailures {
-  total_imports: number;
-  failed_imports: number;
-  failure_rate: number;
-  top_errors: Array<{ error: string; count: number }>;
+  total_imports?: number;
+  failed_imports?: number;
+  failure_rate?: number;
+  top_errors?: Array<{ error: string; count: number }>;
   rejected_count?: number;
   [key: string]: any;
 }
@@ -347,20 +351,78 @@ export interface SlaRecalculateResponse {
   error_count: number;
 }
 
+// Import types (BETA-012A/B/C)
+export interface RowValidationError {
+  row_number: number;
+  field: string;
+  message: string;
+  is_blocking?: boolean;
+  value?: string | number | null;
+  severity?: string;
+}
+
+export interface ValidatedRowData {
+  row_number: number;
+  data: {
+    tracking_code?: string;
+    invoice_number?: string;
+    customer_name?: string;
+    destination_uf?: string;
+    collection_departure_date?: string;
+    invoice_value?: number;
+    freight_value?: number;
+    freight_percentage?: number;
+    carrier_name?: string;
+    expected_delivery_date?: string;
+    status?: string;
+    [key: string]: any;
+  };
+}
+
+export interface ImportPreviewV2Response {
+  import_id: number;
+  source: string | null;
+  total_rows: number;
+  valid_rows: number;
+  invalid_rows: number;
+  duplicate_count: number;
+  duplicate_rows: number;
+  preview_items: ValidatedRowData[];
+  errors: RowValidationError[];
+  warnings: RowValidationError[];
+}
+
 // Carrier Efficiency types (BETA-014A)
 export interface CarrierEfficiencyFilters {
   carrier_id?: number;
   date_from?: string;
   date_to?: string;
+  estimated_delivery_from?: string;
+  estimated_delivery_to?: string;
+  month?: number;
+  year?: number;
+  customer_name?: string;
+  destination_uf?: string;
+  status?: string;
+  criticality?: string;
+  sla_status?: string;
+  is_late?: boolean;
+}
+
+export interface CarrierEfficiencyItem {
+  carrier_id: number;
+  carrier_name: string;
+  total_invoices: number;
+  total_shipments: number;
+  on_time_percentage: number;
+  late_percentage: number;
+  total_freight_value: number;
+  average_freight_percentage: number;
+  ranking_by_efficiency: number;
+  ranking_by_cost: number;
+  ranking_by_volume: number;
 }
 
 export interface CarrierEfficiencyResponse {
-  carrier_id: number;
-  carrier_name: string;
-  total_shipments: number;
-  on_time_count: number;
-  late_count: number;
-  critical_count: number;
-  efficiency_rate: number;
-  avg_delay_days: number;
+  carriers: CarrierEfficiencyItem[];
 }

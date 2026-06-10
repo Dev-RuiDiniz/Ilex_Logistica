@@ -9,7 +9,7 @@ import { useAuth } from "@/features/auth/auth-provider";
 import type { ImportConfirmResponse, ImportPreviewV2Response, RowValidationError, ValidatedRowData } from "@/lib/types";
 
 // Formatting helpers
-function formatCurrencyBRL(value: number | null): string {
+function formatCurrencyBRL(value: number | null | undefined): string {
   if (value === null || value === undefined) return "-";
   return new Intl.NumberFormat("pt-BR", {
     style: "currency",
@@ -17,12 +17,12 @@ function formatCurrencyBRL(value: number | null): string {
   }).format(value);
 }
 
-function formatDateBR(dateString: string | null): string {
+function formatDateBR(dateString: string | null | undefined): string {
   if (!dateString) return "-";
   return new Date(dateString).toLocaleDateString("pt-BR");
 }
 
-function formatUnavailable(value: string | number | null): string {
+function formatUnavailable(value: string | number | null | undefined): string {
   if (value === null || value === undefined || value === "") return "-";
   return String(value);
 }

@@ -291,7 +291,7 @@ export default function DailyReportPage() {
                             </span>
                           </td>
                           <td className="px-3 py-2">
-                            {new Date(report.generated_at).toLocaleString("pt-BR")}
+                            {report.generated_at ? new Date(report.generated_at).toLocaleString("pt-BR") : "-"}
                           </td>
                           <td className="px-3 py-2">{reportSummary?.total_shipments || 0}</td>
                           <td className="px-3 py-2">{reportSummary?.late_count || 0}</td>
@@ -325,7 +325,7 @@ export default function DailyReportPage() {
                   Relatório de {new Date(selectedReport.report_date).toLocaleDateString("pt-BR")}
                 </h3>
                 <p className="text-sm text-slate-600">
-                  Gerado em {new Date(selectedReport.generated_at).toLocaleString("pt-BR")}
+                  Gerado em {selectedReport.generated_at ? new Date(selectedReport.generated_at).toLocaleString("pt-BR") : "-"}
                 </p>
               </div>
               <span

@@ -43,6 +43,7 @@ def seed_role_permissions(db: Session) -> None:
             perm_map["shipments:read"],
             perm_map["imports:read"],
             perm_map["sla:read"],
+            perm_map["sla:write"],
             perm_map["alerts:read"],
             perm_map["alerts:write"],
             perm_map["reports:read"],

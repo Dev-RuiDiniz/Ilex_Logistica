@@ -58,7 +58,7 @@ BETA-020A implementa o backend do sistema de Role-Based Access Control (RBAC) pa
 | Papel | Descrição | Permissões |
 |-------|-----------|------------|
 | **admin** | Administrador do sistema | Todas as permissões |
-| **manager** | Gerente operacional | shipments:read, imports:read, sla:read, alerts:read/write, reports:read/write, audit:read |
+| **manager** | Gerente operacional | shipments:read, imports:read, sla:read/write, alerts:read/write, reports:read/write, audit:read |
 | **operator** | Operador de logística | shipments:read/write, imports:read/write, alerts:read/write |
 | **viewer** | Visualizador | shipments:read, imports:read, sla:read, alerts:read, reports:read |
 | **logistica** | Equipe de logística (legado) | shipments:read/write, imports:read/write |
@@ -181,7 +181,7 @@ role_permissions = Table(
 
 **Justificativa:** SLA rules são configuração sensível, restrito a admin
 
-### 6. Testes Obrigatórios
+### 6. Testes RBAC
 
 #### Arquivo: `tests/test_rbac_permissions.py`
 
@@ -218,6 +218,49 @@ role_permissions = Table(
 8. **test_public_endpoints_still_work**
    - Endpoints públicos continuam funcionando
    - Testa: health check, login
+
+#### Testes por Endpoint
+
+**Arquivo: `tests/test_rbac_audit_api.py` (7/7 passando)**
+- test_audit_unauthenticated_returns_401
+- test_audit_without_permission_returns_403
+- test_audit_operator_cannot_access
+- test_audit_manager_can_access_logs
+- test_audit_manager_can_access_summary
+- test_audit_admin_can_access_detail
+- test_audit_auditoria_can_access
+
+**Arquivo: `tests/test_rbac_reports_api.py` (8/8 passando)**
+- test_reports_unauthenticated_returns_401
+- test_reports_generate_without_permission_returns_403
+- test_reports_admin_can_generate
+- test_reports_manager_can_generate
+- test_reports_viewer_can_list
+- test_reports_viewer_cannot_generate
+- test_reports_operator_cannot_generate
+- test_reports_gestor_can_list
+
+**Arquivo: `tests/test_rbac_alerts_api.py` (7/7 passando)**
+- test_alerts_unauthenticated_returns_401
+- test_alerts_write_without_permission_returns_403
+- test_alerts_read_without_permission_returns_403
+- test_alerts_viewer_can_read
+- test_alerts_operator_can_write
+- test_alerts_manager_can_write
+- test_alerts_admin_can_write
+
+**Arquivo: `tests/test_rbac_sla_api.py` (9/9 passando)**
+- test_sla_unauthenticated_returns_401
+- test_sla_write_without_permission_returns_403
+- test_sla_read_without_permission_returns_403
+- test_sla_manager_can_read
+- test_sla_manager_can_write
+- test_sla_admin_can_write
+- test_sla_rules_admin_only
+- test_sla_admin_can_create_rule
+- test_sla_admin_can_update_rule
+
+**Total RBAC Tests:** 31/31 passando
 
 ### 7. Regressão Backend
 
@@ -295,11 +338,32 @@ role_permissions = Table(
    - Necessário validar compatibilidade com frontend
    - Priorização de endpoints críticos (audit, reports, alerts, SLA)
 
-3. **Frontend:**
+3. **Impacto da Limitação:**
+   - Endpoints de shipments, imports, carriers e users ainda dependem apenas de autenticação JWT
+   - Testes existentes desses módulos continuam funcionando sem RBAC granular
+   - Não há bypass de autenticação - apenas falta de verificação de permissão granular
+
+4. **Frontend:**
    - Não implementado neste PR (backend-first)
    - Será implementado em BETA-020B
 
-### 12. Próximos Passos (BETA-020B)
+### 12. Validação de 401/403
+
+**Como os testes validam RBAC:**
+- Testes usam TestClient com autenticação real (login → token)
+- Testes negativos verificam 401 sem Authorization header
+- Testes negativos verificam 403 com token mas sem permissão
+- Testes positivos verificam 200 com permissão adequada
+- Não há override global de autenticação nos testes RBAC
+- Fixture `seed_roles` cria roles e permissions no banco de teste
+- Fixture `create_user_with_roles` cria usuário com roles específicas
+
+**W10 Test Fix:**
+- Teste atualizado para usar role `manager` (tem `reports:write`)
+- Antes usava `gestor` (sem `reports:write`)
+- Correção alinha teste com matriz RBAC definida
+
+### 13. Próximos Passos (BETA-020B)
 
 1. Implementar frontend de RBAC:
    - Página de gestão de usuários
@@ -319,11 +383,11 @@ role_permissions = Table(
 
 ## Validações Finais
 
-- ✅ Matriz RBAC definida
-- ✅ Helpers de permissão implementados
+- ✅ Matriz RBAC definida (manager tem sla:write)
+- ✅ Helpers de permissão implementados (require_roles corrigido)
 - ✅ Endpoints críticos protegidos (audit, reports, alerts, SLA)
-- ✅ Testes 401/403/admin/manager/operator/viewer passando (8/8)
-- ✅ Falha W10 corrigida (test_w10_daily_report)
+- ✅ Testes 401/403/admin/manager/operator/viewer passando (31/31)
+- ✅ Falha W10 corrigida (test_w10_daily_report usa manager)
 - ✅ Auditoria BETA-019A continua verde (54/54)
 - ✅ Frontend BETA-019B continua verde (310/310)
 - ✅ Gates oficiais verdes

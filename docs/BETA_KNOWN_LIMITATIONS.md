@@ -140,6 +140,21 @@ Limitações conhecidas do projeto Ilex Logística na fase beta.
 
 **Status:** Limitação mitigada
 
+### RBAC Incompleto (BETA-020A)
+**Limitação:** Endpoints de Shipments, Imports, Carriers e Users não protegidos com RBAC granular
+
+**Impacto:** Esses endpoints dependem apenas de autenticação JWT, sem verificação de permissão granular
+
+**Causa:** Priorização de endpoints críticos (audit, reports, alerts, SLA) em BETA-020A
+
+**Mitigação:**
+- Documentado em docs/BETA_020A_SECURITY_RBAC_BACKEND_API.md
+- BETA-020B: Proteger endpoints restantes
+- Não há bypass de autenticação - apenas falta de verificação de permissão granular
+- Testes existentes continuam funcionando sem RBAC granular
+
+**Status:** Limitação documentada
+
 ---
 
 ## Performance

@@ -29,8 +29,8 @@ def get_current_user(
 
 def require_roles(*allowed: str):
     def checker(user: User = Depends(get_current_user)) -> User:
-        role_names = {role.name for role in user.roles}
-        if role_names.intersection(allowed):
+        role_names = [role.name for role in user.roles]
+        if any(role_name in allowed for role_name in role_names):
             return user
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="sem permissao")
 

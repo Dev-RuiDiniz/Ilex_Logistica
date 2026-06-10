@@ -28,6 +28,7 @@ from sqlalchemy.orm import Session
 from app.modules.imports.mapper import map_column, normalize_column_name, get_required_columns
 from app.modules.imports.models import ImportHistory
 from app.modules.shipments.models import Shipment
+from app.modules.carriers.models import Carrier
 
 SUPPORTED_EXTENSIONS = {".csv", ".xlsx"}
 XML_NS = {"s": "http://schemas.openxmlformats.org/spreadsheetml/2006/main"}
@@ -350,16 +351,18 @@ def validate_row(
     else:
         normalized_data["tracking_code"] = tracking_code
     
-    # Validate carrier_id
+    # Validate carrier_id or resolve from carrier_name
     carrier_id_str = row.get("carrier_id", "").strip()
-    if not carrier_id_str:
+    carrier_name = row.get("carrier_name", "").strip()
+    
+    if not carrier_id_str and not carrier_name:
         errors.append(RowValidationError(
             row_number=row_number,
             field="carrier_id",
-            message="carrier_id obrigatorio",
+            message="carrier_id obrigatorio (ou carrier_name)",
             value=carrier_id_str,
         ))
-    else:
+    elif carrier_id_str:
         try:
             carrier_id = int(carrier_id_str)
             if carrier_id <= 0:
@@ -378,6 +381,19 @@ def validate_row(
                 message="carrier_id deve ser um numero inteiro",
                 value=carrier_id_str,
             ))
+    elif carrier_name and db:
+        # Resolve carrier_name to carrier_id
+        carrier = db.query(Carrier).filter(Carrier.name == carrier_name).first()
+        if carrier:
+            normalized_data["carrier_id"] = carrier.id
+        else:
+            errors.append(RowValidationError(
+                row_number=row_number,
+                field="carrier_name",
+                message=f"transportadora nao encontrada: {carrier_name}",
+                value=carrier_name,
+            ))
+    
     
     # Validate invoice_number
     invoice_number = row.get("invoice_number", "").strip()
@@ -653,6 +669,7 @@ def preview_import(
         status="pending",
         source=source or "csv_xlsx_import",
         import_metadata=json.dumps({
+            "layout": source or "generic",
             "valid_rows": valid_rows_serializable,
             "invalid_rows": invalid_rows,
             "errors": [error.to_dict() for error in all_errors],

@@ -130,7 +130,11 @@ Checklist final de entrada beta para o projeto Ilex Logística.
 - [x] BETA_TEST_COVERAGE_REPORT.md
 
 ### README
+<<<<<<< HEAD
 - [x] README.md atualizado com seção Validação Beta
+=======
+- [ ] README.md atualizado com seção Validação Beta
+>>>>>>> origin/main
 
 ## Evidências por PR
 
@@ -170,6 +174,7 @@ Checklist final de entrada beta para o projeto Ilex Logística.
 - [x] Pendência: Revisão de PR
 
 ### BETA-005
+<<<<<<< HEAD
 - [x] PR #12: Documentação Final, Checklists e Consolidação Beta
 - [x] Branch: feature/beta-005-docs-checklists
 - [x] Status: DRAFT
@@ -202,6 +207,10 @@ Checklist final de entrada beta para o projeto Ilex Logística.
 ### BETA-009S
 - [ ] PR #: Revalidação Empilhada sobre CI Bootstrap
 - [ ] Branch: feature/beta-009s-stacked-validation-on-ci-bootstrap
+=======
+- [ ] PR #: Documentação Final, Checklists e Consolidação Beta
+- [ ] Branch: feature/beta-005-docs-checklists
+>>>>>>> origin/main
 - [ ] Status: DRAFT
 - [ ] Pendência: Revisão de PR
 
@@ -266,6 +275,7 @@ python scripts/validate_docs.py
 - [ ] BETA-003: Revisão de PR
 - [ ] BETA-004: Revisão de PR
 - [ ] BETA-005: Revisão de PR
+<<<<<<< HEAD
 - [ ] BETA-006: Revisão de PR
 - [ ] BETA-007: Revisão de PR
 - [ ] BETA-008: Revisão de PR (merge manual em main)
@@ -273,6 +283,11 @@ python scripts/validate_docs.py
 
 ### CI/CD
 - [ ] CI verde em todos os PRs
+=======
+
+### CI/CD
+- [ ] CI verde em todos os PRs beta
+>>>>>>> origin/main
 - [ ] Nenhum conflito entre PRs
 - [ ] Testes passando em todos os PRs
 
@@ -291,4 +306,8 @@ python scripts/validate_docs.py
 
 **Assinatura:** Devin (SWE-1.6)  
 **Data:** 2026-06-08  
+<<<<<<< HEAD
 **Status:** 🔄 Em execução (BETA-009S - Revalidação Empilhada)
+=======
+**Status:** 🔄 Em execução (BETA-005)
+>>>>>>> origin/main

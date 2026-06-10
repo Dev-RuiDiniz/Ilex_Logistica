@@ -12,7 +12,7 @@ DOCS_DIR = PROJECT_ROOT / "docs"
 
 print("Validating documentation...")
 
-# Required docs (se estiverem em branches beta)
+# Required docs
 REQUIRED_DOCS = [
     "BETA_CHECKLIST.md",
     "BETA_VALIDATION_EVIDENCE.md",
@@ -38,32 +38,21 @@ REMOVED_WRAPPERS = [
 
 errors = []
 
-def read_file_with_encoding_fallback(file_path: Path) -> str:
-    """Read file with encoding fallback for robustness."""
-    encodings = ['utf-8', 'utf-8-sig', 'cp1252', 'latin-1']
-    
-    for encoding in encodings:
-        try:
-            content = file_path.read_text(encoding=encoding)
-            if encoding != 'utf-8':
-                print(f"  WARNING: {file_path.name} read with encoding {encoding} (fallback)")
-            return content
-        except UnicodeDecodeError:
-            continue
-    
-    # If all encodings fail, raise the original error
-    return file_path.read_text()
-
 # Check required docs exist
 print("1. Checking required docs...")
 for doc in REQUIRED_DOCS:
     doc_path = DOCS_DIR / doc
     if not doc_path.exists():
-        print(f"  WARNING: Required doc not found: {doc} (may be in beta branch)")
+        errors.append(f"ERROR: Required doc not found: {doc}")
     else:
         print(f"  OK: {doc} exists")
 
-print("OK: Documentation check completed")
+if errors:
+    for error in errors:
+        print(error)
+    sys.exit(1)
+
+print("OK: All required docs exist")
 
 # Check official commands exist
 print("\n2. Checking official commands...")
@@ -86,7 +75,7 @@ print("\n3. Checking for references to removed Bash wrappers...")
 for doc in REQUIRED_DOCS:
     doc_path = DOCS_DIR / doc
     if doc_path.exists():
-        content = read_file_with_encoding_fallback(doc_path)
+        content = doc_path.read_text()
         for wrapper in REMOVED_WRAPPERS:
             if wrapper in content:
                 errors.append(f"ERROR: {doc} references removed wrapper: {wrapper}")
@@ -104,7 +93,7 @@ SECRET_PATTERNS = ["-----BEGIN PRIVATE KEY-----", "AKIA[0-9A-Z]{16}", "ghp_[a-zA
 for doc in REQUIRED_DOCS:
     doc_path = DOCS_DIR / doc
     if doc_path.exists():
-        content = read_file_with_encoding_fallback(doc_path)
+        content = doc_path.read_text()
         for pattern in SECRET_PATTERNS:
             if pattern in content:
                 errors.append(f"ERROR: {doc} contains potential secret pattern: {pattern}")
@@ -121,7 +110,7 @@ print("\n5. Checking for contradictory status...")
 for doc in REQUIRED_DOCS:
     doc_path = DOCS_DIR / doc
     if doc_path.exists():
-        content = read_file_with_encoding_fallback(doc_path)
+        content = doc_path.read_text()
         if "em execucao" in content.lower() and "concluido" in content.lower():
             errors.append(f"WARNING: {doc} may have contradictory status")
 

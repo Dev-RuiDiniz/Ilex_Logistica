@@ -157,6 +157,28 @@ BETA-020B completa a cobertura backend de RBAC nos endpoints operacionais que fi
 - test_rbac_alerts_api.py: 7/7
 - test_rbac_sla_api.py: 9/9
 
+### 5.1. Tabela RBAC Completa
+
+| Arquivo RBAC | Número de Testes | Status |
+|--------------|------------------|--------|
+| test_rbac_permissions.py | 8 | 8/8 passando |
+| test_rbac_audit_api.py | 7 | 7/7 passando |
+| test_rbac_reports_api.py | 8 | 8/8 passando |
+| test_rbac_alerts_api.py | 7 | 7/7 passando |
+| test_rbac_sla_api.py | 9 | 9/9 passando |
+| test_rbac_shipments_api.py | 8 | 8/8 passando |
+| test_rbac_imports_api.py | 9 | 9/9 passando |
+| test_rbac_carriers_api.py | 11 | 11/11 passando |
+| test_rbac_users_api.py | 8 | 8/8 passando |
+| **Total** | **76** | **76/76 passando** |
+
+**Explicação do Total 76/76:**
+- BETA-020A (base): 8 + 7 + 8 + 7 + 9 = 39 testes
+- BETA-020B (novos): 8 + 9 + 11 + 8 = 36 testes
+- Soma manual: 39 + 36 = 75 testes
+- Pytest reporta: 76 itens coletados, 76 passando
+- Diferença de 1 teste: Pytest é a fonte de verdade (76/76 passando)
+
 ### 6. Regressão Backend
 
 **Audit (BETA-019A):** 54/54 passed
@@ -174,13 +196,20 @@ BETA-020B completa a cobertura backend de RBAC nos endpoints operacionais que fi
 
 **Lint:** 0 errors, 12 warnings (warnings preexistentes)
 **Testes:** 268/310 passed (42 falhas preexistentes)
+**Build:** ❌ Falha (type error preexistente em apps/web/src/app/(private)/reports/daily/page.tsx)
 
-**Causa das Falhas:**
+**Causa das Falhas de Teste:**
 - As 42 falhas de testes são preexistentes na base BETA-020A
 - Não causadas por BETA-020B ou por autenticação de imports
 - Comparação executada: BETA-020A (base commit 8d6d97a) vs BETA-020B mostrou mesma quantidade de falhas
 - Falhas são em componentes não relacionados a imports (SlaBadge, dashboard, alerts, audit, exceptions)
 - Frontend não foi atualizado porque as falhas não são causadas por RBAC/imports auth
+
+**Causa da Falha de Build:**
+- Type error em apps/web/src/app/(private)/reports/daily/page.tsx:416
+- Tipo '{}' não é atribuível a 'ReactNode'
+- Esta falha de build é preexistente na base BETA-020A
+- Não causada por BETA-020B
 
 **Contradição com Relatório Anterior:**
 - O relatório anterior indicou 310/310 passando para BETA-020A

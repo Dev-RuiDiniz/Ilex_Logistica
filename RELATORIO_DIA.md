@@ -1,4 +1,4 @@
-# RELATORIO_DIA.md — Registro Diario de Atividades
+# RELATORIO_DIA.md — Registro Diario de Atividades do projeto 'Ilex Logistica'
 
 ---
 

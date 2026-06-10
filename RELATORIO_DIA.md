@@ -199,6 +199,59 @@
 
 ---
 
+## 2026-06-10 (Continuacao 3)
+
+### Tarefas Executadas
+
+1. **Analise de PRs abertas**
+   - PR #38 (BETA-019B: Frontend de Auditoria Operacional) — `mergeStateStatus: DIRTY`, `mergeable: CONFLICTING`
+   - PR #39 (BETA-020A: Seguranca e RBAC Backend/API) — base apontando para branch da PR #38
+
+2. **Resolucao de conflitos da PR #38**
+   - Criada branch `feature/beta-019b-operational-audit-logs-frontend-rebased` a partir de `main`
+   - Cherry-pick dos commits BETA-019A e BETA-019B sobre a `main`:
+     - `40b278d` BETA-019A: logs e auditoria operacional backend
+     - `6177067` BETA-019A: atualizar BETA_NEXT_ACTIONS.md com status do roadmap
+     - `e3ec714` BETA-019A: corrige validate_docs.py para lidar com encoding UTF-8
+     - `92958b9` BETA-019A: implementa teste real de auditoria de importacao
+     - `4d7cbb0` Implement BETA-019B: Frontend de Auditoria Operacional
+     - `44781c4` BETA-019B: amplia testes comportamentais da auditoria operacional
+   - Resolvidos conflitos em `docs/BETA_FUNCTIONAL_EPIC_AUDIT.md` (3x) mantendo percentuais atualizados da main e marcando Epico 7 como CONCLUIDO
+   - Force push para atualizar PR #38
+   - Resultado: PR #38 agora `mergeable: MERGEABLE`
+
+3. **Resolucao de conflitos da PR #39**
+   - Criada branch `feature/beta-020a-security-rbac-backend-api-rebased` a partir da branch rebased da PR #38
+   - Cherry-pick dos commits BETA-020A:
+     - `15e2b2f` BETA-020A: implementa seguranca e RBAC backend/API
+     - `ad2eac4` BETA-020A: amplia cobertura RBAC por endpoint
+   - Resolvido conflito em `apps/api/tests/test_shipment_detail_treatments_report_users.py` (test_w10_daily_report) mantendo correcao do BETA-020A
+   - Force push para atualizar PR #39
+   - Alterada base da PR #39 de `feature/beta-019b-operational-audit-logs-frontend` para `main`
+   - Resultado: PR #39 agora `mergeStateStatus: CLEAN`, `mergeable: MERGEABLE`
+
+### Arquivos Modificados
+- `docs/BETA_FUNCTIONAL_EPIC_AUDIT.md` — conflitos resolvidos, Epico 7 marcado como CONCLUIDO
+- `apps/api/tests/test_shipment_detail_treatments_report_users.py` — conflito resolvido com correcao do teste daily report
+
+### Testes
+- Sem alteracoes em testes (apenas resolucao de conflitos em branches)
+
+### Bugs Encontrados / Correcoes
+- **PR #38:** Conflitos de merge com `main` devido a branch contendo commits ja squash-merged na main
+- **PR #39:** Base incorreta apontando para branch da PR #38 em vez de `main`
+- **Solucao:** Rebase manual via cherry-pick de commits especificos sobre a `main`
+
+### Bloqueios
+- Nenhum bloqueio remanescente
+
+### Proximos Passos
+1. Revisar e mergear PR #38 (BETA-019B) para main
+2. Revisar e mergear PR #39 (BETA-020A) para main
+3. Verificar se novos conflitos surgem apos merges
+
+---
+
 ### Arquivos Inspecionados (nao modificados)
 - `.github/workflows/beta-ci.yml`
 - `apps/api/app/main.py`

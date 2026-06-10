@@ -286,7 +286,7 @@ Para BETA-019A, os seguintes tipos de evento são suportados:
 - ✅ Gerar relatório diário cria log (valida log persistido com event_type correto)
 - ✅ Gerar alertas cria log (valida log persistido com event_type correto)
 - ✅ Recalcular SLA cria log (valida log persistido com event_type correto)
-- ✅ Confirmar importação cria log (fora do escopo unitário - validado em service)
+- ✅ Confirmar importação cria log (valida log persistido com event_type correto)
 - ✅ Criar tratamento shipment cria log (fora do escopo - assinatura instável)
 - ✅ Auditoria não quebra fluxo principal
 - ✅ Auditoria registra usuário quando disponível
@@ -300,7 +300,7 @@ Para BETA-019A, os seguintes tipos de evento são suportados:
 
 **Resultado:** 14 passed, 3 warnings
 
-**Nota:** Os testes de integração validam logs reais persistidos para os serviços onde a integração foi implementada (reports, alerts, sla). Para importação e tratamentos, os testes verificam apenas a disponibilidade do serviço de auditoria devido a limitações técnicas descritas nas limitações conhecidas.
+**Nota:** Os testes de integração validam logs reais persistidos para os serviços onde a integração foi implementada (reports, alerts, sla, imports). Para tratamentos, o teste verifica apenas a disponibilidade do serviço de auditoria devido a limitações técnicas descritas nas limitações conhecidas.
 
 ---
 
@@ -353,8 +353,7 @@ python scripts/beta_validate.py
 6. **Sem retenção avançada:** Política de retenção de logs não implementada
 7. **Sem trilha imutável:** Logs não são imutáveis/append-only com assinatura criptográfica
 8. **Sem sanitização completa de secrets:** Sanitização básica apenas; sanitização avançada fica para Épico 9
-9. **Teste de importação:** O teste `test_confirmar_importacao_cria_log` está fora do escopo de validação unitária porque o serviço de importação usa UploadFile que não pode ser facilmente mockado em testes. A integração real será validada em testes E2E ou BETA-019B.
-10. **Tratamentos de shipment:** A integração com `create_treatment` está fora do escopo porque a assinatura do service não é estável e não há documentação clara. Será implementada em BETA-019B ou Épico 9.
+9. **Tratamentos de shipment:** A integração com `create_treatment` está fora do escopo porque a assinatura do service não é estável e não há documentação clara. Será implementada em BETA-019B ou Épico 9.
 
 ### Integrações
 

@@ -152,7 +152,8 @@ export function parseExceptions(
   exceptionsJson: string
 ): DailyReportExceptionItem[] {
   try {
-    return JSON.parse(exceptionsJson);
+    const parsed = JSON.parse(exceptionsJson);
+    return Array.isArray(parsed) ? parsed : [];
   } catch (error) {
     // Silent error handling for production
     return [];
@@ -164,7 +165,8 @@ export function parseExceptions(
  */
 export function parseAlerts(alertsJson: string): DailyReportAlertItem[] {
   try {
-    return JSON.parse(alertsJson);
+    const parsed = JSON.parse(alertsJson);
+    return Array.isArray(parsed) ? parsed : [];
   } catch (error) {
     // Silent error handling for production
     return [];
@@ -178,7 +180,8 @@ export function parseCarrierEfficiency(
   carrierEfficiencyJson: string
 ): DailyReportCarrierEfficiencyItem[] {
   try {
-    return JSON.parse(carrierEfficiencyJson);
+    const parsed = JSON.parse(carrierEfficiencyJson);
+    return Array.isArray(parsed) ? parsed : [];
   } catch (error) {
     // Silent error handling for production
     return [];

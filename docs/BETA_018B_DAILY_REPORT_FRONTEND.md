@@ -39,10 +39,16 @@ Implementar a interface frontend para o sistema de relatórios diários operacio
      - Tabela de eficiência por transportadora
    - Navegação entre lista e detalhes
 
-4. **Testes** (`apps/web/src/lib/daily-report-api.test.ts`)
-   - 22 testes para o API client
-   - Cobertura de todos os endpoints e funções de parsing
-   - Testes de erro e casos de borda
+4. **Testes**
+   - **API Client** (`apps/web/src/lib/daily-report-api.test.ts`): 22 testes
+     - Cobertura de todos os endpoints e funções de parsing
+     - Testes de erro e casos de borda
+   - **Página** (`apps/web/src/app/(private)/reports/daily/daily-report-page.test.tsx`): 12 testes
+     - Renderização de estados (loading, erro, vazio)
+     - Renderização de filtros
+     - Interação com filtros (date_from, date_to, status)
+     - Geração e busca de relatórios
+     - Tratamento de erros
 
 ## Contrato da API (BETA-018A)
 
@@ -134,17 +140,26 @@ A página usa React hooks para gerenciar:
 A função `loadReports` usa AbortController para cancelar requisições pendentes quando os filtros mudam rapidamente, evitando race conditions.
 
 ### 5. Testes de Página
-Inicialmente foram criados testes para a página, mas devido a complexidade de mocking do React Testing Library com múltiplas renderizações e efeitos colaterais, optou-se por remover esses testes e focar nos testes do API client, que fornecem cobertura suficiente para a lógica de comunicação com a API.
+Os testes da página focam nos estados e interações da UI:
+- Renderização de loading, erro e estados vazios
+- Renderização e interação com filtros
+- Geração e busca de relatórios
+- Tratamento de erros de validação e API
+Devido à complexidade de React Testing Library com múltiplas renderizações causadas por useEffect, os testes de detalhes (KPIs, exceções, alertas) não foram implementados. Os testes do API client fornecem cobertura suficiente para a lógica de comunicação com a API.
 
 ## Validação
 
 ### Frontend
-- ✅ Lint: 0 erros, 6 warnings (pré-existentes em outros arquivos)
-- ✅ Test: 248/248 passed (incluindo 22 novos testes do daily-report-api)
+- ✅ Lint: 0 erros, 12 warnings (pré-existentes em outros arquivos)
+- ✅ Testes do API client: 22/22 passed
+- ✅ Testes da página: 12/12 passed
+- ✅ Total frontend: 260/260 passed
 - ✅ Build: Sucesso, rota `/reports/daily` gerada corretamente
 
 ### Backend (BETA-018A)
 - ✅ Testes específicos do daily report: 46/46 passed
+- ✅ Testes de logging middleware: 5/5 passed
+- ✅ Total BETA-018A: 51/51 passed
 - ✅ Validações oficiais: check_secrets, validate_migrations, validate_docs, beta_validate
 
 ## Limitações Conhecidas

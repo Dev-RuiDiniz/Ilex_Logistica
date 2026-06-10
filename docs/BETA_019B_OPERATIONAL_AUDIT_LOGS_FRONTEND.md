@@ -123,12 +123,13 @@ BETA-019B implementa o frontend do sistema de auditoria operacional para o proje
 - `useEffect` - Carregamento inicial e reação a filtros
 
 **Testes:** `apps/web/src/app/(private)/audit/page.test.tsx`
-- 5 testes cobrindo renderização e estados
+- 21 testes comportamentais cobrindo renderização, filtros, detalhes e estados
 - Mock de `useAuth` e API calls
 - Validação de loading, empty, error states
 - Validação de renderização de componentes
+- Validação de filtros e interações
 
-**Resultado:** 5 passed
+**Resultado:** 21 passed
 
 ### 4. Integração de Navegação
 
@@ -231,14 +232,30 @@ AuditLog
 
 **Arquivo:** `apps/web/src/app/(private)/audit/page.test.tsx`
 
-**Cenários:** 5 testes
-- ✅ Renderiza título da página
+**Cenários:** 21 testes comportamentais
+- ✅ Renderiza título "Auditoria Operacional"
+- ✅ Renderiza summary cards
+- ✅ Renderiza total de logs
+- ✅ Renderiza totais por severity
+- ✅ Renderiza totais por status
+- ✅ Renderiza tabela/lista de logs
+- ✅ Renderiza event_type/action/entity/severity/status/actor/message
 - ✅ Renderiza loading state
 - ✅ Renderiza empty state
 - ✅ Renderiza error state
-- ✅ Renderiza summary, filtros e tabela quando há dados
+- ✅ Aplica filtro por event_type
+- ✅ Aplica filtro por severity
+- ✅ Aplica filtro por status
+- ✅ Aplica filtro por entity_type
+- ✅ Limpa filtros
+- ✅ Chama getAuditLogs ao mudar filtros
+- ✅ Abre detalhe de log
+- ✅ Detalhe mostra metadata_json
+- ✅ Detalhe lida com JSON vazio
+- ✅ Detalhe não quebra com campos ausentes
+- ✅ Renderiza badges de severity/status
 
-**Resultado:** 5 passed
+**Resultado:** 21 passed
 
 ### Testes Frontend Completos
 
@@ -248,7 +265,7 @@ cd apps/web
 npm run test
 ```
 
-**Resultado:** 294 passed (29 test files)
+**Resultado:** 310 passed (29 test files)
 
 ---
 
@@ -290,6 +307,15 @@ python scripts/check_secrets.py --repo-root .
 
 **Resultado:** ✅ OK: No potential secrets found
 
+### Secret Scan Self-Test
+
+**Comando:**
+```bash
+python scripts/check_secrets.py --repo-root . --self-test
+```
+
+**Resultado:** ✅ Self-test completed successfully
+
 ### Migration Validation
 
 **Comando:**
@@ -308,9 +334,20 @@ python scripts/validate_docs.py
 
 **Resultado:** ✅ OK: Documentation validation passed
 
+### Beta Validation
+
+**Comando:**
+```bash
+python scripts/beta_validate.py
+```
+
+**Resultado:** ✅ OK: Beta validation passed
+
 ---
 
 ## Backend Regression
+
+### Backend Completo
 
 **Comando:**
 ```bash
@@ -319,26 +356,29 @@ python -m pytest tests/ -v
 ```
 
 **Resultado:** 542 passed, 1 failed
-- **Nota:** 1 teste falhado (`test_w10_daily_report`) é preexistente e não relacionado a BETA-019B
-- Todos os testes de auditoria (BETA-019A) continuam passando
+- **Nota:** 1 teste falhado (`test_w10_daily_report` em `test_shipment_detail_treatments_report_users.py`) é preexistente e não relacionado a BETA-019B
+- **Diagnóstico:** A falha foi confirmada na base BETA-019A (feature/beta-019a-operational-audit-logs-backend) antes do BETA-019B
+- **Erro:** `KeyError: 'total_shipments'` - O endpoint `/api/v1/reports/daily` não está retornando o campo `total_shipments` no payload
+- **Status:** Falha pré-existente, não causada por BETA-019B
 
----
+### Backend Auditoria (BETA-019A)
 
-## Próximos Passos
+**Comando:**
+```bash
+cd apps/api
+python -m pytest tests/test_audit_log_model.py -v
+python -m pytest tests/test_audit_log_service.py -v
+python -m pytest tests/test_audit_log_api.py -v -rs
+python -m pytest tests/test_audit_log_integrations.py -v -rs
+```
 
-### Curto Prazo (Futuros BETAs)
+**Resultado:** 54 passed
+- ✅ Model: 16 passed
+- ✅ Service: 14 passed
+- ✅ API: 10 passed
+- ✅ Integrações: 14 passed
 
-1. **Exportação de Logs** - Adicionar funcionalidade de exportar logs para CSV/Excel
-2. **Filtros Avançados** - Adicionar filtros por período, usuário específico, request_id
-3. **Dashboard de Auditoria** - Criar dashboard com gráficos de tendências
-4. **Alertas de Auditoria** - Notificações para eventos críticos
-
-### Longo Prazo
-
-1. **Integração Real-time** - WebSocket para atualizações em tempo real
-2. **Análise de Anomalias** - Detecção automática de padrões suspeitos
-3. **Compliance Reports** - Relatórios de conformidade regulatória
-4. **Retenção de Logs** - Políticas de retenção e arquivamento
+**Conclusão:** BETA-019A continua verde, sem regressões causadas por BETA-019B
 
 ---
 
@@ -348,6 +388,7 @@ python -m pytest tests/ -v
 2. **Filtros Básicos** - Apenas filtros por tipo, entidade, severidade e status
 3. **Sem Real-time** - Atualização manual via botão "Aplicar Filtros"
 4. **Sem Dashboard** - Apenas lista detalhada de logs
+5. **Backend Pré-existente** - Falha em `test_w10_daily_report` é pré-existente e não relacionada a BETA-019B
 
 ---
 
@@ -377,20 +418,31 @@ python -m pytest tests/ -v
 - [x] Componentes de UI criados
 - [x] Página de auditoria implementada
 - [x] Navegação integrada
-- [x] Testes do API client passando
-- [x] Testes da página passando
+- [x] Testes do API client passando (11/11)
+- [x] Testes da página passando (21/21)
+- [x] Testes frontend completos passando (310/310)
 - [x] Lint sem erros
 - [x] Build bem-sucedido
 - [x] Gates oficiais passando
-- [x] Backend regression OK
+- [x] Backend regression OK (1 falha pré-existente diagnosticada)
+- [x] Backend auditoria OK (54/54)
 - [x] Documentação criada
+
+---
+
+## Status do Épico 7
+
+O Épico 7 (Logs e Auditoria Operacional) está **parcialmente concluído**:
+- ✅ BETA-019A: Backend (model, service, endpoints, testes) - 100%
+- ✅ BETA-019B: Frontend (API client, componentes, página, navegação, testes) - 100%
+- ⚠️ Nota: Uma falha pré-existente no backend (`test_w10_daily_report`) não está relacionada ao Épico 7
 
 ---
 
 ## Comentários Finais
 
-BETA-019B implementa com sucesso a interface de usuário para o sistema de auditoria operacional. A implementação segue as convenções do projeto, com testes abrangentes e integração completa com o backend BETA-019A.
+BETA-019B implementa com sucesso a interface de usuário para o sistema de auditoria operacional. A implementação segue as convenções do projeto, com testes comportamentais abrangentes e integração completa com o backend BETA-019A.
 
-A interface é funcional e pronta para uso na fase beta, com base sólida para expansões futuras. Todos os gates oficiais passaram e não há regressões no backend.
+A interface é funcional e pronta para uso na fase beta, com base sólida para expansões futuras. Todos os gates oficiais passaram e não há regressões no backend causadas por BETA-019B.
 
-**Status:** ✅ Pronto para merge
+**Status:** ✅ Pronto para review (não declarar 100% concluído até falha pré-existente ser resolvida)

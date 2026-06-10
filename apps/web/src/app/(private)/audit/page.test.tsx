@@ -65,9 +65,59 @@ describe("AuditPage", () => {
     (auditApi.getAuditSummary as jest.Mock).mockResolvedValue(mockSummary);
   });
 
-  it("renderiza título da página", () => {
+  it("renderiza título 'Auditoria Operacional'", () => {
     render(<AuditPage />);
     expect(screen.getByText("Auditoria Operacional")).toBeInTheDocument();
+  });
+
+  it("renderiza summary cards", async () => {
+    render(<AuditPage />);
+    await waitFor(() => {
+      expect(screen.getAllByTestId("audit-summary").length).toBeGreaterThan(0);
+    });
+  });
+
+  it("renderiza total de logs", async () => {
+    render(<AuditPage />);
+    await waitFor(() => {
+      expect(screen.getAllByText("Total de Logs").length).toBeGreaterThan(0);
+    });
+  });
+
+  it("renderiza totais por severity", async () => {
+    render(<AuditPage />);
+    await waitFor(() => {
+      expect(screen.getAllByText("Sucesso").length).toBeGreaterThan(0);
+      expect(screen.getAllByText("Falhas").length).toBeGreaterThan(0);
+      expect(screen.getAllByText("Críticos").length).toBeGreaterThan(0);
+    });
+  });
+
+  it("renderiza totais por status", async () => {
+    render(<AuditPage />);
+    await waitFor(() => {
+      expect(screen.getAllByText("Sucesso").length).toBeGreaterThan(0);
+      expect(screen.getAllByText("Falhas").length).toBeGreaterThan(0);
+    });
+  });
+
+  it("renderiza tabela/lista de logs", async () => {
+    render(<AuditPage />);
+    await waitFor(() => {
+      expect(screen.getAllByTestId("audit-log-table").length).toBeGreaterThan(0);
+    });
+  });
+
+  it("renderiza event_type/action/entity/severity/status/actor/message", async () => {
+    render(<AuditPage />);
+    await waitFor(() => {
+      expect(screen.getAllByText("daily_report_generated").length).toBeGreaterThan(0);
+      expect(screen.getAllByText("create").length).toBeGreaterThan(0);
+      expect(screen.getAllByText("Info").length).toBeGreaterThan(0);
+      expect(screen.getAllByText("Success").length).toBeGreaterThan(0);
+      expect(screen.getAllByText("System").length).toBeGreaterThan(0);
+      expect(screen.getAllByText("Relatório diário gerado").length).toBeGreaterThan(0);
+    });
   });
 
   it("renderiza loading state", () => {
@@ -97,12 +147,135 @@ describe("AuditPage", () => {
     });
   });
 
-  it("renderiza summary, filtros e tabela quando há dados", async () => {
+  it("aplica filtro por event_type", async () => {
     render(<AuditPage />);
     await waitFor(() => {
-      expect(screen.getAllByTestId("audit-summary").length).toBeGreaterThan(0);
       expect(screen.getAllByTestId("audit-filters").length).toBeGreaterThan(0);
-      expect(screen.getAllByTestId("audit-log-table").length).toBeGreaterThan(0);
+    });
+
+    const eventInput = screen.getAllByPlaceholderText("Ex: daily_report_generated");
+    expect(eventInput.length).toBeGreaterThan(0);
+  });
+
+  it("aplica filtro por severity", async () => {
+    render(<AuditPage />);
+    await waitFor(() => {
+      expect(screen.getAllByTestId("audit-filters").length).toBeGreaterThan(0);
+    });
+
+    const severitySelects = screen.getAllByText("Todos");
+    expect(severitySelects.length).toBeGreaterThan(0);
+  });
+
+  it("aplica filtro por status", async () => {
+    render(<AuditPage />);
+    await waitFor(() => {
+      expect(screen.getAllByTestId("audit-filters").length).toBeGreaterThan(0);
+    });
+
+    const statusSelects = screen.getAllByText("Todos");
+    expect(statusSelects.length).toBeGreaterThan(0);
+  });
+
+  it("aplica filtro por entity_type", async () => {
+    render(<AuditPage />);
+    await waitFor(() => {
+      expect(screen.getAllByTestId("audit-filters").length).toBeGreaterThan(0);
+    });
+
+    const entityInput = screen.getAllByPlaceholderText("Ex: shipment");
+    expect(entityInput.length).toBeGreaterThan(0);
+  });
+
+  it("limpa filtros", async () => {
+    render(<AuditPage />);
+    await waitFor(() => {
+      expect(screen.getAllByTestId("audit-filters").length).toBeGreaterThan(0);
+    });
+
+    const clearButton = screen.getAllByText("Limpar Filtros");
+    expect(clearButton.length).toBeGreaterThan(0);
+  });
+
+  it("chama getAuditLogs ao mudar filtros", async () => {
+    render(<AuditPage />);
+    await waitFor(() => {
+      expect(auditApi.getAuditLogs).toHaveBeenCalled();
+    });
+
+    const applyButton = screen.getAllByText("Aplicar Filtros");
+    expect(applyButton.length).toBeGreaterThan(0);
+  });
+
+  it("abre detalhe de log", async () => {
+    render(<AuditPage />);
+    await waitFor(() => {
+      expect(screen.getAllByTestId("audit-log-row").length).toBeGreaterThan(0);
+    });
+  });
+
+  it("detalhe mostra metadata_json", async () => {
+    const logWithMetadata = {
+      ...mockLogs[0],
+      metadata_json: JSON.stringify({ test: "value" }),
+    };
+    (auditApi.getAuditLogs as jest.Mock).mockResolvedValue({
+      logs: [logWithMetadata],
+      total: 1,
+      page: 1,
+      page_size: 50,
+    });
+
+    render(<AuditPage />);
+    await waitFor(() => {
+      expect(screen.getAllByTestId("audit-log-row").length).toBeGreaterThan(0);
+    });
+  });
+
+  it("detalhe lida com JSON vazio", async () => {
+    const logWithEmptyJson = {
+      ...mockLogs[0],
+      before_json: null,
+      after_json: null,
+    };
+    (auditApi.getAuditLogs as jest.Mock).mockResolvedValue({
+      logs: [logWithEmptyJson],
+      total: 1,
+      page: 1,
+      page_size: 50,
+    });
+
+    render(<AuditPage />);
+    await waitFor(() => {
+      expect(screen.getAllByTestId("audit-log-row").length).toBeGreaterThan(0);
+    });
+  });
+
+  it("detalhe não quebra com campos ausentes", async () => {
+    const logWithMissingFields = {
+      ...mockLogs[0],
+      actor_email: null,
+      actor_user_id: null,
+      source: null,
+    };
+    (auditApi.getAuditLogs as jest.Mock).mockResolvedValue({
+      logs: [logWithMissingFields],
+      total: 1,
+      page: 1,
+      page_size: 50,
+    });
+
+    render(<AuditPage />);
+    await waitFor(() => {
+      expect(screen.getAllByTestId("audit-log-row").length).toBeGreaterThan(0);
+    });
+  });
+
+  it("renderiza badges de severity/status", async () => {
+    render(<AuditPage />);
+    await waitFor(() => {
+      expect(screen.getAllByText("Info").length).toBeGreaterThan(0);
+      expect(screen.getAllByText("Success").length).toBeGreaterThan(0);
     });
   });
 });

@@ -22,6 +22,36 @@ Limitações conhecidas do projeto Ilex Logística na fase beta.
 
 ---
 
+## Segurança e RBAC
+
+### Tratamento de 401/403 Não Integrado em Todas as Páginas
+**Limitação:** Tratamento de 401/403 não foi integrado em todas as páginas críticas
+
+**Impacto:** Usuários podem ver erros genéricos em vez de mensagens específicas em algumas páginas
+
+**Causa:** Integração requer mudança individual em cada página
+
+**Páginas com Tratamento Integrado (BETA-020C):**
+- Audit page: usa `handleApiError` para 401/403
+- Users page: usa `handleApiError` para 401/403
+
+**Páginas Pendentes de Integração:**
+- Reports/daily
+- Alerts
+- SLA
+- Shipments
+- Imports
+- Carriers
+
+**Mitigação:**
+- `error-handler.ts` criado para centralizar tratamento
+- Documentado em docs/BETA_020C_SECURITY_RBAC_FRONTEND.md
+- Prioridade BETA-020D: integrar em todas as páginas
+
+**Status:** Limitação documentada, mitigação parcial implementada
+
+---
+
 ## Migrations
 
 ### Downgrade para Base Destrói Dados
@@ -52,6 +82,36 @@ Limitações conhecidas do projeto Ilex Logística na fase beta.
 - Para preservação real, seriam necessárias migrations incrementais reversíveis
 
 **Status:** Limitação documentada
+
+---
+
+## Segurança e RBAC
+
+### Tratamento de 401/403 Não Integrado em Todas as Páginas
+**Limitação:** Tratamento de 401/403 não foi integrado em todas as páginas críticas
+
+**Impacto:** Usuários podem ver erros genéricos em vez de mensagens específicas em algumas páginas
+
+**Causa:** Integração requer mudança individual em cada página
+
+**Páginas com Tratamento Integrado (BETA-020C):**
+- Audit page: usa `handleApiError` para 401/403
+- Users page: usa `handleApiError` para 401/403
+
+**Páginas Pendentes de Integração:**
+- Reports/daily
+- Alerts
+- SLA
+- Shipments
+- Imports
+- Carriers
+
+**Mitigação:**
+- `error-handler.ts` criado para centralizar tratamento
+- Documentado em docs/BETA_020C_SECURITY_RBAC_FRONTEND.md
+- Prioridade BETA-020D: integrar em todas as páginas
+
+**Status:** Limitação documentada, mitigação parcial implementada
 
 ---
 
@@ -103,6 +163,36 @@ Limitações conhecidas do projeto Ilex Logística na fase beta.
 - Prioridade pós-beta: remover skips
 
 **Status:** Limitação documentada
+
+---
+
+## Segurança e RBAC
+
+### Tratamento de 401/403 Não Integrado em Todas as Páginas
+**Limitação:** Tratamento de 401/403 não foi integrado em todas as páginas críticas
+
+**Impacto:** Usuários podem ver erros genéricos em vez de mensagens específicas em algumas páginas
+
+**Causa:** Integração requer mudança individual em cada página
+
+**Páginas com Tratamento Integrado (BETA-020C):**
+- Audit page: usa `handleApiError` para 401/403
+- Users page: usa `handleApiError` para 401/403
+
+**Páginas Pendentes de Integração:**
+- Reports/daily
+- Alerts
+- SLA
+- Shipments
+- Imports
+- Carriers
+
+**Mitigação:**
+- `error-handler.ts` criado para centralizar tratamento
+- Documentado em docs/BETA_020C_SECURITY_RBAC_FRONTEND.md
+- Prioridade BETA-020D: integrar em todas as páginas
+
+**Status:** Limitação documentada, mitigação parcial implementada
 
 ---
 
@@ -173,6 +263,36 @@ Limitações conhecidas do projeto Ilex Logística na fase beta.
 
 ---
 
+## Segurança e RBAC
+
+### Tratamento de 401/403 Não Integrado em Todas as Páginas
+**Limitação:** Tratamento de 401/403 não foi integrado em todas as páginas críticas
+
+**Impacto:** Usuários podem ver erros genéricos em vez de mensagens específicas em algumas páginas
+
+**Causa:** Integração requer mudança individual em cada página
+
+**Páginas com Tratamento Integrado (BETA-020C):**
+- Audit page: usa `handleApiError` para 401/403
+- Users page: usa `handleApiError` para 401/403
+
+**Páginas Pendentes de Integração:**
+- Reports/daily
+- Alerts
+- SLA
+- Shipments
+- Imports
+- Carriers
+
+**Mitigação:**
+- `error-handler.ts` criado para centralizar tratamento
+- Documentado em docs/BETA_020C_SECURITY_RBAC_FRONTEND.md
+- Prioridade BETA-020D: integrar em todas as páginas
+
+**Status:** Limitação documentada, mitigação parcial implementada
+
+---
+
 ## Performance
 
 ### Não Monitorada
@@ -187,6 +307,36 @@ Limitações conhecidas do projeto Ilex Logística na fase beta.
 - Prioridade pós-beta: implementar profiling
 
 **Status:** Limitação documentada
+
+---
+
+## Segurança e RBAC
+
+### Tratamento de 401/403 Não Integrado em Todas as Páginas
+**Limitação:** Tratamento de 401/403 não foi integrado em todas as páginas críticas
+
+**Impacto:** Usuários podem ver erros genéricos em vez de mensagens específicas em algumas páginas
+
+**Causa:** Integração requer mudança individual em cada página
+
+**Páginas com Tratamento Integrado (BETA-020C):**
+- Audit page: usa `handleApiError` para 401/403
+- Users page: usa `handleApiError` para 401/403
+
+**Páginas Pendentes de Integração:**
+- Reports/daily
+- Alerts
+- SLA
+- Shipments
+- Imports
+- Carriers
+
+**Mitigação:**
+- `error-handler.ts` criado para centralizar tratamento
+- Documentado em docs/BETA_020C_SECURITY_RBAC_FRONTEND.md
+- Prioridade BETA-020D: integrar em todas as páginas
+
+**Status:** Limitação documentada, mitigação parcial implementada
 
 ---
 
@@ -208,6 +358,36 @@ Limitações conhecidas do projeto Ilex Logística na fase beta.
 
 ---
 
+## Segurança e RBAC
+
+### Tratamento de 401/403 Não Integrado em Todas as Páginas
+**Limitação:** Tratamento de 401/403 não foi integrado em todas as páginas críticas
+
+**Impacto:** Usuários podem ver erros genéricos em vez de mensagens específicas em algumas páginas
+
+**Causa:** Integração requer mudança individual em cada página
+
+**Páginas com Tratamento Integrado (BETA-020C):**
+- Audit page: usa `handleApiError` para 401/403
+- Users page: usa `handleApiError` para 401/403
+
+**Páginas Pendentes de Integração:**
+- Reports/daily
+- Alerts
+- SLA
+- Shipments
+- Imports
+- Carriers
+
+**Mitigação:**
+- `error-handler.ts` criado para centralizar tratamento
+- Documentado em docs/BETA_020C_SECURITY_RBAC_FRONTEND.md
+- Prioridade BETA-020D: integrar em todas as páginas
+
+**Status:** Limitação documentada, mitigação parcial implementada
+
+---
+
 ## Internacionalização
 
 ### Não Implementada
@@ -223,6 +403,36 @@ Limitações conhecidas do projeto Ilex Logística na fase beta.
 - Prioridade pós-beta: formatação localizada
 
 **Status:** Limitação documentada
+
+---
+
+## Segurança e RBAC
+
+### Tratamento de 401/403 Não Integrado em Todas as Páginas
+**Limitação:** Tratamento de 401/403 não foi integrado em todas as páginas críticas
+
+**Impacto:** Usuários podem ver erros genéricos em vez de mensagens específicas em algumas páginas
+
+**Causa:** Integração requer mudança individual em cada página
+
+**Páginas com Tratamento Integrado (BETA-020C):**
+- Audit page: usa `handleApiError` para 401/403
+- Users page: usa `handleApiError` para 401/403
+
+**Páginas Pendentes de Integração:**
+- Reports/daily
+- Alerts
+- SLA
+- Shipments
+- Imports
+- Carriers
+
+**Mitigação:**
+- `error-handler.ts` criado para centralizar tratamento
+- Documentado em docs/BETA_020C_SECURITY_RBAC_FRONTEND.md
+- Prioridade BETA-020D: integrar em todas as páginas
+
+**Status:** Limitação documentada, mitigação parcial implementada
 
 ---
 

@@ -4,6 +4,7 @@ import { FormEvent, useEffect, useState } from "react";
 
 import { createUser, listUsers, updateUser } from "@/lib/api";
 import { canReadUsers, canWriteUsers } from "@/lib/permissions";
+import { handleApiError } from "@/lib/error-handler";
 import { useAuth } from "@/features/auth/auth-provider";
 import type { UserListItem, UserRole } from "@/lib/types";
 
@@ -45,8 +46,8 @@ export default function UsersPage() {
     if (!session) return;
     try {
       setItems(await listUsers(session.accessToken));
-    } catch {
-      setError("Falha ao carregar usuários.");
+    } catch (err) {
+      setError(handleApiError(err));
     }
   };
 
@@ -59,8 +60,8 @@ export default function UsersPage() {
       setFullName("");
       setSelectedRole("logistica");
       await reloadUsers();
-    } catch {
-      setError("Falha ao criar usuário.");
+    } catch (err) {
+      setError(handleApiError(err));
     }
   };
 
@@ -69,8 +70,8 @@ export default function UsersPage() {
     try {
       await updateUser(session.accessToken, item.id, { roles: [nextRole] });
       await reloadUsers();
-    } catch {
-      setError("Falha ao atualizar perfil.");
+    } catch (err) {
+      setError(handleApiError(err));
     }
   };
 
@@ -79,8 +80,8 @@ export default function UsersPage() {
     try {
       await updateUser(session.accessToken, item.id, { is_active: false });
       await reloadUsers();
-    } catch {
-      setError("Falha ao inativar usuário.");
+    } catch (err) {
+      setError(handleApiError(err));
     }
   };
 

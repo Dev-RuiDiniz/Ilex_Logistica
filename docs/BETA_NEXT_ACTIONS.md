@@ -11,7 +11,8 @@ Próximas ações pós BETA-009S para o projeto Ilex Logística.
 **Épico 9 — Segurança, Usuários, Permissões e RBAC:**
 - ✅ BETA-020A: Backend de segurança e RBAC (concluído)
 - ✅ BETA-020B: RBAC Backend para Endpoints Operacionais Restantes (concluído)
-- BETA-020C: Frontend de segurança e RBAC (próximo)
+- ✅ BETA-020C: Frontend de segurança e RBAC (concluído)
+- BETA-020D: Integração completa de 401/403 em todas as páginas (sugestão)
 
 **Épicos Concluídos:**
 - Sprint Beta 1: SLA, importação CSV/XLSX/Braspress, campos fiscais/financeiros
@@ -19,35 +20,46 @@ Próximas ações pós BETA-009S para o projeto Ilex Logística.
 - Épico 5: Alertas internos
 - Épico 6: Relatório diário
 
-**Progresso Total:** ~74% do roadmap técnico beta
+**Progresso Total:** ~77% do roadmap técnico beta
 
 ## Próximas Ações Imediatas
 
-### 1. BETA-019B — Frontend de Auditoria Operacional
 
-**Objetivo:** Implementar frontend para visualização e consulta de logs de auditoria.
+
+### 1. BETA-020D — Integração Completa de 401/403 (Sugestão)
+
+**Objetivo:** Integrar tratamento de 401/403 em todas as páginas críticas.
 
 **Escopo:**
-- Interface para visualizar logs de auditoria
-- Filtros visuais (event_type, entity_type, severity, status, período)
-- Detalhe do log com before/after/metadata
-- Timeline por entrega/entidade
-- Exportação de logs (CSV/JSON) se aprovado
+- Integrar `handleApiError` em todas as páginas protegidas
+- Implementar redirecionamento automático para 401
+- Exibir AccessDenied automaticamente para 403
+- Adicionar testes de navegação por permissão
+- Adicionar testes de páginas afetadas com RBAC
 
-**Base:** BETA-019A (backend já implementado)
+**Base:** BETA-020C (error-handler criado, mas não integrado em todas as páginas)
 
-**Status:** Próximo
+**Status:** Sugestão
 
 ---
 
-### 2. Épico 9 — Segurança e RBAC Avançado
+### 2. Épico 9 — Segurança e RBAC Avançado (Parcialmente Concluído)
 
 **Objetivo:** Implementar segurança avançada e RBAC granular.
 
-**Escopo:**
-- RBAC granular para endpoints de auditoria
-- Sanitização completa de secrets em logs
-- Política de retenção de logs
+**Escopo Concluído:**
+- ✅ RBAC granular para todos os endpoints (BETA-020A/BETA-020B)
+- ✅ Frontend com helpers de permissão (BETA-020C)
+- ✅ Sidebar condicional por permissão (BETA-020C)
+- ✅ Componente AccessDenied (BETA-020C)
+- ✅ Tratamento de 401/403 em páginas críticas (BETA-020C)
+
+**Escopo Pendente:**
+- Integração de 401/403 em todas as páginas (BETA-020D)
+- SSO/OAuth externo (se necessário)
+- Tela de recuperação de senha
+- Refresh token
+- Logging de eventos de segurança no frontend
 - Trilha imutável com assinatura criptográfica
 - Auditoria de login/logout
 - Auditoria de tentativas de acesso não autorizado

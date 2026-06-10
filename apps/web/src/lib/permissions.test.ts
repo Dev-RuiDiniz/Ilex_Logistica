@@ -67,6 +67,13 @@ describe("RBAC Permissions Helpers", () => {
       const permissions = getPermissionsForRole("unknown" as UserRole);
       expect(permissions).toEqual([]);
     });
+
+    it("usuário nulo/undefined falha seguro", () => {
+      expect(hasPermission(null as unknown as UserRole, "audit:read")).toBe(false);
+      expect(hasPermission(undefined as unknown as UserRole, "audit:read")).toBe(false);
+      expect(getPermissionsForRole(null as unknown as UserRole)).toEqual([]);
+      expect(getPermissionsForRole(undefined as unknown as UserRole)).toEqual([]);
+    });
   });
 
   describe("hasPermission", () => {

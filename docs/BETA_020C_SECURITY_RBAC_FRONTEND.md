@@ -106,7 +106,10 @@ Implementar o frontend necessário para refletir e respeitar o RBAC entregue no 
 - Adicionado `ApiError` com `status` e `statusText`
 - `request` e `requestMultipart` lançam `ApiError` com status HTTP
 
-**Testes:** `apps/web/src/lib/api-auth.test.ts`
+**Testes:** `apps/web/src/lib/api-auth.test.ts` (5 testes)
+- `apps/web/src/components/AccessDenied.test.tsx` (7 testes)
+- `apps/web/src/components/app-shell.navigation.test.tsx` (10 testes)
+- `apps/web/src/lib/error-handler.test.ts` (5 testes)
 - 5 testes para tratamento de 401, 403 e erros genéricos
 
 ### 2. Permissões no Frontend
@@ -130,7 +133,7 @@ Implementar o frontend necessário para refletir e respeitar o RBAC entregue no 
 - Gestor: shipments:read, imports:read, sla:read, alerts:read, reports:read, carriers:read
 - Auditoria: audit:read, shipments:read, imports:read, carriers:read
 
-**Testes:** `apps/web/src/lib/permissions.test.ts`
+**Testes:** `apps/web/src/lib/permissions.test.ts` (26 testes)
 - 25 testes para helpers de permissão
 - Cobertura de todos os roles e permissões
 
@@ -143,7 +146,7 @@ Implementar o frontend necessário para refletir e respeitar o RBAC entregue no 
 - Itens ocultados para usuários sem permissão
 - Label atualizado para refletir acesso em vez de edição
 
-**Testes:** `apps/web/src/components/app-shell.test.tsx`
+**Testes:** `apps/web/src/components/app-shell.test.tsx` (2 testes)
 - 2 testes atualizados para refletir novo comportamento
 
 ### 4. Estados de Acesso Negado
@@ -235,13 +238,13 @@ Implementar o frontend necessário para refletir e respeitar o RBAC entregue no 
 ## Regressão Frontend
 
 **Lint:** 0 errors, 12 warnings (warnings preexistentes)
-**Testes:** 296/296 passando (100% verde)
+**Testes:** 319/319 passando (100% verde)
 **Build:** OK
 
 **Novos testes:**
 - `permissions.test.ts`: 25 testes
 - `api-auth.test.ts`: 5 testes
-- Total: 30 novos testes
+- Total: 42 novos testes (26 permissions, 5 api-auth, 7 AccessDenied, 4 error-handler)
 
 **Testes atualizados:**
 - `app-shell.test.tsx`: 2 testes
@@ -271,12 +274,19 @@ Implementar o frontend necessário para refletir e respeitar o RBAC entregue no 
    - Justificativa: Integração requer mudança em cada página individualmente
 
 2. **Testes de AccessDenied**
-   - Componente criado mas sem testes
-   - Justificativa: Prioridade menor, componente simples
+   - Componente criado com 7 testes
+   - Testes cobrem: título, mensagem, botão, props opcionais, segurança
 
-3. **Testes de páginas afetadas**
-   - Não implementados
-   - Justificativa: Páginas já funcionam com RBAC backend, frontend só precisa respeitar permissões
+3. **Testes de navegação/sidebar**
+   - 10 testes implementados em `app-shell.navigation.test.tsx`
+   - Cobrem: admin, manager, operator, viewer, auditoria, logistica, gestor
+   - Validam visibilidade de itens conforme matriz RBAC
+
+4. **Testes de páginas afetadas**
+   - `error-handler.test.ts` criado com 5 testes
+   - Testes cobrem: 401 redirecionamento, 403 mensagem, erros genéricos
+   - Limitação: Testes de integração com mocks de API não implementados para todas as páginas
+   - Justificativa: Páginas já funcionam com RBAC backend, tratamento de erro centralizado
 
 4. **Middleware matcher**
    - Atualizado manualmente

@@ -22,6 +22,12 @@ gh run list --workflow=<workflow-name>
 
 **Status:** Obrigatório
 
+**Progresso Recente (BETA-020A/BETA-020B/BETA-020C):**
+- Épico 9 (Segurança, Usuários, Permissões e RBAC): 73% implementado
+- RBAC backend completo (76/76 testes)
+- RBAC frontend com helpers de permissão e tratamento de 401/403
+- Gates oficiais passando (check_secrets, validate_migrations, validate_docs, beta_validate)
+
 ---
 
 ### 2. Validação Técnica Automatizada
@@ -40,6 +46,12 @@ python scripts/beta_validate.py
 ```
 
 **Status:** Obrigatório
+
+**Progresso Recente (BETA-020A/BETA-020B/BETA-020C):**
+- Épico 9 (Segurança, Usuários, Permissões e RBAC): 73% implementado
+- RBAC backend completo (76/76 testes)
+- RBAC frontend com helpers de permissão e tratamento de 401/403
+- Gates oficiais passando (check_secrets, validate_migrations, validate_docs, beta_validate)
 
 ---
 
@@ -61,6 +73,12 @@ python scripts/check_secrets.py --repo-root . --self-test
 
 **Status:** Obrigatório
 
+**Progresso Recente (BETA-020A/BETA-020B/BETA-020C):**
+- Épico 9 (Segurança, Usuários, Permissões e RBAC): 73% implementado
+- RBAC backend completo (76/76 testes)
+- RBAC frontend com helpers de permissão e tratamento de 401/403
+- Gates oficiais passando (check_secrets, validate_migrations, validate_docs, beta_validate)
+
 ---
 
 ### 4. Artefatos Gerados
@@ -79,6 +97,12 @@ git diff --cached
 ```
 
 **Status:** Obrigatório
+
+**Progresso Recente (BETA-020A/BETA-020B/BETA-020C):**
+- Épico 9 (Segurança, Usuários, Permissões e RBAC): 73% implementado
+- RBAC backend completo (76/76 testes)
+- RBAC frontend com helpers de permissão e tratamento de 401/403
+- Gates oficiais passando (check_secrets, validate_migrations, validate_docs, beta_validate)
 
 ---
 
@@ -105,6 +129,12 @@ python -m pytest tests/test_migrations.py -v
 
 **Status:** Obrigatório
 
+**Progresso Recente (BETA-020A/BETA-020B/BETA-020C):**
+- Épico 9 (Segurança, Usuários, Permissões e RBAC): 73% implementado
+- RBAC backend completo (76/76 testes)
+- RBAC frontend com helpers de permissão e tratamento de 401/403
+- Gates oficiais passando (check_secrets, validate_migrations, validate_docs, beta_validate)
+
 ---
 
 ### 6. E2E
@@ -124,6 +154,12 @@ npx playwright test
 ```
 
 **Status:** Obrigatório
+
+**Progresso Recente (BETA-020A/BETA-020B/BETA-020C):**
+- Épico 9 (Segurança, Usuários, Permissões e RBAC): 73% implementado
+- RBAC backend completo (76/76 testes)
+- RBAC frontend com helpers de permissão e tratamento de 401/403
+- Gates oficiais passando (check_secrets, validate_migrations, validate_docs, beta_validate)
 
 ---
 
@@ -149,6 +185,12 @@ python scripts/validate_migrations.py
 
 **Status:** Obrigatório
 
+**Progresso Recente (BETA-020A/BETA-020B/BETA-020C):**
+- Épico 9 (Segurança, Usuários, Permissões e RBAC): 73% implementado
+- RBAC backend completo (76/76 testes)
+- RBAC frontend com helpers de permissão e tratamento de 401/403
+- Gates oficiais passando (check_secrets, validate_migrations, validate_docs, beta_validate)
+
 ---
 
 ### 8. PRs Draft
@@ -168,6 +210,12 @@ gh pr view <pr-number> --json autoMerge
 ```
 
 **Status:** Obrigatório
+
+**Progresso Recente (BETA-020A/BETA-020B/BETA-020C):**
+- Épico 9 (Segurança, Usuários, Permissões e RBAC): 73% implementado
+- RBAC backend completo (76/76 testes)
+- RBAC frontend com helpers de permissão e tratamento de 401/403
+- Gates oficiais passando (check_secrets, validate_migrations, validate_docs, beta_validate)
 
 ---
 
@@ -190,6 +238,12 @@ python scripts/validate_docs.py
 ```
 
 **Status:** Obrigatório
+
+**Progresso Recente (BETA-020A/BETA-020B/BETA-020C):**
+- Épico 9 (Segurança, Usuários, Permissões e RBAC): 73% implementado
+- RBAC backend completo (76/76 testes)
+- RBAC frontend com helpers de permissão e tratamento de 401/403
+- Gates oficiais passando (check_secrets, validate_migrations, validate_docs, beta_validate)
 
 ---
 

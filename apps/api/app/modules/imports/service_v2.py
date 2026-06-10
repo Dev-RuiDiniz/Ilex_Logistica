@@ -10,6 +10,7 @@ This module provides:
 """
 
 import csv
+import logging
 import hashlib
 import json
 import re
@@ -30,6 +31,10 @@ from app.modules.imports.mapper import map_column, normalize_column_name, get_re
 from app.modules.imports.models import ImportHistory
 from app.modules.shipments.models import Shipment
 from app.modules.carriers.models import Carrier
+from app.modules.audit.service import AuditLogService
+from app.modules.audit.schemas import AuditLogCreateRequest
+
+logger = logging.getLogger(__name__)
 
 SUPPORTED_EXTENSIONS = {".csv", ".xlsx"}
 XML_NS = {"s": "http://schemas.openxmlformats.org/spreadsheetml/2006/main"}
@@ -694,6 +699,24 @@ def preview_import(
     )
     db.add(history)
     db.commit()
+
+    # Audit log
+    try:
+        audit_log = AuditLogCreateRequest(
+            event_type="import_confirmed",
+            entity_type="import_history",
+            entity_id=history.id if history else None,
+            action="create",
+            source="api",
+            severity="info",
+            status="success",
+            message=f"Importação confirmada: {history.filename if history else 'unknown'}",
+            metadata_json=f'{{"imported_count": {imported_count}, "rejected_count": {rejected_count}}}',
+        )
+        AuditLogService.create_log(db, audit_log)
+    except Exception as e:
+        logger.error(f"Failed to create audit log for import confirmation: {e}")
+
     db.refresh(history)
     
     # Store import_id in preview for later confirmation
@@ -830,6 +853,24 @@ def confirm_import(
     })
     
     db.commit()
+
+    # Audit log
+    try:
+        audit_log = AuditLogCreateRequest(
+            event_type="import_confirmed",
+            entity_type="import_history",
+            entity_id=history.id if history else None,
+            action="create",
+            source="api",
+            severity="info",
+            status="success",
+            message=f"Importação confirmada: {history.filename if history else 'unknown'}",
+            metadata_json=f'{{"imported_count": {imported_count}, "rejected_count": {rejected_count}}}',
+        )
+        AuditLogService.create_log(db, audit_log)
+    except Exception as e:
+        logger.error(f"Failed to create audit log for import confirmation: {e}")
+
     db.refresh(history)
     
     # Attach created shipment IDs to history for response

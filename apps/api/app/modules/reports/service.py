@@ -74,11 +74,11 @@ def generate_daily_report(
         ),
     }
 
-    exceptions_json = dashboard_data.get("top_exceptions", [])
+    exceptions_json = json.dumps(dashboard_data.get("top_exceptions", []), default=str)
 
     alerts_json = []  # Top alertas podem ser derivados do alerts service se necessário
 
-    carrier_efficiency_json = dashboard_data.get("top_carriers_by_efficiency", [])
+    carrier_efficiency_json = json.dumps(dashboard_data.get("top_carriers_by_efficiency", []), default=str)
 
     import_failures_json = {
         "rejected_count": dashboard_data.get("import_failure_count", 0),
@@ -100,9 +100,9 @@ def generate_daily_report(
         existing_report.period_end = period_end
         existing_report.summary_json = json.dumps(summary_json)
         existing_report.kpis_json = json.dumps(kpis_json)
-        existing_report.exceptions_json = json.dumps(exceptions_json)
+        existing_report.exceptions_json = exceptions_json
         existing_report.alerts_json = json.dumps(alerts_json)
-        existing_report.carrier_efficiency_json = json.dumps(carrier_efficiency_json)
+        existing_report.carrier_efficiency_json = carrier_efficiency_json
         existing_report.import_failures_json = json.dumps(import_failures_json)
         db.commit()
         db.refresh(existing_report)
@@ -136,9 +136,9 @@ def generate_daily_report(
             period_end=period_end,
             summary_json=json.dumps(summary_json),
             kpis_json=json.dumps(kpis_json),
-            exceptions_json=json.dumps(exceptions_json),
+            exceptions_json=exceptions_json,
             alerts_json=json.dumps(alerts_json),
-            carrier_efficiency_json=json.dumps(carrier_efficiency_json),
+            carrier_efficiency_json=carrier_efficiency_json,
             import_failures_json=json.dumps(import_failures_json),
         )
         db.add(report)

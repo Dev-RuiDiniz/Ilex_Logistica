@@ -68,9 +68,13 @@ def client(db_session: Session) -> Generator[TestClient, None, None]:
 
 @pytest.fixture
 def seed_roles(db_session: Session) -> None:
-    for role_name in ["admin", "logistica", "gestor", "auditoria"]:
+    for role_name in ["admin", "logistica", "gestor", "auditoria", "manager", "operator", "viewer"]:
         db_session.add(Role(name=role_name))
     db_session.commit()
+    
+    # Seed permissions
+    from app.modules.users.seed_permissions import seed_role_permissions
+    seed_role_permissions(db_session)
 
 
 @pytest.fixture

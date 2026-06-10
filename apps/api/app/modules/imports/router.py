@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends, File, HTTPException, Query, UploadFile
 from sqlalchemy.orm import Session
 
 from app.database.session import get_db
+from app.modules.auth.dependencies import get_current_user, require_permission
 from app.modules.imports.models import ImportHistory
 from app.modules.imports.schemas import (
     DeliveryDetailResponse,
@@ -24,12 +25,17 @@ from app.modules.imports.service import (
     promote_delivery_to_shipment,
 )
 from app.modules.imports.service_v2 import confirm_import, preview_import
+from app.modules.users.models import User
 
 router = APIRouter(prefix="/imports", tags=["imports"])
 
 
 @router.post("/upload", response_model=ImportPreviewResponse)
-def upload_import_file(file: UploadFile = File(...), db: Session = Depends(get_db)) -> ImportPreviewResponse:
+def upload_import_file(
+    file: UploadFile = File(...),
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+) -> ImportPreviewResponse:
     """Legacy upload endpoint - persists immediately."""
     columns, rows, file_type, file_hash = parse_uploaded_file(file)
     # LOG-010: validar duplicidade no banco
@@ -59,6 +65,7 @@ def preview_import_endpoint(
     file: UploadFile = File(...),
     source: str | None = Query(default=None, description="Import source (e.g., braspress_assisted)"),
     db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ) -> ImportPreviewV2Response:
     """BETA-012A: Preview import without persisting shipments.
 
@@ -78,9 +85,10 @@ def preview_import_endpoint(
 def confirm_import_endpoint(
     request: ImportConfirmRequest,
     db: Session = Depends(get_db),
+    current_user: User = Depends(require_permission("imports:write")),
 ) -> ImportConfirmResponse:
     """BETA-012A: Confirm and persist import after preview.
-    
+
     Only valid rows are persisted. Invalid rows cause the entire import to be rejected.
     """
     history = confirm_import(db, request.import_id)
@@ -106,6 +114,7 @@ def confirm_import_endpoint(
 def list_import_history(
     limit: int = Query(default=20, ge=1, le=200),
     db: Session = Depends(get_db),
+    current_user: User = Depends(require_permission("imports:read")),
 ) -> list[ImportHistoryResponse]:
     items = (
         db.query(ImportHistory).order_by(ImportHistory.created_at.desc(), ImportHistory.id.desc()).limit(limit).all()
@@ -138,6 +147,7 @@ def list_deliveries_endpoint(
     transportadora: str | None = Query(default=None),
     data_coleta: str | None = Query(default=None),
     db: Session = Depends(get_db),
+    current_user: User = Depends(require_permission("imports:read")),
 ) -> DeliveryListResponse:
     return DeliveryListResponse(**list_deliveries(
         db=db,
@@ -153,6 +163,7 @@ def list_deliveries_endpoint(
 def get_delivery_detail_endpoint(
     delivery_id: int,
     db: Session = Depends(get_db),
+    current_user: User = Depends(require_permission("imports:read")),
 ) -> DeliveryDetailResponse:
     detail = get_delivery_detail(db, delivery_id)
     if detail is None:
@@ -166,6 +177,7 @@ def promote_delivery_endpoint(
     delivery_id: int,
     request: PromoteDeliveryRequest,
     db: Session = Depends(get_db),
+    current_user: User = Depends(require_permission("imports:write")),
 ) -> PromoteDeliveryResponse:
     """Promove uma Delivery existente para Shipment."""
     shipment = promote_delivery_to_shipment(

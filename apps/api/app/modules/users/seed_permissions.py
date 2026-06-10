@@ -23,6 +23,8 @@ def seed_role_permissions(db: Session) -> None:
         ("audit:read", "Read audit logs", "audit", "read"),
         ("users:read", "Read users", "users", "read"),
         ("users:write", "Write users", "users", "write"),
+        ("carriers:read", "Read carriers", "carriers", "read"),
+        ("carriers:write", "Write carriers", "carriers", "write"),
     ]
     
     for name, description, resource, action in permission_names:
@@ -49,6 +51,7 @@ def seed_role_permissions(db: Session) -> None:
             perm_map["reports:read"],
             perm_map["reports:write"],
             perm_map["audit:read"],
+            perm_map["carriers:read"],
         ],
         "operator": [
             perm_map["shipments:read"],
@@ -64,12 +67,15 @@ def seed_role_permissions(db: Session) -> None:
             perm_map["sla:read"],
             perm_map["alerts:read"],
             perm_map["reports:read"],
+            perm_map["carriers:read"],
         ],
         "logistica": [
             perm_map["shipments:read"],
             perm_map["shipments:write"],
             perm_map["imports:read"],
             perm_map["imports:write"],
+            perm_map["carriers:read"],
+            perm_map["carriers:write"],
         ],
         "gestor": [
             perm_map["shipments:read"],
@@ -77,11 +83,13 @@ def seed_role_permissions(db: Session) -> None:
             perm_map["sla:read"],
             perm_map["alerts:read"],
             perm_map["reports:read"],
+            perm_map["carriers:read"],
         ],
         "auditoria": [
             perm_map["audit:read"],
             perm_map["shipments:read"],
             perm_map["imports:read"],
+            perm_map["carriers:read"],
         ],
     }
     

@@ -140,7 +140,7 @@ Limitações conhecidas do projeto Ilex Logística na fase beta.
 
 **Status:** Limitação mitigada
 
-### RBAC Incompleto (BETA-020A)
+### RBAC Incompleto (BETA-020A) - RESOLVIDO EM BETA-020B
 **Limitação:** Endpoints de Shipments, Imports, Carriers e Users não protegidos com RBAC granular
 
 **Impacto:** Esses endpoints dependem apenas de autenticação JWT, sem verificação de permissão granular
@@ -152,6 +152,21 @@ Limitações conhecidas do projeto Ilex Logística na fase beta.
 - BETA-020B: Proteger endpoints restantes
 - Não há bypass de autenticação - apenas falta de verificação de permissão granular
 - Testes existentes continuam funcionando sem RBAC granular
+
+**Status:** Limitação resolvida em BETA-020B
+
+### Frontend Não Atualizado para Autenticação de Imports (BETA-020B)
+**Limitação:** Frontend não envia autenticação em endpoints de imports
+
+**Impacto:** 42 testes frontend falhando, chamadas de imports retornam 401
+
+**Causa:** Endpoints de imports agora exigem autenticação (antes eram públicos), frontend não atualizado
+
+**Mitigação:**
+- Documentado em docs/BETA_020B_RBAC_OPERATIONAL_ENDPOINTS_BACKEND.md
+- BETA-020C ou PR específico: Atualizar frontend para enviar autenticação
+- Isso é uma melhoria de segurança (imports antes eram públicos)
+- Backend-first approach permite validação separada
 
 **Status:** Limitação documentada
 

@@ -10,7 +10,8 @@ Próximas ações pós BETA-009S para o projeto Ilex Logística.
 
 **Épico 9 — Segurança, Usuários, Permissões e RBAC:**
 - ✅ BETA-020A: Backend de segurança e RBAC (concluído)
-- BETA-020B: Frontend de segurança e RBAC (próximo)
+- ✅ BETA-020B: RBAC Backend para Endpoints Operacionais Restantes (concluído)
+- BETA-020C: Frontend de segurança e RBAC (próximo)
 
 **Épicos Concluídos:**
 - Sprint Beta 1: SLA, importação CSV/XLSX/Braspress, campos fiscais/financeiros

@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query, UploadFile, status
 from sqlalchemy.orm import Session
 
 from app.database.session import get_db
-from app.modules.auth.dependencies import get_current_user, require_roles
+from app.modules.auth.dependencies import get_current_user, require_roles, require_permission
 from app.modules.users.models import User
 from app.modules.shipments.schemas import (
     ImportConfirmRequest,
@@ -54,7 +54,7 @@ def list_shipments_endpoint(
     sort_by: Annotated[str, Query()] = "created_at",
     sort_order: Annotated[str, Query()] = "desc",
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(require_permission("shipments:read")),
     ) -> ShipmentListResponse:
     return list_shipments(
         db=db,
@@ -98,7 +98,7 @@ def list_exceptions_endpoint(
     sort_by: Annotated[str, Query()] = "delay_days",
     sort_order: Annotated[str, Query()] = "desc",
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(require_permission("shipments:read")),
 ) -> ShipmentListResponse:
     return list_exception_shipments(
         db=db,
@@ -124,7 +124,7 @@ def list_exceptions_endpoint(
 def upload_csv(
     file: UploadFile,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(require_permission("shipments:write")),
 ) -> UploadResponse:
     if not file.filename.endswith(".csv"):
         raise HTTPException(status_code=400, detail="arquivo deve ser CSV")
@@ -143,7 +143,7 @@ def upload_csv(
 def confirm_import(
     payload: ImportConfirmRequest,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(require_permission("shipments:write")),
 ) -> ImportConfirmResponse:
     if not payload.confirm:
         raise HTTPException(status_code=400, detail="confirm deve ser true")
@@ -170,7 +170,7 @@ def get_carrier_efficiency(
     sla_status: Annotated[str | None, Query()] = None,
     is_late: Annotated[bool | None, Query()] = None,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(require_permission("shipments:read")),
 ) -> CarrierEfficiencyResponse:
     result = calculate_carrier_efficiency(
         db=db,
@@ -204,7 +204,7 @@ def get_exceptions_analytics(
     is_late: Annotated[bool | None, Query()] = None,
     exception_type: Annotated[str | None, Query()] = None,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(require_permission("shipments:read")),
 ) -> ExceptionsPanelResponse:
     result = get_exceptions_panel(
         db=db,
@@ -229,7 +229,7 @@ def get_exceptions_analytics(
 def get_shipment_detail_endpoint(
     shipment_id: int,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(require_permission("shipments:read")),
 ) -> ShipmentDetailResponse:
     detail = get_shipment_detail(db, shipment_id)
     if detail is None:
@@ -241,7 +241,7 @@ def get_shipment_detail_endpoint(
 def list_shipment_treatments(
     shipment_id: int,
     db: Session = Depends(get_db),
-    current_user: User = Depends(require_roles("admin", "logistica", "gestor", "auditoria")),
+    current_user: User = Depends(require_permission("shipments:read")),
 ) -> list[ShipmentTreatmentResponse]:
     return [ShipmentTreatmentResponse(**item) for item in list_treatments(db, shipment_id)]
 
@@ -251,7 +251,7 @@ def create_shipment_treatment(
     shipment_id: int,
     payload: ShipmentTreatmentCreate,
     db: Session = Depends(get_db),
-    current_user: User = Depends(require_roles("admin", "logistica", "gestor")),
+    current_user: User = Depends(require_permission("shipments:write")),
 ) -> ShipmentTreatmentResponse:
     created = create_treatment(db, shipment_id, current_user.id, payload.status, payload.comment)
     if created is None:

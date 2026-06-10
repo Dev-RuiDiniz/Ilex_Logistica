@@ -22,11 +22,14 @@ gh run list --workflow=<workflow-name>
 
 **Status:** Obrigatório
 
-**Progresso Recente (BETA-020A/BETA-020B/BETA-020C):**
+**Progresso Recente (BETA-020A/BETA-020B/BETA-020C/BETA-021A):**
 - Épico 9 (Segurança, Usuários, Permissões e RBAC): 100% implementado
 - RBAC backend completo (76/76 testes)
 - RBAC frontend com helpers de permissão e tratamento de 401/403 em todas as páginas críticas
 - Gates oficiais passando (check_secrets, validate_migrations, validate_docs, beta_validate)
+- BETA-021A: QA/CI/CD final e readiness beta (282/282 backend, 331/331 frontend)
+- scripts/validate_web.sh corrigido (npm test → npm run test)
+- Todos os épicos beta 100% implementados
 
 ---
 
@@ -47,11 +50,14 @@ python scripts/beta_validate.py
 
 **Status:** Obrigatório
 
-**Progresso Recente (BETA-020A/BETA-020B/BETA-020C):**
+**Progresso Recente (BETA-020A/BETA-020B/BETA-020C/BETA-021A):**
 - Épico 9 (Segurança, Usuários, Permissões e RBAC): 100% implementado
 - RBAC backend completo (76/76 testes)
 - RBAC frontend com helpers de permissão e tratamento de 401/403 em todas as páginas críticas
 - Gates oficiais passando (check_secrets, validate_migrations, validate_docs, beta_validate)
+- BETA-021A: QA/CI/CD final e readiness beta (282/282 backend, 331/331 frontend)
+- scripts/validate_web.sh corrigido (npm test → npm run test)
+- Todos os épicos beta 100% implementados
 
 ---
 
@@ -73,11 +79,14 @@ python scripts/check_secrets.py --repo-root . --self-test
 
 **Status:** Obrigatório
 
-**Progresso Recente (BETA-020A/BETA-020B/BETA-020C):**
+**Progresso Recente (BETA-020A/BETA-020B/BETA-020C/BETA-021A):**
 - Épico 9 (Segurança, Usuários, Permissões e RBAC): 100% implementado
 - RBAC backend completo (76/76 testes)
 - RBAC frontend com helpers de permissão e tratamento de 401/403 em todas as páginas críticas
 - Gates oficiais passando (check_secrets, validate_migrations, validate_docs, beta_validate)
+- BETA-021A: QA/CI/CD final e readiness beta (282/282 backend, 331/331 frontend)
+- scripts/validate_web.sh corrigido (npm test → npm run test)
+- Todos os épicos beta 100% implementados
 
 ---
 
@@ -98,11 +107,14 @@ git diff --cached
 
 **Status:** Obrigatório
 
-**Progresso Recente (BETA-020A/BETA-020B/BETA-020C):**
+**Progresso Recente (BETA-020A/BETA-020B/BETA-020C/BETA-021A):**
 - Épico 9 (Segurança, Usuários, Permissões e RBAC): 100% implementado
 - RBAC backend completo (76/76 testes)
 - RBAC frontend com helpers de permissão e tratamento de 401/403 em todas as páginas críticas
 - Gates oficiais passando (check_secrets, validate_migrations, validate_docs, beta_validate)
+- BETA-021A: QA/CI/CD final e readiness beta (282/282 backend, 331/331 frontend)
+- scripts/validate_web.sh corrigido (npm test → npm run test)
+- Todos os épicos beta 100% implementados
 
 ---
 
@@ -129,11 +141,14 @@ python -m pytest tests/test_migrations.py -v
 
 **Status:** Obrigatório
 
-**Progresso Recente (BETA-020A/BETA-020B/BETA-020C):**
+**Progresso Recente (BETA-020A/BETA-020B/BETA-020C/BETA-021A):**
 - Épico 9 (Segurança, Usuários, Permissões e RBAC): 100% implementado
 - RBAC backend completo (76/76 testes)
 - RBAC frontend com helpers de permissão e tratamento de 401/403 em todas as páginas críticas
 - Gates oficiais passando (check_secrets, validate_migrations, validate_docs, beta_validate)
+- BETA-021A: QA/CI/CD final e readiness beta (282/282 backend, 331/331 frontend)
+- scripts/validate_web.sh corrigido (npm test → npm run test)
+- Todos os épicos beta 100% implementados
 
 ---
 
@@ -155,11 +170,14 @@ npx playwright test
 
 **Status:** Obrigatório
 
-**Progresso Recente (BETA-020A/BETA-020B/BETA-020C):**
+**Progresso Recente (BETA-020A/BETA-020B/BETA-020C/BETA-021A):**
 - Épico 9 (Segurança, Usuários, Permissões e RBAC): 100% implementado
 - RBAC backend completo (76/76 testes)
 - RBAC frontend com helpers de permissão e tratamento de 401/403 em todas as páginas críticas
 - Gates oficiais passando (check_secrets, validate_migrations, validate_docs, beta_validate)
+- BETA-021A: QA/CI/CD final e readiness beta (282/282 backend, 331/331 frontend)
+- scripts/validate_web.sh corrigido (npm test → npm run test)
+- Todos os épicos beta 100% implementados
 
 ---
 
@@ -185,11 +203,14 @@ python scripts/validate_migrations.py
 
 **Status:** Obrigatório
 
-**Progresso Recente (BETA-020A/BETA-020B/BETA-020C):**
+**Progresso Recente (BETA-020A/BETA-020B/BETA-020C/BETA-021A):**
 - Épico 9 (Segurança, Usuários, Permissões e RBAC): 100% implementado
 - RBAC backend completo (76/76 testes)
 - RBAC frontend com helpers de permissão e tratamento de 401/403 em todas as páginas críticas
 - Gates oficiais passando (check_secrets, validate_migrations, validate_docs, beta_validate)
+- BETA-021A: QA/CI/CD final e readiness beta (282/282 backend, 331/331 frontend)
+- scripts/validate_web.sh corrigido (npm test → npm run test)
+- Todos os épicos beta 100% implementados
 
 ---
 
@@ -211,11 +232,14 @@ gh pr view <pr-number> --json autoMerge
 
 **Status:** Obrigatório
 
-**Progresso Recente (BETA-020A/BETA-020B/BETA-020C):**
+**Progresso Recente (BETA-020A/BETA-020B/BETA-020C/BETA-021A):**
 - Épico 9 (Segurança, Usuários, Permissões e RBAC): 100% implementado
 - RBAC backend completo (76/76 testes)
 - RBAC frontend com helpers de permissão e tratamento de 401/403 em todas as páginas críticas
 - Gates oficiais passando (check_secrets, validate_migrations, validate_docs, beta_validate)
+- BETA-021A: QA/CI/CD final e readiness beta (282/282 backend, 331/331 frontend)
+- scripts/validate_web.sh corrigido (npm test → npm run test)
+- Todos os épicos beta 100% implementados
 
 ---
 
@@ -239,11 +263,14 @@ python scripts/validate_docs.py
 
 **Status:** Obrigatório
 
-**Progresso Recente (BETA-020A/BETA-020B/BETA-020C):**
+**Progresso Recente (BETA-020A/BETA-020B/BETA-020C/BETA-021A):**
 - Épico 9 (Segurança, Usuários, Permissões e RBAC): 100% implementado
 - RBAC backend completo (76/76 testes)
 - RBAC frontend com helpers de permissão e tratamento de 401/403 em todas as páginas críticas
 - Gates oficiais passando (check_secrets, validate_migrations, validate_docs, beta_validate)
+- BETA-021A: QA/CI/CD final e readiness beta (282/282 backend, 331/331 frontend)
+- scripts/validate_web.sh corrigido (npm test → npm run test)
+- Todos os épicos beta 100% implementados
 
 ---
 

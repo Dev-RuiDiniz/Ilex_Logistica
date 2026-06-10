@@ -22,6 +22,20 @@ Limitações conhecidas do projeto Ilex Logística na fase beta.
 
 ---
 
+## BETA-021A — QA/CI/CD Final e Readiness Beta
+
+**Status:** Sem limitações críticas
+
+**Limitações Restantes:**
+- check_secrets: 1 falso positivo em validate_docs.py (documentado)
+- lint frontend: 12 warnings preexistentes (não críticas)
+- Pydantic deprecation warnings (não críticas)
+
+**Correções Aplicadas:**
+- scripts/validate_web.sh: npm test → npm run test (correção para Web CI)
+
+---
+
 
 
 ## Migrations
@@ -41,6 +55,20 @@ Limitações conhecidas do projeto Ilex Logística na fase beta.
 
 **Status:** Limitação documentada
 
+---
+
+## BETA-021A — QA/CI/CD Final e Readiness Beta
+
+**Status:** Sem limitações críticas
+
+**Limitações Restantes:**
+- check_secrets: 1 falso positivo em validate_docs.py (documentado)
+- lint frontend: 12 warnings preexistentes (não críticas)
+- Pydantic deprecation warnings (não críticas)
+
+**Correções Aplicadas:**
+- scripts/validate_web.sh: npm test → npm run test (correção para Web CI)
+
 ### Preservação de Dados
 **Limitação:** Não há validação de preservação real de dados
 
@@ -54,6 +82,20 @@ Limitações conhecidas do projeto Ilex Logística na fase beta.
 - Para preservação real, seriam necessárias migrations incrementais reversíveis
 
 **Status:** Limitação documentada
+
+---
+
+## BETA-021A — QA/CI/CD Final e Readiness Beta
+
+**Status:** Sem limitações críticas
+
+**Limitações Restantes:**
+- check_secrets: 1 falso positivo em validate_docs.py (documentado)
+- lint frontend: 12 warnings preexistentes (não críticas)
+- Pydantic deprecation warnings (não críticas)
+
+**Correções Aplicadas:**
+- scripts/validate_web.sh: npm test → npm run test (correção para Web CI)
 
 ---
 
@@ -94,6 +136,20 @@ Limitações conhecidas do projeto Ilex Logística na fase beta.
 
 **Status:** Limitação documentada
 
+---
+
+## BETA-021A — QA/CI/CD Final e Readiness Beta
+
+**Status:** Sem limitações críticas
+
+**Limitações Restantes:**
+- check_secrets: 1 falso positivo em validate_docs.py (documentado)
+- lint frontend: 12 warnings preexistentes (não críticas)
+- Pydantic deprecation warnings (não críticas)
+
+**Correções Aplicadas:**
+- scripts/validate_web.sh: npm test → npm run test (correção para Web CI)
+
 ### Testes Marcados como Skip
 **Limitação:** Testes marcados como skip para UI não implementada
 
@@ -107,6 +163,20 @@ Limitações conhecidas do projeto Ilex Logística na fase beta.
 - Prioridade pós-beta: remover skips
 
 **Status:** Limitação documentada
+
+---
+
+## BETA-021A — QA/CI/CD Final e Readiness Beta
+
+**Status:** Sem limitações críticas
+
+**Limitações Restantes:**
+- check_secrets: 1 falso positivo em validate_docs.py (documentado)
+- lint frontend: 12 warnings preexistentes (não críticas)
+- Pydantic deprecation warnings (não críticas)
+
+**Correções Aplicadas:**
+- scripts/validate_web.sh: npm test → npm run test (correção para Web CI)
 
 ---
 
@@ -179,6 +249,20 @@ Limitações conhecidas do projeto Ilex Logística na fase beta.
 
 ---
 
+## BETA-021A — QA/CI/CD Final e Readiness Beta
+
+**Status:** Sem limitações críticas
+
+**Limitações Restantes:**
+- check_secrets: 1 falso positivo em validate_docs.py (documentado)
+- lint frontend: 12 warnings preexistentes (não críticas)
+- Pydantic deprecation warnings (não críticas)
+
+**Correções Aplicadas:**
+- scripts/validate_web.sh: npm test → npm run test (correção para Web CI)
+
+---
+
 
 
 ## Performance
@@ -195,6 +279,20 @@ Limitações conhecidas do projeto Ilex Logística na fase beta.
 - Prioridade pós-beta: implementar profiling
 
 **Status:** Limitação documentada
+
+---
+
+## BETA-021A — QA/CI/CD Final e Readiness Beta
+
+**Status:** Sem limitações críticas
+
+**Limitações Restantes:**
+- check_secrets: 1 falso positivo em validate_docs.py (documentado)
+- lint frontend: 12 warnings preexistentes (não críticas)
+- Pydantic deprecation warnings (não críticas)
+
+**Correções Aplicadas:**
+- scripts/validate_web.sh: npm test → npm run test (correção para Web CI)
 
 ---
 
@@ -218,6 +316,20 @@ Limitações conhecidas do projeto Ilex Logística na fase beta.
 
 ---
 
+## BETA-021A — QA/CI/CD Final e Readiness Beta
+
+**Status:** Sem limitações críticas
+
+**Limitações Restantes:**
+- check_secrets: 1 falso positivo em validate_docs.py (documentado)
+- lint frontend: 12 warnings preexistentes (não críticas)
+- Pydantic deprecation warnings (não críticas)
+
+**Correções Aplicadas:**
+- scripts/validate_web.sh: npm test → npm run test (correção para Web CI)
+
+---
+
 
 
 ## Internacionalização
@@ -235,6 +347,20 @@ Limitações conhecidas do projeto Ilex Logística na fase beta.
 - Prioridade pós-beta: formatação localizada
 
 **Status:** Limitação documentada
+
+---
+
+## BETA-021A — QA/CI/CD Final e Readiness Beta
+
+**Status:** Sem limitações críticas
+
+**Limitações Restantes:**
+- check_secrets: 1 falso positivo em validate_docs.py (documentado)
+- lint frontend: 12 warnings preexistentes (não críticas)
+- Pydantic deprecation warnings (não críticas)
+
+**Correções Aplicadas:**
+- scripts/validate_web.sh: npm test → npm run test (correção para Web CI)
 
 ---
 

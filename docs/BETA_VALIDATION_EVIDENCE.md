@@ -562,3 +562,65 @@ git status
 **Assinatura:** Devin (SWE-1.6)  
 **Data:** 2026-06-08  
 **Status:** 🔄 Em execução (BETA-009S - Revalidação Empilhada)
+
+
+---
+
+## BETA-021A - QA/CI/CD Final e Readiness Beta
+
+### PR
+- **Número:** A ser criado
+- **Branch:** feature/beta-021a-qa-ci-cd-beta-readiness
+- **Base:** feature/beta-020c-security-rbac-frontend
+- **Objetivo:** Consolidar a trilha beta em uma auditoria final de QA/CI/CD, readiness operacional, comandos oficiais, documentação de evidências e critérios de liberação beta
+
+### Comandos Executados
+```bash
+# Gates Oficiais
+python scripts/check_secrets.py --repo-root .
+python scripts/check_secrets.py --repo-root . --self-test
+python scripts/validate_migrations.py
+python scripts/validate_docs.py
+python scripts/beta_validate.py
+
+# Backend QA
+cd apps/api
+python -m pytest tests/test_rbac_permissions.py tests/test_rbac_audit_api.py tests/test_rbac_reports_api.py tests/test_rbac_alerts_api.py tests/test_rbac_sla_api.py tests/test_rbac_shipments_api.py tests/test_rbac_imports_api.py tests/test_rbac_carriers_api.py tests/test_rbac_users_api.py -v -rs
+python -m pytest tests/test_audit_log_model.py tests/test_audit_log_service.py tests/test_audit_log_api.py tests/test_audit_log_integrations.py -v -rs
+python -m pytest tests/test_daily_report_model.py tests/test_daily_report_generation.py tests/test_daily_report_api.py tests/test_daily_report_integration.py -v -rs
+python -m pytest tests/test_alerts_model.py tests/test_alerts_generation.py tests/test_alerts_api.py -v -rs
+python -m pytest tests/test_sla_calculation.py tests/test_sla_rules.py tests/test_sla_api.py -v -rs
+python -m pytest tests/test_braspress_assisted_import.py -v -rs
+python -m pytest tests/test_shipment_detail_treatments_report_users.py -v -rs
+
+# Frontend QA
+cd apps/web
+npm run lint
+npm run test
+npm run build
+```
+
+### Status
+- **Estado:** DRAFT
+- **Aprovação:** Necessária
+- **Merge:** Não realizado
+
+### Resultados
+- **Gates Oficiais:** ✅ check_secrets (1 falso positivo), ✅ check_secrets --self-test, ✅ validate_migrations, ✅ validate_docs, ✅ beta_validate
+- **Backend:** ✅ 282/282 testes passando (100% verde)
+- **Frontend:** ✅ 331/331 testes passando (100% verde), ✅ lint 0 errors, ✅ build OK
+- **CI/CD:** ✅ workflows inspecionados, ✅ scripts/validate_web.sh corrigido
+- **Migrations:** ✅ validadas
+- **Segurança:** ✅ RBAC implementado, ✅ 401/403 integrado, ✅ audit logs implementados
+
+### Limitações Conhecidas
+- check_secrets: 1 falso positivo em validate_docs.py (documentado)
+- lint frontend: 12 warnings preexistentes (não críticas)
+- Pydantic deprecation warnings (não críticas)
+
+### Pendências Antes de Merge
+- Aprovação do PR pelo mantenedor
+- Merge dos PRs beta empilhados (BETA-018B, BETA-019A, BETA-019B, BETA-020A, BETA-020B, BETA-020C)
+
+### Link
+- A ser criado

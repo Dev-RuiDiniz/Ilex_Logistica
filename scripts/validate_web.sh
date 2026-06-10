@@ -10,7 +10,7 @@ echo "Validating Web..."
 cd "$WEB_DIR"
 
 # Executar testes
-npm test || {
+npm run test || {
   echo "ERROR: Web tests failed"
   exit 1
 }

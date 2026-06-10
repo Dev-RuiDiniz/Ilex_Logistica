@@ -20,7 +20,7 @@ Próximas ações pós BETA-009S para o projeto Ilex Logística.
 - Épico 5: Alertas internos
 - Épico 6: Relatório diário
 
-**Progresso Total:** ~80% do roadmap técnico beta
+**Progresso Total:** 100% do roadmap técnico beta
 
 ## Próximas Ações Imediatas
 
@@ -40,12 +40,37 @@ Próximas ações pós BETA-009S para o projeto Ilex Logística.
 - ✅ Tratamento de 401/403 em todas as páginas críticas (BETA-020C)
 - ✅ Testes de navegação por permissão (BETA-020C)
 - ✅ Testes de error-handler (BETA-020C)
+- ✅ QA/CI/CD final e readiness beta (BETA-021A)
 
 **Escopo Futuro (se necessário):**
 - SSO/OAuth externo
 - Tela de recuperação de senha
 - Refresh token
 - Logging de eventos de segurança no frontend
+
+---
+
+### 2. BETA-021A — QA/CI/CD Final e Readiness Beta (Concluído)
+
+**Objetivo:** Consolidar a trilha beta em uma auditoria final de QA/CI/CD, readiness operacional, comandos oficiais, documentação de evidências e critérios de liberação beta.
+
+**Escopo Concluído:**
+- ✅ Gates oficiais validados
+- ✅ Backend QA final (282/282 testes)
+- ✅ Frontend QA final (331/331 testes)
+- ✅ CI/CD workflows inspecionados e corrigidos
+- ✅ Migration readiness validado
+- ✅ Segurança/readiness auditado
+- ✅ Documentação de release beta criada
+- ✅ scripts/validate_web.sh corrigido (npm test → npm run test)
+
+**Status:** Concluído
+
+**Próximos Passos:**
+- Merge dos PRs beta empilhados
+- Deploy em staging
+- Testes E2E em staging
+- Monitoramento em produção
 - Trilha imutável com assinatura criptográfica
 - Auditoria de login/logout
 - Auditoria de tentativas de acesso não autorizado

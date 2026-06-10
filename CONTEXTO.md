@@ -8,7 +8,7 @@
 
 Projeto de plataforma web para rastreio de entregas, gestao de excecoes operacionais e relatorios logisticos. Monorepo com API Python/FastAPI + frontend Next.js + infra Docker + documentacao extensa.
 
-**Fase atual:** Pos-merge de 36 PRs beta. Conflitos de merge RESOLVIDOS. Build frontend passando. Testes backend: 489 passed, 0 failed. README reescrito com apresentacao comercial.
+**Fase atual:** Pos-merge de 36 PRs beta. Conflitos de merge RESOLVIDOS. Build frontend passando. Testes backend: 489 passed, 0 failed. README reescrito com apresentacao comercial. PRs #38 e #39 corrigidas e prontas para merge.
 
 ---
 
@@ -55,6 +55,8 @@ Projeto de plataforma web para rastreio de entregas, gestao de excecoes operacio
 | ~~CI quebrado~~ | ~~CRITICO~~ | **RESOLVIDO** — workflow `beta-ci.yml` corrigido |
 | ~~Documentacao ilegivel~~ | ~~ALTO~~ | **RESOLVIDO** — 6 documentos BETA_*.md limpos |
 | ~~Build frontend com erros de tipo~~ | ~~MEDIO~~ | **RESOLVIDO** — tipos completos adicionados em `types.ts`, build passando |
+| ~~PR #38 com conflitos~~ | ~~ALTO~~ | **RESOLVIDO** — rebase manual via cherry-pick, agora mergeable |
+| ~~PR #39 com base incorreta~~ | ~~ALTO~~ | **RESOLVIDO** — base alterada para `main`, agora mergeable |
 | Cobertura Web baixa | MEDIO | 20.8% — limita confianca no frontend |
 | E2E incompletos | MEDIO | Testes skipados para telas nao implementadas |
 
@@ -67,10 +69,12 @@ Projeto de plataforma web para rastreio de entregas, gestao de excecoes operacio
 3. ~~Corrigir build do frontend — tipos incompletos em `types.ts`~~ **(FEITO 2026-06-10)**
 4. ~~Rodar suite completa de testes e gerar novo relatorio de cobertura~~ **(FEITO — 489 passed, 0 failed)**
 5. ~~Atualizar `BETA_FUNCTIONAL_EPIC_AUDIT.md`~~ **(FEITO 2026-06-10)**
-6. Implementar tela administrativa de usuarios (W15)
-7. Implementar tela de auditoria de alteracoes (W18)
-8. Desenvolver conectores de transportadoras (LOG-021/022)
-9. Implementar envio de relatorio diario por e-mail (LOG-019)
+6. ~~Revisar e mergear PR #38 (BETA-019B — Frontend de Auditoria)~~ **(PRONTA — mergeable)**
+7. ~~Revisar e mergear PR #39 (BETA-020A — Seguranca e RBAC)~~ **(PRONTA — mergeable)**
+8. Implementar tela administrativa de usuarios (W15)
+9. Implementar tela de auditoria de alteracoes (W18)
+10. Desenvolver conectores de transportadoras (LOG-021/022)
+11. Implementar envio de relatorio diario por e-mail (LOG-019)
 
 ---
 
@@ -95,6 +99,12 @@ Projeto de plataforma web para rastreio de entregas, gestao de excecoes operacio
 - Reescrita do `README.md` com apresentacao comercial
 - Atualizacao de `AUDITORIA.md` e `BETA_FUNCTIONAL_EPIC_AUDIT.md` com estado pos-merge
 - Suite completa: **489 passed, 0 failed**
+
+### 2026-06-10 (Continuacao — Correcao de PRs)
+- Analise de PRs abertas: #38 (BETA-019B) e #39 (BETA-020A)
+- PR #38: conflitos com `main` resolvidos via rebase manual (cherry-pick de 6 commits)
+- PR #39: base alterada de `feature/beta-019b` para `main`, conflitos resolvidos via cherry-pick
+- Resultado: ambas as PRs agora `mergeable` e prontas para revisao/merge
 
 ### 2026-06-08 a 2026-06-09
 - Merge de 36 PRs beta na branch `main`

@@ -75,7 +75,7 @@ print("\n3. Checking for references to removed Bash wrappers...")
 for doc in REQUIRED_DOCS:
     doc_path = DOCS_DIR / doc
     if doc_path.exists():
-        content = doc_path.read_text()
+        content = doc_path.read_text(encoding="utf-8", errors="replace")
         for wrapper in REMOVED_WRAPPERS:
             if wrapper in content:
                 errors.append(f"ERROR: {doc} references removed wrapper: {wrapper}")
@@ -93,7 +93,7 @@ SECRET_PATTERNS = ["-----BEGIN PRIVATE KEY-----", "AKIA[0-9A-Z]{16}", "ghp_[a-zA
 for doc in REQUIRED_DOCS:
     doc_path = DOCS_DIR / doc
     if doc_path.exists():
-        content = doc_path.read_text()
+        content = doc_path.read_text(encoding="utf-8", errors="replace")
         for pattern in SECRET_PATTERNS:
             if pattern in content:
                 errors.append(f"ERROR: {doc} contains potential secret pattern: {pattern}")
@@ -110,7 +110,7 @@ print("\n5. Checking for contradictory status...")
 for doc in REQUIRED_DOCS:
     doc_path = DOCS_DIR / doc
     if doc_path.exists():
-        content = doc_path.read_text()
+        content = doc_path.read_text(encoding="utf-8", errors="replace")
         if "em execucao" in content.lower() and "concluido" in content.lower():
             errors.append(f"WARNING: {doc} may have contradictory status")
 

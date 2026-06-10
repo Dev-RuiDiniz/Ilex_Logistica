@@ -35,11 +35,72 @@
 - `CONTEXTO.md` — Contexto vivo do projeto
 - `RELATORIO_DIA.md` — Registro diario de atividades
 
-### Commit e Push
+### Commit e Push (Governanca)
 - **Commit:** `docs(governance): adiciona auditoria completa, regras de agentes e contexto do projeto`
 - **Hash:** `b991c14`
 - **Push:** `main -> origin/main` (6e6fc14..b991c14)
 - **Arquivos:** 4 criados, 895 linhas inseridas
+
+---
+
+## 2026-06-10 (Continuacao)
+
+### Tarefas Executadas
+
+1. **Reauditoria completa do projeto e correcao de conflitos de merge**
+   - Mapeados 48 conflitos de merge em 10 arquivos
+   - Corrigidos conflitos em `.github/workflows/beta-ci.yml` (mantida linha `pip install -e "apps/api[dev]")`
+   - Corrigidos conflitos em `apps/api/app/main.py` (middleware condicional + removido health_router duplicado)
+   - Corrigidos conflitos em `apps/api/app/modules/imports/mapper.py` (mapeamentos Braspress BETA-012C)
+   - Corrigidos conflitos em `apps/api/app/modules/imports/router.py` (parametro source)
+   - Adicionado parametro `source` a `preview_import` em `service_v2.py`
+   - Limpo conflitos de merge em 6 documentos BETA_*.md via script Python
+   - Adicionados tipos DailyReport, SlaRule, CarrierEfficiency em `apps/web/src/lib/types.ts`
+
+2. **Validacao tecnica pos-correcoes**
+   - API sobe sem erros: `create_app()` executa com sucesso
+   - Testes criticos passando: migrations (4), auth (3), health (1) = 8 passed
+   - Build do frontend: erros de tipo pendentes em BETA-018B (tipos incompletos)
+
+### Arquivos Modificados
+- `.github/workflows/beta-ci.yml`
+- `apps/api/app/main.py`
+- `apps/api/app/modules/imports/mapper.py`
+- `apps/api/app/modules/imports/router.py`
+- `apps/api/app/modules/imports/service_v2.py`
+- `apps/web/src/lib/types.ts`
+- `docs/BETA_CHECKLIST.md`
+- `docs/BETA_COMMANDS.md`
+- `docs/BETA_KNOWN_LIMITATIONS.md`
+- `docs/BETA_NEXT_ACTIONS.md`
+- `docs/BETA_RELEASE_GATE.md`
+- `docs/BETA_VALIDATION_EVIDENCE.md`
+- `CONTEXTO.md`
+- `RELATORIO_DIA.md`
+
+### Testes
+- Backend: 8 testes criticos passando (migrations, auth, health)
+- Frontend: build com erros de tipo pendentes
+
+### Bugs Encontrados / Correcoes
+- **CRITICO:** 48 conflitos de merge nao resolvidos -> **RESOLVIDOS**
+- **MEDIO:** Build frontend quebrado por tipos ausentes -> parcialmente corrigido (tipos base adicionados, propriedades extras pendentes)
+
+### Commit e Push (Correcoes)
+- **Commit:** `fix(api,web,docs,ci): resolve conflitos de merge e corrige build/CI`
+- **Hash:** `940ccc4`
+- **Arquivos:** 12 modificados, 163 insercoes, 276 delecoes
+
+### Bloqueios
+- Build do frontend ainda falha em erros de tipo especificos (propriedades ausentes em interfaces DailyReport/SlaRule)
+
+### Proximos Passos
+1. Finalizar correcao de tipos no frontend para build passar
+2. Rodar suite completa de testes de backend
+3. Verificar testes unitarios do frontend (Vitest)
+4. Atualizar AUDITORIA.md com novo estado pos-correcoes
+
+---
 
 ### Arquivos Inspecionados (nao modificados)
 - `.github/workflows/beta-ci.yml`

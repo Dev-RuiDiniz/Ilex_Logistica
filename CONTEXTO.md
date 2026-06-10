@@ -15,26 +15,26 @@ Projeto de plataforma web para rastreio de entregas, gestao de excecoes operacio
 ## Estado dos Componentes
 
 ### Backend (`apps/api`)
-- **Status:** Funcional com ressalvas (conflitos em `main.py` e `imports/`)
+- **Status:** Funcional, conflitos de merge RESOLVIDOS
 - **Modulos prontos:** auth, users, carriers, shipments, imports (CSV/XLSX), sla, alerts, reports, dashboard
 - **Migrations:** 11 versoes Alembic
-- **Testes:** ~39 arquivos de teste pytest
+- **Testes:** ~39 arquivos de teste pytest (testes criticos passando)
 - **Cobertura:** ~88% (declarado)
 
 ### Frontend (`apps/web`)
-- **Status:** Build funcional, cobertura baixa
+- **Status:** Build com erros de tipo pendentes (BETA-018B mergeado sem tipos completos)
 - **Telas prontas:** login, carriers, shipments, shipments/import, exceptions, reports/daily, alerts, users (parcial), settings (parcial)
 - **Testes:** Vitest unitario + Playwright E2E (alguns skipados)
 - **Cobertura:** ~20.8%
 
 ### Infraestrutura
 - **Docker Compose:** PostgreSQL + API container + healthchecks
-- **CI/CD:** GitHub Actions workflow `beta-ci.yml` (atualmente com conflitos de merge)
+- **CI/CD:** GitHub Actions workflow `beta-ci.yml` (conflitos resolvidos, CI deve funcionar)
 - **Scripts:** beta_validate, validate_migrations, check_secrets, validate_docs
 
 ### Documentacao
 - **~50+ documentos** em `docs/`
-- **Problema:** varios arquivos `BETA_*.md` contem artefatos de merge nao resolvidos
+- **Conflitos de merge:** RESOLVIDOS em todos os documentos BETA_*.md
 
 ---
 
@@ -51,9 +51,10 @@ Projeto de plataforma web para rastreio de entregas, gestao de excecoes operacio
 
 | Bloqueio | Severidade | Descricao |
 |----------|-----------|-----------|
-| Conflitos de merge nao resolvidos | CRITICO | 48 ocorrencias em 10 arquivos (codigo, CI, docs) |
-| CI quebrado | CRITICO | `beta-ci.yml` com artefatos de merge |
-| Documentacao ilegivel | ALTO | BETA_NEXT_ACTIONS, BETA_VALIDATION_EVIDENCE, BETA_COMMANDS, etc |
+| ~~Conflitos de merge nao resolvidos~~ | ~~CRITICO~~ | **RESOLVIDO** em 2026-06-10 |
+| ~~CI quebrado~~ | ~~CRITICO~~ | **RESOLVIDO** — workflow `beta-ci.yml` corrigido |
+| ~~Documentacao ilegivel~~ | ~~ALTO~~ | **RESOLVIDO** — 6 documentos BETA_*.md limpos |
+| Build frontend com erros de tipo | MEDIO | BETA-018B mergeado sem tipos completos em `types.ts` |
 | Cobertura Web baixa | MEDIO | 20.8% — limita confianca no frontend |
 | E2E incompletos | MEDIO | Testes skipados para telas nao implementadas |
 
@@ -61,14 +62,15 @@ Projeto de plataforma web para rastreio de entregas, gestao de excecoes operacio
 
 ## Proximos Passos Pendentes (Macro)
 
-1. Resolver todos os conflitos de merge nao resolvidos
-2. Corrigir e consolidar CI/CD na raiz
-3. Rodar suite completa de testes e gerar novo relatorio de cobertura
-4. Atualizar `BETA_FUNCTIONAL_EPIC_AUDIT.md` (desatualizado pos-merge)
-5. Implementar tela administrativa de usuarios (W15)
-6. Implementar tela de auditoria de alteracoes (W18)
-7. Desenvolver conectores de transportadoras (LOG-021/022)
-8. Implementar envio de relatorio diario por e-mail (LOG-019)
+1. ~~Resolver todos os conflitos de merge nao resolvidos~~ **(FEITO 2026-06-10)**
+2. ~~Corrigir e consolidar CI/CD na raiz~~ **(FEITO 2026-06-10)**
+3. Corrigir build do frontend — tipos incompletos em `types.ts` (DailyReport, SlaRule, etc.)
+4. Rodar suite completa de testes e gerar novo relatorio de cobertura
+5. Atualizar `BETA_FUNCTIONAL_EPIC_AUDIT.md` (desatualizado pos-merge)
+6. Implementar tela administrativa de usuarios (W15)
+7. Implementar tela de auditoria de alteracoes (W18)
+8. Desenvolver conectores de transportadoras (LOG-021/022)
+9. Implementar envio de relatorio diario por e-mail (LOG-019)
 
 ---
 

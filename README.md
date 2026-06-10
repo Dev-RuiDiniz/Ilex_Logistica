@@ -1,181 +1,137 @@
-# Ilex Logística Monorepo
+# Ilex Logística
 
-Monorepositório oficial da plataforma Ilex Logística, consolidando API, frontend web, infraestrutura, integrações e documentação técnica em uma única base versionada.
+> Plataforma inteligente para rastreio de entregas, identificação de atrasos e gestão de exceções operacionais.
 
-## Visão Geral
+**Versão Beta concluída | Pronto para produção**
 
-Este repositório centraliza os módulos que antes estavam distribuídos em múltiplos repositórios da organização.  
-Objetivo: simplificar colaboração, rastreabilidade, evolução arquitetural e governança técnica.
+---
+
+## O que é o Ilex Logística?
+
+O **Ilex Logística** é uma plataforma web completa que centraliza o monitoramento de envios, automatiza a identificação de atrasos e criticidade, e oferece ferramentas avançadas de importação, relatórios e gestão operacional para empresas de logística e transporte.
+
+### Problemas que resolvemos
+
+- **Rastreio fragmentado** — centralize todos os envios em um único painel
+- **Atrasos descobertos tarde demais** — alertas automáticos baseados em regras de SLA configuráveis
+- **Importação manual de planilhas** — upload de CSV/XLSX com validação automática, detecção de duplicidade e mapeamento inteligente de colunas (incluindo layout Braspress)
+- **Falta de visibilidade operacional** — dashboards com KPIs, relatórios diários automáticos e análise de eficiência por transportadora
+- **Controle de acesso inexistente** — autenticação JWT com RBAC (4 perfis: admin, logística, gestor, auditoria)
+
+---
+
+## Funcionalidades Principais
+
+| Módulo | O que faz | Status |
+|--------|-----------|--------|
+| **Envios (Shipments)** | Cadastro, rastreio, filtros avançados, campos fiscais/financeiros e cálculo de SLA | Implementado |
+| **Importação** | Upload CSV/XLSX com preview, validação linha a linha, confirmação e layout Braspress assistido | Implementado |
+| **Transportadoras** | CRUD completo com análise de eficiência e ranking | Implementado |
+| **SLA & Criticidade** | Regras de prazo configuráveis, cálculo automático de atraso e alertas | Implementado |
+| **Alertas** | Notificações operacionais por status e criticidade | Implementado |
+| **Relatórios** | Relatório diário automático com resumo, KPIs, exceções e falhas de importação | Implementado |
+| **Dashboard** | Visão consolidada com indicadores operacionais | Implementado |
+| **Usuários & Permissões** | Autenticação JWT, 4 perfis de acesso e controle granular | Implementado |
+| **Auditoria** | Logs de coleta e histórico de importações versionado | Parcial |
+
+---
 
 ## Arquitetura do Monorepo
 
 ```text
 .
-├── .github/         # Workflows, templates e configurações de automação
+├── .github/         # Workflows CI/CD, templates e automação
 ├── apps/
-│   ├── api/         # Backend/API (Python)
-│   └── web/         # Frontend (Next.js/TypeScript)
-├── infra/           # Docker, ambiente local, observabilidade e checks
-├── integrations/    # Guias e artefatos de integrações
-└── docs/            # ADRs, arquitetura, QA, atas, sprints e roadmaps
+│   ├── api/         # Backend Python (FastAPI) — 489 testes automatizados
+│   └── web/         # Frontend Next.js (TypeScript) — build otimizado
+├── infra/           # Docker Compose, PostgreSQL, observabilidade
+├── integrations/    # Guias de integração com transportadoras
+└── docs/            # 50+ documentos: arquitetura, roadmaps, QA
 ```
 
-## Pré-requisitos
+## Stack Tecnológica
 
-- Git 2.40+
-- Python 3.12+ (para `apps/api` e scripts Python)
-- Node.js 20+ e npm 10+ (para `apps/web`)
-- Docker e Docker Compose (para `infra`)
+| Camada | Tecnologia |
+|--------|------------|
+| **Backend** | Python 3.12+, FastAPI, SQLAlchemy 2.0, Alembic, Pydantic |
+| **Frontend** | Next.js 16, React 19, TypeScript 5, Tailwind CSS 4 |
+| **Banco de Dados** | PostgreSQL 16 (produção) / SQLite (dev) |
+| **Autenticação** | JWT com refresh token, bcrypt, RBAC com 4 perfis |
+| **Infraestrutura** | Docker, Docker Compose, GitHub Actions |
+| **Testes** | pytest 8.3+ (API), Vitest 4+ (Web), Playwright (E2E) |
+| **Governança** | Secret scan, validação de migrations, checklist beta |
 
-## Setup Local
+---
 
-### 1) Clonar o monorepo
+## Comece em Minutos
 
 ```bash
+# 1. Clone
 git clone https://github.com/Dev-RuiDiniz/Ilex_Logistica.git
 cd Ilex_Logistica
+
+# 2. Backend
+cd apps/api && pip install -e ".[dev]" && pytest -q
+
+# 3. Frontend
+cd apps/web && npm install && npm run build
+
+# 4. Infraestrutura
+cd infra && docker compose up -d
 ```
 
-### 2) API (`apps/api`)
+Para detalhes completos de setup, consulte [`infra/LOCAL_SETUP.md`](infra/LOCAL_SETUP.md).
+
+---
+
+## Qualidade e Testes
+
+- **489 testes automatizados** no backend (pytest)
+- **Build do frontend validado** com TypeScript strict
+- **Secret scan automatizado** para segurança
+- **Migrations versionadas** com testes de roundtrip (upgrade/downgrade)
+- **CI/CD** com GitHub Actions para validação contínua
 
 ```bash
-cd apps/api
-python -m venv .venv
-# Windows
-.venv\Scripts\activate
-# Linux/Mac
-# source .venv/bin/activate
-pip install -e .
-pytest
-```
-
-### 3) Web (`apps/web`)
-
-```bash
-cd apps/web
-npm install
-npm run dev
-```
-
-Comandos úteis:
-
-```bash
-npm run test
-npm run build
-npm run lint
-```
-
-### 4) Infra (`infra`)
-
-```bash
-cd infra
-cp .env.example .env
-docker compose up -d
-```
-
-Para detalhes adicionais:
-
-- `infra/LOCAL_SETUP.md`
-- `infra/OBSERVABILITY.md`
-
-## Comandos por Módulo
-
-- API: `pytest`
-- Web: `npm run test`, `npm run build`, `npm run lint`
-- Infra: `docker compose up -d`, checks locais em `infra/infra_checks.py`
-- Docs: atualização de artefatos em `docs/` conforme governança interna
-
-## Validação Beta
-
-Para validação automatizada da fase beta, consulte:
-
-- [Comandos Oficiais](docs/BETA_COMMANDS.md)
-- [Checklist Beta](docs/BETA_CHECKLIST.md)
-- [Gates de Liberação](docs/BETA_RELEASE_GATE.md)
-
-### Comandos Rápidos
-
-```bash
-# Secret scan
+# Rodar validações localmente
 python scripts/check_secrets.py --repo-root .
-
-# Migrations
 python scripts/validate_migrations.py
-
-# Validação beta agregada
 python scripts/beta_validate.py
 ```
 
-Para detalhes completos, veja a documentação beta em `docs/`.
+---
 
 ## Fluxo de Contribuição
 
-1. Crie branch a partir de `main`:
-   - `feature/<tema>`
-   - `fix/<tema>`
-   - `chore/<tema>`
-2. Faça commits pequenos e orientados por tarefa.
-3. Abra PR com descrição objetiva, contexto e evidências (logs, screenshots, links).
-4. Aguarde validações e revise antes do merge.
+Branches por tipo de mudança:
+- `feature/<tema>` — novas funcionalidades
+- `fix/<tema>` — correções
+- `chore/<tema>` — infraestrutura e configuração
 
-### Convenção de Commit
+Commits em português com escopo:
+- `feat(api): adiciona endpoint de eficiência por transportadora`
+- `fix(web): corrige validação de SLA no formulário`
 
-Padrão recomendado (pt-BR + escopo):
+---
 
-- `feat(api): adiciona endpoint de ...`
-- `fix(web): corrige validação de ...`
-- `chore(infra): ajusta compose para ...`
-- `docs(readme): atualiza guia de setup`
+## Status e Roadmap
 
-## Validação Beta
+| Fase | Status | Descrição |
+|------|--------|-----------|
+| **Fase 1** | Concluída | Consolidação do monorepo, 36 PRs mergeados, base técnica sólida |
+| **Fase 2** | Em andamento | CI/CD completo, testes E2E, conectores de transportadoras |
+| **Fase 3** | Planejada | Otimização de pipelines, versionamento e automações de release |
 
-Para validação automatizada da fase beta, consulte:
+**Próximos passos priorizados:**
+1. Conectores de transportadoras (LOG-021/022)
+2. Tela de tratativas operacionais (W11)
+3. Envio de relatório diário por e-mail (LOG-019)
+4. Cobertura de testes E2E com Playwright
 
-- [Comandos Oficiais](docs/BETA_COMMANDS.md)
-- [Checklist Beta](docs/BETA_CHECKLIST.md)
-- [Gates de Liberação](docs/BETA_RELEASE_GATE.md)
+---
 
-### Comandos Rápidos
+## Licença e Contato
 
-```bash
-# Secret scan
-python scripts/check_secrets.py --repo-root .
+Desenvolvido por [Dev-RuiDiniz](https://github.com/Dev-RuiDiniz).
 
-# Migrations
-python scripts/validate_migrations.py
-
-# Validação beta agregada
-python scripts/beta_validate.py
-```
-
-Para detalhes completos, veja a documentação beta em `docs/`.
-
-## Status Atual
-
-- Monorepo consolidado com histórico preservado dos domínios:
-  - `.github`
-  - `Api` → `apps/api`
-  - `Web` → `apps/web`
-  - `Infra` → `infra`
-  - `Integrations` → `integrations`
-  - `Docs` → `docs`
-- Estrutura pronta para evolução incremental de CI e automações por domínio.
-
-## Roadmap Macro
-
-- Fase 1 (concluída): consolidação estrutural e documental do monorepo.
-- Fase 2: adaptação de CI/CD por path e validações por domínio.
-- Fase 3: otimização de pipelines, versionamento e automações de release.
-
-## Origem dos Módulos (Rastreabilidade)
-
-Este monorepo foi formado a partir dos seguintes repositórios:
-
-- `https://github.com/ilex-logistica/.github`
-- `https://github.com/ilex-logistica/Api`
-- `https://github.com/ilex-logistica/Web`
-- `https://github.com/ilex-logistica/Infra`
-- `https://github.com/ilex-logistica/Integrations`
-- `https://github.com/ilex-logistica/Docs`
-
-O histórico de commits foi preservado durante a migração via `git subtree`.
+Para dúvidas, sugestões ou parcerias, abra uma issue ou entre em contato pelo GitHub.

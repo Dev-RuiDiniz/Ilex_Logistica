@@ -178,9 +178,23 @@ BETA-020B completa a cobertura backend de RBAC nos endpoints operacionais que fi
 **Causa das Falhas:**
 - As 42 falhas de testes são preexistentes na base BETA-020A
 - Não causadas por BETA-020B ou por autenticação de imports
-- Comparação executada: BETA-020A (base) vs BETA-020B mostrou mesma quantidade de falhas
+- Comparação executada: BETA-020A (base commit 8d6d97a) vs BETA-020B mostrou mesma quantidade de falhas
 - Falhas são em componentes não relacionados a imports (SlaBadge, dashboard, alerts, audit, exceptions)
 - Frontend não foi atualizado porque as falhas não são causadas por RBAC/imports auth
+
+**Contradição com Relatório Anterior:**
+- O relatório anterior indicou 310/310 passando para BETA-020A
+- A execução atual mostra 268/310 passando na base BETA-020A
+- Isso pode ser devido a mudança no ambiente de teste ou dependências
+- As falhas são preexistentes e não causadas por BETA-020B
+
+**Arquivos de Teste Falhando (42 falhas preexistentes):**
+1. src/components/SlaBadge.test.tsx: 6 falhas (SlaBadge component)
+2. src/app/(private)/shipments/analytics/carrier-efficiency/carrier-efficiency-page.test.tsx: 1 falha (loading state)
+3. src/app/(private)/audit/page.test.tsx: 4 falhas (loading, empty, error states)
+4. src/app/(private)/shipments/analytics/exceptions/exceptions-panel-page.test.tsx: 6 falhas (loading, error, empty states)
+5. src/app/(private)/alerts/alerts-page.test.tsx: 7 falhas (loading, empty, error states)
+6. src/app/(private)/dashboard/dashboard-page.test.tsx: 18 falhas (loading, error, empty states)
 
 **Correções de Lint:**
 - 7 errors de lint preexistentes corrigidos (any → unknown em types.ts)
@@ -191,11 +205,11 @@ BETA-020B completa a cobertura backend de RBAC nos endpoints operacionais que fi
 
 ### 8. Gates Oficiais
 
-- ✅ Secret scan: 1 falso positivo (validate_docs.py contém padrão de exemplo)
-- ✅ Secret scan self-test: OK
-- ✅ Migration validation: OK (4/4)
-- ✅ Documentation validation: OK
-- ✅ Beta validate: OK
+- ✅ check_secrets: 1 falso positivo (validate_docs.py contém padrão de exemplo) - exit code 0
+- ✅ check_secrets --self-test: OK
+- ✅ validate_migrations: OK (4/4)
+- ✅ validate_docs: OK
+- ✅ beta_validate: OK
 
 ### 9. Migração
 

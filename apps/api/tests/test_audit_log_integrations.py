@@ -106,19 +106,90 @@ def test_recalcular_sla_cria_log(db_session: Session):
 
 
 def test_confirmar_importacao_cria_log(db_session: Session):
-    """Testa que confirmar importação cria log de auditoria.
+    """Testa que confirmar importação cria log de auditoria."""
+    from app.modules.imports.service_v2 import confirm_import
+    from app.modules.imports.models import ImportHistory
+    from app.modules.carriers.models import Carrier
+    from app.modules.shipments.models import Shipment
+    import json
 
-    NOTA: Este teste está fora do escopo de BETA-019A porque:
-    - O serviço de importação (service_v2.py) usa UploadFile que não pode ser facilmente mockado em testes
-    - A função preview_import espera um UploadFile real, não um schema
-    - A integração completa requer setup complexo de arquivos e multipart
-    - O service confirm_import já tem auditoria implementada
+    # Setup: criar carrier
+    carrier = Carrier(name="Test Carrier")
+    db_session.add(carrier)
+    db_session.flush()
 
-    Para BETA-019A, este teste verifica apenas que o serviço de auditoria está disponível.
-    A integração real será validada em testes E2E ou BETA-019B.
-    """
-    # Verificar que o serviço de auditoria está disponível
-    assert AuditLogService is not None
+    # Setup: criar shipment
+    shipment = Shipment(
+        tracking_code="TEST123",
+        carrier_id=carrier.id,
+        status="pending",
+        estimated_delivery=datetime.now(UTC),
+        recipient_name="Test",
+        recipient_phone="11999999999",
+        origin_address="A",
+        destination_address="B",
+    )
+    db_session.add(shipment)
+    db_session.flush()
+
+    # Setup: criar ImportHistory com metadata válido
+    valid_rows_data = [
+        {
+            "tracking_code": "TEST123",
+            "carrier_id": carrier.id,
+            "collection_departure_date": datetime.now(UTC).isoformat(),
+            "customer_name": "Test Customer",
+            "destination_uf": "SP",
+        }
+    ]
+
+    history = ImportHistory(
+        filename="test.csv",
+        file_type="csv",
+        file_hash="test_hash_123",
+        rows_received=1,
+        duplicates_count=0,
+        imported_count=0,
+        rejected_count=0,
+        status="pending",
+        source="generic",
+        import_metadata=json.dumps({
+            "valid_rows": valid_rows_data,
+            "invalid_rows": 0,
+        }),
+    )
+    db_session.add(history)
+    db_session.commit()
+    db_session.refresh(history)
+
+    # Contar logs antes
+    logs_before, total_before = AuditLogService.get_logs(
+        db_session, event_type="import_confirmed", entity_type="import_history"
+    )
+
+    # Confirmar importação
+    result = confirm_import(db_session, history.id)
+
+    # Verificar se log foi criado
+    logs_after, total_after = AuditLogService.get_logs(
+        db_session, event_type="import_confirmed", entity_type="import_history"
+    )
+
+    # Validar que log foi criado
+    assert total_after > total_before, "Deve criar novo log de auditoria"
+    assert total_after >= 1, "Deve existir pelo menos um log de import_confirmed"
+
+    # Validar conteúdo do log mais recente
+    latest_log = logs_after[0] if logs_after else None
+    assert latest_log is not None, "Log mais recente não deve ser None"
+    assert latest_log.event_type == "import_confirmed"
+    assert latest_log.entity_type == "import_history"
+    assert latest_log.entity_id == history.id
+    assert latest_log.action == "create"
+    assert latest_log.source == "api"
+    assert latest_log.severity == "info"
+    assert latest_log.status == "success"
+    assert "Importação confirmada" in latest_log.message
 
 
 def test_criar_tratamento_shipment_cria_log(db_session: Session):

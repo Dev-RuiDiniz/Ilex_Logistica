@@ -4,6 +4,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 
 from app.database.session import get_db
+from app.modules.auth.dependencies import require_permission
 from app.modules.reports.service import generate_daily_report, get_daily_report_by_date, list_daily_reports
 from app.modules.reports.schemas import (
     DailyReportGenerateRequest,
@@ -18,6 +19,7 @@ router = APIRouter(prefix="/reports", tags=["reports"])
 def generate_report(
     request: DailyReportGenerateRequest,
     db: Session = Depends(get_db),
+    _user: object = Depends(require_permission("reports:write")),
 ) -> DailyReportResponse:
     """Generate or regenerate a daily report for a specific date.
 
@@ -46,6 +48,7 @@ def list_reports(
     limit: int = Query(100, ge=1, le=1000, description="Limit results"),
     offset: int = Query(0, ge=0, description="Offset for pagination"),
     db: Session = Depends(get_db),
+    _user: object = Depends(require_permission("reports:read")),
 ) -> DailyReportListResponse:
     """List daily reports with filters.
 
@@ -75,6 +78,7 @@ def list_reports(
 def get_report_by_date(
     report_date: str,
     db: Session = Depends(get_db),
+    _user: object = Depends(require_permission("reports:read")),
 ) -> DailyReportResponse:
     """Get daily report by date.
 
@@ -101,6 +105,7 @@ def get_report_by_date(
 def get_report(
     report_id: int,
     db: Session = Depends(get_db),
+    _user: object = Depends(require_permission("reports:read")),
 ) -> DailyReportResponse:
     """Get daily report by ID.
 

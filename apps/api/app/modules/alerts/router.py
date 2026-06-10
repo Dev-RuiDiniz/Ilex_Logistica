@@ -6,6 +6,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 
 from app.database.session import get_db
+from app.modules.auth.dependencies import require_permission
 from app.modules.alerts.schemas import (
     AlertGenerationResponse,
     AlertListResponse,
@@ -32,6 +33,7 @@ def list_alerts(
     limit: int = Query(100, ge=1, le=1000, description="Limit results"),
     offset: int = Query(0, ge=0, description="Offset results"),
     db: Session = Depends(get_db),
+    _user: object = Depends(require_permission("alerts:read")),
 ) -> AlertListResponse:
     """List alerts with filters."""
     query = db.query(Alert)
@@ -60,6 +62,7 @@ def list_alerts(
 @router.get("/summary", response_model=AlertSummaryResponse)
 def get_alerts_summary(
     db: Session = Depends(get_db),
+    _user: object = Depends(require_permission("alerts:read")),
 ) -> AlertSummaryResponse:
     """Get alert summary with counters."""
     total_alerts = db.query(Alert).count()
@@ -87,6 +90,7 @@ def get_alerts_summary(
 @router.post("/generate", response_model=AlertGenerationResponse)
 def generate_alerts_endpoint(
     db: Session = Depends(get_db),
+    _user: object = Depends(require_permission("alerts:write")),
 ) -> AlertGenerationResponse:
     """Generate alerts from SLA and exceptions data."""
     result = generate_alerts(db)
@@ -97,6 +101,7 @@ def generate_alerts_endpoint(
 def mark_alert_as_read(
     alert_id: int,
     db: Session = Depends(get_db),
+    _user: object = Depends(require_permission("alerts:write")),
 ) -> AlertMarkReadResponse:
     """Mark an alert as read."""
     alert = db.query(Alert).filter(Alert.id == alert_id).first()
@@ -115,6 +120,7 @@ def mark_alert_as_read(
 def mark_alert_as_resolved(
     alert_id: int,
     db: Session = Depends(get_db),
+    _user: object = Depends(require_permission("alerts:write")),
 ) -> AlertMarkResolvedResponse:
     """Mark an alert as resolved."""
     alert = db.query(Alert).filter(Alert.id == alert_id).first()

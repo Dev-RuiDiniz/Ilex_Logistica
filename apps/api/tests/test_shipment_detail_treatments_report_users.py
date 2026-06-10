@@ -101,15 +101,31 @@ def test_w11_treatment_write_blocked_for_auditoria(client: TestClient, db_sessio
 
 
 def test_w10_daily_report(client: TestClient, db_session: Session, seed_roles: None) -> None:
+    import json
+
     create_user_with_roles(db_session, "gestor@ilex.com", "123456", ["gestor"])
     token = login(client, "gestor@ilex.com", "123456")["access_token"]
-    seed_base_data(db_session)
+    shipment_id = seed_base_data(db_session)
 
-    response = client.get("/api/v1/reports/daily", headers={"Authorization": f"Bearer {token}"})
+    # Gerar relatório diário primeiro
+    report_date = datetime.now(UTC).date()
+    generate_response = client.post(
+        "/api/v1/reports/daily/generate",
+        json={"report_date": report_date.isoformat()},
+        headers={"Authorization": f"Bearer {token}"},
+    )
+    assert generate_response.status_code == 200
+
+    # Buscar relatório por data
+    response = client.get(
+        f"/api/v1/reports/daily/by-date/{report_date.isoformat()}",
+        headers={"Authorization": f"Bearer {token}"},
+    )
     assert response.status_code == 200
     body = response.json()
-    assert "reports" in body
-    assert "total" in body
+    # O summary está em summary_json como string JSON
+    summary = json.loads(body["summary_json"])
+    assert summary["total_shipments"] >= 1
 
 
 def test_w15_users_crud_and_roles(client: TestClient, db_session: Session, seed_roles: None) -> None:

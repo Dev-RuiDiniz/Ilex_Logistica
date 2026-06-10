@@ -7,7 +7,7 @@ from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
 
 from app.database.session import get_db
-from app.modules.auth.dependencies import get_current_user, require_roles
+from app.modules.auth.dependencies import get_current_user, require_roles, require_permission
 from app.modules.users.models import User
 from app.modules.sla.service import (
     get_applicable_sla_rule,
@@ -42,7 +42,7 @@ def recalculate_sla_endpoint(
     carrier_id: Annotated[int | None, Query()] = None,
     destination_uf: Annotated[str | None, Query()] = None,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    _user: object = Depends(require_permission("sla:write")),
 ):
     """Recalculate SLA for all shipments with optional filters."""
     result = recalculate_all_shipments_sla(db, carrier_id, destination_uf)
@@ -53,7 +53,7 @@ def recalculate_sla_endpoint(
 def recalculate_shipment_sla_endpoint(
     shipment_id: int,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    _user: object = Depends(require_permission("sla:write")),
 ):
     """Recalculate SLA for a single shipment."""
     result = recalculate_shipment_sla(db, shipment_id)
@@ -66,7 +66,7 @@ def list_sla_rules(
     destination_uf: Annotated[str | None, Query()] = None,
     is_active: Annotated[bool | None, Query()] = None,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    _user: object = Depends(require_permission("sla:read")),
 ):
     """List SLA rules with optional filters."""
     query = db.query(SlaRule)
@@ -100,7 +100,7 @@ def list_sla_rules(
 def create_sla_rule(
     rule_data: SlaRuleCreate,
     db: Session = Depends(get_db),
-    current_user: User = Depends(require_roles(["admin"])),
+    _user: object = Depends(require_roles(["admin"])),
 ):
     """Create a new SLA rule (admin only)."""
     rule = SlaRule(
@@ -133,7 +133,7 @@ def update_sla_rule(
     rule_id: int,
     rule_data: SlaRuleUpdate,
     db: Session = Depends(get_db),
-    current_user: User = Depends(require_roles(["admin"])),
+    _user: object = Depends(require_roles(["admin"])),
 ):
     """Update an existing SLA rule (admin only)."""
     rule = db.query(SlaRule).filter(SlaRule.id == rule_id).first()
@@ -148,9 +148,9 @@ def update_sla_rule(
     if rule_data.transit_days is not None:
         rule.transit_days = rule_data.transit_days
     if rule_data.warning_threshold_days is not None:
-        rule.warning_threshold_days = rule_data.warning_threshold_days
+        rule.warning_threshold_days = rule.warning_threshold_days
     if rule_data.critical_delay_days is not None:
-        rule.critical_delay_days = rule_data.critical_delay_days
+        rule.critical_delay_days = rule.critical_delay_days
     if rule_data.is_active is not None:
         rule.is_active = rule_data.is_active
     

@@ -4,6 +4,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 
 from app.database.session import get_db
+from app.modules.auth.dependencies import require_permission
 from app.modules.audit.schemas import (
     AuditLogCreateRequest,
     AuditLogListResponse,
@@ -37,6 +38,7 @@ def list_audit_logs(
     page: int = Query(1, ge=1, description="Page number"),
     page_size: int = Query(100, ge=1, le=1000, description="Page size"),
     db: Session = Depends(get_db),
+    _user: object = Depends(require_permission("audit:read")),
 ) -> AuditLogListResponse:
     """List audit logs with filters and pagination."""
     skip = (page - 1) * page_size
@@ -64,6 +66,7 @@ def list_audit_logs(
 @router.get("/summary", response_model=AuditLogSummaryResponse)
 def get_audit_summary(
     db: Session = Depends(get_db),
+    _user: object = Depends(require_permission("audit:read")),
 ) -> AuditLogSummaryResponse:
     """Get audit log summary with statistics."""
     return AuditLogService.get_summary(db)
@@ -73,6 +76,7 @@ def get_audit_summary(
 def get_audit_log(
     log_id: int,
     db: Session = Depends(get_db),
+    _user: object = Depends(require_permission("audit:read")),
 ) -> AuditLogResponse:
     """Get a specific audit log by ID."""
     log = AuditLogService.get_log_by_id(db, log_id)

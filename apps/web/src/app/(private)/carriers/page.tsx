@@ -4,6 +4,7 @@ import { FormEvent, useEffect, useMemo, useState } from "react";
 
 import { createCarrier, inactivateCarrier, listCarriers, updateCarrier } from "@/lib/api";
 import { canEditCarriers } from "@/lib/permissions";
+import { handleApiError } from "@/lib/error-handler";
 import { useAuth } from "@/features/auth/auth-provider";
 import type { Carrier } from "@/lib/types";
 
@@ -52,8 +53,8 @@ export default function CarriersPage() {
     try {
       const data = await listCarriers(session.accessToken);
       setItems(data);
-    } catch {
-      setError("Nao foi possivel carregar transportadoras.");
+    } catch (err) {
+      setError(handleApiError(err));
     } finally {
       setLoading(false);
     }
@@ -94,8 +95,8 @@ export default function CarriersPage() {
       }
       setForm(initialForm);
       await load();
-    } catch {
-      setFormError("Falha ao salvar transportadora. Verifique nome e metadados JSON.");
+    } catch (err) {
+      setFormError(handleApiError(err));
     } finally {
       setSaving(false);
     }
@@ -117,8 +118,8 @@ export default function CarriersPage() {
     try {
       await inactivateCarrier(session.accessToken, item.id);
       setItems((prev) => removeCarrierById(prev, item.id));
-    } catch {
-      setError("Falha ao inativar transportadora.");
+    } catch (err) {
+      setError(handleApiError(err));
     } finally {
       setInactivatingId(null);
     }

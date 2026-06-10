@@ -22,6 +22,7 @@ import type {
   DailyReportFilters,
   DailyReportStatus,
 } from "@/lib/types";
+import { handleApiError } from "@/lib/error-handler";
 
 export default function DailyReportPage() {
   const [reports, setReports] = useState<DailyReport[]>([]);
@@ -52,7 +53,7 @@ export default function DailyReportPage() {
       }
     } catch (err) {
       if (!signal?.aborted) {
-        setError("Falha ao carregar relatórios diários.");
+        setError(handleApiError(err));
         console.error(err);
       }
     } finally {

@@ -4,6 +4,7 @@ import { ChangeEvent, useCallback, useEffect, useState } from "react";
 
 import { listShipments } from "@/lib/api";
 import { canViewShipments } from "@/lib/permissions";
+import { handleApiError } from "@/lib/error-handler";
 import { buildGlobalSearchParams, monthYearToDateRange } from "@/lib/shipment-utils";
 import { useAuth } from "@/features/auth/auth-provider";
 import type { Shipment, ShipmentListParams } from "@/lib/types";
@@ -89,8 +90,8 @@ export default function ShipmentsPage() {
       setItems(response.items);
       setTotal(response.total);
       setTotalPages(response.total_pages);
-    } catch {
-      setError("Não foi possível carregar envios.");
+    } catch (err) {
+      setError(handleApiError(err));
     } finally {
       setLoading(false);
     }

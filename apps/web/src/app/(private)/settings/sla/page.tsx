@@ -4,6 +4,7 @@ import { FormEvent, useEffect, useState } from "react";
 
 import { createSlaRule, listSlaRules, recalculateSla, updateSlaRule } from "@/lib/api";
 import { useAuth } from "@/features/auth/auth-provider";
+import { handleApiError } from "@/lib/error-handler";
 import type { SlaRule, SlaRuleCreate } from "@/lib/types";
 
 export default function SlaRulesPage() {
@@ -31,8 +32,8 @@ export default function SlaRulesPage() {
       try {
         const rules = await listSlaRules(session.accessToken);
         if (!cancelled) setItems(rules);
-      } catch {
-        if (!cancelled) setError("Falha ao carregar regras SLA.");
+      } catch (err) {
+        if (!cancelled) setError(handleApiError(err));
       } finally {
         if (!cancelled) setLoading(false);
       }
@@ -45,8 +46,8 @@ export default function SlaRulesPage() {
     if (!session) return;
     try {
       setItems(await listSlaRules(session.accessToken));
-    } catch {
-      setError("Falha ao carregar regras SLA.");
+    } catch (err) {
+      setError(handleApiError(err));
     }
   };
 
@@ -71,8 +72,8 @@ export default function SlaRulesPage() {
       setDestinationUf("");
       setIsActive(true);
       await reloadRules();
-    } catch {
-      setError("Falha ao criar regra SLA.");
+    } catch (err) {
+      setError(handleApiError(err));
     } finally {
       setIsCreating(false);
     }
@@ -83,8 +84,8 @@ export default function SlaRulesPage() {
     try {
       await updateSlaRule(session.accessToken, rule.id, { is_active: !rule.is_active });
       await reloadRules();
-    } catch {
-      setError("Falha ao atualizar regra SLA.");
+    } catch (err) {
+      setError(handleApiError(err));
     }
   };
 
@@ -95,8 +96,8 @@ export default function SlaRulesPage() {
     try {
       const result = await recalculateSla(session.accessToken);
       setRecalcResult(result);
-    } catch {
-      setError("Falha ao reprocessar SLA.");
+    } catch (err) {
+      setError(handleApiError(err));
     } finally {
       setIsRecalculating(false);
     }

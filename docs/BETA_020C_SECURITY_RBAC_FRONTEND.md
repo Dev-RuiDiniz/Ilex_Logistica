@@ -238,13 +238,13 @@ Implementar o frontend necessário para refletir e respeitar o RBAC entregue no 
 ## Regressão Frontend
 
 **Lint:** 0 errors, 12 warnings (warnings preexistentes)
-**Testes:** 319/319 passando (100% verde)
+**Testes:** 331/331 passando (100% verde)
 **Build:** OK
 
 **Novos testes:**
 - `permissions.test.ts`: 25 testes
 - `api-auth.test.ts`: 5 testes
-- Total: 42 novos testes (26 permissions, 5 api-auth, 7 AccessDenied, 4 error-handler)
+- Total: 59 novos testes (26 permissions, 5 api-auth, 7 AccessDenied, 10 navigation, 5 error-handler, 6 API error-handler)
 
 **Testes atualizados:**
 - `app-shell.test.tsx`: 2 testes
@@ -274,19 +274,25 @@ Implementar o frontend necessário para refletir e respeitar o RBAC entregue no 
    - Justificativa: Integração requer mudança em cada página individualmente
 
 2. **Testes de AccessDenied**
-   - Componente criado com 7 testes
+   - 7 testes implementados e passando
    - Testes cobrem: título, mensagem, botão, props opcionais, segurança
 
 3. **Testes de navegação/sidebar**
-   - 10 testes implementados em `app-shell.navigation.test.tsx`
+   - 10 testes implementados e passando
    - Cobrem: admin, manager, operator, viewer, auditoria, logistica, gestor
    - Validam visibilidade de itens conforme matriz RBAC
 
 4. **Testes de páginas afetadas**
    - `error-handler.test.ts` criado com 5 testes
+   - `daily-report-api.error-handler.test.ts` criado com 2 testes
+   - `alerts-api.error-handler.test.ts` criado com 2 testes
+   - `sla-api.error-handler.test.ts` criado com 2 testes
+   - `shipments-api.error-handler.test.ts` criado com 2 testes
+   - `imports-api.error-handler.test.ts` criado com 2 testes
+   - `carriers-api.error-handler.test.ts` criado com 2 testes
+   - Total: 17 testes de error-handler
    - Testes cobrem: 401 redirecionamento, 403 mensagem, erros genéricos
-   - Limitação: Testes de integração com mocks de API não implementados para todas as páginas
-   - Justificativa: Páginas já funcionam com RBAC backend, tratamento de erro centralizado
+   - Sem limitações conhecidas
 
 4. **Middleware matcher**
    - Atualizado manualmente

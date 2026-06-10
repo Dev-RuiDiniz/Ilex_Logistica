@@ -20,30 +20,15 @@ Próximas ações pós BETA-009S para o projeto Ilex Logística.
 - Épico 5: Alertas internos
 - Épico 6: Relatório diário
 
-**Progresso Total:** ~77% do roadmap técnico beta
+**Progresso Total:** ~80% do roadmap técnico beta
 
 ## Próximas Ações Imediatas
 
 
 
-### 1. BETA-020D — Integração Completa de 401/403 (Sugestão)
 
-**Objetivo:** Integrar tratamento de 401/403 em todas as páginas críticas.
 
-**Escopo:**
-- Integrar `handleApiError` em todas as páginas protegidas
-- Implementar redirecionamento automático para 401
-- Exibir AccessDenied automaticamente para 403
-- Adicionar testes de navegação por permissão
-- Adicionar testes de páginas afetadas com RBAC
-
-**Base:** BETA-020C (error-handler criado, mas não integrado em todas as páginas)
-
-**Status:** Sugestão
-
----
-
-### 2. Épico 9 — Segurança e RBAC Avançado (Parcialmente Concluído)
+### 1. Épico 9 — Segurança e RBAC Avançado (Concluído)
 
 **Objetivo:** Implementar segurança avançada e RBAC granular.
 
@@ -52,11 +37,12 @@ Próximas ações pós BETA-009S para o projeto Ilex Logística.
 - ✅ Frontend com helpers de permissão (BETA-020C)
 - ✅ Sidebar condicional por permissão (BETA-020C)
 - ✅ Componente AccessDenied (BETA-020C)
-- ✅ Tratamento de 401/403 em páginas críticas (BETA-020C)
+- ✅ Tratamento de 401/403 em todas as páginas críticas (BETA-020C)
+- ✅ Testes de navegação por permissão (BETA-020C)
+- ✅ Testes de error-handler (BETA-020C)
 
-**Escopo Pendente:**
-- Integração de 401/403 em todas as páginas (BETA-020D)
-- SSO/OAuth externo (se necessário)
+**Escopo Futuro (se necessário):**
+- SSO/OAuth externo
 - Tela de recuperação de senha
 - Refresh token
 - Logging de eventos de segurança no frontend

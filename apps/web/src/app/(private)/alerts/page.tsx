@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { getAlerts, getAlertsSummary, generateAlerts, markAlertAsRead, resolveAlert, type AlertsFilters, type AlertItem, type AlertsSummary } from '@/lib/alerts-api';
+import { handleApiError } from '@/lib/error-handler';
 
 export default function AlertsPage() {
   const [alerts, setAlerts] = useState<AlertItem[]>([]);
@@ -21,7 +22,7 @@ export default function AlertsPage() {
       setAlerts(alertsData.alerts);
       setSummary(summaryData);
     } catch (err) {
-      setError('Erro ao carregar alertas');
+      setError(handleApiError(err));
       console.error(err);
     } finally {
       setLoading(false);
@@ -33,7 +34,7 @@ export default function AlertsPage() {
       await generateAlerts();
       await fetchAlerts();
     } catch (err) {
-      setError('Erro ao gerar alertas');
+      setError(handleApiError(err));
       console.error(err);
     }
   };
@@ -43,7 +44,7 @@ export default function AlertsPage() {
       await markAlertAsRead(alertId);
       await fetchAlerts();
     } catch (err) {
-      setError('Erro ao marcar alerta como lido');
+      setError(handleApiError(err));
       console.error(err);
     }
   };
@@ -53,7 +54,7 @@ export default function AlertsPage() {
       await resolveAlert(alertId);
       await fetchAlerts();
     } catch (err) {
-      setError('Erro ao resolver alerta');
+      setError(handleApiError(err));
       console.error(err);
     }
   };

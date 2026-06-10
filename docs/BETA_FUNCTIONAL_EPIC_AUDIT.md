@@ -22,20 +22,21 @@ Esta auditoria funcional automatizada inspecionou a estrutura do repositório pa
 | 6 - Relatório diário automático | PARCIAL | 3/6 (50%) | 2/6 (33%) | 1/6 (17%) |
 | 7 - Logs e auditoria | CONCLUÍDO | 9/9 (100%) | 0/9 (0%) | 0/9 (0%) |
 | 8 - Integrações assistidas | PARCIAL | 4/9 (44%) | 3/9 (33%) | 2/9 (22%) |
-| 9 - Usuários, permissões e segurança | PARCIAL | 8/11 (73%) | 2/11 (18%) | 1/11 (9%) |
+| 9 - Usuários, permissões e segurança | IMPLEMENTADO | 11/11 (100%) | 0/11 (0%) | 0/11 (0%) |
 | 10 - Dashboard beta e UX | PARCIAL | 3/9 (33%) | 3/9 (33%) | 3/9 (33%) |
 | 11 - QA, CI/CD e validação | PARCIAL | 8/10 (80%) | 1/10 (10%) | 1/10 (10%) |
 | 12 - Documentação beta | PARCIAL | 10/14 (71%) | 2/14 (14%) | 2/14 (14%) |
 
 **Resumo Geral (atualizado 2026-06-24):**
-- Implementados: 66/120 (55%)
-- Parciais: 22/120 (18%)
-- Ausentes: 32/120 (27%)
+- Implementados: 69/120 (58%)
+- Parciais: 20/120 (17%)
+- Ausentes: 31/120 (26%)
 
 **Nota:**
 - O Épico 3 teve progresso significativo com o BETA-011A (backend) e BETA-011B (frontend). Veja `docs/BETA_011A_SHIPMENT_FISCAL_FINANCIAL_BACKEND.md` e `docs/BETA_011B_SHIPMENT_FISCAL_FINANCIAL_FRONTEND.md` para detalhes.
 - O Épico 2 teve progresso significativo com o BETA-012A (backend), BETA-012B (frontend) e BETA-012C (Braspress assistido). Veja `docs/BETA_012A_IMPORT_CSV_XLSX_BACKEND.md`, `docs/BETA_012B_IMPORT_UPLOAD_PREVIEW_CONFIRM_FRONTEND.md` e `docs/BRASPRESS_IMPORTACAO_ASSISTIDA.md` para detalhes.
 - O Épico 9 teve progresso significativo com BETA-020A (RBAC backend), BETA-020B (RBAC endpoints operacionais) e BETA-020C (RBAC frontend). Veja `docs/BETA_020A_SECURITY_RBAC_BACKEND_API.md`, `docs/BETA_020B_RBAC_OPERATIONAL_ENDPOINTS_BACKEND.md` e `docs/BETA_020C_SECURITY_RBAC_FRONTEND.md` para detalhes.
+- BETA-020C completou integração de 401/403 em todas as páginas críticas (audit, users, reports/daily, alerts, SLA, shipments, imports, carriers)
 
 ## Tabela dos 12 Épicos
 

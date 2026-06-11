@@ -17,6 +17,9 @@ BETA-021C prepara, de forma automatizada e sem merge, todo o pacote necessário 
 
 - ⏳ BETA-021A: Sem PR (bloqueio técnico de credencial GitHub)
 - ⏳ BETA-021B: Sem PR (bloqueio técnico de credencial GitHub)
+- ⏳ BETA-022A: Sem PR (bloqueio técnico de credencial GitHub)
+- ⏳ BETA-022B: Sem PR (bloqueio técnico de credencial GitHub)
+- ⏳ BETA-023A: Sem PR (bloqueio técnico de credencial GitHub)
 
 ## Branches Pendentes
 
@@ -26,6 +29,9 @@ Todos os branches existem no remoto:
 - ✅ feature/beta-020c-security-rbac-frontend
 - ✅ feature/beta-021a-qa-ci-cd-beta-readiness
 - ✅ feature/beta-021b-final-integration-release-candidate
+- ✅ feature/beta-022a-functional-e2e-homologation
+- ✅ feature/beta-022b-e2e-import-report-contract-hardening
+- ✅ feature/beta-023a-beta-delivery-runbook-handoff
 
 ## Ordem de Integração Segura
 
@@ -34,6 +40,10 @@ Todos os branches existem no remoto:
 3. BETA-020C → main (após BETA-020B)
 4. BETA-021A → main (após BETA-020C)
 5. BETA-021B → main (após BETA-021A)
+6. BETA-021C → main (após BETA-021B)
+7. BETA-022A → main (após BETA-021C)
+8. BETA-022B → main (após BETA-022A)
+9. BETA-023A → main (após BETA-022B)
 
 ## Comandos Futuros Automatizados
 

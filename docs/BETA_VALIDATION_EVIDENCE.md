@@ -1,6 +1,8 @@
 # BETA VALIDATION EVIDENCE
 
-Evidências dos PRs BETA-000 a BETA-008 com comandos executados, status e limitações conhecidas.
+Evidências dos PRs BETA-000 a BETA-025A com comandos executados, status e limitações conhecidas.
+
+**Nota:** Evidência completa de BETA-025A está disponível em docs/BETA_025A_EVIDENCE.md devido ao diagnóstico detalhado de ambiente e conectividade.
 
 ## BETA-000 - Plano de Execução TDD Fase Beta
 

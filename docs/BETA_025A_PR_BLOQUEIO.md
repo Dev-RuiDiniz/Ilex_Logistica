@@ -89,15 +89,18 @@ O ambiente da IA/agente é automatizado e não interativo. O GitHub CLI (`gh`) r
 
 **Conectividade:**
 - Git ls-remote: Funciona (lista 41 PRs existentes no repositório)
-- GitHub API: Falha de conexão TCP ("dial tcp 4.228.31.149:443: connectex: Uma tentativa de conexão falhou")
+- DNS api.github.com: Resolve corretamente (4.228.31.149)
+- TCP 443 api.github.com: Falha de conexão (Test-NetConnection: "TCP connect to (4.228.31.149 : 443) failed")
+- HTTPS api.github.com: Falha (Invoke-WebRequest: Exited with code 1 and no output)
+- Proxy: Não configurado (HTTP_PROXY, HTTPS_PROXY, NO_PROXY não definidos; netsh winhttp show proxy: sem proxy)
 - MCP GitHub: Falha ao conectar ("Failed to connect to MCP server 'github-mcp-server'")
 
 **Conclusão:**
-Git está autenticado via SSH/Git Credential Manager e funciona para operações Git (push/pull, ls-remote). No entanto, a API GitHub não está acessível no ambiente do agente devido a falha de conectividade TCP. O MCP GitHub existe e tem token configurado, mas não consegue conectar. PRs anteriores existem (41 PRs listados via git ls-remote), indicando que houve outra via de API funcionando em algum momento, mas a sessão atual não herdou essa via.
+O bloqueio é de **conectividade de rede**, não de credencial. O DNS resolve corretamente, mas a conexão TCP com api.github.com:443 falha. Isso indica um problema de firewall/rede no ambiente do agente. Git funciona provavelmente por usar um protocolo/porta diferente ou credenciais diferentes configuradas no Git Credential Manager. PRs anteriores existem (41 PRs listados via git ls-remote), indicando que houve outra via de API funcionando em algum momento, mas a sessão atual não herdou essa via.
 
 ## Solução Necessária
 
-BETA-025A bloqueado porque o GitHub MCP autorizado não está conectando no runtime atual do agente. Git push/pull funciona por Git Credential Manager/SSH, mas criação de PRs exige GitHub API. GitHub CLI não está autenticado, GH_TOKEN/GITHUB_TOKEN não estão presentes no processo do agente, e github-mcp-server falha ao conectar. O bloqueio é de conexão/autenticação GitHub API no ambiente do agente, não de implementação do roadmap. PRs anteriores existem (41 PRs listados via git ls-remote), indicando que houve outra via de API funcionando em algum momento, mas a sessão atual não herdou essa via. Nenhuma etapa operacional foi transferida ao usuário.
+BETA-025A bloqueado por falha de conectividade/autenticação GitHub API/MCP no runtime atual do agente. Git push/pull funciona, e refs de PRs podem ser listadas via Git, mas criação de PRs e comentários exige acesso HTTPS à GitHub API ou MCP GitHub funcional. O runtime atual não consegue conectar ao `api.github.com:443` (TCP 443 falha, DNS resolve corretamente) e/ou não consegue iniciar/conectar o `github-mcp-server`. O bloqueio é de conectividade de rede (firewall/rede), não de credencial. Nenhuma etapa operacional foi transferida ao usuário.
 
 ## Próximos Passos
 

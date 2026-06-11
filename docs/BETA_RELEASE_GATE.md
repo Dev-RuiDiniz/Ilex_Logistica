@@ -4,7 +4,7 @@ Gates objetivos para liberação beta do projeto Ilex Logistica.
 
 ## Status Atual
 
-**BETA-025A (Retomada Automatizada de PRs Pendentes):** Bloqueado porque o GitHub MCP autorizado não está conectando no runtime atual do agente. Git push/pull funciona por Git Credential Manager/SSH, mas criação de PRs exige GitHub API. GitHub CLI não está autenticado, GH_TOKEN/GITHUB_TOKEN não estão presentes no processo do agente, e github-mcp-server falha ao conectar. O bloqueio é de conexão/autenticação GitHub API no ambiente do agente, não de implementação do roadmap. PRs anteriores existem (41 PRs listados via git ls-remote), indicando que houve outra via de API funcionando em algum momento, mas a sessão atual não herdou essa via. Nenhuma etapa operacional foi transferida ao usuário.
+**BETA-025A (Retomada Automatizada de PRs Pendentes):** Bloqueado por falha de conectividade/autenticação GitHub API/MCP no runtime atual do agente. Git push/pull funciona, e refs de PRs podem ser listadas via Git, mas criação de PRs e comentários exige acesso HTTPS à GitHub API ou MCP GitHub funcional. O runtime atual não consegue conectar ao `api.github.com:443` (TCP 443 falha, DNS resolve corretamente) e/ou não consegue iniciar/conectar o `github-mcp-server`. O bloqueio é de conectividade de rede (firewall/rede), não de credencial. Nenhuma etapa operacional foi transferida ao usuário.
 
 ## Gates Obrigatórios
 

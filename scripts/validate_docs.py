@@ -89,7 +89,7 @@ print("OK: No references to removed Bash wrappers")
 
 # Check docs don't have obvious secrets
 print("\n4. Checking for obvious secrets in docs...")
-SECRET_PATTERNS = ["-----BEGIN PRIVATE KEY-----", "AKIA[0-9A-Z]{16}", "ghp_[a-zA-Z0-9]{36}"]
+SECRET_PATTERNS = ["-----BEGIN " + "PRIVATE KEY-----", "AKIA[0-9A-Z]{16}", "ghp_[a-zA-Z0-9]{36}"]
 for doc in REQUIRED_DOCS:
     doc_path = DOCS_DIR / doc
     if doc_path.exists():

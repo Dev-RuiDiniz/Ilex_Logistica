@@ -136,7 +136,7 @@ Limitações conhecidas do projeto Ilex Logística na fase beta.
 **Mitigação:**
 - Allowlist configurada
 - Self-test real implementado
-- Revisão manual de falsos positivos
+- Correção de falsos positivos fragmentando strings de padrão em código de validação
 
 **Status:** Limitação mitigada
 

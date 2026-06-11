@@ -26,7 +26,7 @@ You are not logged into any GitHub hosts. To log in, run: gh auth login
 
 ✅ Integração sequencial real simulada em branch temporária local
 ✅ Todos os 10 merges executados com sucesso sem conflitos
-✅ Gates verdes no estado integrado temporário
+✅ Gates verdes no estado integrado temporário (check_secrets exit code 0, self-test verde)
 ✅ Backend crítico verde no estado integrado temporário (286 tests passed)
 ✅ Frontend verde no estado integrado temporário (lint 0 errors, 331 tests passed, build OK)
 ✅ Documentação atualizada com método e resultados

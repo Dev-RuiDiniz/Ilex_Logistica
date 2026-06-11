@@ -124,3 +124,12 @@ def auth_headers(db_session: Session, client: TestClient, seed_roles) -> dict[st
     create_user_with_roles(db_session, "test@example.com", "test123", ["admin"])
     token = login(client, "test@example.com", "test123")
     return {"Authorization": f"Bearer {token}"}
+
+# Import synthetic E2E fixtures
+from tests.fixtures_synthetic_e2e import (
+    synthetic_carriers,
+    synthetic_sla_rules,
+    synthetic_exception_rules,
+    synthetic_shipments,
+    synthetic_braspress_csv_content,
+)

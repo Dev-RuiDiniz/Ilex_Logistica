@@ -624,3 +624,67 @@ npm run build
 
 ### Link
 - A ser criado
+
+---
+
+## BETA-021B - Auditoria Final de Integração e Release Candidate
+
+### PR
+- **Número:** A ser criado
+- **Branch:** feature/beta-021b-final-integration-release-candidate
+- **Base:** feature/beta-021a-qa-ci-cd-beta-readiness
+- **Objetivo:** Consolidar o estado final da trilha beta antes de qualquer integração/merge, verificando branches empilhadas, riscos de conflito, readiness de release candidate, documentação final e lacunas restantes
+
+### Comandos Executados
+```bash
+# Gates Oficiais
+python scripts/check_secrets.py --repo-root .
+python scripts/check_secrets.py --repo-root . --self-test
+python scripts/validate_migrations.py
+python scripts/validate_docs.py
+python scripts/beta_validate.py
+
+# Backend QA (suíte crítica consolidada)
+cd apps/api
+python -m pytest tests/test_rbac_permissions.py tests/test_rbac_audit_api.py tests/test_rbac_reports_api.py tests/test_rbac_alerts_api.py tests/test_rbac_sla_api.py tests/test_rbac_shipments_api.py tests/test_rbac_imports_api.py tests/test_rbac_carriers_api.py tests/test_rbac_users_api.py -v -rs
+python -m pytest tests/test_audit_log_model.py tests/test_audit_log_service.py tests/test_audit_log_api.py tests/test_audit_log_integrations.py -v -rs
+python -m pytest tests/test_daily_report_model.py tests/test_daily_report_generation.py tests/test_daily_report_api.py tests/test_daily_report_integration.py tests/test_alerts_model.py tests/test_alerts_generation.py tests/test_alerts_api.py tests/test_sla_calculation.py tests/test_sla_rules.py tests/test_sla_api.py tests/test_braspress_assisted_import.py tests/test_shipment_detail_treatments_report_users.py -v -rs
+
+# Frontend QA
+cd apps/web
+npm run lint
+npm run test
+npm run build
+
+# Verificação de conflito potencial
+git diff --stat origin/main..origin/feature/beta-020a-security-rbac-backend-api
+git diff --stat origin/feature/beta-020a-security-rbac-backend-api..origin/feature/beta-020b-rbac-operational-endpoints-backend
+git diff --stat origin/feature/beta-020b-rbac-operational-endpoints-backend..origin/feature/beta-020c-security-rbac-frontend
+git diff --stat origin/feature/beta-020c-security-rbac-frontend..origin/feature/beta-021a-qa-ci-cd-beta-readiness
+```
+
+### Status
+- **Estado:** DRAFT
+- **Aprovação:** Necessária
+- **Merge:** Não realizado
+
+### Resultados
+- **Gates Oficiais:** ✅ check_secrets (1 falso positivo), ✅ check_secrets --self-test, ✅ validate_migrations, ✅ validate_docs, ✅ beta_validate
+- **Backend:** ✅ 282/282 testes passando (100% verde)
+- **Frontend:** ✅ 331/331 testes passando (100% verde), ✅ lint 0 errors, ✅ build OK
+- **Conflito Potencial:** ✅ Risco baixo (mudanças aditivas, cadeia linear)
+- **Release Candidate:** ✅ Ready
+
+### Limitações Conhecidas
+- check_secrets: 1 falso positivo em validate_docs.py (documentado)
+- lint frontend: 12 warnings preexistentes (não críticas)
+- Pydantic deprecation warnings (não críticas)
+- Credencial GitHub: não disponível (bloqueio técnico documentado)
+
+### Pendências Antes de Merge
+- Aprovação do PR pelo mantenedor
+- Obter credencial GitHub válida
+- Merge sequencial em ordem de dependência (BETA-020A → BETA-020B → BETA-020C → BETA-021A → BETA-021B)
+
+### Link
+- A ser criado

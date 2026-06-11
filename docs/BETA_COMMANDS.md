@@ -287,6 +287,44 @@ npm run build
 
 ---
 
+## BETA-021B — Auditoria Final de Integração e Release Candidate
+
+### Gates Oficiais (Revalidação)
+```bash
+python scripts/check_secrets.py --repo-root .
+python scripts/check_secrets.py --repo-root . --self-test
+python scripts/validate_migrations.py
+python scripts/validate_docs.py
+python scripts/beta_validate.py
+```
+
+### Backend QA Final (Revalidação)
+```bash
+cd apps/api
+python -m pytest tests/test_rbac_permissions.py tests/test_rbac_audit_api.py tests/test_rbac_reports_api.py tests/test_rbac_alerts_api.py tests/test_rbac_sla_api.py tests/test_rbac_shipments_api.py tests/test_rbac_imports_api.py tests/test_rbac_carriers_api.py tests/test_rbac_users_api.py -v -rs
+python -m pytest tests/test_audit_log_model.py tests/test_audit_log_service.py tests/test_audit_log_api.py tests/test_audit_log_integrations.py -v -rs
+python -m pytest tests/test_daily_report_model.py tests/test_daily_report_generation.py tests/test_daily_report_api.py tests/test_daily_report_integration.py tests/test_alerts_model.py tests/test_alerts_generation.py tests/test_alerts_api.py tests/test_sla_calculation.py tests/test_sla_rules.py tests/test_sla_api.py tests/test_braspress_assisted_import.py tests/test_shipment_detail_treatments_report_users.py -v -rs
+```
+
+### Frontend QA Final (Revalidação)
+```bash
+cd apps/web
+npm run lint
+npm run test
+npm run build
+```
+
+### Verificação de Conflito Potencial
+```bash
+git fetch origin
+git diff --stat origin/main..origin/feature/beta-020a-security-rbac-backend-api
+git diff --stat origin/feature/beta-020a-security-rbac-backend-api..origin/feature/beta-020b-rbac-operational-endpoints-backend
+git diff --stat origin/feature/beta-020b-rbac-operational-endpoints-backend..origin/feature/beta-020c-security-rbac-frontend
+git diff --stat origin/feature/beta-020c-security-rbac-frontend..origin/feature/beta-021a-qa-ci-cd-beta-readiness
+```
+
+---
+
 ## Notas Importantes
 
 ### Python Oficial vs Bash Wrappers
@@ -310,4 +348,4 @@ npm run build
 
 **Assinatura:** Devin (SWE-1.6)  
 **Data:** 2026-06-08  
-**Status:** ✅ Concluído (BETA-021A - QA/CI/CD Final e Readiness Beta)
+**Status:** ✅ Concluído (BETA-021B - Auditoria Final de Integração e Release Candidate)

@@ -36,6 +36,21 @@ Limitações conhecidas do projeto Ilex Logística na fase beta.
 
 ---
 
+## BETA-021B — Auditoria Final de Integração e Release Candidate
+
+**Status:** Sem limitações críticas
+
+**Limitações Restantes:**
+- Credencial GitHub: não disponível (bloqueio técnico documentado)
+- PRs pendentes: BETA-021A e BETA-021B sem PR por bloqueio técnico
+
+**Mitigação:**
+- Bloqueio documentado em docs/BETA_021A_PR_BLOQUEIO.md
+- Git push funciona (autenticação SSH)
+- PRs podem ser criados manualmente se necessário
+
+---
+
 
 
 ## Migrations
@@ -69,6 +84,21 @@ Limitações conhecidas do projeto Ilex Logística na fase beta.
 **Correções Aplicadas:**
 - scripts/validate_web.sh: npm test → npm run test (correção para Web CI)
 
+---
+
+## BETA-021B — Auditoria Final de Integração e Release Candidate
+
+**Status:** Sem limitações críticas
+
+**Limitações Restantes:**
+- Credencial GitHub: não disponível (bloqueio técnico documentado)
+- PRs pendentes: BETA-021A e BETA-021B sem PR por bloqueio técnico
+
+**Mitigação:**
+- Bloqueio documentado em docs/BETA_021A_PR_BLOQUEIO.md
+- Git push funciona (autenticação SSH)
+- PRs podem ser criados manualmente se necessário
+
 ### Preservação de Dados
 **Limitação:** Não há validação de preservação real de dados
 
@@ -96,6 +126,21 @@ Limitações conhecidas do projeto Ilex Logística na fase beta.
 
 **Correções Aplicadas:**
 - scripts/validate_web.sh: npm test → npm run test (correção para Web CI)
+
+---
+
+## BETA-021B — Auditoria Final de Integração e Release Candidate
+
+**Status:** Sem limitações críticas
+
+**Limitações Restantes:**
+- Credencial GitHub: não disponível (bloqueio técnico documentado)
+- PRs pendentes: BETA-021A e BETA-021B sem PR por bloqueio técnico
+
+**Mitigação:**
+- Bloqueio documentado em docs/BETA_021A_PR_BLOQUEIO.md
+- Git push funciona (autenticação SSH)
+- PRs podem ser criados manualmente se necessário
 
 ---
 
@@ -150,6 +195,21 @@ Limitações conhecidas do projeto Ilex Logística na fase beta.
 **Correções Aplicadas:**
 - scripts/validate_web.sh: npm test → npm run test (correção para Web CI)
 
+---
+
+## BETA-021B — Auditoria Final de Integração e Release Candidate
+
+**Status:** Sem limitações críticas
+
+**Limitações Restantes:**
+- Credencial GitHub: não disponível (bloqueio técnico documentado)
+- PRs pendentes: BETA-021A e BETA-021B sem PR por bloqueio técnico
+
+**Mitigação:**
+- Bloqueio documentado em docs/BETA_021A_PR_BLOQUEIO.md
+- Git push funciona (autenticação SSH)
+- PRs podem ser criados manualmente se necessário
+
 ### Testes Marcados como Skip
 **Limitação:** Testes marcados como skip para UI não implementada
 
@@ -177,6 +237,21 @@ Limitações conhecidas do projeto Ilex Logística na fase beta.
 
 **Correções Aplicadas:**
 - scripts/validate_web.sh: npm test → npm run test (correção para Web CI)
+
+---
+
+## BETA-021B — Auditoria Final de Integração e Release Candidate
+
+**Status:** Sem limitações críticas
+
+**Limitações Restantes:**
+- Credencial GitHub: não disponível (bloqueio técnico documentado)
+- PRs pendentes: BETA-021A e BETA-021B sem PR por bloqueio técnico
+
+**Mitigação:**
+- Bloqueio documentado em docs/BETA_021A_PR_BLOQUEIO.md
+- Git push funciona (autenticação SSH)
+- PRs podem ser criados manualmente se necessário
 
 ---
 
@@ -263,6 +338,21 @@ Limitações conhecidas do projeto Ilex Logística na fase beta.
 
 ---
 
+## BETA-021B — Auditoria Final de Integração e Release Candidate
+
+**Status:** Sem limitações críticas
+
+**Limitações Restantes:**
+- Credencial GitHub: não disponível (bloqueio técnico documentado)
+- PRs pendentes: BETA-021A e BETA-021B sem PR por bloqueio técnico
+
+**Mitigação:**
+- Bloqueio documentado em docs/BETA_021A_PR_BLOQUEIO.md
+- Git push funciona (autenticação SSH)
+- PRs podem ser criados manualmente se necessário
+
+---
+
 
 
 ## Performance
@@ -293,6 +383,21 @@ Limitações conhecidas do projeto Ilex Logística na fase beta.
 
 **Correções Aplicadas:**
 - scripts/validate_web.sh: npm test → npm run test (correção para Web CI)
+
+---
+
+## BETA-021B — Auditoria Final de Integração e Release Candidate
+
+**Status:** Sem limitações críticas
+
+**Limitações Restantes:**
+- Credencial GitHub: não disponível (bloqueio técnico documentado)
+- PRs pendentes: BETA-021A e BETA-021B sem PR por bloqueio técnico
+
+**Mitigação:**
+- Bloqueio documentado em docs/BETA_021A_PR_BLOQUEIO.md
+- Git push funciona (autenticação SSH)
+- PRs podem ser criados manualmente se necessário
 
 ---
 
@@ -330,6 +435,21 @@ Limitações conhecidas do projeto Ilex Logística na fase beta.
 
 ---
 
+## BETA-021B — Auditoria Final de Integração e Release Candidate
+
+**Status:** Sem limitações críticas
+
+**Limitações Restantes:**
+- Credencial GitHub: não disponível (bloqueio técnico documentado)
+- PRs pendentes: BETA-021A e BETA-021B sem PR por bloqueio técnico
+
+**Mitigação:**
+- Bloqueio documentado em docs/BETA_021A_PR_BLOQUEIO.md
+- Git push funciona (autenticação SSH)
+- PRs podem ser criados manualmente se necessário
+
+---
+
 
 
 ## Internacionalização
@@ -361,6 +481,21 @@ Limitações conhecidas do projeto Ilex Logística na fase beta.
 
 **Correções Aplicadas:**
 - scripts/validate_web.sh: npm test → npm run test (correção para Web CI)
+
+---
+
+## BETA-021B — Auditoria Final de Integração e Release Candidate
+
+**Status:** Sem limitações críticas
+
+**Limitações Restantes:**
+- Credencial GitHub: não disponível (bloqueio técnico documentado)
+- PRs pendentes: BETA-021A e BETA-021B sem PR por bloqueio técnico
+
+**Mitigação:**
+- Bloqueio documentado em docs/BETA_021A_PR_BLOQUEIO.md
+- Git push funciona (autenticação SSH)
+- PRs podem ser criados manualmente se necessário
 
 ---
 

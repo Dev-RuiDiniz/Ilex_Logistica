@@ -66,8 +66,26 @@ Próximas ações pós BETA-009S para o projeto Ilex Logística.
 
 **Status:** Concluído
 
+---
+
+### 3. BETA-021B — Auditoria Final de Integração e Release Candidate (Concluído)
+
+**Objetivo:** Consolidar o estado final da trilha beta antes de qualquer integração/merge, verificando branches empilhadas, riscos de conflito, readiness de release candidate, documentação final e lacunas restantes.
+
+**Escopo Concluído:**
+- ✅ Branches/PRs empilhados auditados
+- ✅ Conflito potencial verificado (risco baixo)
+- ✅ Gates finais revalidados
+- ✅ Documentação final atualizada
+- ✅ Plano de integração seguro documentado
+- ✅ Release candidate ready
+
+**Status:** Concluído
+
 **Próximos Passos:**
-- Merge dos PRs beta empilhados
+- Obter credencial GitHub válida
+- Criar PRs pendentes (BETA-021A, BETA-021B)
+- Merge sequencial em ordem de dependência
 - Deploy em staging
 - Testes E2E em staging
 - Monitoramento em produção

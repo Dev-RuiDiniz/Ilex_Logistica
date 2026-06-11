@@ -38,6 +38,7 @@ Esta auditoria funcional automatizada inspecionou a estrutura do repositório pa
 - O Épico 9 teve progresso significativo com BETA-020A (RBAC backend), BETA-020B (RBAC endpoints operacionais) e BETA-020C (RBAC frontend). Veja `docs/BETA_020A_SECURITY_RBAC_BACKEND_API.md`, `docs/BETA_020B_RBAC_OPERATIONAL_ENDPOINTS_BACKEND.md` e `docs/BETA_020C_SECURITY_RBAC_FRONTEND.md` para detalhes.
 - BETA-020C completou integração de 401/403 em todas as páginas críticas (audit, users, reports/daily, alerts, SLA, shipments, imports, carriers)
 - BETA-021A completou QA/CI/CD final e readiness beta (282/282 backend, 331/331 frontend)
+- BETA-021B completou auditoria final de integração e release candidate (riscos de conflito baixos, release candidate ready)
 
 ## Tabela dos 12 Épicos
 

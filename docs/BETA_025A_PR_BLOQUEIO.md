@@ -2,7 +2,7 @@
 
 ## Status
 
-**Bloqueio Técnico:** GitHub CLI não autenticado no ambiente da IA/agente
+**Bloqueio Técnico:** MCP GitHub existe mas não está conectando no ambiente da IA/agente
 
 **Branch:** feature/beta-024a-safe-integration-simulation
 
@@ -56,13 +56,36 @@ O ambiente da IA/agente é automatizado e não interativo. O GitHub CLI (`gh`) r
 - GitHub CLI token: Não disponível (`gh auth token`: "no oauth token found for github.com")
 - Variáveis de ambiente GITHUB_TOKEN: Não configurada
 - Variáveis de ambiente GH_TOKEN: Não configurada
-- MCPs do GitHub: Falha de conexão (`github-mcp-server`: "Failed to connect to MCP server")
-- MCPs do Git: Falha ao listar ferramentas
+- MCP GitHub: Existe no ambiente com ferramentas necessárias (create_pull_request, add_issue_comment, list_pull_requests, etc.), mas falha ao conectar ("Failed to connect to MCP server 'github-mcp-server'")
+- MCP Git: Falha ao listar ferramentas
 - Git Credential Manager: Conta "rockbca-dotcom" tem credenciais para Git (push/pull funciona), mas não pode extrair token para GitHub CLI (inseguro e não permitido)
+
+## Diagnóstico de Fronteira de Ambiente
+
+**Ambiente do Agente:**
+- Diretório: C:\ (working directory)
+- Usuário: desktop-u0npisc\lenovo
+- Hostname: DESKTOP-U0NPISC
+- Git remote: https://github.com/Dev-RuiDiniz/Ilex_Logistica.git
+- Git status: feature/beta-024a-safe-integration-simulation...origin/main [ahead 7]
+- GitHub CLI: gh version 2.92.0 (2026-04-28)
+- GitHub CLI auth: Não autenticado
+
+**Credenciais Disponíveis:**
+- Git push/pull: Funciona via SSH/Git Credential Manager
+- GitHub CLI: Não autenticado
+- GitHub API/MCP: Não conectando
+- Variáveis de ambiente: GH_TOKEN e GITHUB_TOKEN não definidas
+
+**Conclusão:**
+Git está autenticado via SSH/Git Credential Manager, mas isso não significa que a API do GitHub está autenticada. O agente consegue operar Git (push/pull), mas não consegue criar PR/comentar PR pela API GitHub porque:
+1. GitHub CLI não está autenticado
+2. MCP GitHub existe mas não está conectando
+3. Variáveis de ambiente de token não estão disponíveis no processo do agente
 
 ## Solução Necessária
 
-BETA-025A permanece bloqueado por ausência de credencial técnica GitHub disponível no ambiente da IA/agente. Git Credential Manager/SSH permite push/pull, mas não autentica o GitHub CLI nem fornece token de API para criação de PRs. A criação/atualização dos PRs deve ser retomada automaticamente pela IA/agente quando `gh auth status` estiver válido ou quando `GH_TOKEN/GITHUB_TOKEN` estiver disponível no processo do agente.
+BETA-025A bloqueado por ausência de credencial técnica GitHub disponível no ambiente da IA/agente. Git push/pull funciona via SSH/Git Credential Manager, mas criação de PRs e comentários exige autenticação GitHub CLI/API ou MCP GitHub funcional no mesmo ambiente do agente. Nenhuma etapa operacional foi transferida ao usuário.
 
 ## Próximos Passos
 

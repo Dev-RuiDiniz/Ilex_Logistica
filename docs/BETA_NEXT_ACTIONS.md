@@ -402,6 +402,7 @@ npx playwright test
 | Ação | Responsável | Status | Prioridade |
 |------|-------------|--------|-----------|
 | Revisar Draft PRs | Mantenedor | Pendente | Alta |
+| Criar PRs pendentes beta (BETA-025A) | IA/agente | Bloqueado por credencial GitHub | Alta |
 | Garantir CI verde | Mantenedor | Pendente | Alta |
 | Resolver conflitos | Mantenedor | Pendente | Alta |
 | Validar documentação | Mantenedor | Pendente | Alta |

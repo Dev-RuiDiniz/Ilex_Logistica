@@ -50,31 +50,24 @@ O ambiente da IA/agente é automatizado e não interativo. O GitHub CLI (`gh`) r
 - Git não tem comando nativo para criar PRs
 - BETA-025A não pode ser executada sem GitHub CLI ou MCPs funcionais
 
+## Alternativas Técnicas Tentadas
+
+- GitHub CLI (`gh`): Não autenticado (`gh auth status`: "You are not logged into any GitHub hosts")
+- GitHub CLI token: Não disponível (`gh auth token`: "no oauth token found for github.com")
+- Variáveis de ambiente GITHUB_TOKEN: Não configurada
+- Variáveis de ambiente GH_TOKEN: Não configurada
+- MCPs do GitHub: Falha de conexão (`github-mcp-server`: "Failed to connect to MCP server")
+- MCPs do Git: Falha ao listar ferramentas
+- Git Credential Manager: Conta "rockbca-dotcom" tem credenciais para Git (push/pull funciona), mas não pode extrair token para GitHub CLI (inseguro e não permitido)
+
 ## Solução Necessária
 
-O usuário precisa configurar a autenticação GitHub CLI manualmente antes de tentar BETA-025A novamente.
-
-**Opção 1: Token de Acesso Pessoal (PAT)**
-```bash
-gh auth login --with-token
-# Colar o token quando solicitado
-```
-
-**Opção 2: Autenticação via Navegador**
-```bash
-gh auth login --web
-# Abrir o URL no navegador e autenticar
-```
-
-**Opção 3: Configurar GITHUB_TOKEN no ambiente**
-```bash
-export GITHUB_TOKEN=seu_token_aqui
-```
+BETA-025A permanece bloqueado por ausência de credencial técnica GitHub disponível no ambiente da IA/agente. Git Credential Manager/SSH permite push/pull, mas não autentica o GitHub CLI nem fornece token de API para criação de PRs. A criação/atualização dos PRs deve ser retomada automaticamente pela IA/agente quando `gh auth status` estiver válido ou quando `GH_TOKEN/GITHUB_TOKEN` estiver disponível no processo do agente.
 
 ## Próximos Passos
 
-1. Usuário configura autenticação GitHub CLI manualmente
-2. IA/agente reexecuta BETA-025A após autenticação estar disponível
+1. IA/agente aguarda credencial técnica GitHub estar disponível no ambiente
+2. Quando `gh auth status` estiver válido ou `GH_TOKEN/GITHUB_TOKEN` estiver disponível, IA/agente reexecuta BETA-025A automaticamente
 3. PRs pendentes são criados automaticamente
 4. Comentários finais são publicados automaticamente
 5. Documentação de status é atualizada
@@ -87,5 +80,5 @@ export GITHUB_TOKEN=seu_token_aqui
 - **Merge em main:** Não realizado
 - **Auto-merge:** Não habilitado
 - **Force push:** Não utilizado
-- **Bloqueio GitHub:** PRs pendentes não podem ser criados sem autenticação GitHub CLI. Devem ser criados pela IA/agente assim que autenticação técnica estiver disponível.
-- **Bloqueio técnico de autenticação GitHub CLI:** Documentado sem transferência de etapa operacional ao usuário. Autenticação requer configuração manual no ambiente.
+- **Bloqueio GitHub:** PRs pendentes não podem ser criados sem autenticação GitHub CLI. Devem ser criados pela IA/agente assim que credencial técnica estiver disponível no ambiente do agente.
+- **Bloqueio técnico de credencial GitHub:** Documentado sem transferência de etapa operacional ao usuário. Git Credential Manager/SSH permite push/pull, mas não autentica o GitHub CLI nem fornece token de API para criação de PRs.

@@ -1,6 +1,10 @@
 # BETA RELEASE GATE
 
-Gates objetivos para liberação beta do projeto Ilex Logística.
+Gates objetivos para liberação beta do projeto Ilex Logistica.
+
+## Status Atual
+
+**BETA-025A (Retomada Automatizada de PRs Pendentes):** Bloqueado por ausência de credencial técnica GitHub disponível no ambiente da IA/agente. Git Credential Manager/SSH permite push/pull, mas não autentica o GitHub CLI nem fornece token de API para criação de PRs. A criação/atualização dos PRs deve ser retomada automaticamente pela IA/agente quando `gh auth status` estiver válido ou quando `GH_TOKEN/GITHUB_TOKEN` estiver disponível no processo do agente.
 
 ## Gates Obrigatórios
 
@@ -302,7 +306,6 @@ npm run test:coverage
 - Ordem de merge definida
 - Backup antes de merge
 - Monitoramento após merge
-
 
 ---
 

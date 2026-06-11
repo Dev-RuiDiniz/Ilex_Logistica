@@ -3,18 +3,26 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 
-import { canEditCarriers } from "@/lib/permissions";
+import {
+  canReadAudit,
+  canReadCarriers,
+  canReadReports,
+  canReadShipments,
+  canReadUsers,
+  canWriteImports,
+} from "@/lib/permissions";
 import type { UserRole } from "@/lib/types";
 import { useAuth } from "@/features/auth/auth-provider";
 
 export function getRoleUiLabel(role: UserRole): string {
-  return canEditCarriers(role) ? "(edicao)" : "(somente leitura)";
+  return canReadCarriers(role) ? "(acesso)" : "(sem acesso)";
 }
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const { session, logout } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
+  const role = session?.role ?? "auditoria";
 
   const onLogout = () => {
     logout();
@@ -46,48 +54,54 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             >
               Dashboard
             </Link>
-            <Link
-              href="/carriers"
-              className={`block rounded px-3 py-2 text-sm ${pathname.startsWith("/carriers") ? "bg-slate-900 text-white" : "hover:bg-slate-100"}`}
-            >
-              Transportadoras
-            </Link>
-            <Link
-              href="/shipments"
-              className={`block rounded px-3 py-2 text-sm ${pathname.startsWith("/shipments") ? "bg-slate-900 text-white" : "hover:bg-slate-100"}`}
-            >
-              Envios
-            </Link>
-            <Link
-              href="/shipments/import"
-              className={`block rounded px-3 py-2 text-sm ${pathname === "/shipments/import" ? "bg-slate-900 text-white" : "hover:bg-slate-100"}`}
-            >
-              Importar Envios
-            </Link>
-            <Link
-              href="/exceptions"
-              className={`block rounded px-3 py-2 text-sm ${pathname.startsWith("/exceptions") ? "bg-slate-900 text-white" : "hover:bg-slate-100"}`}
-            >
-              Exceções
-            </Link>
-            <Link
-              href="/reports/daily"
-              className={`block rounded px-3 py-2 text-sm ${pathname.startsWith("/reports") ? "bg-slate-900 text-white" : "hover:bg-slate-100"}`}
-            >
-              Relatório Diário
-            </Link>
-            <Link
-              href="/audit"
-              className={`block rounded px-3 py-2 text-sm ${pathname.startsWith("/audit") ? "bg-slate-900 text-white" : "hover:bg-slate-100"}`}
-            >
-              Auditoria
-            </Link>
-            <Link
-              href="/users"
-              className={`block rounded px-3 py-2 text-sm ${pathname.startsWith("/users") ? "bg-slate-900 text-white" : "hover:bg-slate-100"}`}
-            >
-              Usuários
-            </Link>
+            {canReadShipments(role) && (
+              <Link
+                href="/shipments"
+                className={`block rounded px-3 py-2 text-sm ${pathname.startsWith("/shipments") ? "bg-slate-900 text-white" : "hover:bg-slate-100"}`}
+              >
+                Envios
+              </Link>
+            )}
+            {canWriteImports(role) && (
+              <Link
+                href="/shipments/import"
+                className={`block rounded px-3 py-2 text-sm ${pathname === "/shipments/import" ? "bg-slate-900 text-white" : "hover:bg-slate-100"}`}
+              >
+                Importar Envios
+              </Link>
+            )}
+            {canReadCarriers(role) && (
+              <Link
+                href="/carriers"
+                className={`block rounded px-3 py-2 text-sm ${pathname.startsWith("/carriers") ? "bg-slate-900 text-white" : "hover:bg-slate-100"}`}
+              >
+                Transportadoras
+              </Link>
+            )}
+            {canReadReports(role) && (
+              <Link
+                href="/reports/daily"
+                className={`block rounded px-3 py-2 text-sm ${pathname.startsWith("/reports") ? "bg-slate-900 text-white" : "hover:bg-slate-100"}`}
+              >
+                Relatório Diário
+              </Link>
+            )}
+            {canReadAudit(role) && (
+              <Link
+                href="/audit"
+                className={`block rounded px-3 py-2 text-sm ${pathname.startsWith("/audit") ? "bg-slate-900 text-white" : "hover:bg-slate-100"}`}
+              >
+                Auditoria
+              </Link>
+            )}
+            {canReadUsers(role) && (
+              <Link
+                href="/users"
+                className={`block rounded px-3 py-2 text-sm ${pathname.startsWith("/users") ? "bg-slate-900 text-white" : "hover:bg-slate-100"}`}
+              >
+                Usuários
+              </Link>
+            )}
             <p className="pt-2 text-xs text-slate-500">
               Perfil: {session?.role} {getRoleUiLabel(session?.role ?? "auditoria")}
             </p>

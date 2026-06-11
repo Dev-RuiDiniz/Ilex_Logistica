@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.orm import Session
 
 from app.database.session import get_db
-from app.modules.auth.dependencies import require_roles
+from app.modules.auth.dependencies import require_permission
 from app.modules.carriers.models import Carrier
 from app.modules.carriers.schemas import CarrierCreate, CarrierResponse, CarrierUpdate
 from app.modules.users.models import User
@@ -14,7 +14,7 @@ router = APIRouter(prefix="/carriers", tags=["carriers"])
 def create_carrier(
     payload: CarrierCreate,
     db: Session = Depends(get_db),
-    _: User = Depends(require_roles("admin", "logistica", "gestor")),
+    current_user: User = Depends(require_permission("carriers:write")),
 ) -> Carrier:
     exists = db.query(Carrier).filter(Carrier.name == payload.name).first()
     if exists:
@@ -30,7 +30,7 @@ def create_carrier(
 def list_carriers(
     include_inactive: bool = Query(default=False),
     db: Session = Depends(get_db),
-    _: User = Depends(require_roles("admin", "logistica", "gestor", "auditoria")),
+    current_user: User = Depends(require_permission("carriers:read")),
 ) -> list[Carrier]:
     query = db.query(Carrier)
     if not include_inactive:
@@ -43,7 +43,7 @@ def update_carrier(
     carrier_id: int,
     payload: CarrierUpdate,
     db: Session = Depends(get_db),
-    _: User = Depends(require_roles("admin", "logistica", "gestor")),
+    current_user: User = Depends(require_permission("carriers:write")),
 ) -> Carrier:
     carrier = db.get(Carrier, carrier_id)
     if carrier is None:
@@ -59,7 +59,7 @@ def update_carrier(
 def inactivate_carrier(
     carrier_id: int,
     db: Session = Depends(get_db),
-    _: User = Depends(require_roles("admin", "logistica", "gestor")),
+    current_user: User = Depends(require_permission("carriers:write")),
 ) -> Carrier:
     carrier = db.get(Carrier, carrier_id)
     if carrier is None:

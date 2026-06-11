@@ -22,6 +22,7 @@ import type {
   DailyReportFilters,
   DailyReportStatus,
 } from "@/lib/types";
+import { handleApiError } from "@/lib/error-handler";
 
 export default function DailyReportPage() {
   const [reports, setReports] = useState<DailyReport[]>([]);
@@ -52,7 +53,7 @@ export default function DailyReportPage() {
       }
     } catch (err) {
       if (!signal?.aborted) {
-        setError("Falha ao carregar relatórios diários.");
+        setError(handleApiError(err));
         console.error(err);
       }
     } finally {
@@ -471,7 +472,7 @@ export default function DailyReportPage() {
                           <td className="px-2 py-1">{carrier.total_shipments}</td>
                           <td className="px-2 py-1">{carrier.on_time_count}</td>
                           <td className="px-2 py-1">{carrier.late_count}</td>
-                          <td className="px-2 py-1">{(carrier.efficiency * 100).toFixed(1)}%</td>
+                          <td className="px-2 py-1">{(carrier.efficiency_rate * 100).toFixed(1)}%</td>
                         </tr>
                       ))}
                     </tbody>

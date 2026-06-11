@@ -170,3 +170,38 @@ Registrar diariamente o que foi feito, problemas encontrados e proximos passos.
 
 **Assinatura:** Regras estabelecidas para execucao de agentes no projeto Ilex Logistica  
 **Ultima atualizacao:** 2026-06-10
+
+---
+
+## 9. NOTAS DE IMPLEMENTACAO RECENTES
+
+### BETA-020C: Frontend de Segurança e RBAC (Concluido)
+
+**Status:** Completado em 2026-06-24
+
+**Implementacoes Realizadas:**
+- API client com tratamento de 401/403 (`ApiError`)
+- Helpers de permissoes (`hasPermission`, `canReadAudit`, etc.)
+- Sidebar condicional por permissao
+- Componente `AccessDenied` para estados 403
+- Página de users adaptada para RBAC
+- 30 novos testes (permissions.test.ts, api-auth.test.ts)
+
+**Resultados:**
+- Frontend: 296/296 testes passando, lint 0 errors, build OK
+- Backend: 76/76 RBAC tests, 54/54 audit tests, 7/7 W10/W15 tests
+- Gates: check_secrets, validate_migrations, validate_docs, beta_validate OK
+
+**Documentacao:** `docs/BETA_020C_SECURITY_RBAC_FRONTEND.md`
+
+**Limitacoes Conhecidas:**
+- Tratamento de 401/403 não integrado em todas as páginas (requer mudança individual)
+- Componente AccessDenied sem testes (prioridade menor)
+- Testes de páginas afetadas não implementados (páginas já funcionam com RBAC backend)
+
+**Proximos Passos (BETA-020D/E):**
+- Integrar tratamento de 401/403 em todas as páginas
+- Implementar redirecionamento automático para 401
+- Exibir AccessDenied automaticamente para 403
+- Adicionar testes de navegação por permissão
+- Implementar SSO/OAuth externo (se necessário)

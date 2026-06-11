@@ -347,6 +347,8 @@ role_permissions = Table(
    - Não implementado neste PR (backend-first)
    - Será implementado em BETA-020B
 
+**Nota:** BETA-020B completou a cobertura de RBAC em shipments, imports, carriers e users.
+
 ### 12. Validação de 401/403
 
 **Como os testes validam RBAC:**

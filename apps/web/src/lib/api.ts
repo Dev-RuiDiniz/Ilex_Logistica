@@ -36,6 +36,17 @@ export function buildApiUrl(path: string, envValue = process.env.NEXT_PUBLIC_API
   return `${getApiBaseUrl(envValue)}${normalizedPath}`;
 }
 
+export class ApiError extends Error {
+  constructor(
+    message: string,
+    public status: number,
+    public statusText: string
+  ) {
+    super(message);
+    this.name = "ApiError";
+  }
+}
+
 export async function request<T>(path: string, init?: RequestInit): Promise<T> {
   const response = await fetch(buildApiUrl(path), {
     ...init,
@@ -48,7 +59,7 @@ export async function request<T>(path: string, init?: RequestInit): Promise<T> {
 
   if (!response.ok) {
     const text = await response.text();
-    throw new Error(text || "Falha na API");
+    throw new ApiError(text || "Falha na API", response.status, response.statusText);
   }
   return response.json() as Promise<T>;
 }
@@ -65,7 +76,7 @@ async function requestMultipart<T>(path: string, formData: FormData, token: stri
 
   if (!response.ok) {
     const text = await response.text();
-    throw new Error(text || "Falha na API");
+    throw new ApiError(text || "Falha na API", response.status, response.statusText);
   }
   return response.json() as Promise<T>;
 }

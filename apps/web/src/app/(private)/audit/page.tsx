@@ -6,6 +6,7 @@ import { AuditSeverityBadge } from "@/components/AuditSeverityBadge";
 import { AuditStatusBadge } from "@/components/AuditStatusBadge";
 import { AuditJsonViewer } from "@/components/AuditJsonViewer";
 import { useAuth } from "@/features/auth/auth-provider";
+import { handleApiError } from "@/lib/error-handler";
 
 export default function AuditPage() {
   const { session } = useAuth();
@@ -27,7 +28,7 @@ export default function AuditPage() {
       const response = await getAuditLogs(token, filters);
       setLogs(response.logs);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Erro ao carregar logs");
+      setError(handleApiError(err));
     } finally {
       setLoading(false);
     }
@@ -41,6 +42,10 @@ export default function AuditPage() {
       setSummary(data);
     } catch (err) {
       console.error("Erro ao carregar summary:", err);
+      const errorMessage = handleApiError(err);
+      if (errorMessage.includes("Sessão expirada")) {
+        return; // Já redirecionado pelo handler
+      }
     }
   }, [token]);
 

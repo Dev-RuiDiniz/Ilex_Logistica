@@ -4,6 +4,7 @@ import { ChangeEvent, useState } from "react";
 
 import { confirmShipmentsImport, previewShipmentImport } from "@/lib/api";
 import { canEditShipments } from "@/lib/permissions";
+import { handleApiError } from "@/lib/error-handler";
 
 import { useAuth } from "@/features/auth/auth-provider";
 import type { ImportConfirmResponse, ImportPreviewV2Response, RowValidationError, ValidatedRowData } from "@/lib/types";
@@ -95,8 +96,7 @@ export default function ShipmentsImportPage() {
         setState("preview_success");
       }
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : "Falha ao fazer preview do arquivo.";
-      setError(errorMessage);
+      setError(handleApiError(err));
       setState("api_error");
     }
   };
@@ -115,8 +115,7 @@ export default function ShipmentsImportPage() {
         setError("Importação falhou. Verifique os erros abaixo.");
       }
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : "Falha ao confirmar importação.";
-      setError(errorMessage);
+      setError(handleApiError(err));
       setState("confirm_error");
     }
   };

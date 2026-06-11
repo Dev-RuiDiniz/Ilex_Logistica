@@ -1,7 +1,7 @@
 ﻿import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-const PRIVATE_ROUTES = ["/", "/carriers"];
+const PRIVATE_ROUTES = ["/", "/carriers", "/shipments", "/audit", "/reports", "/users", "/alerts", "/exceptions"];
 
 export function isPrivatePath(pathname: string): boolean {
   return PRIVATE_ROUTES.some((route) => pathname === route || pathname.startsWith(`${route}/`));
@@ -32,5 +32,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/", "/login", "/carriers/:path*"],
+  matcher: ["/", "/login", "/carriers/:path*", "/shipments/:path*", "/audit/:path*", "/reports/:path*", "/users/:path*", "/alerts/:path*", "/exceptions/:path*"],
 };

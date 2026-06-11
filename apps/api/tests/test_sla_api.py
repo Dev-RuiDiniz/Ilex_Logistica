@@ -126,7 +126,7 @@ class TestSlaAPI:
         db_session.add(rule)
         db_session.commit()
         
-        # Tentar acessar endpoint sem autenticação (comportamento atual: 403)
+        # Tentar acessar endpoint sem autenticação (comportamento atual: 401)
         response = client.post(
             "/api/v1/sla/rules",
             json={
@@ -136,5 +136,5 @@ class TestSlaAPI:
             }
         )
 
-        # Comportamento atual: 403 se não autenticado
-        assert response.status_code == 403
+        # Comportamento atual: 401 se não autenticado
+        assert response.status_code == 401

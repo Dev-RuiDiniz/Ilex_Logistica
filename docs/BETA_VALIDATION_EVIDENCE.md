@@ -1,6 +1,8 @@
 # BETA VALIDATION EVIDENCE
 
-Evidências dos PRs BETA-000 a BETA-008 com comandos executados, status e limitações conhecidas.
+Evidências dos PRs BETA-000 a BETA-025A com comandos executados, status e limitações conhecidas.
+
+**Nota:** Evidência completa de BETA-025A está disponível em docs/BETA_025A_EVIDENCE.md devido ao diagnóstico detalhado de conectividade GitHub API (bloqueio classificado como B - Conectividade Ausente).
 
 ## BETA-000 - Plano de Execução TDD Fase Beta
 
@@ -562,3 +564,5 @@ git status
 **Assinatura:** Devin (SWE-1.6)  
 **Data:** 2026-06-08  
 **Status:** 🔄 Em execução (BETA-009S - Revalidação Empilhada)
+
+**Nota:** Projeto tecnicamente conclu�do e release candidate em status GO. BETA-025A permanece bloqueada exclusivamente por falha de conectividade GitHub API/MCP no runtime atual do agente. Git push/pull funciona, mas cria��o de PRs e coment�rios exige conectividade HTTPS com pi.github.com:443 e autentica��o GitHub CLI/API/MCP funcional no mesmo processo do agente.

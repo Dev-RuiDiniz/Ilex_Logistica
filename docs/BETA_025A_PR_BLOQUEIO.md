@@ -27,16 +27,28 @@ Tentativas de login:
 - `gh auth login --web`: Requer interação manual no navegador
 - Variável de ambiente `GITHUB_TOKEN`: Não detectada
 
+MCPs do GitHub:
+- `github-mcp-server`: Falha de conexão
+- `git`: Falha ao listar ferramentas
+
+Git:
+- `git ls-remote origin`: Funciona (Git tem acesso ao repositório)
+- Credenciais Git configuradas (credential.helper=wincred)
+- Git Credential Manager instalado
+- Git não tem comando nativo para criar PRs
+
 ## Causa Raiz
 
-O ambiente da IA/agente é automatizado e não interativo. O GitHub CLI (`gh`) requer autenticação interativa que não pode ser automatizada sem credencial pré-configurada no ambiente.
+O ambiente da IA/agente é automatizado e não interativo. O GitHub CLI (`gh`) requer autenticação interativa que não pode ser automatizada sem credencial pré-configurada no ambiente. MCPs do GitHub não estão funcionando no ambiente atual. Git tem acesso ao repositório mas não possui comando nativo para criar PRs.
 
 ## Impacto
 
 - Não é possível criar PRs automaticamente
 - Não é possível consultar PRs existentes
 - Não é possível publicar comentários finais
-- BETA-025A não pode ser executada sem autenticação GitHub CLI funcional
+- MCPs do GitHub não funcionam no ambiente atual
+- Git não tem comando nativo para criar PRs
+- BETA-025A não pode ser executada sem GitHub CLI ou MCPs funcionais
 
 ## Solução Necessária
 

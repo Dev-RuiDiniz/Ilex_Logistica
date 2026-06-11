@@ -113,6 +113,28 @@ Próximas ações pós BETA-009S para o projeto Ilex Logística.
 
 ---
 
+### 10. BETA-023B — Manifesto de Release Candidate, Notas de Versão e Congelamento Técnico Beta (Concluído)
+
+**Objetivo:** Criar o manifesto final do Release Candidate beta, consolidar notas de versão, inventário técnico, status de branches/PRs, matriz de evidências e critério de congelamento técnico, sem implementar feature nova e sem fazer merge.
+
+**Escopo Concluído:**
+- ✅ Diagnóstico inicial confirmado
+- ✅ Manifesto do Release Candidate beta criado
+- ✅ Notas de versão beta criadas
+- ✅ Inventário final de evidências criado
+- ✅ Plano de congelamento técnico criado
+- ✅ Documentação existente atualizada
+- ✅ Linguagem de governança corrigida
+- ✅ Backend crítico validado (281/281)
+- ✅ Frontend validado (331/331 testes, lint 0 errors, build OK)
+- ✅ Gates oficiais validados (migrations, docs, beta_validate, check_secrets --self-test)
+- ✅ GitHub credential check executado
+- ✅ Bloqueio GitHub documentado sem transferência ao usuário
+
+**Status:** Concluído
+
+---
+
 
 ## Ações Imediatas (Antes de Merge dos PRs Beta)
 

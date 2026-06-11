@@ -59,6 +59,18 @@
 
 **Decisão:** Release candidate técnico pronto para homologação assistida
 
+**BETA-023B — Release Candidate:**
+- Manifesto RC criado
+- Notas de versão criadas
+- Índice de evidências criado
+- Plano de congelamento técnico criado
+- Documentação existente atualizada
+- Linguagem de governança corrigida
+- Backend crítico verde (281/281)
+- Frontend verde (331/331)
+- Gates oficiais verdes
+- Bloqueio GitHub documentado
+
 **Justificativa:** Todos os critérios obrigatórios de GO foram atendidos. Riscos identificados são de baixa severidade e foram mitigados. Limitações conhecidas foram documentadas. Bloqueio técnico de credencial GitHub foi documentado sem transferência de ação manual ao usuário.
 
 ## Plano de Mitigação

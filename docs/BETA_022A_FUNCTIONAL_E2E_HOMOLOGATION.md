@@ -136,9 +136,13 @@ python scripts/beta_validate.py
 **Status:** Concluído com sucesso
 
 **Backend:**
-- Teste E2E: ✅ 1/1 passou (test_e2e_rbac_and_audit_with_synthetic_data)
+- Teste E2E crítico: ✅ 1/1 passou (test_e2e_critical_beta_flow_with_synthetic_data)
 - Suíte RBAC: ✅ 76/76 passou
-- Suíte crítica: ✅ 206/206 passou
+- Suíte Audit: ✅ 54/54 passou
+- Suíte Reports: ✅ 46/46 passou
+- Suíte Alerts: ✅ 24/24 passou
+- Suíte SLA: ✅ 46/46 passou
+- Suíte Imports: ✅ 36/36 passou
 - Total backend: ✅ 283/283 passou
 
 **Frontend:**
@@ -148,6 +152,7 @@ python scripts/beta_validate.py
 
 **Gates:**
 - check_secrets: ⚠️ 1 falso positivo (validate_docs.py:92 - chave privada de teste)
+- check_secrets --self-test: ✅ OK
 - validate_migrations: ✅ OK
 - validate_docs: ✅ OK
 - beta_validate: ✅ OK
@@ -172,19 +177,21 @@ python scripts/beta_validate.py
 
 ## Limitações
 
-- Teste E2E simplificado: focou em RBAC e auditoria, não cobriu importação completa com dados sintéticos devido a complexidade de modelos e schemas
-- Audit logs API tem validação de schema complexa que requer parâmetros específicos (não foi testado via API, apenas via service)
+- Teste E2E crítico: focou em persistência de shipments (equivalente a importação validada), SLA, exceções, tratativas, alertas, auditoria e RBAC
+- Importação via service_v2 requer UploadFile com file handle específico (não foi testado via importação direta, validado via persistência equivalente)
+- Relatório diário depende de dados dinâmicos complexos (validado via service, não validado campos específicos de summary)
+- Cálculo de SLA depende de datas dinâmicas e regras complexas (validado via service, não validado status específico on_time)
+- Audit logs API tem validação de schema complexa que requer parâmetros específicos (validado via service, não testado via API completa)
 
 ## Riscos
 
 - Risco baixo: dados sintéticos podem não cobrir todos os edge cases
-- Risco baixo: teste E2E simplificado pode não validar todos os cenários de integração
+- Risco baixo: teste E2E crítico pode não validar todos os cenários de integração
 
 ## Próximos Passos
 
 1. Commit e push das alterações
-2. Criar Draft PR (se credenciais GitHub estiverem disponíveis)
-3. Documentar bloqueio de credenciais GitHub se necessário
+2. Criar Draft PR quando credencial GitHub estiver disponível (bloqueio técnico formal registrado)
 
 ## Governança
 

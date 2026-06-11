@@ -237,5 +237,5 @@ Não aplicável devido a conflitos detectados. Frontend deve ser validado após 
 - **Merge em main:** Não realizado
 - **Auto-merge:** Não habilitado
 - **Force push:** Não utilizado
-- **Ação manual:** Não transferida ao usuário
-- **Ação manual do usuário:** Não transferida ao usuário
+- **Bloqueio GitHub:** PR pendente por bloqueio técnico de credencial GitHub. Deve ser criado pela IA/agente assim que houver credencial técnica válida disponível.
+- **Bloqueio técnico de credencial GitHub:** Documentado sem transferência de etapa operacional ao usuário.

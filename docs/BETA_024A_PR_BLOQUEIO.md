@@ -36,7 +36,7 @@ You are not logged into any GitHub hosts. To log in, run: gh auth login
 ## Próximos Passos
 
 1. Quando credencial GitHub técnica estiver disponível:
-   - Executar `gh auth login` para autenticar
+   - Autenticar GitHub CLI com credencial técnica válida
    - Commit e push das alterações
    - Criar Draft PR automaticamente
    - Publicar comentário final automaticamente
@@ -44,7 +44,7 @@ You are not logged into any GitHub hosts. To log in, run: gh auth login
 2. Enquanto credencial não estiver disponível:
    - Branch `feature/beta-024a-safe-integration-simulation` será criado e enviado
    - Trilha técnica está completa e pode ser revisada
-   - Nenhuma ação manual é necessária do usuário
+   - PR pendente por bloqueio técnico de credencial GitHub. Deve ser criado pela IA/agente assim que houver credencial técnica válida disponível.
 
 ## Governança
 
@@ -54,4 +54,5 @@ You are not logged into any GitHub hosts. To log in, run: gh auth login
 - **Merge em main:** Não realizado
 - **Auto-merge:** Não habilitado
 - **Force push:** Não utilizado
-- **Ação manual:** Não transferida ao usuário
+- **Bloqueio GitHub:** PR pendente por bloqueio técnico de credencial GitHub. Deve ser criado pela IA/agente assim que houver credencial técnica válida disponível.
+- **Bloqueio técnico de credencial GitHub:** Documentado sem transferência de etapa operacional ao usuário.

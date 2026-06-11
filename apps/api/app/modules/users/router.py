@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 
 from app.core.security import hash_password
 from app.database.session import get_db
-from app.modules.auth.dependencies import require_roles
+from app.modules.auth.dependencies import require_permission
 from app.modules.users.models import Role, User
 from app.modules.users.schemas import UserCreateRequest, UserResponse, UserUpdateRequest
 
@@ -23,7 +23,7 @@ def _serialize(user: User) -> UserResponse:
 @router.get("", response_model=list[UserResponse])
 def list_users(
     db: Session = Depends(get_db),
-    current_user: User = Depends(require_roles("admin")),
+    current_user: User = Depends(require_permission("users:read")),
 ) -> list[UserResponse]:
     users = db.query(User).order_by(User.id.asc()).all()
     return [_serialize(user) for user in users]
@@ -33,7 +33,7 @@ def list_users(
 def create_user(
     payload: UserCreateRequest,
     db: Session = Depends(get_db),
-    current_user: User = Depends(require_roles("admin")),
+    current_user: User = Depends(require_permission("users:write")),
 ) -> UserResponse:
     existing = db.query(User).filter(User.email == payload.email).first()
     if existing:
@@ -60,7 +60,7 @@ def update_user(
     user_id: int,
     payload: UserUpdateRequest,
     db: Session = Depends(get_db),
-    current_user: User = Depends(require_roles("admin")),
+    current_user: User = Depends(require_permission("users:write")),
 ) -> UserResponse:
     user = db.get(User, user_id)
     if user is None:
@@ -84,7 +84,7 @@ def update_user(
 def inactivate_user(
     user_id: int,
     db: Session = Depends(get_db),
-    current_user: User = Depends(require_roles("admin")),
+    current_user: User = Depends(require_permission("users:write")),
 ) -> UserResponse:
     user = db.get(User, user_id)
     if user is None:

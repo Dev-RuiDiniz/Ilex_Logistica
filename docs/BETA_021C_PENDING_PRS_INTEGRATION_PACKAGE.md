@@ -42,7 +42,7 @@ Todos os branches existem no remoto:
 python scripts/prepare_pending_prs.py --execute
 ```
 
-**Comandos de Criação de PR (Manual, se necessário):**
+**Comandos de Criação de PR (referência para script):**
 ```bash
 # BETA-021A
 gh pr create --base feature/beta-020c-security-rbac-frontend --head feature/beta-021a-qa-ci-cd-beta-readiness --title "[BETA-021A] QA/CI/CD Final e Readiness Beta" --body-file docs/prs/BETA_021A_PR_BODY.md --draft
@@ -51,7 +51,7 @@ gh pr create --base feature/beta-020c-security-rbac-frontend --head feature/beta
 gh pr create --base feature/beta-021a-qa-ci-cd-beta-readiness --head feature/beta-021b-final-integration-release-candidate --title "[BETA-021B] Auditoria Final de Integração e Release Candidate" --body-file docs/prs/BETA_021B_PR_BODY.md --draft
 ```
 
-**Comandos de Comentário Final (Manual, se necessário):**
+**Comandos de Comentário Final (referência para script):**
 ```bash
 # BETA-021A
 gh pr comment feature/beta-021a-qa-ci-cd-beta-readiness --body-file docs/prs/BETA_021A_FINAL_COMMENT.md
@@ -79,10 +79,7 @@ gh pr comment feature/beta-021b-final-integration-release-candidate --body-file 
 
 ## Como Retomar Quando Credencial Técnica Válida Estiver Disponível
 
-1. Executar `gh auth login` para configurar credencial GitHub
-2. Executar `python scripts/prepare_pending_prs.py --execute` para criar PRs pendentes
-3. Executar comentários finais via script ou manualmente
-4. Merge sequencial em ordem de dependência
+Quando o ambiente da IA/agente possuir credencial técnica GitHub válida, executar `python scripts/prepare_pending_prs.py --execute`. O script deve validar `gh auth status` ou token de ambiente antes de qualquer criação de PR. Se não houver credencial técnica válida, deve abortar com bloqueio técnico formal, sem pedir ação manual ao usuário.
 
 ## Nenhuma Etapa Manual Aceita
 

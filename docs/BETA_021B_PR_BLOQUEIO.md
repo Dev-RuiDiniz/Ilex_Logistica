@@ -43,9 +43,9 @@ You are not logged into any GitHub hosts. To log in, run: gh auth login
 
 **Git Push:** Sucesso (autenticação SSH configurada)
 
-**Nota:** Tarefa operacional não foi transferida ao usuário. O PR pode ser criado manualmente se necessário, mas isso não é aceito pelas regras do projeto.
+**Nota:** PR pendente por bloqueio técnico de credencial GitHub. Deve ser criado pela IA/agente assim que houver credencial técnica válida disponível.
 
-## PR Body (Para Criação Manual)
+## PR Body (Para Criação Automatizada)
 
 **Título:** [BETA-021B] Auditoria Final de Integração e Release Candidate
 

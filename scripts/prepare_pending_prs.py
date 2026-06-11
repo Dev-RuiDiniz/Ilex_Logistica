@@ -58,7 +58,8 @@ def main():
         print("[MODE] EXECUTE (comandos serão executados)")
         if not check_gh_auth():
             print("[ERROR] gh auth status não está OK")
-            print("[INFO] Execute: gh auth login")
+            print("[ERROR] Bloqueio técnico formal: credencial GitHub não disponível")
+            print("[INFO] Script aborta sem pedir ação manual ao usuário")
             sys.exit(1)
     
     print()

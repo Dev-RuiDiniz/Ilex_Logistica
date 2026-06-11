@@ -51,7 +51,7 @@ Limitações conhecidas do projeto Ilex Logística na fase beta.
 - PR bodies versionados em docs/prs/
 - Comentários finais versionados em docs/prs/
 - Script auxiliar seguro (scripts/prepare_pending_prs.py)
-- PRs podem ser criados manualmente se necessário
+- PRs pendentes por bloqueio técnico de credencial GitHub. Deve ser criado pela IA/agente assim que houver credencial técnica válida disponível.
 
 ---
 
@@ -123,7 +123,7 @@ Limitações conhecidas do projeto Ilex Logística na fase beta.
 - PR bodies versionados em docs/prs/
 - Comentários finais versionados em docs/prs/
 - Script auxiliar seguro (scripts/prepare_pending_prs.py)
-- PRs podem ser criados manualmente se necessário
+- PRs pendentes por bloqueio técnico de credencial GitHub. Deve ser criado pela IA/agente assim que houver credencial técnica válida disponível.
 
 ---
 
@@ -188,7 +188,7 @@ Limitações conhecidas do projeto Ilex Logística na fase beta.
 - PR bodies versionados em docs/prs/
 - Comentários finais versionados em docs/prs/
 - Script auxiliar seguro (scripts/prepare_pending_prs.py)
-- PRs podem ser criados manualmente se necessário
+- PRs pendentes por bloqueio técnico de credencial GitHub. Deve ser criado pela IA/agente assim que houver credencial técnica válida disponível.
 
 ---
 
@@ -278,7 +278,7 @@ Limitações conhecidas do projeto Ilex Logística na fase beta.
 - PR bodies versionados em docs/prs/
 - Comentários finais versionados em docs/prs/
 - Script auxiliar seguro (scripts/prepare_pending_prs.py)
-- PRs podem ser criados manualmente se necessário
+- PRs pendentes por bloqueio técnico de credencial GitHub. Deve ser criado pela IA/agente assim que houver credencial técnica válida disponível.
 
 ---
 
@@ -343,7 +343,7 @@ Limitações conhecidas do projeto Ilex Logística na fase beta.
 - PR bodies versionados em docs/prs/
 - Comentários finais versionados em docs/prs/
 - Script auxiliar seguro (scripts/prepare_pending_prs.py)
-- PRs podem ser criados manualmente se necessário
+- PRs pendentes por bloqueio técnico de credencial GitHub. Deve ser criado pela IA/agente assim que houver credencial técnica válida disponível.
 
 ---
 
@@ -463,7 +463,7 @@ Limitações conhecidas do projeto Ilex Logística na fase beta.
 - PR bodies versionados em docs/prs/
 - Comentários finais versionados em docs/prs/
 - Script auxiliar seguro (scripts/prepare_pending_prs.py)
-- PRs podem ser criados manualmente se necessário
+- PRs pendentes por bloqueio técnico de credencial GitHub. Deve ser criado pela IA/agente assim que houver credencial técnica válida disponível.
 
 ---
 
@@ -533,7 +533,7 @@ Limitações conhecidas do projeto Ilex Logística na fase beta.
 - PR bodies versionados em docs/prs/
 - Comentários finais versionados em docs/prs/
 - Script auxiliar seguro (scripts/prepare_pending_prs.py)
-- PRs podem ser criados manualmente se necessário
+- PRs pendentes por bloqueio técnico de credencial GitHub. Deve ser criado pela IA/agente assim que houver credencial técnica válida disponível.
 
 ---
 
@@ -604,7 +604,7 @@ Limitações conhecidas do projeto Ilex Logística na fase beta.
 - PR bodies versionados em docs/prs/
 - Comentários finais versionados em docs/prs/
 - Script auxiliar seguro (scripts/prepare_pending_prs.py)
-- PRs podem ser criados manualmente se necessário
+- PRs pendentes por bloqueio técnico de credencial GitHub. Deve ser criado pela IA/agente assim que houver credencial técnica válida disponível.
 
 ---
 
@@ -675,7 +675,7 @@ Limitações conhecidas do projeto Ilex Logística na fase beta.
 - PR bodies versionados em docs/prs/
 - Comentários finais versionados em docs/prs/
 - Script auxiliar seguro (scripts/prepare_pending_prs.py)
-- PRs podem ser criados manualmente se necessário
+- PRs pendentes por bloqueio técnico de credencial GitHub. Deve ser criado pela IA/agente assim que houver credencial técnica válida disponível.
 
 ---
 

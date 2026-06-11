@@ -43,9 +43,9 @@ You are not logged into any GitHub hosts. To log in, run: gh auth login
 
 **Git Push:** Sucesso (autenticação SSH configurada)
 
-**Nota:** Tarefa operacional não foi transferida ao usuário. O PR pode ser criado manualmente se necessário, mas isso não é aceito pelas regras do projeto.
+**Nota:** PR pendente por bloqueio técnico de credencial GitHub. Deve ser criado pela IA/agente assim que houver credencial técnica válida disponível.
 
-## PR Body (Para Criação Manual)
+## PR Body (Para Criação Automatizada)
 
 **Título:** [BETA-021C] Preparação Automatizada dos PRs Pendentes e Pacote Final de Integração
 
@@ -102,7 +102,7 @@ BETA-021C prepara, de forma automatizada e sem merge, todo o pacote necessário 
 python scripts/prepare_pending_prs.py --execute
 ```
 
-**Criar PRs Manualmente (se necessário):**
+**Criar PRs (referência para script):**
 ```bash
 # BETA-021A
 gh pr create --base feature/beta-020c-security-rbac-frontend --head feature/beta-021a-qa-ci-cd-beta-readiness --title "[BETA-021A] QA/CI/CD Final e Readiness Beta" --body-file docs/prs/BETA_021A_PR_BODY.md --draft

@@ -325,6 +325,29 @@ git diff --stat origin/feature/beta-020c-security-rbac-frontend..origin/feature/
 
 ---
 
+## BETA-021C — Preparação Automatizada dos PRs Pendentes e Pacote Final de Integração
+
+### Script Auxiliar (Dry-Run)
+```bash
+python scripts/prepare_pending_prs.py
+```
+
+### Script Auxiliar (Execute)
+```bash
+python scripts/prepare_pending_prs.py --execute
+```
+
+### Verificação de Branches Remotos
+```bash
+git ls-remote --heads origin feature/beta-020a-security-rbac-backend-api
+git ls-remote --heads origin feature/beta-020b-rbac-operational-endpoints-backend
+git ls-remote --heads origin feature/beta-020c-security-rbac-frontend
+git ls-remote --heads origin feature/beta-021a-qa-ci-cd-beta-readiness
+git ls-remote --heads origin feature/beta-021b-final-integration-release-candidate
+```
+
+---
+
 ## Notas Importantes
 
 ### Python Oficial vs Bash Wrappers
@@ -348,4 +371,4 @@ git diff --stat origin/feature/beta-020c-security-rbac-frontend..origin/feature/
 
 **Assinatura:** Devin (SWE-1.6)  
 **Data:** 2026-06-08  
-**Status:** ✅ Concluído (BETA-021B - Auditoria Final de Integração e Release Candidate)
+**Status:** ✅ Concluído (BETA-021C - Preparação Automatizada dos PRs Pendentes e Pacote Final de Integração)

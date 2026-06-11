@@ -46,8 +46,30 @@ Limitações conhecidas do projeto Ilex Logística na fase beta.
 
 **Mitigação:**
 - Bloqueio documentado em docs/BETA_021A_PR_BLOQUEIO.md
+- Bloqueio documentado em docs/BETA_021B_PR_BLOQUEIO.md
 - Git push funciona (autenticação SSH)
+- PR bodies versionados em docs/prs/
+- Comentários finais versionados em docs/prs/
+- Script auxiliar seguro (scripts/prepare_pending_prs.py)
 - PRs podem ser criados manualmente se necessário
+
+---
+
+## BETA-021C — Preparação Automatizada dos PRs Pendentes e Pacote Final de Integração
+
+**Status:** Sem limitações críticas
+
+**Limitações Restantes:**
+- Credencial GitHub: não disponível (bloqueio técnico documentado)
+- PRs pendentes: BETA-021A e BETA-021B sem PR por bloqueio técnico
+
+**Mitigação:**
+- Bloqueio documentado em docs/BETA_021A_PR_BLOQUEIO.md
+- Bloqueio documentado em docs/BETA_021B_PR_BLOQUEIO.md
+- PR bodies versionados em docs/prs/
+- Comentários finais versionados em docs/prs/
+- Script auxiliar seguro (scripts/prepare_pending_prs.py)
+- Pacote final de integração consolidado em docs/BETA_021C_PENDING_PRS_INTEGRATION_PACKAGE.md
 
 ---
 
@@ -96,8 +118,30 @@ Limitações conhecidas do projeto Ilex Logística na fase beta.
 
 **Mitigação:**
 - Bloqueio documentado em docs/BETA_021A_PR_BLOQUEIO.md
+- Bloqueio documentado em docs/BETA_021B_PR_BLOQUEIO.md
 - Git push funciona (autenticação SSH)
+- PR bodies versionados em docs/prs/
+- Comentários finais versionados em docs/prs/
+- Script auxiliar seguro (scripts/prepare_pending_prs.py)
 - PRs podem ser criados manualmente se necessário
+
+---
+
+## BETA-021C — Preparação Automatizada dos PRs Pendentes e Pacote Final de Integração
+
+**Status:** Sem limitações críticas
+
+**Limitações Restantes:**
+- Credencial GitHub: não disponível (bloqueio técnico documentado)
+- PRs pendentes: BETA-021A e BETA-021B sem PR por bloqueio técnico
+
+**Mitigação:**
+- Bloqueio documentado em docs/BETA_021A_PR_BLOQUEIO.md
+- Bloqueio documentado em docs/BETA_021B_PR_BLOQUEIO.md
+- PR bodies versionados em docs/prs/
+- Comentários finais versionados em docs/prs/
+- Script auxiliar seguro (scripts/prepare_pending_prs.py)
+- Pacote final de integração consolidado em docs/BETA_021C_PENDING_PRS_INTEGRATION_PACKAGE.md
 
 ### Preservação de Dados
 **Limitação:** Não há validação de preservação real de dados
@@ -139,8 +183,30 @@ Limitações conhecidas do projeto Ilex Logística na fase beta.
 
 **Mitigação:**
 - Bloqueio documentado em docs/BETA_021A_PR_BLOQUEIO.md
+- Bloqueio documentado em docs/BETA_021B_PR_BLOQUEIO.md
 - Git push funciona (autenticação SSH)
+- PR bodies versionados em docs/prs/
+- Comentários finais versionados em docs/prs/
+- Script auxiliar seguro (scripts/prepare_pending_prs.py)
 - PRs podem ser criados manualmente se necessário
+
+---
+
+## BETA-021C — Preparação Automatizada dos PRs Pendentes e Pacote Final de Integração
+
+**Status:** Sem limitações críticas
+
+**Limitações Restantes:**
+- Credencial GitHub: não disponível (bloqueio técnico documentado)
+- PRs pendentes: BETA-021A e BETA-021B sem PR por bloqueio técnico
+
+**Mitigação:**
+- Bloqueio documentado em docs/BETA_021A_PR_BLOQUEIO.md
+- Bloqueio documentado em docs/BETA_021B_PR_BLOQUEIO.md
+- PR bodies versionados em docs/prs/
+- Comentários finais versionados em docs/prs/
+- Script auxiliar seguro (scripts/prepare_pending_prs.py)
+- Pacote final de integração consolidado em docs/BETA_021C_PENDING_PRS_INTEGRATION_PACKAGE.md
 
 ---
 
@@ -207,8 +273,30 @@ Limitações conhecidas do projeto Ilex Logística na fase beta.
 
 **Mitigação:**
 - Bloqueio documentado em docs/BETA_021A_PR_BLOQUEIO.md
+- Bloqueio documentado em docs/BETA_021B_PR_BLOQUEIO.md
 - Git push funciona (autenticação SSH)
+- PR bodies versionados em docs/prs/
+- Comentários finais versionados em docs/prs/
+- Script auxiliar seguro (scripts/prepare_pending_prs.py)
 - PRs podem ser criados manualmente se necessário
+
+---
+
+## BETA-021C — Preparação Automatizada dos PRs Pendentes e Pacote Final de Integração
+
+**Status:** Sem limitações críticas
+
+**Limitações Restantes:**
+- Credencial GitHub: não disponível (bloqueio técnico documentado)
+- PRs pendentes: BETA-021A e BETA-021B sem PR por bloqueio técnico
+
+**Mitigação:**
+- Bloqueio documentado em docs/BETA_021A_PR_BLOQUEIO.md
+- Bloqueio documentado em docs/BETA_021B_PR_BLOQUEIO.md
+- PR bodies versionados em docs/prs/
+- Comentários finais versionados em docs/prs/
+- Script auxiliar seguro (scripts/prepare_pending_prs.py)
+- Pacote final de integração consolidado em docs/BETA_021C_PENDING_PRS_INTEGRATION_PACKAGE.md
 
 ### Testes Marcados como Skip
 **Limitação:** Testes marcados como skip para UI não implementada
@@ -250,8 +338,30 @@ Limitações conhecidas do projeto Ilex Logística na fase beta.
 
 **Mitigação:**
 - Bloqueio documentado em docs/BETA_021A_PR_BLOQUEIO.md
+- Bloqueio documentado em docs/BETA_021B_PR_BLOQUEIO.md
 - Git push funciona (autenticação SSH)
+- PR bodies versionados em docs/prs/
+- Comentários finais versionados em docs/prs/
+- Script auxiliar seguro (scripts/prepare_pending_prs.py)
 - PRs podem ser criados manualmente se necessário
+
+---
+
+## BETA-021C — Preparação Automatizada dos PRs Pendentes e Pacote Final de Integração
+
+**Status:** Sem limitações críticas
+
+**Limitações Restantes:**
+- Credencial GitHub: não disponível (bloqueio técnico documentado)
+- PRs pendentes: BETA-021A e BETA-021B sem PR por bloqueio técnico
+
+**Mitigação:**
+- Bloqueio documentado em docs/BETA_021A_PR_BLOQUEIO.md
+- Bloqueio documentado em docs/BETA_021B_PR_BLOQUEIO.md
+- PR bodies versionados em docs/prs/
+- Comentários finais versionados em docs/prs/
+- Script auxiliar seguro (scripts/prepare_pending_prs.py)
+- Pacote final de integração consolidado em docs/BETA_021C_PENDING_PRS_INTEGRATION_PACKAGE.md
 
 ---
 
@@ -348,8 +458,30 @@ Limitações conhecidas do projeto Ilex Logística na fase beta.
 
 **Mitigação:**
 - Bloqueio documentado em docs/BETA_021A_PR_BLOQUEIO.md
+- Bloqueio documentado em docs/BETA_021B_PR_BLOQUEIO.md
 - Git push funciona (autenticação SSH)
+- PR bodies versionados em docs/prs/
+- Comentários finais versionados em docs/prs/
+- Script auxiliar seguro (scripts/prepare_pending_prs.py)
 - PRs podem ser criados manualmente se necessário
+
+---
+
+## BETA-021C — Preparação Automatizada dos PRs Pendentes e Pacote Final de Integração
+
+**Status:** Sem limitações críticas
+
+**Limitações Restantes:**
+- Credencial GitHub: não disponível (bloqueio técnico documentado)
+- PRs pendentes: BETA-021A e BETA-021B sem PR por bloqueio técnico
+
+**Mitigação:**
+- Bloqueio documentado em docs/BETA_021A_PR_BLOQUEIO.md
+- Bloqueio documentado em docs/BETA_021B_PR_BLOQUEIO.md
+- PR bodies versionados em docs/prs/
+- Comentários finais versionados em docs/prs/
+- Script auxiliar seguro (scripts/prepare_pending_prs.py)
+- Pacote final de integração consolidado em docs/BETA_021C_PENDING_PRS_INTEGRATION_PACKAGE.md
 
 ---
 
@@ -396,8 +528,30 @@ Limitações conhecidas do projeto Ilex Logística na fase beta.
 
 **Mitigação:**
 - Bloqueio documentado em docs/BETA_021A_PR_BLOQUEIO.md
+- Bloqueio documentado em docs/BETA_021B_PR_BLOQUEIO.md
 - Git push funciona (autenticação SSH)
+- PR bodies versionados em docs/prs/
+- Comentários finais versionados em docs/prs/
+- Script auxiliar seguro (scripts/prepare_pending_prs.py)
 - PRs podem ser criados manualmente se necessário
+
+---
+
+## BETA-021C — Preparação Automatizada dos PRs Pendentes e Pacote Final de Integração
+
+**Status:** Sem limitações críticas
+
+**Limitações Restantes:**
+- Credencial GitHub: não disponível (bloqueio técnico documentado)
+- PRs pendentes: BETA-021A e BETA-021B sem PR por bloqueio técnico
+
+**Mitigação:**
+- Bloqueio documentado em docs/BETA_021A_PR_BLOQUEIO.md
+- Bloqueio documentado em docs/BETA_021B_PR_BLOQUEIO.md
+- PR bodies versionados em docs/prs/
+- Comentários finais versionados em docs/prs/
+- Script auxiliar seguro (scripts/prepare_pending_prs.py)
+- Pacote final de integração consolidado em docs/BETA_021C_PENDING_PRS_INTEGRATION_PACKAGE.md
 
 ---
 
@@ -445,8 +599,30 @@ Limitações conhecidas do projeto Ilex Logística na fase beta.
 
 **Mitigação:**
 - Bloqueio documentado em docs/BETA_021A_PR_BLOQUEIO.md
+- Bloqueio documentado em docs/BETA_021B_PR_BLOQUEIO.md
 - Git push funciona (autenticação SSH)
+- PR bodies versionados em docs/prs/
+- Comentários finais versionados em docs/prs/
+- Script auxiliar seguro (scripts/prepare_pending_prs.py)
 - PRs podem ser criados manualmente se necessário
+
+---
+
+## BETA-021C — Preparação Automatizada dos PRs Pendentes e Pacote Final de Integração
+
+**Status:** Sem limitações críticas
+
+**Limitações Restantes:**
+- Credencial GitHub: não disponível (bloqueio técnico documentado)
+- PRs pendentes: BETA-021A e BETA-021B sem PR por bloqueio técnico
+
+**Mitigação:**
+- Bloqueio documentado em docs/BETA_021A_PR_BLOQUEIO.md
+- Bloqueio documentado em docs/BETA_021B_PR_BLOQUEIO.md
+- PR bodies versionados em docs/prs/
+- Comentários finais versionados em docs/prs/
+- Script auxiliar seguro (scripts/prepare_pending_prs.py)
+- Pacote final de integração consolidado em docs/BETA_021C_PENDING_PRS_INTEGRATION_PACKAGE.md
 
 ---
 
@@ -494,8 +670,30 @@ Limitações conhecidas do projeto Ilex Logística na fase beta.
 
 **Mitigação:**
 - Bloqueio documentado em docs/BETA_021A_PR_BLOQUEIO.md
+- Bloqueio documentado em docs/BETA_021B_PR_BLOQUEIO.md
 - Git push funciona (autenticação SSH)
+- PR bodies versionados em docs/prs/
+- Comentários finais versionados em docs/prs/
+- Script auxiliar seguro (scripts/prepare_pending_prs.py)
 - PRs podem ser criados manualmente se necessário
+
+---
+
+## BETA-021C — Preparação Automatizada dos PRs Pendentes e Pacote Final de Integração
+
+**Status:** Sem limitações críticas
+
+**Limitações Restantes:**
+- Credencial GitHub: não disponível (bloqueio técnico documentado)
+- PRs pendentes: BETA-021A e BETA-021B sem PR por bloqueio técnico
+
+**Mitigação:**
+- Bloqueio documentado em docs/BETA_021A_PR_BLOQUEIO.md
+- Bloqueio documentado em docs/BETA_021B_PR_BLOQUEIO.md
+- PR bodies versionados em docs/prs/
+- Comentários finais versionados em docs/prs/
+- Script auxiliar seguro (scripts/prepare_pending_prs.py)
+- Pacote final de integração consolidado em docs/BETA_021C_PENDING_PRS_INTEGRATION_PACKAGE.md
 
 ---
 

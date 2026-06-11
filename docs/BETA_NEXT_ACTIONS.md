@@ -82,9 +82,25 @@ Próximas ações pós BETA-009S para o projeto Ilex Logística.
 
 **Status:** Concluído
 
+---
+
+### 4. BETA-021C — Preparação Automatizada dos PRs Pendentes e Pacote Final de Integração (Concluído)
+
+**Objetivo:** Preparar, de forma automatizada e sem merge, todo o pacote necessário para criar/validar os PRs pendentes assim que houver credencial GitHub técnica disponível. Também consolidar um índice final de branches, comandos, PR bodies e comentários finais versionados.
+
+**Escopo Concluído:**
+- ✅ Branches pendentes verificados no remoto
+- ✅ PR bodies versionados criados (docs/prs/)
+- ✅ Comentários finais versionados criados (docs/prs/)
+- ✅ Script auxiliar seguro criado (scripts/prepare_pending_prs.py)
+- ✅ Ordem de integração documentada
+- ✅ Pacote final de integração consolidado
+
+**Status:** Concluído
+
 **Próximos Passos:**
 - Obter credencial GitHub válida
-- Criar PRs pendentes (BETA-021A, BETA-021B)
+- Executar python scripts/prepare_pending_prs.py --execute
 - Merge sequencial em ordem de dependência
 - Deploy em staging
 - Testes E2E em staging

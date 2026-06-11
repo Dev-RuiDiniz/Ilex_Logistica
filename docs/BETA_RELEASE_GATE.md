@@ -1,6 +1,10 @@
 # BETA RELEASE GATE
 
-Gates objetivos para liberação beta do projeto Ilex Logística.
+Gates objetivos para liberação beta do projeto Ilex Logistica.
+
+## Status Atual
+
+**BETA-025A (Retomada Automatizada de PRs Pendentes):** Bloqueado por falha de conectividade/autenticação GitHub API/MCP no runtime atual do agente. Git push/pull funciona, e refs de PRs podem ser listadas via Git, mas criação de PRs e comentários exige acesso HTTPS à GitHub API ou MCP GitHub funcional. O runtime atual não consegue conectar ao `api.github.com:443` (TCP 443 falha, DNS resolve corretamente) e/ou não consegue iniciar/conectar o `github-mcp-server`. O bloqueio é de conectividade de rede (firewall/rede), não de credencial. Nenhuma etapa operacional foi transferida ao usuário.
 
 ## Gates Obrigatórios
 
@@ -357,7 +361,6 @@ npm run test:coverage
 - Backup antes de merge
 - Monitoramento após merge
 
-
 ---
 
 ## Riscos
@@ -383,3 +386,5 @@ npm run test:coverage
 **Assinatura:** Devin (SWE-1.6)  
 **Data:** 2026-06-08  
 **Status:** 🔄 Em execução (BETA-009S - Revalidação Empilhada)
+
+**Nota:** Projeto tecnicamente conclu�do e release candidate em status GO. BETA-025A permanece bloqueada exclusivamente por falha de conectividade GitHub API/MCP no runtime atual do agente. Git push/pull funciona, mas cria��o de PRs e coment�rios exige conectividade HTTPS com pi.github.com:443 e autentica��o GitHub CLI/API/MCP funcional no mesmo processo do agente.

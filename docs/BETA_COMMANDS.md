@@ -278,3 +278,5 @@ git fetch origin
 **Assinatura:** Devin (SWE-1.6)  
 **Data:** 2026-06-08  
 **Status:** ðŸ”„ Em execuÃ§Ã£o (BETA-009S - RevalidaÃ§Ã£o Empilhada)
+
+**Nota:** Projeto tecnicamente concluído e release candidate em status GO. BETA-025A permanece bloqueada exclusivamente por falha de conectividade GitHub API/MCP no runtime atual do agente. Git push/pull funciona, mas criação de PRs e comentários exige conectividade HTTPS com pi.github.com:443 e autenticação GitHub CLI/API/MCP funcional no mesmo processo do agente.

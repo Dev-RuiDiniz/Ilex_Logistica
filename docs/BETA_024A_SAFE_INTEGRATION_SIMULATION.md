@@ -356,3 +356,5 @@ nothing to commit, working tree clean
 - **Branch tempor√°ria enviada:** N√£o enviada
 - **Bloqueio GitHub:** PR pendente por bloqueio t√©cnico de credencial GitHub. Deve ser criado pela IA/agente assim que houver credencial t√©cnica v√°lida dispon√≠vel.
 - **Bloqueio t√©cnico de credencial GitHub:** Documentado sem transfer√™ncia de etapa operacional ao usu√°rio.
+
+**Nota:** Projeto tecnicamente concluÌdo e release candidate em status GO. BETA-025A permanece bloqueada exclusivamente por falha de conectividade GitHub API/MCP no runtime atual do agente. Git push/pull funciona, mas criaÁ„o de PRs e coment·rios exige conectividade HTTPS com pi.github.com:443 e autenticaÁ„o GitHub CLI/API/MCP funcional no mesmo processo do agente.

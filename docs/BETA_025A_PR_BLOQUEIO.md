@@ -2,13 +2,15 @@
 
 ## Status
 
-**Bloqueio Técnico:** MCP GitHub existe mas não está conectando no ambiente da IA/agente
+**Bloqueio Técnico:** Bloqueado por falha externa de conectividade TCP 443 com `api.github.com` no runtime atual do agente
 
 **Branch:** feature/beta-024a-safe-integration-simulation
 
 **Base:** origin/main
 
-**Status do Branch:** 4 commits ahead of origin/main, enviado
+**Status do Branch:** 10 commits ahead of origin/main, enviado
+
+**Nota:** Projeto tecnicamente concluído e release candidate em status GO. BETA-025A permanece bloqueada exclusivamente por falha de conectividade GitHub API/MCP no runtime atual do agente. Git push/pull funciona, mas criação de PRs e comentários exige conectividade HTTPS com `api.github.com:443` e autenticação GitHub CLI/API/MCP funcional no mesmo processo do agente.
 
 ## Detalhes do Bloqueio
 

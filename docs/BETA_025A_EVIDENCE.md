@@ -5,6 +5,8 @@
 - **Branch:** feature/beta-024a-safe-integration-simulation
 - **Objetivo:** Criar/atualizar automaticamente os PRs pendentes (BETA-021A a BETA-024A)
 
+**Nota:** Projeto tecnicamente concluído e release candidate em status GO. BETA-025A permanece bloqueada exclusivamente por falha de conectividade GitHub API/MCP no runtime atual do agente. Git push/pull funciona, mas criação de PRs e comentários exige conectividade HTTPS com `api.github.com:443` e autenticação GitHub CLI/API/MCP funcional no mesmo processo do agente.
+
 ### Comandos Executados
 ```bash
 # Diagnóstico de ambiente

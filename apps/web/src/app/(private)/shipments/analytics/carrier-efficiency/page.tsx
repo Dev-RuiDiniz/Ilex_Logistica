@@ -3,12 +3,17 @@
 import { useEffect, useState } from "react";
 import { getCarrierEfficiency } from "@/lib/api";
 import type { CarrierEfficiencyResponse, CarrierEfficiencyFilters } from "@/lib/types";
+import { CarrierEfficiencyCharts } from "./CarrierEfficiencyCharts";
+import { DateRangePicker } from "./DateRangePicker";
 
 export default function CarrierEfficiencyPage() {
   const [data, setData] = useState<CarrierEfficiencyResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [filters, setFilters] = useState<CarrierEfficiencyFilters>({});
+  const [filters, setFilters] = useState<CarrierEfficiencyFilters & {
+    estimated_delivery_from?: string;
+    estimated_delivery_to?: string;
+  }>({});
 
   useEffect(() => {
     const fetchData = async () => {
@@ -167,6 +172,12 @@ export default function CarrierEfficiencyPage() {
               <option value="false">Não</option>
             </select>
           </div>
+          <DateRangePicker
+            label="Período de Entrega Estimada"
+            value={{ from: filters.estimated_delivery_from, to: filters.estimated_delivery_to }}
+            onChange={(v) => setFilters((prev) => ({ ...prev, ...v }))}
+            placeholder={{ from: "Data inicial", to: "Data final" }}
+          />
         </div>
         <button
           onClick={clearFilters}
@@ -208,6 +219,8 @@ export default function CarrierEfficiencyPage() {
           ))}
         </tbody>
       </table>
+
+      <CarrierEfficiencyCharts data={data?.carriers || []} />
     </div>
   );
 }

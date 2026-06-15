@@ -9,6 +9,8 @@ import type {
   DailyReportKpis,
   DailyReportListResponse,
   DailyReportSummary,
+  DailyReportExportRequest,
+  DailyReportExportResponse,
 } from "./types";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE || "http://localhost:8000/api/v1";
@@ -199,4 +201,25 @@ export function parseImportFailures(
       rejected_count: 0,
     };
   }
+}
+
+/**
+ * Export daily reports to CSV or JSON
+ */
+export async function exportDailyReports(
+  payload: DailyReportExportRequest
+): Promise<DailyReportExportResponse> {
+  const response = await fetch(`${API_BASE}/reports/daily/export`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(payload),
+  });
+
+  if (!response.ok) {
+    throw new Error(`Failed to export daily reports: ${response.statusText}`);
+  }
+
+  return response.json();
 }

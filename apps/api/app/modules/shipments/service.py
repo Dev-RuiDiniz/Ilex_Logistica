@@ -39,12 +39,15 @@ def list_shipments(
     carrier_id: int | None = None,
     tracking_code: str | None = None,
     invoice_number: str | None = None,
+    invoice_key: str | None = None,
     fiscal_document: str | None = None,
     criticality: str | None = None,
     estimated_delivery_from: str | None = None,
     estimated_delivery_to: str | None = None,
     due_date_from: str | None = None,
     due_date_to: str | None = None,
+    collection_departure_from: str | None = None,
+    collection_departure_to: str | None = None,
     customer_name: str | None = None,
     destination_uf: str | None = None,
     month: int | None = None,
@@ -52,6 +55,15 @@ def list_shipments(
     search: str | None = None,
     sort_by: str = "created_at",
     sort_order: str = "desc",
+    # Filtros fiscais/financeiros (BETA-031)
+    freight_value_min: float | None = None,
+    freight_value_max: float | None = None,
+    invoice_value_min: float | None = None,
+    invoice_value_max: float | None = None,
+    freight_percentage_min: float | None = None,
+    freight_percentage_max: float | None = None,
+    amount_min: float | None = None,
+    amount_max: float | None = None,
 ) -> dict[str, Any]:
     """List shipments with pagination, filtering and sorting."""
     from app.modules.shipments.models import Shipment
@@ -112,7 +124,45 @@ def list_shipments(
     
     if year:
         query = query.filter(extract('year', Shipment.estimated_delivery) == year)
+
+    # Filtros fiscais/financeiros (BETA-031)
+    if invoice_key:
+        query = query.filter(Shipment.invoice_key.ilike(f"%{invoice_key}%"))
     
+    if collection_departure_from:
+        try:
+            from_date = datetime.fromisoformat(collection_departure_from.replace("Z", "+00:00"))
+            query = query.filter(Shipment.collection_departure_date >= from_date)
+        except (ValueError, AttributeError):
+            pass
+    
+    if collection_departure_to:
+        try:
+            to_date = datetime.fromisoformat(collection_departure_to.replace("Z", "+00:00"))
+            query = query.filter(Shipment.collection_departure_date <= to_date)
+        except (ValueError, AttributeError):
+            pass
+
+    if freight_value_min is not None:
+        query = query.filter(Shipment.freight_value >= freight_value_min)
+    if freight_value_max is not None:
+        query = query.filter(Shipment.freight_value <= freight_value_max)
+    
+    if invoice_value_min is not None:
+        query = query.filter(Shipment.invoice_value >= invoice_value_min)
+    if invoice_value_max is not None:
+        query = query.filter(Shipment.invoice_value <= invoice_value_max)
+    
+    if freight_percentage_min is not None:
+        query = query.filter(Shipment.freight_percentage >= freight_percentage_min)
+    if freight_percentage_max is not None:
+        query = query.filter(Shipment.freight_percentage <= freight_percentage_max)
+    
+    if amount_min is not None:
+        query = query.filter(Shipment.amount >= amount_min)
+    if amount_max is not None:
+        query = query.filter(Shipment.amount <= amount_max)
+
     if search:
         from sqlalchemy import or_
         search_pattern = f"%{search}%"
@@ -120,6 +170,8 @@ def list_shipments(
             or_(
                 Shipment.tracking_code.ilike(search_pattern),
                 Shipment.invoice_number.ilike(search_pattern),
+                Shipment.invoice_key.ilike(search_pattern),
+                Shipment.fiscal_document.ilike(search_pattern),
                 Shipment.customer_name.ilike(search_pattern),
                 Shipment.destination_uf.ilike(search_pattern)
             )

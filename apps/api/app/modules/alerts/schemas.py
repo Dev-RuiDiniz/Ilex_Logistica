@@ -83,3 +83,42 @@ class AlertMarkResolvedResponse(BaseModel):
 
     success: bool
     message: str
+
+
+class AlertDeliveryLogBase(BaseModel):
+    """Base schema for AlertDeliveryLog."""
+
+    alert_id: int
+    channel: str
+    recipient: str
+    subject: str | None = None
+    message: str
+    status: str = "pending"
+    error_message: str | None = None
+    attempts: int = 0
+    max_attempts: int = 3
+
+
+class AlertDeliveryLogCreate(AlertDeliveryLogBase):
+    """Schema for creating an alert delivery log."""
+
+    pass
+
+
+class AlertDeliveryLogResponse(AlertDeliveryLogBase):
+    """Schema for alert delivery log response."""
+
+    id: int
+    sent_at: datetime | None
+    created_at: datetime
+    updated_at: datetime
+
+    class Config:
+        from_attributes = True
+
+
+class AlertDeliveryLogListResponse(BaseModel):
+    """Schema for alert delivery log list response."""
+
+    logs: list[AlertDeliveryLogResponse]
+    total: int

@@ -2,18 +2,29 @@ from datetime import UTC, datetime
 
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
+import logging
 
 from app.database.session import get_db
 from app.modules.auth.dependencies import require_permission
-from app.modules.reports.service import generate_daily_report, get_daily_report_by_date, list_daily_reports
+from app.modules.reports.service import (
+    generate_daily_report,
+    get_daily_report_by_date,
+    list_daily_reports,
+    count_daily_reports,
+    export_daily_reports,
+)
 from app.modules.reports.schemas import (
     DailyReportGenerateRequest,
     DailyReportResponse,
     DailyReportListResponse,
+    DailyReportExportRequest,
+    DailyReportExportResponse,
 )
+from app.modules.reports.models import DailyReport
 
 router = APIRouter(prefix="/reports", tags=["reports"])
 
+logger = logging.getLogger(__name__)
 
 @router.post("/daily/generate", response_model=DailyReportResponse)
 def generate_report(
@@ -64,8 +75,8 @@ def list_reports(
         List of daily reports
     """
     reports = list_daily_reports(db, date_from, date_to, status, limit, offset)
-    total = len(reports)  # For simplicity, actual count query could be added
-    
+    total = count_daily_reports(db, date_from, date_to, status)
+
     return DailyReportListResponse(
         reports=[DailyReportResponse.model_validate(r) for r in reports],
         total=total,
@@ -117,9 +128,44 @@ def get_report(
         Daily report
     """
     from app.modules.reports.models import DailyReport
-    
+
     report = db.query(DailyReport).filter(DailyReport.id == report_id).first()
     if not report:
         raise HTTPException(status_code=404, detail="Report not found")
-    
+
     return DailyReportResponse.model_validate(report)
+
+
+@router.post("/daily/export", response_model=DailyReportExportResponse)
+def export_reports(
+    payload: DailyReportExportRequest,
+    db: Session = Depends(get_db),
+    _user: object = Depends(require_permission("reports:read")),
+) -> DailyReportExportResponse:
+    """Export daily reports to CSV or JSON.
+
+    Args:
+        payload: Export request with format and filters
+        db: Database session
+
+    Returns:
+        Export content with filename and media type
+    """
+    try:
+        content, filename, media_type = export_daily_reports(
+            db=db,
+            format=payload.format,
+            date_from=payload.date_from,
+            date_to=payload.date_to,
+            status=payload.status,
+        )
+        return DailyReportExportResponse(
+            content=content,
+            filename=filename,
+            media_type=media_type,
+        )
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        logger.error(f"Failed to export daily reports: {e}")
+        raise HTTPException(status_code=500, detail="Failed to export reports")

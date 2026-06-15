@@ -4,7 +4,10 @@ from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
 
 from app.database.session import get_db
-from app.modules.dashboard.service import calculate_dashboard_summary
+from app.modules.dashboard.service import (
+    calculate_dashboard_summary,
+    calculate_dashboard_trend,
+)
 from app.modules.users.models import User
 
 router = APIRouter(prefix="/dashboard", tags=["dashboard"])
@@ -50,4 +53,30 @@ def dashboard_summary(
         sla_status=sla_status,
         is_late=is_late,
         exception_type=exception_type,
+    )
+
+
+@router.get("/trend")
+def dashboard_trend(
+    db: Session = Depends(get_db),
+    estimated_delivery_from: str | None = Query(None, description="Data inicial (ISO format)"),
+    estimated_delivery_to: str | None = Query(None, description="Data final (ISO format)"),
+    days: int = Query(30, ge=1, le=90, description="Número de dias para retrospectiva"),
+) -> dict:
+    """Endpoint de tendência diária dos KPIs para gráficos de séries temporais.
+
+    Args:
+        db: Database session
+        estimated_delivery_from: Data inicial (ISO format)
+        estimated_delivery_to: Data final (ISO format)
+        days: Número de dias para retrospectiva (padrão 30, máx 90)
+
+    Returns:
+        Dados de tendência diária para gráficos de séries temporais
+    """
+    return calculate_dashboard_trend(
+        db,
+        estimated_delivery_from=estimated_delivery_from,
+        estimated_delivery_to=estimated_delivery_to,
+        days=days,
     )

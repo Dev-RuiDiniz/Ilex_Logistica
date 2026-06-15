@@ -10,6 +10,7 @@ import {
   getDailyReportById,
   getDailyReportByDate,
   generateDailyReport,
+  exportDailyReports,
   parseSummary,
   parseKpis,
   parseExceptions,
@@ -31,6 +32,10 @@ export default function DailyReportPage() {
   const [error, setError] = useState("");
   const [generating, setGenerating] = useState(false);
   const [generateError, setGenerateError] = useState("");
+
+  // Export state
+  const [exporting, setExporting] = useState(false);
+  const [exportError, setExportError] = useState("");
 
   // Filters
   const [dateFrom, setDateFrom] = useState("");
@@ -89,6 +94,40 @@ export default function DailyReportPage() {
       console.error(err);
     } finally {
       setGenerating(false);
+    }
+  };
+
+  const handleExportReport = async (format: "csv" | "json") => {
+    if (reports.length === 0) {
+      setExportError("Nenhum relatório para exportar.");
+      return;
+    }
+
+    setExporting(true);
+    setExportError("");
+    try {
+      const response = await exportDailyReports({
+        format,
+        date_from: dateFrom || undefined,
+        date_to: dateTo || undefined,
+        status: status || undefined,
+      });
+
+      // Create download link
+      const blob = new Blob([response.content], { type: response.media_type });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = response.filename;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+    } catch (err) {
+      setExportError("Falha ao exportar relatórios.");
+      console.error(err);
+    } finally {
+      setExporting(false);
     }
   };
 
@@ -239,10 +278,29 @@ export default function DailyReportPage() {
                 >
                   Buscar por Data
                 </button>
+                <div className="flex gap-2">
+                  <button
+                    className="rounded bg-green-600 px-4 py-2 text-sm text-white hover:bg-green-700 disabled:opacity-50"
+                    onClick={() => handleExportReport("csv")}
+                    disabled={exporting || reports.length === 0}
+                  >
+                    {exporting ? "Exportando..." : "Exportar CSV"}
+                  </button>
+                  <button
+                    className="rounded bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-700 disabled:opacity-50"
+                    onClick={() => handleExportReport("json")}
+                    disabled={exporting || reports.length === 0}
+                  >
+                    {exporting ? "Exportando..." : "Exportar JSON"}
+                  </button>
+                </div>
               </div>
             </div>
             {generateError && (
               <p className="mt-2 text-sm text-red-600">{generateError}</p>
+            )}
+            {exportError && (
+              <p className="mt-2 text-sm text-red-600">{exportError}</p>
             )}
           </div>
 

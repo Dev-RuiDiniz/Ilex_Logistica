@@ -731,7 +731,7 @@ describe("DashboardPage", () => {
       expect(screen.getByText("100")).toBeInTheDocument();
     });
 
-    const clearButton = screen.getByText("Limpar Filtros");
+    const clearButton = screen.getByTestId("clear-main-filters");
     fireEvent.click(clearButton);
   });
 

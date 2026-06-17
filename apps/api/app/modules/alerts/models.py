@@ -1,7 +1,6 @@
-"""Alert model for BETA-017A."""
+"""Alert models for BETA-017A / BETA-027."""
 
 from datetime import UTC, datetime
-
 from sqlalchemy import Boolean, DateTime, ForeignKey, Integer, String, Text
 from sqlalchemy.orm import Mapped, mapped_column
 

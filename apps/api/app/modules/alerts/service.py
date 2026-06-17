@@ -1,4 +1,4 @@
-"""Alerts generation service for BETA-017A."""
+"""Alerts generation service for BETA-017A / BETA-027."""
 
 import logging
 from datetime import UTC, datetime, timedelta

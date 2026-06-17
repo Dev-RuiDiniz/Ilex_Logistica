@@ -12,6 +12,9 @@ from app.modules.alerts.schemas import (
     AlertMarkResolvedResponse,
     AlertResponse,
     AlertSummaryResponse,
+    AlertDeliveryLogCreate,
+    AlertDeliveryLogListResponse,
+    AlertDeliveryLogResponse,
 )
 from app.modules.alerts.service import generate_alerts, get_active_alerts_count, mark_alert_as_read as mark_alert_as_read_service, mark_alert_as_resolved as mark_alert_as_resolved_service
 from app.modules.alerts.models import Alert
@@ -115,3 +118,115 @@ def mark_alert_as_resolved(
     """Mark an alert as resolved."""
     mark_alert_as_resolved_service(db, alert_id)
     return AlertMarkResolvedResponse(success=True, message="Alert marked as resolved")
+
+
+@router.post("/generate/no-update", response_model=AlertGenerationResponse)
+def generate_no_update_alerts_endpoint(
+    db: Session = Depends(get_db),
+    _user: object = Depends(require_permission("alerts:write")),
+) -> AlertGenerationResponse:
+    """Generate alerts for shipments without updates."""
+    result = generate_no_update_alerts(db)
+    return AlertGenerationResponse(
+        success=True,
+        processed_count=result["created_count"] + result["skipped_count"],
+        created_count=result["created_count"],
+        skipped_count=result["skipped_count"],
+        resolved_count=0,
+        error_count=0,
+    )
+
+
+@router.post("/generate/import-failure", response_model=AlertGenerationResponse)
+def generate_import_failure_alerts_endpoint(
+    db: Session = Depends(get_db),
+    _user: object = Depends(require_permission("alerts:write")),
+) -> AlertGenerationResponse:
+    """Generate alerts for failed imports."""
+    result = generate_import_failure_alerts(db)
+    return AlertGenerationResponse(
+        success=True,
+        processed_count=result["created_count"] + result["skipped_count"],
+        created_count=result["created_count"],
+        skipped_count=result["skipped_count"],
+        resolved_count=0,
+        error_count=0,
+    )
+
+
+# Delivery Log endpoints
+@router.post("/delivery-logs", response_model=AlertDeliveryLogResponse)
+def create_delivery_log_endpoint(
+    payload: AlertDeliveryLogCreate,
+    db: Session = Depends(get_db),
+    _user: object = Depends(require_permission("alerts:write")),
+) -> AlertDeliveryLogResponse:
+    """Create a delivery log for alert notification."""
+    log = create_delivery_log(
+        db=db,
+        alert_id=payload.alert_id,
+        channel=payload.channel,
+        recipient=payload.recipient,
+        message=payload.message,
+        subject=payload.subject,
+        max_attempts=payload.max_attempts,
+    )
+    return AlertDeliveryLogResponse.model_validate(log)
+
+
+@router.get("/delivery-logs", response_model=AlertDeliveryLogListResponse)
+def list_delivery_logs(
+    alert_id: int | None = Query(None, description="Filter by alert ID"),
+    status: str | None = Query(None, description="Filter by status"),
+    channel: str | None = Query(None, description="Filter by channel"),
+    limit: int = Query(100, ge=1, le=1000, description="Limit results"),
+    offset: int = Query(0, ge=0, description="Offset results"),
+    db: Session = Depends(get_db),
+    _user: object = Depends(require_permission("alerts:read")),
+) -> AlertDeliveryLogListResponse:
+    """List delivery logs with filters."""
+    query = db.query(AlertDeliveryLog)
+
+    if alert_id:
+        query = query.filter(AlertDeliveryLog.alert_id == alert_id)
+    if status:
+        query = query.filter(AlertDeliveryLog.status == status)
+    if channel:
+        query = query.filter(AlertDeliveryLog.channel == channel)
+
+    total = query.count()
+    logs = query.order_by(AlertDeliveryLog.created_at.desc()).offset(offset).limit(limit).all()
+
+    return AlertDeliveryLogListResponse(logs=logs, total=total)
+
+
+@router.get("/delivery-logs/pending", response_model=AlertDeliveryLogListResponse)
+def get_pending_delivery_logs_endpoint(
+    db: Session = Depends(get_db),
+    _user: object = Depends(require_permission("alerts:read")),
+) -> AlertDeliveryLogListResponse:
+    """Get pending delivery logs for processing."""
+    logs = get_pending_delivery_logs(db)
+    return AlertDeliveryLogListResponse(logs=logs, total=len(logs))
+
+
+@router.patch("/delivery-logs/{log_id}", response_model=AlertDeliveryLogResponse)
+def update_delivery_log_endpoint(
+    log_id: int,
+    status: str = Query(..., description="New status (pending, sent, failed)"),
+    error_message: str | None = Query(None, description="Error message if failed"),
+    sent: bool = Query(False, description="Whether the delivery was sent"),
+    db: Session = Depends(get_db),
+    _user: object = Depends(require_permission("alerts:write")),
+) -> AlertDeliveryLogResponse:
+    """Update delivery log status."""
+    log = update_delivery_log_status(
+        db=db,
+        log_id=log_id,
+        status=status,
+        error_message=error_message,
+        sent=sent,
+    )
+    if not log:
+        raise HTTPException(status_code=404, detail="Delivery log not found")
+    return AlertDeliveryLogResponse.model_validate(log)

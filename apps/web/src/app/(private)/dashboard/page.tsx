@@ -1,13 +1,28 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getDashboardSummary, type DashboardFilters, type DashboardSummaryResponse } from "@/lib/dashboard-api";
+import { getDashboardSummary, getDashboardTrend } from "@/lib/dashboard-api";
+import type { DashboardFilters, DashboardSummaryResponse, DashboardTrendResponse, DashboardTrendFilters } from "@/lib/types";
+import { DateRangePicker } from "@/app/(private)/shipments/analytics/carrier-efficiency/DateRangePicker";
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+} from "recharts";
 
 export default function DashboardPage() {
   const [data, setData] = useState<DashboardSummaryResponse | null>(null);
+  const [trendData, setTrendData] = useState<DashboardTrendResponse | null>(null);
   const [loading, setLoading] = useState(true);
+  const [trendLoading, setTrendLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [filters, setFilters] = useState<DashboardFilters>({});
+  const [trendFilters, setTrendFilters] = useState<DashboardTrendFilters>({});
 
   useEffect(() => {
     const fetchData = async () => {
@@ -27,6 +42,23 @@ export default function DashboardPage() {
     fetchData();
   }, [filters]);
 
+  useEffect(() => {
+    const fetchTrendData = async () => {
+      setTrendLoading(true);
+      try {
+        const token = localStorage.getItem("accessToken") || "";
+        const result = await getDashboardTrend(token, trendFilters);
+        setTrendData(result);
+      } catch (err) {
+        console.error("Erro ao carregar tendência:", err);
+      } finally {
+        setTrendLoading(false);
+      }
+    };
+
+    fetchTrendData();
+  }, [trendFilters]);
+
   const handleFilterChange = (key: keyof DashboardFilters, value: string | number | boolean | undefined) => {
     setFilters((prev) => ({
       ...prev,
@@ -34,8 +66,19 @@ export default function DashboardPage() {
     }));
   };
 
+  const handleTrendFilterChange = (key: keyof DashboardTrendFilters, value: string | number | undefined) => {
+    setTrendFilters((prev) => ({
+      ...prev,
+      [key]: value,
+    }));
+  };
+
   const clearFilters = () => {
     setFilters({});
+  };
+
+  const clearTrendFilters = () => {
+    setTrendFilters({});
   };
 
   if (loading) {
@@ -152,11 +195,40 @@ export default function DashboardPage() {
           </div>
         </div>
         <button
+          data-testid="clear-main-filters"
           className="mt-4 px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
           onClick={clearFilters}
         >
           Limpar Filtros
         </button>
+      </div>
+
+      {/* Filtros de Período para Tendência */}
+      <div className="mb-4 p-4 bg-white rounded-lg shadow" data-testid="dashboard-trend-filters">
+        <h2 className="text-lg font-semibold mb-3">Período da Tendência</h2>
+        <DateRangePicker
+          label="Período de Entrega Estimada"
+          value={{ from: trendFilters.estimated_delivery_from, to: trendFilters.estimated_delivery_to }}
+          onChange={(v) => setTrendFilters((prev) => ({ ...prev, ...v }))}
+          placeholder={{ from: "Data inicial", to: "Data final" }}
+        />
+        <div className="flex items-end gap-2 mt-3">
+          <label className="block text-sm font-medium mb-1">Dias</label>
+          <input
+            type="number"
+            min="1"
+            max="90"
+            className="w-24 p-2 border rounded"
+            value={trendFilters.days ?? ""}
+            onChange={(e) => handleTrendFilterChange("days", e.target.value ? parseInt(e.target.value) : undefined)}
+          />
+          <button
+            className="mt-4 px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
+            onClick={clearTrendFilters}
+          >
+            Limpar Filtros
+          </button>
+        </div>
       </div>
 
       {/* Cards de KPI */}
@@ -208,6 +280,59 @@ export default function DashboardPage() {
           <div className="text-sm text-pink-600">Falhas Importação</div>
           <div className="text-2xl font-bold text-pink-600">{data.import_failure_count}</div>
         </div>
+      </div>
+
+      {/* Gráficos de Tendência */}
+      <div className="mb-6">
+        <h2 className="text-lg font-semibold mb-3">Tendência dos KPIs (Últimos 30 dias)</h2>
+        {trendLoading ? (
+          <div className="p-6 text-center text-gray-500">Carregando tendências...</div>
+        ) : trendData && trendData.trend_data && trendData.trend_data.length > 0 ? (
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Total Shipments / On Time / Late / Critical / Warning */}
+            <div className="bg-white p-4 rounded-lg shadow">
+              <h3 className="text-lg font-semibold mb-3">Total de Entregas por Dia</h3>
+              <div className="h-64">
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart data={trendData.trend_data}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="date" tickFormatter={(v) => v.slice(5)} />
+                    <YAxis />
+                    <Tooltip />
+                    <Legend />
+                    <Line type="monotone" dataKey="total_shipments" stroke="#3b82f6" strokeWidth={2} dot={{ r: 4 }} name="Total" />
+                    <Line type="monotone" dataKey="on_time_count" stroke="#22c55e" strokeWidth={2} dot={{ r: 4 }} name="No Prazo" />
+                    <Line type="monotone" dataKey="late_count" stroke="#ef4444" strokeWidth={2} dot={{ r: 4 }} name="Atrasadas" />
+                    <Line type="monotone" dataKey="critical_count" stroke="#f97316" strokeWidth={2} dot={{ r: 4 }} name="Críticas" />
+                    <Line type="monotone" dataKey="warning_count" stroke="#f59e0b" strokeWidth={2} dot={{ r: 4 }} name="Atenção" />
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+
+            {/* Exceptions / Unknown SLA */}
+            <div className="bg-white p-4 rounded-lg shadow">
+              <h3 className="text-lg font-semibold mb-3">Exceções e Sem SLA por Dia</h3>
+              <div className="h-64">
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart data={trendData.trend_data}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="date" tickFormatter={(v) => v.slice(5)} />
+                    <YAxis />
+                    <Tooltip />
+                    <Legend />
+                    <Line type="monotone" dataKey="exceptions_count" stroke="#8b5cf6" strokeWidth={2} dot={{ r: 4 }} name="Exceções" />
+                    <Line type="monotone" dataKey="unknown_sla_count" stroke="#6b7280" strokeWidth={2} dot={{ r: 4 }} name="Sem SLA" />
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div className="bg-white p-6 rounded-lg shadow text-center text-gray-500">
+            Sem dados de tendência para o período selecionado
+          </div>
+        )}
       </div>
 
       {/* Top Transportadoras por Eficiência */}

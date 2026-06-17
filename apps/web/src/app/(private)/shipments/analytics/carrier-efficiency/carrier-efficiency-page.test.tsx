@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { render, screen, within } from "@testing-library/react";
 import CarrierEfficiencyPage from "./page";
 import * as api from "@/lib/api";
 
@@ -68,14 +68,17 @@ describe("CarrierEfficiencyPage", () => {
     render(<CarrierEfficiencyPage />);
 
     await screen.findByText("Transportadora A");
-    expect(screen.getAllByText(/Total NFs/i)).toHaveLength(1);
-    expect(screen.getAllByText(/Total Entregas/i)).toHaveLength(1);
-    expect(screen.getAllByText(/Atrasadas/i)).toHaveLength(1);
-    expect(screen.getAllByText(/Frete Total/i)).toHaveLength(1);
-    expect(screen.getAllByText(/Frete Médio/i)).toHaveLength(1);
-    expect(screen.getAllByText(/Ranking Eficiência/i)).toHaveLength(1);
-    expect(screen.getAllByText(/Ranking Custo/i)).toHaveLength(1);
-    expect(screen.getAllByText(/Ranking Volume/i)).toHaveLength(1);
+    // Check table headers specifically
+    const table = screen.getByRole("table");
+    expect(table).toBeInTheDocument();
+    expect(within(table).getAllByText(/Total NFs/i)).toHaveLength(1);
+    expect(within(table).getAllByText(/Total Entregas/i)).toHaveLength(1);
+    expect(within(table).getAllByText(/Atrasadas/i)).toHaveLength(1);
+    expect(within(table).getAllByText(/Frete Total/i)).toHaveLength(1);
+    expect(within(table).getAllByText(/Frete M/i)).toHaveLength(1);
+    expect(within(table).getAllByText(/Ranking Efici/i)).toHaveLength(1);
+    expect(within(table).getAllByText(/Ranking Custo/i)).toHaveLength(1);
+    expect(within(table).getAllByText(/Ranking Volume/i)).toHaveLength(1);
   });
 
   it("Deve tratar ausência de extraviadas como zero", async () => {

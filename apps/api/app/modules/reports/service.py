@@ -1,8 +1,10 @@
-"""Service de geração de relatório diário para BETA-018A."""
+"""Service de geração de relatório diário para BETA-018A / BETA-028."""
 
+import csv
 import json
 import logging
 from datetime import UTC, datetime
+from io import StringIO
 from typing import Any
 
 from sqlalchemy.orm import Session
@@ -220,3 +222,153 @@ def list_daily_reports(
         .offset(offset)
         .all()
     )
+
+
+def count_daily_reports(
+    db: Session,
+    date_from: datetime | None = None,
+    date_to: datetime | None = None,
+    status: str | None = None,
+) -> int:
+    """Conta total de relatórios diários com filtros.
+
+    Args:
+        db: Database session
+        date_from: Data inicial do período
+        date_to: Data final do período
+        status: Status do relatório
+
+    Returns:
+        Total count
+    """
+    query = db.query(DailyReport)
+
+    if date_from:
+        query = query.filter(DailyReport.report_date >= date_from)
+
+    if date_to:
+        query = query.filter(DailyReport.report_date <= date_to)
+
+    if status:
+        query = query.filter(DailyReport.status == status)
+
+    return query.count()
+
+
+def export_daily_reports(
+    db: Session,
+    format: str,
+    date_from: datetime | None = None,
+    date_to: datetime | None = None,
+    status: str | None = None,
+) -> tuple[str, str, str]:
+    """Exporta relatórios diários para CSV ou JSON.
+
+    Args:
+        db: Database session
+        format: Formato de exportação ('csv' ou 'json')
+        date_from: Data inicial do período
+        date_to: Data final do período
+        status: Status do relatório
+
+    Returns:
+        Tupla (content, filename, media_type)
+    """
+    reports = list_daily_reports(db, date_from, date_to, status, limit=10000, offset=0)
+
+    if format.lower() == "csv":
+        return _export_csv(reports)
+    elif format.lower() == "json":
+        return _export_json(reports)
+    else:
+        raise ValueError(f"Formato não suportado: {format}. Use 'csv' ou 'json'.")
+
+
+def _export_csv(reports: list[DailyReport]) -> tuple[str, str, str]:
+    """Exporta relatórios para CSV."""
+    output = StringIO()
+    writer = csv.writer(output)
+
+    # Header
+    writer.writerow([
+        "id",
+        "report_date",
+        "status",
+        "generated_at",
+        "generated_by_user_id",
+        "period_start",
+        "period_end",
+        "total_shipments",
+        "on_time_count",
+        "late_count",
+        "critical_count",
+        "warning_count",
+        "unknown_sla_count",
+        "exceptions_count",
+        "import_failure_count",
+        "carriers_count",
+        "active_alerts_count",
+        "delivery_rate",
+        "notes",
+        "created_at",
+        "updated_at",
+    ])
+
+    for report in reports:
+        summary = json.loads(report.summary_json) if report.summary_json else {}
+        kpis = json.loads(report.kpis_json) if report.kpis_json else {}
+
+        writer.writerow([
+            report.id,
+            report.report_date.isoformat() if report.report_date else "",
+            report.status,
+            report.generated_at.isoformat() if report.generated_at else "",
+            report.generated_by_user_id or "",
+            report.period_start.isoformat() if report.period_start else "",
+            report.period_end.isoformat() if report.period_end else "",
+            summary.get("total_shipments", 0),
+            summary.get("on_time_count", 0),
+            summary.get("late_count", 0),
+            summary.get("critical_count", 0),
+            summary.get("warning_count", 0),
+            summary.get("unknown_sla_count", 0),
+            summary.get("exceptions_count", 0),
+            summary.get("import_failure_count", 0),
+            summary.get("carriers_count", 0),
+            kpis.get("active_alerts_count", 0),
+            kpis.get("delivery_rate", 0),
+            report.notes or "",
+            report.created_at.isoformat() if report.created_at else "",
+            report.updated_at.isoformat() if report.updated_at else "",
+        ])
+
+    filename = f"daily_reports_{datetime.now(UTC).strftime('%Y%m%d_%H%M%S')}.csv"
+    return output.getvalue(), filename, "text/csv; charset=utf-8"
+
+
+def _export_json(reports: list[DailyReport]) -> tuple[str, str, str]:
+    """Exporta relatórios para JSON."""
+    data = []
+    for report in reports:
+        data.append({
+            "id": report.id,
+            "report_date": report.report_date.isoformat() if report.report_date else None,
+            "status": report.status,
+            "generated_at": report.generated_at.isoformat() if report.generated_at else None,
+            "generated_by_user_id": report.generated_by_user_id,
+            "period_start": report.period_start.isoformat() if report.period_start else None,
+            "period_end": report.period_end.isoformat() if report.period_end else None,
+            "summary": json.loads(report.summary_json) if report.summary_json else {},
+            "kpis": json.loads(report.kpis_json) if report.kpis_json else {},
+            "exceptions": json.loads(report.exceptions_json) if report.exceptions_json else [],
+            "alerts": json.loads(report.alerts_json) if report.alerts_json else [],
+            "carrier_efficiency": json.loads(report.carrier_efficiency_json) if report.carrier_efficiency_json else [],
+            "import_failures": json.loads(report.import_failures_json) if report.import_failures_json else {},
+            "notes": report.notes,
+            "created_at": report.created_at.isoformat() if report.created_at else None,
+            "updated_at": report.updated_at.isoformat() if report.updated_at else None,
+        })
+
+    json_str = json.dumps(data, indent=2, ensure_ascii=False, default=str)
+    filename = f"daily_reports_{datetime.now(UTC).strftime('%Y%m%d_%H%M%S')}.json"
+    return json_str, filename, "application/json; charset=utf-8"

@@ -144,3 +144,20 @@ class DailyReportListResponse(BaseModel):
     total: int = Field(..., description="Total count")
     limit: int = Field(..., description="Limit used")
     offset: int = Field(..., description="Offset used")
+
+
+class DailyReportExportRequest(BaseModel):
+    """Request schema for exporting daily reports."""
+
+    format: str = Field(..., description="Export format: csv or json")
+    date_from: datetime | None = Field(None, description="Filter by date from")
+    date_to: datetime | None = Field(None, description="Filter by date to")
+    status: str | None = Field(None, description="Filter by status")
+
+
+class DailyReportExportResponse(BaseModel):
+    """Response schema for export."""
+
+    content: str = Field(..., description="Export content (CSV/JSON)")
+    filename: str = Field(..., description="Suggested filename")
+    media_type: str = Field(..., description="MIME type")

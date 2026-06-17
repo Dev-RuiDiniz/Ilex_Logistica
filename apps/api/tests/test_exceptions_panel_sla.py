@@ -2,8 +2,12 @@
 
 import pytest
 from datetime import UTC, datetime, timedelta
+from decimal import Decimal
 from sqlalchemy.orm import Session
 
+from app.modules.carriers.models import Carrier
+from app.modules.shipments.models import Shipment
+from app.modules.sla.models import SlaRule
 from app.modules.shipments.exceptions_service import (
     calculate_exception_summary,
     get_exception_items,
@@ -99,16 +103,121 @@ def test_deve_aplicar_filtro_por_criticality(db_session: Session):
 
 def test_deve_aplicar_filtro_por_sla_status(db_session: Session):
     """Deve aplicar filtro por sla_status."""
-    # Setup: criar shipments com diferentes sla_status
-    # Assert: ao filtrar por sla_status, deve retornar apenas desse sla_status
-    pass
+    carrier = Carrier(name="Transportadora Filtro SLA")
+    db_session.add(carrier)
+    db_session.flush()
+
+    sla_rule = SlaRule(
+        transit_days=5,
+        warning_threshold_days=2,
+        critical_delay_days=10,
+        is_active=True,
+    )
+    db_session.add(sla_rule)
+    db_session.flush()
+
+    now = datetime.now(UTC)
+    critical_shipment = Shipment(
+        tracking_code="SLA-CRIT-001",
+        carrier_id=carrier.id,
+        status="in_transit",
+        estimated_delivery=now - timedelta(days=10),
+        actual_delivery=None,
+        recipient_name="Cliente Crítico",
+        recipient_phone="11999999999",
+        origin_address="Rua A",
+        destination_address="Rua B",
+        customer_name="Cliente Crítico",
+        destination_uf="SP",
+        invoice_number="NF-001",
+        freight_value=Decimal("10.00"),
+        invoice_value=Decimal("100.00"),
+        criticality="alta",
+    )
+    warning_shipment = Shipment(
+        tracking_code="SLA-WARN-001",
+        carrier_id=carrier.id,
+        status="in_transit",
+        estimated_delivery=now + timedelta(days=2),
+        actual_delivery=None,
+        recipient_name="Cliente Warning",
+        recipient_phone="11999999999",
+        origin_address="Rua C",
+        destination_address="Rua D",
+        customer_name="Cliente Warning",
+        destination_uf="RJ",
+        invoice_number="NF-002",
+        freight_value=Decimal("15.00"),
+        invoice_value=Decimal("150.00"),
+        criticality="baixa",
+    )
+    db_session.add_all([critical_shipment, warning_shipment])
+    db_session.commit()
+
+    result = get_exceptions_panel(db_session, sla_status="critical")
+
+    assert len(result["items"]) == 1
+    assert all(item["sla_status"] == "critical" for item in result["items"])
 
 
 def test_deve_aplicar_filtro_por_is_late(db_session: Session):
     """Deve aplicar filtro por is_late."""
-    # Setup: criar shipments com is_late diferentes
-    # Assert: ao filtrar por is_late, deve retornar apenas com esse is_late
-    pass
+    carrier = Carrier(name="Transportadora Filtro Late")
+    db_session.add(carrier)
+    db_session.flush()
+
+    sla_rule = SlaRule(
+        transit_days=5,
+        warning_threshold_days=2,
+        critical_delay_days=10,
+        is_active=True,
+    )
+    db_session.add(sla_rule)
+    db_session.flush()
+
+    now = datetime.now(UTC)
+    late_shipment = Shipment(
+        tracking_code="LATE-001",
+        carrier_id=carrier.id,
+        status="in_transit",
+        estimated_delivery=now - timedelta(days=6),
+        actual_delivery=None,
+        recipient_name="Cliente Atrasado",
+        recipient_phone="11999999999",
+        origin_address="Rua E",
+        destination_address="Rua F",
+        customer_name="Cliente Atrasado",
+        destination_uf="MG",
+        invoice_number="NF-003",
+        freight_value=Decimal("20.00"),
+        invoice_value=Decimal("200.00"),
+        criticality="alta",
+    )
+    warning_shipment = Shipment(
+        tracking_code="LATE-002",
+        carrier_id=carrier.id,
+        status="in_transit",
+        estimated_delivery=now + timedelta(days=2),
+        actual_delivery=None,
+        recipient_name="Cliente Sem Atraso",
+        recipient_phone="11999999999",
+        origin_address="Rua G",
+        destination_address="Rua H",
+        customer_name="Cliente Sem Atraso",
+        destination_uf="PR",
+        invoice_number="NF-004",
+        freight_value=Decimal("30.00"),
+        invoice_value=Decimal("300.00"),
+        criticality="baixa",
+    )
+    db_session.add_all([late_shipment, warning_shipment])
+    db_session.commit()
+
+    result = get_exceptions_panel(db_session, is_late=True)
+
+    assert len(result["items"]) == 1
+    assert all(item["sla_status"] in {"late", "critical"} for item in result["items"])
+    assert all(item["delay_days"] > 0 for item in result["items"])
 
 
 def test_deve_aplicar_filtro_por_exception_type(db_session: Session):

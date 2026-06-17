@@ -142,7 +142,7 @@ def db_with_dashboard_data(db_session: Session):
         duplicates_count=0,
         imported_count=8,
         rejected_count=2,
-        status="SUCCESS",
+        status="FAILED",
         imported_by=1,
     )
     db_session.add(import_history)
@@ -379,3 +379,33 @@ def test_deve_nao_duplicar_regra_de_sla(db_session: Session, db_with_dashboard_d
 
     # Verificar que SLA foi calculado corretamente
     assert result["on_time_count"] >= 1
+
+
+def test_deve_calcular_no_update_count_quando_houver_remessa_estagnada(
+    db_session: Session, db_with_dashboard_data
+):
+    """Deve calcular remessas sem atualização com base no SLA real do shipment."""
+    now = datetime.now(UTC)
+    stale_shipment = Shipment(
+        tracking_code="STALE-DASH-001",
+        carrier_id=db_with_dashboard_data["carrier1_id"],
+        status="in_transit",
+        estimated_delivery=now + timedelta(days=3),
+        actual_delivery=None,
+        recipient_name="Cliente Estagnado",
+        recipient_phone="11999999999",
+        origin_address="Rua K",
+        destination_address="Rua L",
+        customer_name="Cliente Estagnado",
+        destination_uf="SP",
+        invoice_number="NF-STALE-DASH",
+        freight_value=Decimal("22.00"),
+        invoice_value=Decimal("220.00"),
+        updated_at=now - timedelta(days=8),
+    )
+    db_session.add(stale_shipment)
+    db_session.commit()
+
+    result = calculate_dashboard_summary(db_session)
+
+    assert result["no_update_count"] == 1

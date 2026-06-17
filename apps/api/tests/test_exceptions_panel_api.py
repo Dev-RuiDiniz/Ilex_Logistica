@@ -53,5 +53,5 @@ def test_usuario_sem_auth_e_bloqueado_se_o_padrao_atual_exigir_auth(client: Test
     response = client.get(
         "/api/v1/shipments/analytics/exceptions",
     )
-    # API retorna 403 para requisições sem token válido
-    assert response.status_code in (200, 403)
+    # API retorna 401/403 para requisições sem token válido
+    assert response.status_code in (200, 401, 403)

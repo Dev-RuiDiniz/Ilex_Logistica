@@ -3,6 +3,8 @@
 ## Overview
 Implementation of the frontend for the alerts and notifications system, including visual integration with the dashboard Beta.
 
+> Update 2026-06-17: the implementation is now complete on `feature/beta-027-alerts-notifications`; the frontend also includes the `no_update` filter and the updated alert contract. See `docs/BETA_027_ALERTS_NOTIFICATIONS_COMPLETE.md`.
+
 ## Implementation Details
 
 ### 1. API Client and Types (`apps/web/src/lib/alerts-api.ts`)

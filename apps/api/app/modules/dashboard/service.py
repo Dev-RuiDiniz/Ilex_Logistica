@@ -4,13 +4,13 @@ from collections import defaultdict
 from datetime import UTC, datetime, timedelta
 from typing import Any
 
-from sqlalchemy import extract
+from sqlalchemy import extract, func
 from sqlalchemy.orm import Session
 
 from app.modules.carriers.models import Carrier
 from app.modules.imports.models import ImportHistory
 from app.modules.shipments.analytics_service import calculate_carrier_efficiency
-from app.modules.alerts.service import get_active_alerts_count
+from app.modules.alerts.service import get_active_alerts_count, get_no_update_alert_count
 from app.modules.shipments.exceptions_service import (
     calculate_exception_priority,
     classify_exception_type,
@@ -139,15 +139,13 @@ def calculate_dashboard_summary(
     # Calculate exceptions (late + critical + warning)
     exceptions_count = late_count + critical_count + warning_count
 
-    # Get import failure count (soma de rejected_count)
-    import_failure_result = (
+    # Get import failure count (soma de rejected_count em imports falhos)
+    failed_imports = (
         db.query(ImportHistory)
-        .filter(ImportHistory.status == "SUCCESS")
-        .first()
+        .filter(func.lower(ImportHistory.status) == "failed")
+        .all()
     )
-    import_failure_count = 0
-    if import_failure_result:
-        import_failure_count = import_failure_result.rejected_count
+    import_failure_count = sum(history.rejected_count for history in failed_imports)
 
     # Active alerts count - agora usa contagem real de alertas
     active_alerts_count = get_active_alerts_count(db)
@@ -236,7 +234,7 @@ def calculate_dashboard_summary(
         "warning_count": warning_count,
         "unknown_sla_count": unknown_sla_count,
         "resolved_count": 0,  # Campo não existe no modelo
-        "no_update_count": 0,  # Campo não existe no modelo
+        "no_update_count": get_no_update_alert_count(db),
         "exceptions_count": exceptions_count,
         "import_failure_count": import_failure_count,
         "active_alerts_count": active_alerts_count,

@@ -5,6 +5,7 @@ from typing import Any
 
 from sqlalchemy.orm import Session
 
+from app.modules.carriers.models import Carrier
 from app.modules.shipments.models import Shipment
 from app.modules.sla.service import calculate_shipment_sla
 
@@ -199,46 +200,49 @@ def get_exception_items(
     exception_items = []
     for item in items:
         sla_result = calculate_shipment_sla(db, item.id)
-        sla_status = sla_result.get("sla_status")
-        is_late = sla_result.get("is_late", False)
+        shipment_sla_status = sla_result.get("sla_status")
+        shipment_is_late = sla_result.get("is_late", False)
 
         # Classificar tipo de exceção
-        exc_type = classify_exception_type(sla_status, item.criticality, is_late)
+        exc_type = classify_exception_type(shipment_sla_status, item.criticality, shipment_is_late)
 
         # Filtrar por exception_type se especificado
         if exception_type and exc_type != exception_type:
             continue
 
         # Filtrar por sla_status se especificado
-        if sla_status and sla_status != sla_status:
+        if sla_status and shipment_sla_status != sla_status:
             continue
-
-        # Filtrar por is_late se especificado
-        if is_late is not None and is_late != is_late:
+        if is_late is not None and shipment_is_late != is_late:
             continue
 
         # Se não for exceção, não incluir
         if exc_type is None:
             continue
 
+        carrier = db.query(Carrier).filter(Carrier.id == item.carrier_id).first()
+        carrier_name = carrier.name if carrier else None
+
+        delay_days = sla_result.get("delay_days", item.delay_days)
+
         exception_items.append({
             "shipment_id": item.id,
             "tracking_code": item.tracking_code,
             "invoice_number": item.invoice_number,
             "carrier_id": item.carrier_id,
-            "carrier_name": item.carrier.name if item.carrier else None,
+            "carrier_name": carrier_name,
             "customer_name": item.customer_name,
             "destination_uf": item.destination_uf,
             "status": item.status,
-            "sla_status": sla_status,
+            "sla_status": shipment_sla_status,
             "criticality": item.criticality,
-            "delay_days": item.delay_days,
+            "delay_days": delay_days,
             "sla_due_date": sla_result.get("sla_due_date"),
             "exception_type": exc_type,
-            "exception_reason": _get_exception_reason(exc_type, item.delay_days, sla_status),
+            "exception_reason": _get_exception_reason(exc_type, delay_days, shipment_sla_status),
             "priority": calculate_exception_priority(
                 exc_type,
-                item.delay_days,
+                delay_days,
                 item.estimated_delivery,
                 item.id,
             ),

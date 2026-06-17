@@ -161,6 +161,8 @@ export default function AlertsPage() {
               <option value="sla_late">SLA Atrasado</option>
               <option value="sla_warning">SLA Warning</option>
               <option value="unknown_sla">SLA Desconhecido</option>
+              <option value="import_failure">Falha de Importação</option>
+              <option value="no_update">Sem Atualização</option>
             </select>
           </div>
           <div>

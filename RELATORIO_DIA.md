@@ -2,6 +2,53 @@
 
 ---
 
+## 2026-06-25 (Parte 5)
+
+### Tarefas Executadas
+
+1. **BETA-Test-Coverage-Improvement — Aumentar Cobertura de Testes Frontend**
+   - Instaladas dependências faltantes (recharts, date-fns)
+   - Executado relatório de cobertura de testes frontend
+   - Cobertura global: 63.82% (meta: 50% ✅)
+   - Identificados módulos com menor cobertura (carriers 9.75%, login 10%, auth-provider 11.76%)
+   - Adicionados 14 testes unitários para carriers/page.tsx (helpers)
+   - Criado documentação BETA_TEST_COVERAGE_IMPROVEMENT.md
+
+2. **Documentação**
+   - Atualizado `ROADMAP.md` para incluir BETA-Test-E2E-Completion com cobertura
+   - Atualizado `CONTEXTO.md` com estado atual
+   - Atualizado `RELATORIO_DIA.md` com registro de atividades
+
+### Arquivos Modificados
+- `apps/web/package.json` — adicionadas dependências recharts e date-fns
+- `apps/web/src/app/(private)/carriers/page.test.tsx` — 14 testes unitários (novo)
+- `docs/BETA_TEST_COVERAGE_IMPROVEMENT.md` — documentação técnica (novo)
+- `ROADMAP.md` — atualização de status
+- `CONTEXTO.md` — atualização de contexto
+- `RELATORIO_DIA.md` — registro de atividades
+
+### Testes
+- Unitários: 14 testes adicionados para carriers/page.tsx
+- Total de testes frontend: 390 (antes: 376)
+- Cobertura de testes frontend: 63.82% (meta: 50% ✅)
+
+### Documentação Atualizada
+- `docs/BETA_TEST_COVERAGE_IMPROVEMENT.md` — especificação e implementação
+- `ROADMAP.md` — BETA-Test-E2E-Completion atualizado com cobertura
+- `CONTEXTO.md` — estado atual atualizado
+- `RELATORIO_DIA.md` — registro de atividades
+
+### Bloqueios
+- Nenhum bloqueio crítico identificado
+
+### Proximos Passos
+1. Adicionar testes de componente React para login/page.tsx (10% → 50%+)
+2. Adicionar testes de componente React para auth-provider.tsx (11.76% → 50%+)
+3. BETA-026: Completar Épico 4 - Eficiência por Transportadora
+4. BETA-028: Completar Épico 6 - Relatório Diário
+
+---
+
 ## 2026-06-25 (Parte 4)
 
 ### Tarefas Executadas

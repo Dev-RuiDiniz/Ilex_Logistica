@@ -977,18 +977,22 @@ Para toda funcionalidade:
 **Especificação SDD:**
 - ✅ Habilitar testes de Daily Report (8 testes)
 - ✅ Habilitar testes de Alerts (6 testes)
-- ⏳ Aumentar cobertura de testes frontend para 50% (pendente - dependências faltantes)
+- ✅ Aumentar cobertura de testes frontend para 50%
 
 **Implementação:**
 - ✅ 8 testes E2E habilitados em daily-report.spec.ts
 - ✅ 6 testes E2E habilitados em alerts.spec.ts
 - ✅ Corrigido import de fixtures em daily-report.spec.ts
 - ✅ Seletores ajustados para validação básica de carregamento
+- ✅ Instaladas dependências faltantes (recharts, date-fns)
+- ✅ 14 testes unitários adicionados para carriers/page.tsx
+- ✅ Cobertura de testes frontend: 63.82% (meta: 50% ✅)
 - ✅ Documentação BETA_TEST_E2E_COMPLETION.md criada
+- ✅ Documentação BETA_TEST_COVERAGE_IMPROVEMENT.md criada
 
 **Limitações:**
-- Cobertura de testes frontend não foi possível medir devido a dependências faltantes (recharts, date-fns)
-- Testes validam apenas carregamento da página, não funcionalidades específicas
+- Testes E2E validam apenas carregamento da página, não funcionalidades específicas
+- Cobertura de componentes React complexos (login, auth-provider) ainda baixa
 
 ---
 

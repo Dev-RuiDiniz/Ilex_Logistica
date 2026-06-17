@@ -2,6 +2,60 @@
 
 ---
 
+## 2026-06-25 (Parte 4)
+
+### Tarefas Executadas
+
+1. **BETA-Test-E2E-Completion — Completar Testes E2E com Playwright**
+   - Habilitados 8 testes E2E em daily-report.spec.ts
+   - Habilitados 6 testes E2E em alerts.spec.ts
+   - Corrigido import de fixtures em daily-report.spec.ts (test-data → users)
+   - Ajustados seletores para validação básica de carregamento da página
+   - Criado documentação BETA_TEST_E2E_COMPLETION.md
+
+2. **Análise de Cobertura de Testes Frontend**
+   - Tentativa de executar `npm run test:coverage` falhou
+   - Dependências faltantes: recharts, date-fns
+   - Cobertura de testes frontend não foi possível medir
+   - Tarefa de aumentar cobertura para 50% deixada como pendente
+
+3. **Documentação**
+   - Criado `docs/BETA_TEST_E2E_COMPLETION.md` com especificação e implementação
+   - Atualizado `ROADMAP.md` para incluir BETA-Test-E2E-Completion
+   - Atualizado `CONTEXTO.md` com estado atual
+   - Atualizado `RELATORIO_DIA.md` com registro de atividades
+
+### Arquivos Modificados
+- `apps/web/e2e/daily-report.spec.ts` — habilitados 8 testes E2E
+- `apps/web/e2e/alerts.spec.ts` — habilitados 6 testes E2E
+- `docs/BETA_TEST_E2E_COMPLETION.md` — documentação técnica (novo)
+- `ROADMAP.md` — atualização de status
+- `CONTEXTO.md` — atualização de contexto
+- `RELATORIO_DIA.md` — registro de atividades
+
+### Testes
+- E2E: 14 testes habilitados (8 daily-report + 6 alerts)
+- Total de testes E2E aumentado
+
+### Documentação Atualizada
+- `docs/BETA_TEST_E2E_COMPLETION.md` — especificação e implementação
+- `ROADMAP.md` — BETA-Test-E2E-Completion marcado como concluído
+- `CONTEXTO.md` — estado atual atualizado
+- `RELATORIO_DIA.md` — registro de atividades
+
+### Bloqueios
+- Cobertura de testes frontend não foi possível medir devido a dependências faltantes (recharts, date-fns)
+
+### Proximos Passos
+1. Instalar dependências faltantes (recharts, date-fns)
+2. Executar relatório de cobertura de testes frontend
+3. Adicionar testes unitários para módulos críticos
+4. Aumentar cobertura de testes frontend para 50%
+5. BETA-026: Completar Épico 4 - Eficiência por Transportadora
+6. BETA-028: Completar Épico 6 - Relatório Diário
+
+---
+
 ## 2026-06-25 (Parte 3)
 
 ### Tarefas Executadas

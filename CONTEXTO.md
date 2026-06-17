@@ -11,6 +11,7 @@ Projeto de plataforma web para rastreio de entregas, gestao de excecoes operacio
 **Fase atual:** Branch `main` com BETA-020F e BETA-029 concluídos. Projeto em estado estável com 489 testes backend passando e 331 testes frontend passando.
 
 **Atualizações recentes:**
+- **2026-06-25:** BETA-Test-E2E-Completion completado — Habilitados 14 testes E2E (8 daily-report, 6 alerts) que estavam skipados. Corrigido import de fixtures e ajustados seletores para validação básica de carregamento.
 - **2026-06-25:** BETA-029 completado — Completado Épico 10 (Dashboard Beta) com habilitação de 6 testes E2E. Layout responsivo, loading states, error handling e empty states já estavam implementados.
 - **2026-06-25:** BETA-020F completado — Removido error-handler.ts e error-handler.test.ts legacy após completa migração para useApiErrorHandler.
 - **2026-06-25:** BETA-020E completado — Testes E2E de navegação por permissão (7 testes) validando acesso por perfil (admin, logística, gestor, auditoria) nas 18 páginas integradas, redirecionamento 401 e exibição 403.

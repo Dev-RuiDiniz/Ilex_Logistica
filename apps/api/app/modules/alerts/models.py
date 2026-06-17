@@ -30,3 +30,21 @@ class Alert(Base):
     resolved_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(UTC), nullable=False)
     updated_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(UTC), onupdate=lambda: datetime.now(UTC), nullable=False)
+
+
+class AlertDeliveryLog(Base):
+    """Audit log for alert generation and lifecycle events."""
+
+    __tablename__ = "alert_delivery_logs"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    alert_id: Mapped[int | None] = mapped_column(Integer, ForeignKey("alerts.id"), nullable=True, index=True)
+    event_type: Mapped[str] = mapped_column(String(50), nullable=False, index=True)
+    delivery_channel: Mapped[str] = mapped_column(String(50), nullable=False, default="in_app", index=True)
+    delivery_status: Mapped[str] = mapped_column(String(20), nullable=False, default="success", index=True)
+    source_type: Mapped[str] = mapped_column(String(50), nullable=False, index=True)
+    source_id: Mapped[int | None] = mapped_column(Integer, nullable=True, index=True)
+    alert_type: Mapped[str | None] = mapped_column(String(50), nullable=True, index=True)
+    message: Mapped[str | None] = mapped_column(Text, nullable=True)
+    metadata_json: Mapped[str | None] = mapped_column(Text, nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(UTC), nullable=False, index=True)

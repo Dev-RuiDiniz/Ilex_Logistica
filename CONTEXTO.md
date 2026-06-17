@@ -1,6 +1,6 @@
 # CONTEXTO.md — Estado e Contexto do Projeto Ilex Logistica
 
-**Atualizado em:** 2026-06-10
+**Atualizado em:** 2026-06-17
 
 ---
 
@@ -8,7 +8,9 @@
 
 Projeto de plataforma web para rastreio de entregas, gestao de excecoes operacionais e relatorios logisticos. Monorepo com API Python/FastAPI + frontend Next.js + infra Docker + documentacao extensa.
 
-**Fase atual:** Pos-merge de 38 PRs beta (incluindo #38 e #39). Conflitos de merge RESOLVIDOS. Build frontend passando. Testes backend: 489 passed, 0 failed. README reescrito com apresentacao comercial. PRs #38 e #39 mergeadas com sucesso na main.
+**Fase atual:** Branch `feature/beta-027-alerts-notifications` com o Épico 5 (alertas e notificações) concluído localmente. Backend e frontend validados em 2026-06-17; PR pendente de abertura/revisão.
+
+**Atualização 2026-06-17:** alertas passaram a registrar `AlertDeliveryLog`, deduplicar por origem e gerar `import_failure`/`no_update`; o dashboard usa contadores reais de alertas e falhas de importação.
 
 ---
 

@@ -2,6 +2,31 @@
 
 ---
 
+## 2026-06-17
+
+### Tarefas Executadas
+
+1. **BETA-027 — Alertas e Notificações**
+   - Adicionado `AlertDeliveryLog` para registrar geração, leitura, resolução e duplicidades ignoradas
+   - Implementada geração de alertas para `sla_critical`, `sla_late`, `sla_warning`, `unknown_sla`, `no_update` e `import_failure`
+   - Corrigidos filtros de `sla_status` e `is_late` no painel de exceções
+   - Corrigido o `delay_days` do painel de exceções para usar o cálculo do SLA
+   - Ajustado o dashboard para contar falhas de importação e alertas ativos com dados reais
+   - Atualizado o frontend de alertas para expor o tipo `no_update`
+
+2. **Validação técnica**
+   - Backend: `./venv/bin/pytest tests/test_alerts_generation.py tests/test_alerts_api.py tests/test_dashboard_summary.py tests/test_dashboard_alerts_integration.py tests/test_exceptions_panel_sla.py tests/test_exceptions_panel_api.py tests/test_rbac_alerts_api.py`
+   - Resultado backend: **88 passed**
+   - Frontend: `npm test -- "src/lib/alerts-api.test.ts" "src/app/(private)/alerts/alerts-page.test.tsx"`
+   - Resultado frontend: **19 passed**
+
+3. **Registro e documentação**
+   - Atualizado `CONTEXTO.md`
+   - Criado `docs/BETA_027_ALERTS_NOTIFICATIONS_COMPLETE.md`
+   - Preparado branch para PR sem merge
+
+---
+
 ## 2026-06-10
 
 ### Tarefas Executadas

@@ -1,4 +1,4 @@
-export type AlertType = 'sla_critical' | 'sla_late' | 'sla_warning' | 'unknown_sla' | 'import_failure';
+export type AlertType = 'sla_critical' | 'sla_late' | 'sla_warning' | 'unknown_sla' | 'import_failure' | 'no_update';
 
 export type AlertSeverity = 'critical' | 'warning' | 'info';
 

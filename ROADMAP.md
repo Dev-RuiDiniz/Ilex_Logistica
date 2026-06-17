@@ -1,7 +1,7 @@
 # ROADMAP DO PROJETO ILEX LOGÍSTICA
 
 **Versão:** 1.0  
-**Data:** 2026-06-11  
+**Data:** 2026-06-17
 **Status:** Roadmap Completo com Status de Implementação
 
 ---
@@ -31,7 +31,7 @@
 | 11 - QA, CI/CD e validação | PARCIAL | 8/10 | 1/10 | 1/10 |
 | 12 - Documentação beta | PARCIAL | 10/14 | 2/14 | 2/14 |
 
-**Total:** 69/120 (58%) pronto, 20/120 (17%) em progresso, 31/120 (26%) pendente
+**Total:** 75/120 (63%) pronto, 18/120 (15%) em progresso, 27/120 (23%) pendente
 
 ---
 
@@ -141,19 +141,19 @@
 
 ### Backend
 - ✅ Model Alert
-- ❌ Model AlertDeliveryLog
-- ⏳ Geração de alertas para crítico
-- ⏳ Geração de alertas para sem atualização
-- ⏳ Geração de alertas para falha
-- ❌ Deduplicação de alertas
-- ⏳ Testes de geração
-- ❌ Testes de deduplicação
+- ✅ Model AlertDeliveryLog
+- ✅ Geração de alertas para crítico
+- ✅ Geração de alertas para sem atualização
+- ✅ Geração de alertas para falha
+- ✅ Deduplicação de alertas
+- ✅ Testes de geração
+- ✅ Testes de deduplicação
 
 ### Frontend
-- ⏳ Painel/badge frontend
-- ⏳ Marcação como lido
-- ⏳ Marcação como resolvido
-- ❌ Testes frontend
+- ✅ Painel/badge frontend
+- ✅ Marcação como lido
+- ✅ Marcação como resolvido
+- ✅ Testes frontend
 
 ### Integrações (Pós-Beta)
 - ❌ Integração com e-mail
@@ -162,8 +162,11 @@
 ### Documentação
 - ✅ Documentação BETA-017A
 - ✅ Documentação BETA-017B
+- ✅ Documento de fechamento BETA-027
 
-**Status:** 4/10 pronto, 2/10 em progresso, 4/10 pendente
+**Status:** 10/10 pronto, 0/10 em progresso, 0/10 pendente
+
+> Observação: as integrações por e-mail e SMS seguem fora do núcleo do Épico 5 e continuam como pós-beta.
 
 ---
 
@@ -441,5 +444,5 @@
 ---
 
 **Assinatura:** Equipe Ilex Logística  
-**Data:** 2026-06-11  
+**Data:** 2026-06-17
 **Versão:** 1.0

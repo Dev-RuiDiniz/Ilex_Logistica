@@ -1,8 +1,6 @@
 """Alerts router for BETA-017A."""
 
-from datetime import UTC, datetime
-
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
 
 from app.database.session import get_db
@@ -15,7 +13,7 @@ from app.modules.alerts.schemas import (
     AlertResponse,
     AlertSummaryResponse,
 )
-from app.modules.alerts.service import generate_alerts, get_active_alerts_count
+from app.modules.alerts.service import generate_alerts, get_active_alerts_count, mark_alert_as_read as mark_alert_as_read_service, mark_alert_as_resolved as mark_alert_as_resolved_service
 from app.modules.alerts.models import Alert
 
 router = APIRouter(prefix="/alerts", tags=["alerts"])
@@ -104,15 +102,7 @@ def mark_alert_as_read(
     _user: object = Depends(require_permission("alerts:write")),
 ) -> AlertMarkReadResponse:
     """Mark an alert as read."""
-    alert = db.query(Alert).filter(Alert.id == alert_id).first()
-    if not alert:
-        raise HTTPException(status_code=404, detail="Alert not found")
-
-    alert.is_read = True
-    alert.read_at = datetime.now(UTC)
-    alert.status = "read"
-    db.commit()
-
+    mark_alert_as_read_service(db, alert_id)
     return AlertMarkReadResponse(success=True, message="Alert marked as read")
 
 
@@ -123,13 +113,5 @@ def mark_alert_as_resolved(
     _user: object = Depends(require_permission("alerts:write")),
 ) -> AlertMarkResolvedResponse:
     """Mark an alert as resolved."""
-    alert = db.query(Alert).filter(Alert.id == alert_id).first()
-    if not alert:
-        raise HTTPException(status_code=404, detail="Alert not found")
-
-    alert.is_resolved = True
-    alert.resolved_at = datetime.now(UTC)
-    alert.status = "resolved"
-    db.commit()
-
+    mark_alert_as_resolved_service(db, alert_id)
     return AlertMarkResolvedResponse(success=True, message="Alert marked as resolved")

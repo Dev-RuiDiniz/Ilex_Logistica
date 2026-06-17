@@ -4,6 +4,8 @@
 
 Implementação do backend do Épico 5 — Alertas e notificações — criando estrutura real de alertas operacionais, regras de geração, endpoints de listagem/contagem/marcação e integração com SLA, exceções e dashboard. Este PR é backend-only.
 
+> Atualização 2026-06-17: a implementação foi concluída na branch `feature/beta-027-alerts-notifications`; ver também `docs/BETA_027_ALERTS_NOTIFICATIONS_COMPLETE.md`.
+
 ## Base Usada
 
 BETA-016B - Dashboard Beta Frontend e UX Operacional

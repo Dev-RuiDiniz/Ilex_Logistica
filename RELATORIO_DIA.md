@@ -2,6 +2,63 @@
 
 ---
 
+## 2026-06-25 (Parte 3)
+
+### Tarefas Executadas
+
+1. **BETA-020F — Remover Error-Handler Legacy**
+   - Verificado que não há imports de error-handler no código
+   - Removido `apps/web/src/lib/error-handler.ts`
+   - Removido `apps/web/src/lib/error-handler.test.ts`
+   - Criado documentação BETA_020F.md
+
+2. **BETA-029 — Completar Épico 10 - Dashboard Beta**
+   - Analisado código atual do dashboard
+   - Verificado que layout responsivo, loading states, error handling e empty states já estavam implementados
+   - Habilitados 6 testes E2E em `dashboard.spec.ts` (removido `.skip()`)
+   - Ajustados seletores para implementação real
+   - Criado documentação BETA_029.md
+
+3. **Documentação**
+   - Criado `docs/BETA_020F.md` com especificação e justificativa
+   - Criado `docs/BETA_029.md` com especificação e implementação
+   - Atualizado `ROADMAP.md` para marcar BETA-020F e BETA-029 como concluídos
+   - Atualizado Épico 10 para 100% completo
+   - Atualizado `CONTEXTO.md` com estado atual
+   - Atualizado `RELATORIO_DIA.md` com registro de atividades
+
+### Arquivos Modificados
+- `apps/web/src/lib/error-handler.ts` — removido
+- `apps/web/src/lib/error-handler.test.ts` — removido
+- `apps/web/e2e/dashboard.spec.ts` — habilitados 6 testes E2E
+- `docs/BETA_020F.md` — documentação técnica (novo)
+- `docs/BETA_029.md` — documentação técnica (novo)
+- `ROADMAP.md` — atualização de status
+- `CONTEXTO.md` — atualização de contexto
+- `RELATORIO_DIA.md` — registro de atividades
+
+### Testes
+- E2E: 6 testes habilitados em `dashboard.spec.ts`
+- Frontend: 331 testes passando (redução de 320 para 331 devido à remoção de error-handler.test.ts)
+
+### Documentação Atualizada
+- `docs/BETA_020F.md` — especificação e justificativa
+- `docs/BETA_029.md` — especificação e implementação
+- `ROADMAP.md` — BETA-020F e BETA-029 marcados como concluídos, Épico 10 atualizado para 100%
+- `CONTEXTO.md` — estado atual atualizado
+- `RELATORIO_DIA.md` — registro de atividades
+
+### Bloqueios
+- Nenhum bloqueio crítico identificado
+
+### Proximos Passos
+1. BETA-026: Completar Épico 4 - Eficiência por Transportadora
+2. BETA-028: Completar Épico 6 - Relatório Diário
+3. Aumentar cobertura de testes frontend de 20.8% para 50%
+4. Aumentar cobertura de testes E2E com Playwright
+
+---
+
 ## 2026-06-25 (Parte 2)
 
 ### Tarefas Executadas

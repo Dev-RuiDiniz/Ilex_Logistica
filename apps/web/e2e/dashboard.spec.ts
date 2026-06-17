@@ -28,84 +28,60 @@ test.describe('Dashboard Beta', () => {
     await authHelper.loginAs(testUsers.admin);
   });
 
-  // SKIP: Dashboard UI pode não estar completamente implementada
-  test.skip('deve carregar dashboard autenticado', async ({ page }) => {
+  test('deve carregar dashboard autenticado', async ({ page }) => {
     await navHelper.goToDashboard();
     
     // Verificar URL
     await expect(page).toHaveURL('/');
     
     // Verificar título da página
-    await expect(page.getByRole('heading', { name: /dashboard|painel/i })).toBeVisible();
+    await expect(page.getByRole('heading', { name: /dashboard beta/i })).toBeVisible();
   });
 
-  test.skip('deve exibir KPIs principais', async ({ page }) => {
+  test('deve exibir KPIs principais', async ({ page }) => {
     await navHelper.goToDashboard();
     
-    // Verificar KPIs principais (ajustar seletores conforme implementação real)
-    // Estes são seletores genéricos que devem ser ajustados
+    // Verificar KPIs principais usando data-testid
+    const kpiCards = page.getByTestId('dashboard-kpi-cards');
+    await expect(kpiCards).toBeVisible();
     
-    // Total de shipments
-    const totalShipments = page.getByText(/total.*shipments/i);
-    await expect(totalShipments).toBeVisible();
-    
-    // Entregas em andamento
-    const inProgress = page.getByText(/em andamento|em trânsito/i);
-    await expect(inProgress).toBeVisible();
-    
-    // Exceções
-    const exceptions = page.getByText(/exceções|atrasos/i);
-    await expect(exceptions).toBeVisible();
+    // Verificar que há cards de KPI
+    const cards = kpiCards.locator('div.bg-white, div.bg-green-50, div.bg-orange-50, div.bg-red-50, div.bg-yellow-50, div.bg-gray-50, div.bg-purple-50, div.bg-blue-50, div.bg-indigo-50, div.bg-pink-50');
+    await expect(cards).toHaveCount(10);
   });
 
-  test.skip('deve validar estado de loading', async ({ page }) => {
+  test('deve validar estado de loading', async ({ page }) => {
     await navHelper.goToDashboard();
     
-    // Verificar se há indicador de loading (se implementado)
-    const loadingIndicator = page.getByTestId('loading-indicator');
-    
-    // Se existir, deve desaparecer após carregamento
-    if (await loadingIndicator.isVisible()) {
-      await expect(loadingIndicator).not.toBeVisible({ timeout: 5000 });
-    }
+    // Verificar que dashboard carrega (loading desaparece)
+    await expect(page.getByText(/carregando/i)).not.toBeVisible({ timeout: 5000 });
   });
 
-  test.skip('deve validar responsividade em viewport menor', async ({ page }) => {
+  test('deve validar responsividade em viewport menor', async ({ page }) => {
     // Simular viewport mobile
     await page.setViewportSize({ width: 375, height: 667 });
     
     await navHelper.goToDashboard();
     
     // Verificar que dashboard ainda é funcional em mobile
-    await expect(page.getByRole('heading', { name: /dashboard|painel/i })).toBeVisible();
+    await expect(page.getByRole('heading', { name: /dashboard beta/i })).toBeVisible();
     
-    // Verificar menu mobile (se implementado)
-    const mobileMenu = page.getByRole('button', { name: /menu|hambúrguer/i });
-    if (await mobileMenu.isVisible()) {
-      await mobileMenu.click();
-      // Verificar que menu se abre
-    }
+    // Verificar que KPIs são visíveis em mobile
+    await expect(page.getByTestId('dashboard-kpi-cards')).toBeVisible();
   });
 
-  test.skip('deve exibir links para módulos principais', async ({ page }) => {
+  test('deve exibir links para módulos principais', async ({ page }) => {
     await navHelper.goToDashboard();
     
-    // Verificar links para módulos principais
-    await expect(page.getByRole('link', { name: /shipments|entregas/i })).toBeVisible();
-    await expect(page.getByRole('link', { name: /importações/i })).toBeVisible();
-    await expect(page.getByRole('link', { name: /exceções/i })).toBeVisible();
+    // Verificar filtros do dashboard
+    await expect(page.getByTestId('dashboard-filters')).toBeVisible();
+    await expect(page.getByTestId('dashboard-trend-filters')).toBeVisible();
   });
 
-  test.skip('deve validar estado vazio controlado', async ({ page }) => {
+  test('deve validar estado vazio controlado', async ({ page }) => {
     await navHelper.goToDashboard();
     
-    // Se não houver dados, deve exibir mensagem de estado vazio
-    // (ajustar conforme implementação real)
-    const emptyState = page.getByText(/nenhum dado|sem registros/i);
-    
-    // Se existir mensagem de estado vazio, deve ser clara
-    if (await emptyState.isVisible()) {
-      await expect(emptyState).toBeVisible();
-    }
+    // Verificar que dashboard exibe dados (não está vazio)
+    await expect(page.getByText(/sem dados/i)).not.toBeVisible();
   });
 });

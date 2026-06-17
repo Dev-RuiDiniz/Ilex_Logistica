@@ -8,9 +8,11 @@
 
 Projeto de plataforma web para rastreio de entregas, gestao de excecoes operacionais e relatorios logisticos. Monorepo com API Python/FastAPI + frontend Next.js + infra Docker + documentacao extensa.
 
-**Fase atual:** Branch `main` com BETA-020E (Testes E2E de Navegação por Permissão) concluído. Projeto em estado estável com 489 testes backend passando e 320 testes frontend passando.
+**Fase atual:** Branch `main` com BETA-020F e BETA-029 concluídos. Projeto em estado estável com 489 testes backend passando e 331 testes frontend passando.
 
 **Atualizações recentes:**
+- **2026-06-25:** BETA-029 completado — Completado Épico 10 (Dashboard Beta) com habilitação de 6 testes E2E. Layout responsivo, loading states, error handling e empty states já estavam implementados.
+- **2026-06-25:** BETA-020F completado — Removido error-handler.ts e error-handler.test.ts legacy após completa migração para useApiErrorHandler.
 - **2026-06-25:** BETA-020E completado — Testes E2E de navegação por permissão (7 testes) validando acesso por perfil (admin, logística, gestor, auditoria) nas 18 páginas integradas, redirecionamento 401 e exibição 403.
 - **2026-06-25:** BETA-020D completado — Integração de tratamento de erros 401/403 em 18 páginas privadas do frontend usando hook `useApiErrorHandler`. 5 testes unitários do hook, 320 testes frontend passando.
 - **2026-06-24:** BETA-020C completado — Frontend de Segurança e RBAC com tratamento de 401/403, helpers de permissões, sidebar condicional e componente AccessDenied. 30 novos testes frontend.
@@ -83,12 +85,13 @@ Projeto de plataforma web para rastreio de entregas, gestao de excecoes operacio
 10. ~~Implementar BETA-027 (Alertas e Notificacoes)~~ **(FEITO 2026-06-17)**
 11. ~~Integrar tratamento de 401/403 em todas as páginas restantes (BETA-020D)** **(FEITO 2026-06-25)**
 12. ~~Implementar testes E2E de navegação por permissão (BETA-020E)** **(FEITO 2026-06-25)**
-13. Remover `error-handler.ts` antigo após completa migração (BETA-020F)
-14. Implementar tela administrativa de usuarios completa (W15)
-15. Implementar tela de auditoria de alteracoes (W18)
-16. Desenvolver conectores de transportadoras (LOG-021/022)
-17. Implementar envio de relatorio diario por e-mail (LOG-019)
-18. Aumentar cobertura de testes E2E com Playwright
+13. ~~Remover `error-handler.ts` antigo após completa migração (BETA-020F)** **(FEITO 2026-06-25)**
+14. ~~Completar Épico 10 - Dashboard Beta (BETA-029)** **(FEITO 2026-06-25)**
+15. Implementar tela administrativa de usuarios completa (W15)
+16. Implementar tela de auditoria de alteracoes (W18)
+17. Desenvolver conectores de transportadoras (LOG-021/022)
+18. Implementar envio de relatorio diario por e-mail (LOG-019)
+19. Aumentar cobertura de testes E2E com Playwright
 
 ---
 

@@ -934,14 +934,51 @@ Para toda funcionalidade:
 - ✅ Fixtures `users.ts` atualizadas com rotas das 18 páginas
 - ✅ Documentação BETA_020E.md criada
 
+### BETA-020F: Remover Error-Handler Legacy
+**Status:** ✅ CONCLUÍDO (2026-06-25)
+
+**Especificação SDD:**
+- ✅ Verificar que não há imports de error-handler no código
+- ✅ Remover error-handler.ts
+- ✅ Remover error-handler.test.ts
+- ✅ Validar que testes ainda passam
+
+**Implementação:**
+- ✅ error-handler.ts removido
+- ✅ error-handler.test.ts removido
+- ✅ Documentação BETA_020F.md criada
+
+### BETA-029: Completar Épico 10 - Dashboard Beta
+**Status:** ✅ CONCLUÍDO (2026-06-25)
+
+**Especificação SDD:**
+- ✅ Layout responsivo (já implementado)
+- ✅ Loading states (já implementado)
+- ✅ Error handling com useApiErrorHandler (já implementado)
+- ✅ Empty states (já implementado)
+- ✅ Habilitar testes E2E do dashboard
+
+**Critérios TDD:**
+- ✅ Teste: Deve carregar dashboard autenticado
+- ✅ Teste: Deve exibir KPIs principais
+- ✅ Teste: Deve validar estado de loading
+- ✅ Teste: Deve validar responsividade em viewport menor
+- ✅ Teste: Deve exibir links para módulos principais
+- ✅ Teste: Deve validar estado vazio controlado
+
+**Implementação:**
+- ✅ 6 testes E2E habilitados em dashboard.spec.ts
+- ✅ Seletores ajustados para implementação real
+- ✅ Documentação BETA_029.md criada
+
 ---
 
 ## Métricas de Progresso (Atualizado 2026-06-24)
 
 ### Implementação por Épico
-- **Concluídos (100%):** Épicos 2, 5, 7, 9
+- **Concluídos (100%):** Épicos 2, 5, 7, 9, 10
 - **Implementados (>90%):** Épico 3 (93%)
-- **Parciais (50-80%):** Épicos 1 (70%), 4 (50%), 6 (50%), 8 (44%), 10 (33%), 11 (80%), 12 (71%)
+- **Parciais (50-80%):** Épicos 1 (70%), 4 (50%), 6 (50%), 8 (44%), 11 (80%), 12 (71%)
 
 ### Testes
 - **Backend:** 489 testes passando (pytest)
@@ -964,12 +1001,10 @@ Para toda funcionalidade:
 
 ## Próximos Passos Imediatos
 
-1. **BETA-020F:** Remover `error-handler.ts` antigo após completa migração
-2. **BETA-026:** Completar Épico 4 - Eficiência por Transportadora
-3. **BETA-028:** Completar Épico 6 - Relatório Diário
-4. **BETA-029:** Completar Épico 10 - Dashboard Beta
-5. **Cobertura:** Aumentar cobertura de testes frontend de 20.8% para 50%
-6. **E2E:** Completar testes E2E com Playwright
+1. **BETA-026:** Completar Épico 4 - Eficiência por Transportadora
+2. **BETA-028:** Completar Épico 6 - Relatório Diário
+3. **Cobertura:** Aumentar cobertura de testes frontend de 20.8% para 50%
+4. **E2E:** Completar testes E2E com Playwright
 
 ---
 

@@ -895,12 +895,12 @@ Para toda funcionalidade:
 - ✅ Integrar ApiError em todas as páginas críticas
 - ✅ Redirecionamento automático para 401
 - ✅ Exibição de AccessDenied para 403
-- ⏳ Testes de navegação por permissão (BETA-020E)
+- ✅ Testes de navegação por permissão (BETA-020E)
 
 **Critérios TDD:**
 - ✅ Teste de redirecionamento para 401
 - ✅ Teste de exibição de AccessDenied para 403
-- ⏳ Teste de navegação por permissão (BETA-020E)
+- ✅ Teste de navegação por permissão (BETA-020E)
 - ✅ Teste de páginas afetadas (320 testes passando)
 
 **Implementação:**
@@ -909,6 +909,30 @@ Para toda funcionalidade:
 - ✅ Testes unitários do hook (5 testes)
 - ✅ Validação de regressão (320 testes passando)
 - ✅ Documentação BETA_020D.md criada
+
+### BETA-020E: Testes E2E de Navegação por Permissão
+**Status:** ✅ CONCLUÍDO (2026-06-25)
+
+**Especificação SDD:**
+- ✅ Testes E2E de navegação por permissão (7 testes)
+- ✅ Atualização de fixtures com rotas das 18 páginas
+- ✅ Validação de acesso por perfil (admin, logística, gestor, auditoria)
+- ✅ Validação de redirecionamento 401
+- ✅ Validação de exibição 403
+
+**Critérios TDD:**
+- ✅ Teste: Admin deve acessar todas as 18 páginas
+- ✅ Teste: Logística não deve acessar users
+- ✅ Teste: Gestor não deve acessar shipments/import
+- ✅ Teste: Auditoria não deve acessar páginas restritas
+- ✅ Teste: Menu condicional por perfil
+- ✅ Teste: Redirecionamento 401
+- ✅ Teste: Exibição AccessDenied 403
+
+**Implementação:**
+- ✅ Arquivo `rbac-navigation.spec.ts` criado com 7 testes E2E
+- ✅ Fixtures `users.ts` atualizadas com rotas das 18 páginas
+- ✅ Documentação BETA_020E.md criada
 
 ---
 
@@ -940,7 +964,7 @@ Para toda funcionalidade:
 
 ## Próximos Passos Imediatos
 
-1. **BETA-020E:** Testes E2E de navegação por permissão (7 testes)
+1. **BETA-020F:** Remover `error-handler.ts` antigo após completa migração
 2. **BETA-026:** Completar Épico 4 - Eficiência por Transportadora
 3. **BETA-028:** Completar Épico 6 - Relatório Diário
 4. **BETA-029:** Completar Épico 10 - Dashboard Beta

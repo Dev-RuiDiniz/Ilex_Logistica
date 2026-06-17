@@ -2,7 +2,63 @@
 
 ---
 
-## 2026-06-25
+## 2026-06-25 (Parte 2)
+
+### Tarefas Executadas
+
+1. **BETA-020E — Testes E2E de Navegação por Permissão**
+   - Atualizado fixtures de usuários com rotas das 18 páginas integradas
+   - Criado arquivo `rbac-navigation.spec.ts` com 7 testes E2E
+   - Teste 1: Admin deve acessar todas as 18 páginas
+   - Teste 2: Logística não deve acessar users
+   - Teste 3: Gestor não deve acessar shipments/import
+   - Teste 4: Auditoria não deve acessar páginas restritas
+   - Teste 5: Menu condicional por perfil
+   - Teste 6: Redirecionamento 401
+   - Teste 7: Exibição AccessDenied 403
+   - Criado documentação BETA_020E.md com especificação completa
+   - Atualizado ROADMAP.md para marcar BETA-020E como concluído
+   - Atualizado CONTEXTO.md com estado atual do projeto
+   - Atualizado RELATORIO_DIA.md com registro de atividades
+
+2. **Documentação**
+   - Criado `docs/BETA_020E.md` com especificação, implementação e decisões arquiteturais
+   - Atualizado `ROADMAP.md` para marcar BETA-020E como concluído
+   - Atualizado `CONTEXTO.md` com estado atual
+   - Atualizado `RELATORIO_DIA.md` com registro de atividades
+
+### Arquivos Modificados
+- `apps/web/e2e/fixtures/users.ts` — atualizado rotas das 18 páginas
+- `apps/web/e2e/rbac-navigation.spec.ts` — testes E2E (novo)
+- `docs/BETA_020E.md` — documentação técnica (novo)
+- `ROADMAP.md` — atualização de status
+- `CONTEXTO.md` — atualização de contexto
+- `RELATORIO_DIA.md` — registro de atividades
+
+### Testes
+- E2E: 7 testes escritos em `rbac-navigation.spec.ts`
+- Frontend: 320 testes passando (validado anteriormente)
+
+### Documentação Atualizada
+- `docs/BETA_020E.md` — especificação e implementação completa
+- `ROADMAP.md` — BETA-020E marcado como concluído
+- `CONTEXTO.md` — estado atual atualizado
+- `RELATORIO_DIA.md` — registro de atividades
+
+### Bloqueios
+- Nenhum bloqueio crítico identificado
+
+### Proximos Passos
+1. Remover `error-handler.ts` antigo após completa migração (BETA-020F)
+2. Implementar tela administrativa de usuarios completa (W15)
+3. Implementar tela de auditoria de alteracoes (W18)
+4. Desenvolver conectores de transportadoras (LOG-021/022)
+5. Implementar envio de relatorio diario por e-mail (LOG-019)
+6. Aumentar cobertura de testes E2E com Playwright
+
+---
+
+## 2026-06-25 (Parte 1)
 
 ### Tarefas Executadas
 

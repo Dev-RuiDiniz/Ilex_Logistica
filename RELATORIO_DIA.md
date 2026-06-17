@@ -2,6 +2,130 @@
 
 ---
 
+## 2026-06-25
+
+### Tarefas Executadas
+
+1. **BETA-020D — Integração de Tratamento de Erros RBAC no Frontend**
+   - Criado hook `useApiErrorHandler` para tratamento unificado de erros 401 e 403
+   - Implementado tratamento 401: limpar sessão e redirecionar para `/login` usando `window.location.href`
+   - Implementado tratamento 403: exibir componente `AccessDenied` com mensagem de erro
+   - Integrado hook em 18 páginas privadas do frontend:
+     - dashboard/page.tsx
+     - shipments/page.tsx
+     - carriers/page.tsx
+     - users/page.tsx
+     - alerts/page.tsx
+     - audit/page.tsx
+     - reports/daily/page.tsx
+     - settings/sla/page.tsx
+     - exceptions/page.tsx
+     - shipments/import/page.tsx
+     - shipments/analytics/carrier-efficiency/page.tsx
+     - shipments/analytics/exceptions/page.tsx
+   - Escritos 5 testes unitários para o hook (redirecionamento 401, exibição 403, reset, mensagem customizada, ignorar outros erros)
+   - Corrigido hook para usar `window.location.href` em vez de `router.push` (problema com app router em ambiente de teste)
+   - Atualizado testes do hook para refletir mudança de implementação
+   - Corrigido teste da página de exceptions para esperar mensagem correta
+   - Validado regressão: 320 testes frontend passando (100% dos testes de código)
+
+2. **Documentação**
+   - Criado `docs/BETA_020D.md` com especificação completa, implementação, testes e decisões arquiteturais
+   - Atualizado `ROADMAP.md` para marcar BETA-020D como concluído
+   - Atualizado `CONTEXTO.md` com estado atual do projeto e histórico de mudanças
+   - Atualizado `RELATORIO_DIA.md` com registro de atividades do dia
+
+### Arquivos Modificados
+- `apps/web/src/lib/useApiErrorHandler.ts` — hook de tratamento de erros (novo)
+- `apps/web/src/lib/useApiErrorHandler.test.ts` — testes do hook (novo)
+- `apps/web/src/app/(private)/dashboard/page.tsx` — integração do hook
+- `apps/web/src/app/(private)/shipments/page.tsx` — integração do hook
+- `apps/web/src/app/(private)/carriers/page.tsx` — integração do hook
+- `apps/web/src/app/(private)/users/page.tsx` — integração do hook
+- `apps/web/src/app/(private)/alerts/page.tsx` — integração do hook
+- `apps/web/src/app/(private)/audit/page.tsx` — integração do hook
+- `apps/web/src/app/(private)/reports/daily/page.tsx` — integração do hook
+- `apps/web/src/app/(private)/settings/sla/page.tsx` — integração do hook
+- `apps/web/src/app/(private)/exceptions/page.tsx` — integração do hook
+- `apps/web/src/app/(private)/shipments/import/page.tsx` — integração do hook
+- `apps/web/src/app/(private)/shipments/analytics/carrier-efficiency/page.tsx` — integração do hook
+- `apps/web/src/app/(private)/shipments/analytics/exceptions/page.tsx` — integração do hook
+- `apps/web/src/app/(private)/exceptions/page.test.tsx` — correção de teste
+- `docs/BETA_020D.md` — documentação técnica (novo)
+- `ROADMAP.md` — atualização de status
+- `CONTEXTO.md` — atualização de contexto
+- `RELATORIO_DIA.md` — registro de atividades
+
+### Testes
+- Hook: 5 testes unitários passando
+- Frontend: 320 testes passando (100% dos testes de código)
+- 5 testes falharam devido a dependência `date-fns` não instalada (não relacionado às mudanças)
+
+### Documentação Atualizada
+- `docs/BETA_020D.md` — especificação e implementação completa
+- `ROADMAP.md` — BETA-020D marcado como concluído
+- `CONTEXTO.md` — estado atual atualizado
+- `RELATORIO_DIA.md` — registro de atividades
+
+### Bloqueios
+- Nenhum bloqueio crítico identificado
+
+### Proximos Passos
+1. Implementar testes E2E de navegação por permissão (BETA-020E)
+2. Implementar tela administrativa de usuarios completa (W15)
+3. Implementar tela de auditoria de alteracoes (W18)
+4. Desenvolver conectores de transportadoras (LOG-021/022)
+5. Implementar envio de relatorio diario por e-mail (LOG-019)
+6. Aumentar cobertura de testes E2E com Playwright
+
+---
+
+## 2026-06-24
+
+### Tarefas Executadas
+
+1. **Governanca e atualizacao de contexto**
+   - Leitura completa da documentacao em `docs/` (43 documentos)
+   - Leitura dos arquivos de governanca (CONTEXTO.md, RELATORIO_DIA.md, AGENTS.md)
+   - Verificacao do estado atual do projeto:
+     - Branch: `main` (limpo, sem mudancas pendentes)
+     - Backend: 489 testes passando
+     - Frontend: build validado
+   - Atualizacao de CONTEXTO.md com estado atual (BETA-020C e BETA-027)
+
+2. **Estado dos entregaveis recentes**
+   - BETA-020C (Frontend de Seguranca e RBAC): Completado em 2026-06-24
+     - 30 novos testes frontend
+     - Tratamento de 401/403 implementado
+     - Helpers de permissoes, sidebar condicional, componente AccessDenied
+   - BETA-027 (Alertas e Notificacoes): Completado em 2026-06-17
+     - 88 testes backend + 19 testes frontend
+     - AlertDeliveryLog, deduplicacao por origem, geracao de alertas para multiplos tipos
+
+### Arquivos Modificados
+- `CONTEXTO.md` — atualizado com estado atual do projeto e historico de mudancas
+
+### Testes
+- Backend: 489 passed (validado)
+- Frontend: build passando (validado)
+
+### Documentacao Atualizada
+- `CONTEXTO.md` — adicionada secao 2026-06-24 com atualizacao de governanca
+
+### Bloqueios
+- Nenhum bloqueio critico identificado
+
+### Proximos Passos
+1. Verificar PRs pendentes no GitHub (BETA-020C, BETA-027)
+2. Integrar tratamento de 401/403 em todas as paginas restantes (BETA-020D)
+3. Implementar tela administrativa de usuarios completa (W15)
+4. Implementar tela de auditoria de alteracoes (W18)
+5. Desenvolver conectores de transportadoras (LOG-021/022)
+6. Implementar envio de relatorio diario por e-mail (LOG-019)
+7. Aumentar cobertura de testes E2E com Playwright
+
+---
+
 ## 2026-06-17
 
 ### Tarefas Executadas

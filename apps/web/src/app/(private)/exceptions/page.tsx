@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 
 import { listExceptionShipments } from "@/lib/api";
 import { useAuth } from "@/features/auth/auth-provider";
+import { useApiErrorHandler } from "@/lib/useApiErrorHandler";
+import { AccessDenied } from "@/components/AccessDenied";
 import type { Shipment } from "@/lib/types";
 
 export default function ExceptionsPage() {
@@ -12,6 +14,7 @@ export default function ExceptionsPage() {
   const [criticality, setCriticality] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const { accessDenied, accessDeniedMessage, handleApiError } = useApiErrorHandler();
 
   useEffect(() => {
     let cancelled = false;
@@ -26,15 +29,22 @@ export default function ExceptionsPage() {
           sort_order: "desc",
         });
         if (!cancelled) setItems(response.items);
-      } catch {
-        if (!cancelled) setError("Não foi possível carregar exceções.");
+      } catch (err) {
+        if (!cancelled) {
+          handleApiError(err instanceof Error ? err : new Error("Não foi possível carregar exceções"));
+          setError(err instanceof Error ? err.message : "Não foi possível carregar exceções");
+        }
       } finally {
         if (!cancelled) setLoading(false);
       }
     };
     void run();
     return () => { cancelled = true; };
-  }, [session, criticality]);
+  }, [session, criticality, handleApiError]);
+
+  if (accessDenied) {
+    return <AccessDenied message={accessDeniedMessage} />;
+  }
 
   return (
     <section className="space-y-4">

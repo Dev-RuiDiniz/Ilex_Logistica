@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import { getDashboardSummary, getDashboardTrend } from "@/lib/dashboard-api";
 import type { DashboardFilters, DashboardSummaryResponse, DashboardTrendResponse, DashboardTrendFilters } from "@/lib/types";
 import { DateRangePicker } from "@/app/(private)/shipments/analytics/carrier-efficiency/DateRangePicker";
+import { useApiErrorHandler } from "@/lib/useApiErrorHandler";
+import { AccessDenied } from "@/components/AccessDenied";
 import {
   LineChart,
   Line,
@@ -23,6 +25,7 @@ export default function DashboardPage() {
   const [error, setError] = useState<string | null>(null);
   const [filters, setFilters] = useState<DashboardFilters>({});
   const [trendFilters, setTrendFilters] = useState<DashboardTrendFilters>({});
+  const { accessDenied, accessDeniedMessage, handleApiError } = useApiErrorHandler();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -33,6 +36,7 @@ export default function DashboardPage() {
         const result = await getDashboardSummary(token, filters);
         setData(result);
       } catch (err) {
+        handleApiError(err instanceof Error ? err : new Error("Erro ao carregar dados"));
         setError(err instanceof Error ? err.message : "Erro ao carregar dados");
       } finally {
         setLoading(false);
@@ -40,7 +44,7 @@ export default function DashboardPage() {
     };
 
     fetchData();
-  }, [filters]);
+  }, [filters, handleApiError]);
 
   useEffect(() => {
     const fetchTrendData = async () => {
@@ -50,6 +54,7 @@ export default function DashboardPage() {
         const result = await getDashboardTrend(token, trendFilters);
         setTrendData(result);
       } catch (err) {
+        handleApiError(err instanceof Error ? err : new Error("Erro ao carregar tendência"));
         console.error("Erro ao carregar tendência:", err);
       } finally {
         setTrendLoading(false);
@@ -57,7 +62,7 @@ export default function DashboardPage() {
     };
 
     fetchTrendData();
-  }, [trendFilters]);
+  }, [trendFilters, handleApiError]);
 
   const handleFilterChange = (key: keyof DashboardFilters, value: string | number | boolean | undefined) => {
     setFilters((prev) => ({
@@ -80,6 +85,10 @@ export default function DashboardPage() {
   const clearTrendFilters = () => {
     setTrendFilters({});
   };
+
+  if (accessDenied) {
+    return <AccessDenied message={accessDeniedMessage} />;
+  }
 
   if (loading) {
     return (

@@ -4,9 +4,10 @@ import { ChangeEvent, useCallback, useEffect, useState } from "react";
 
 import { listShipments } from "@/lib/api";
 import { canViewShipments } from "@/lib/permissions";
-import { handleApiError } from "@/lib/error-handler";
 import { buildGlobalSearchParams, monthYearToDateRange } from "@/lib/shipment-utils";
 import { useAuth } from "@/features/auth/auth-provider";
+import { useApiErrorHandler } from "@/lib/useApiErrorHandler";
+import { AccessDenied } from "@/components/AccessDenied";
 import type { Shipment, ShipmentListParams } from "@/lib/types";
 
 export default function ShipmentsPage() {
@@ -19,6 +20,7 @@ export default function ShipmentsPage() {
   const [total, setTotal] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [search, setSearch] = useState("");
+  const { accessDenied, accessDeniedMessage, handleApiError } = useApiErrorHandler();
   
   // Filtros avançados
   const [statusFilter, setStatusFilter] = useState("");
@@ -120,7 +122,8 @@ export default function ShipmentsPage() {
       setTotal(response.total);
       setTotalPages(response.total_pages);
     } catch (err) {
-      setError(handleApiError(err));
+      handleApiError(err instanceof Error ? err : new Error("Erro ao carregar envios"));
+      setError(err instanceof Error ? err.message : "Erro ao carregar envios");
     } finally {
       setLoading(false);
     }

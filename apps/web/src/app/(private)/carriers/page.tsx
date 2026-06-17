@@ -4,8 +4,9 @@ import { FormEvent, useEffect, useMemo, useState } from "react";
 
 import { createCarrier, inactivateCarrier, listCarriers, updateCarrier } from "@/lib/api";
 import { canEditCarriers } from "@/lib/permissions";
-import { handleApiError } from "@/lib/error-handler";
 import { useAuth } from "@/features/auth/auth-provider";
+import { useApiErrorHandler } from "@/lib/useApiErrorHandler";
+import { AccessDenied } from "@/components/AccessDenied";
 import type { Carrier } from "@/lib/types";
 
 type FormState = {
@@ -43,6 +44,7 @@ export default function CarriersPage() {
   const [saving, setSaving] = useState(false);
   const [inactivatingId, setInactivatingId] = useState<number | null>(null);
   const [formError, setFormError] = useState("");
+  const { accessDenied, accessDeniedMessage, handleApiError } = useApiErrorHandler();
 
   const editable = canEditCarriers(session?.role ?? "auditoria");
 
@@ -54,7 +56,8 @@ export default function CarriersPage() {
       const data = await listCarriers(session.accessToken);
       setItems(data);
     } catch (err) {
-      setError(handleApiError(err));
+      handleApiError(err instanceof Error ? err : new Error("Erro ao carregar transportadoras"));
+      setError(err instanceof Error ? err.message : "Erro ao carregar transportadoras");
     } finally {
       setLoading(false);
     }
@@ -96,7 +99,8 @@ export default function CarriersPage() {
       setForm(initialForm);
       await load();
     } catch (err) {
-      setFormError(handleApiError(err));
+      handleApiError(err instanceof Error ? err : new Error("Erro ao salvar transportadora"));
+      setFormError(err instanceof Error ? err.message : "Erro ao salvar transportadora");
     } finally {
       setSaving(false);
     }
@@ -119,11 +123,16 @@ export default function CarriersPage() {
       await inactivateCarrier(session.accessToken, item.id);
       setItems((prev) => removeCarrierById(prev, item.id));
     } catch (err) {
-      setError(handleApiError(err));
+      handleApiError(err instanceof Error ? err : new Error("Erro ao inativar transportadora"));
+      setError(err instanceof Error ? err.message : "Erro ao inativar transportadora");
     } finally {
       setInactivatingId(null);
     }
   };
+
+  if (accessDenied) {
+    return <AccessDenied message={accessDeniedMessage} />;
+  }
 
   return (
     <section className="space-y-4">

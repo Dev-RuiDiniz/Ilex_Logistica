@@ -4,9 +4,9 @@ import { ChangeEvent, useState } from "react";
 
 import { confirmShipmentsImport, previewShipmentImport } from "@/lib/api";
 import { canEditShipments } from "@/lib/permissions";
-import { handleApiError } from "@/lib/error-handler";
-
 import { useAuth } from "@/features/auth/auth-provider";
+import { useApiErrorHandler } from "@/lib/useApiErrorHandler";
+import { AccessDenied } from "@/components/AccessDenied";
 import type { ImportConfirmResponse, ImportPreviewV2Response, RowValidationError, ValidatedRowData } from "@/lib/types";
 
 // Formatting helpers
@@ -48,6 +48,7 @@ export default function ShipmentsImportPage() {
   const [previewResponse, setPreviewResponse] = useState<ImportPreviewV2Response | null>(null);
   const [confirmResponse, setConfirmResponse] = useState<ImportConfirmResponse | null>(null);
   const [layout, setLayout] = useState<"generic" | "braspress_assisted">("generic"); // BETA-012C: Layout selector
+  const { accessDenied, accessDeniedMessage, handleApiError } = useApiErrorHandler();
 
   const editable = canEditShipments(session?.role ?? "auditoria");
 
@@ -96,7 +97,8 @@ export default function ShipmentsImportPage() {
         setState("preview_success");
       }
     } catch (err) {
-      setError(handleApiError(err));
+      handleApiError(err instanceof Error ? err : new Error("Erro ao fazer preview da importação"));
+      setError(err instanceof Error ? err.message : "Erro ao fazer preview da importação");
       setState("api_error");
     }
   };
@@ -115,7 +117,8 @@ export default function ShipmentsImportPage() {
         setError("Importação falhou. Verifique os erros abaixo.");
       }
     } catch (err) {
-      setError(handleApiError(err));
+      handleApiError(err instanceof Error ? err : new Error("Erro ao confirmar importação"));
+      setError(err instanceof Error ? err.message : "Erro ao confirmar importação");
       setState("confirm_error");
     }
   };
@@ -133,6 +136,10 @@ export default function ShipmentsImportPage() {
   const isLoading = state === "preview_loading" || state === "confirm_loading";
   const hasBlockingErrors = previewResponse?.errors.some((err) => err.is_blocking) ?? false;
   const canConfirm = !hasBlockingErrors && (previewResponse?.valid_rows ?? 0) > 0;
+
+  if (accessDenied) {
+    return <AccessDenied message={accessDeniedMessage} />;
+  }
 
   return (
     <section className="space-y-4">

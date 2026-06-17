@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import { getAlerts, getAlertsSummary, generateAlerts, markAlertAsRead, resolveAlert, type AlertsFilters, type AlertItem, type AlertsSummary } from '@/lib/alerts-api';
-import { handleApiError } from '@/lib/error-handler';
+import { useApiErrorHandler } from '@/lib/useApiErrorHandler';
+import { AccessDenied } from '@/components/AccessDenied';
 
 export default function AlertsPage() {
   const [alerts, setAlerts] = useState<AlertItem[]>([]);
@@ -10,6 +11,7 @@ export default function AlertsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [filters, setFilters] = useState<AlertsFilters>({});
+  const { accessDenied, accessDeniedMessage, handleApiError } = useApiErrorHandler();
 
   const fetchAlerts = async () => {
     try {
@@ -22,7 +24,8 @@ export default function AlertsPage() {
       setAlerts(alertsData.alerts);
       setSummary(summaryData);
     } catch (err) {
-      setError(handleApiError(err));
+      handleApiError(err instanceof Error ? err : new Error("Erro ao carregar alertas"));
+      setError(err instanceof Error ? err.message : "Erro ao carregar alertas");
       console.error(err);
     } finally {
       setLoading(false);
@@ -34,7 +37,8 @@ export default function AlertsPage() {
       await generateAlerts();
       await fetchAlerts();
     } catch (err) {
-      setError(handleApiError(err));
+      handleApiError(err instanceof Error ? err : new Error("Erro ao gerar alertas"));
+      setError(err instanceof Error ? err.message : "Erro ao gerar alertas");
       console.error(err);
     }
   };
@@ -44,7 +48,8 @@ export default function AlertsPage() {
       await markAlertAsRead(alertId);
       await fetchAlerts();
     } catch (err) {
-      setError(handleApiError(err));
+      handleApiError(err instanceof Error ? err : new Error("Erro ao marcar alerta como lido"));
+      setError(err instanceof Error ? err.message : "Erro ao marcar alerta como lido");
       console.error(err);
     }
   };
@@ -54,7 +59,8 @@ export default function AlertsPage() {
       await resolveAlert(alertId);
       await fetchAlerts();
     } catch (err) {
-      setError(handleApiError(err));
+      handleApiError(err instanceof Error ? err : new Error("Erro ao resolver alerta"));
+      setError(err instanceof Error ? err.message : "Erro ao resolver alerta");
       console.error(err);
     }
   };
@@ -72,6 +78,10 @@ export default function AlertsPage() {
     fetchAlerts();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filters]);
+
+  if (accessDenied) {
+    return <AccessDenied message={accessDeniedMessage} />;
+  }
 
   if (loading) {
     return <div className="p-6">Carregando...</div>;

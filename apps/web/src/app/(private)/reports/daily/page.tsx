@@ -23,7 +23,8 @@ import type {
   DailyReportFilters,
   DailyReportStatus,
 } from "@/lib/types";
-import { handleApiError } from "@/lib/error-handler";
+import { useApiErrorHandler } from "@/lib/useApiErrorHandler";
+import { AccessDenied } from "@/components/AccessDenied";
 
 export default function DailyReportPage() {
   const [reports, setReports] = useState<DailyReport[]>([]);
@@ -32,6 +33,7 @@ export default function DailyReportPage() {
   const [error, setError] = useState("");
   const [generating, setGenerating] = useState(false);
   const [generateError, setGenerateError] = useState("");
+  const { accessDenied, accessDeniedMessage, handleApiError } = useApiErrorHandler();
 
   // Export state
   const [exporting, setExporting] = useState(false);
@@ -58,7 +60,8 @@ export default function DailyReportPage() {
       }
     } catch (err) {
       if (!signal?.aborted) {
-        setError(handleApiError(err));
+        handleApiError(err instanceof Error ? err : new Error("Erro ao carregar relatórios"));
+        setError(err instanceof Error ? err.message : "Erro ao carregar relatórios");
         console.error(err);
       }
     } finally {
@@ -178,6 +181,10 @@ export default function DailyReportPage() {
   const alerts = selectedReport ? parseAlerts(selectedReport.alerts_json) : [];
   const carrierEfficiency = selectedReport ? parseCarrierEfficiency(selectedReport.carrier_efficiency_json) : [];
   const importFailures = selectedReport ? parseImportFailures(selectedReport.import_failures_json) : null;
+
+  if (accessDenied) {
+    return <AccessDenied message={accessDeniedMessage} />;
+  }
 
   return (
     <section className="space-y-6">

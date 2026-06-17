@@ -139,11 +139,11 @@ Registrar diariamente o que foi feito, problemas encontrados e proximos passos.
 
 ---
 
-## 7. PUSH AO FINAL
+## 7. COMMIT E PUSH AO FINAL DE CADA TAREFA
 
-- **Ao final de cada sessao de trabalho**, fazer push das alteracoes para o remoto
+- **Ao final de cada tarefa concluida**, fazer commit e push das alteracoes para o remoto
 - **Branch de trabalho:** usar branches feature (`feature/<descricao>`) para novas tarefas; nunca commitar direto em `main` sem autorizacao explicita
-- **Antes do push:**
+- **Antes do commit/push:**
   - [ ] Commit com mensagem em pt-BR conforme secao 1
   - [ ] Testes passando localmente
   - [ ] Secret scan limpo

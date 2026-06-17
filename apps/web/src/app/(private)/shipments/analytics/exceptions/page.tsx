@@ -2,12 +2,15 @@
 
 import { useEffect, useState } from "react";
 import { getExceptionsPanel, type ExceptionsPanelResponse, type ExceptionsPanelFilters } from "@/lib/exceptions-api";
+import { useApiErrorHandler } from "@/lib/useApiErrorHandler";
+import { AccessDenied } from "@/components/AccessDenied";
 
 export default function ExceptionsPanelPage() {
   const [data, setData] = useState<ExceptionsPanelResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [filters, setFilters] = useState<ExceptionsPanelFilters>({});
+  const { accessDenied, accessDeniedMessage, handleApiError } = useApiErrorHandler();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -18,6 +21,7 @@ export default function ExceptionsPanelPage() {
         const result = await getExceptionsPanel(token, filters);
         setData(result);
       } catch (err) {
+        handleApiError(err instanceof Error ? err : new Error("Erro ao carregar dados"));
         setError(err instanceof Error ? err.message : "Erro ao carregar dados");
       } finally {
         setLoading(false);
@@ -25,7 +29,7 @@ export default function ExceptionsPanelPage() {
     };
 
     fetchData();
-  }, [filters]);
+  }, [filters, handleApiError]);
 
   const handleFilterChange = (key: keyof ExceptionsPanelFilters, value: string | number | boolean | undefined) => {
     setFilters((prev) => ({
@@ -37,6 +41,10 @@ export default function ExceptionsPanelPage() {
   const handleClearFilters = () => {
     setFilters({});
   };
+
+  if (accessDenied) {
+    return <AccessDenied message={accessDeniedMessage} />;
+  }
 
   if (loading) {
     return (

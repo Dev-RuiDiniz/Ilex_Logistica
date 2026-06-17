@@ -4,8 +4,9 @@ import { FormEvent, useEffect, useState } from "react";
 
 import { createUser, listUsers, updateUser } from "@/lib/api";
 import { canReadUsers, canWriteUsers } from "@/lib/permissions";
-import { handleApiError } from "@/lib/error-handler";
 import { useAuth } from "@/features/auth/auth-provider";
+import { useApiErrorHandler } from "@/lib/useApiErrorHandler";
+import { AccessDenied } from "@/components/AccessDenied";
 import type { UserListItem, UserRole } from "@/lib/types";
 
 const roleOptions: UserRole[] = ["admin", "manager", "operator", "viewer", "logistica", "gestor", "auditoria"];
@@ -18,6 +19,7 @@ export default function UsersPage() {
   const [email, setEmail] = useState("");
   const [fullName, setFullName] = useState("");
   const [selectedRole, setSelectedRole] = useState<UserRole>("logistica");
+  const { accessDenied, accessDeniedMessage, handleApiError } = useApiErrorHandler();
 
   useEffect(() => {
     let cancelled = false;
@@ -34,6 +36,10 @@ export default function UsersPage() {
     return () => { cancelled = true; };
   }, [session]);
 
+  if (accessDenied) {
+    return <AccessDenied message={accessDeniedMessage} />;
+  }
+
   if (!canReadUsers(role)) {
     return (
       <div className="rounded border bg-red-50 p-4 text-center">
@@ -47,7 +53,8 @@ export default function UsersPage() {
     try {
       setItems(await listUsers(session.accessToken));
     } catch (err) {
-      setError(handleApiError(err));
+      handleApiError(err instanceof Error ? err : new Error("Erro ao recarregar usuários"));
+      setError(err instanceof Error ? err.message : "Erro ao recarregar usuários");
     }
   };
 
@@ -61,7 +68,8 @@ export default function UsersPage() {
       setSelectedRole("logistica");
       await reloadUsers();
     } catch (err) {
-      setError(handleApiError(err));
+      handleApiError(err instanceof Error ? err : new Error("Erro ao criar usuário"));
+      setError(err instanceof Error ? err.message : "Erro ao criar usuário");
     }
   };
 
@@ -71,7 +79,8 @@ export default function UsersPage() {
       await updateUser(session.accessToken, item.id, { roles: [nextRole] });
       await reloadUsers();
     } catch (err) {
-      setError(handleApiError(err));
+      handleApiError(err instanceof Error ? err : new Error("Erro ao atualizar usuário"));
+      setError(err instanceof Error ? err.message : "Erro ao atualizar usuário");
     }
   };
 
@@ -81,7 +90,8 @@ export default function UsersPage() {
       await updateUser(session.accessToken, item.id, { is_active: false });
       await reloadUsers();
     } catch (err) {
-      setError(handleApiError(err));
+      handleApiError(err instanceof Error ? err : new Error("Erro ao inativar usuário"));
+      setError(err instanceof Error ? err.message : "Erro ao inativar usuário");
     }
   };
 

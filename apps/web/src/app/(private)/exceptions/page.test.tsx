@@ -37,7 +37,7 @@ describe("ExceptionsPage", () => {
     render(<ExceptionsPage />);
 
     await waitFor(() => {
-      expect(screen.getByText("Não foi possível carregar exceções.")).toBeInTheDocument();
+      expect(screen.getByText("API Error")).toBeInTheDocument();
     });
   });
 

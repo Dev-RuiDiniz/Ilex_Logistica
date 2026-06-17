@@ -1,6 +1,6 @@
 # CONTEXTO.md — Estado e Contexto do Projeto Ilex Logistica
 
-**Atualizado em:** 2026-06-17
+**Atualizado em:** 2026-06-25
 
 ---
 
@@ -8,9 +8,12 @@
 
 Projeto de plataforma web para rastreio de entregas, gestao de excecoes operacionais e relatorios logisticos. Monorepo com API Python/FastAPI + frontend Next.js + infra Docker + documentacao extensa.
 
-**Fase atual:** Branch `feature/beta-027-alerts-notifications` com o Épico 5 (alertas e notificações) concluído localmente. Backend e frontend validados em 2026-06-17; PR pendente de abertura/revisão.
+**Fase atual:** Branch `main` com BETA-020D (Integração de Tratamento de Erros RBAC no Frontend) concluído. Projeto em estado estável com 489 testes backend passando e 320 testes frontend passando.
 
-**Atualização 2026-06-17:** alertas passaram a registrar `AlertDeliveryLog`, deduplicar por origem e gerar `import_failure`/`no_update`; o dashboard usa contadores reais de alertas e falhas de importação.
+**Atualizações recentes:**
+- **2026-06-25:** BETA-020D completado — Integração de tratamento de erros 401/403 em 18 páginas privadas do frontend usando hook `useApiErrorHandler`. 5 testes unitários do hook, 320 testes frontend passando.
+- **2026-06-24:** BETA-020C completado — Frontend de Segurança e RBAC com tratamento de 401/403, helpers de permissões, sidebar condicional e componente AccessDenied. 30 novos testes frontend.
+- **2026-06-17:** BETA-027 completado — Alertas e Notificações com `AlertDeliveryLog`, deduplicação por origem, geração de alertas para múltiplos tipos e integração com dashboard/exceções. 88 testes backend + 19 testes frontend.
 
 ---
 
@@ -24,10 +27,11 @@ Projeto de plataforma web para rastreio de entregas, gestao de excecoes operacio
 - **Cobertura:** ~88% (declarado)
 
 ### Frontend (`apps/web`)
-- **Status:** Build passando (tipos completos adicionados em `types.ts`)
-- **Telas prontas:** login, carriers, shipments, shipments/import, exceptions, reports/daily, alerts, users (parcial), settings (parcial)
-- **Testes:** Vitest unitario + Playwright E2E (alguns skipados)
+- **Status:** Build passando, RBAC integrado
+- **Telas prontas:** login, carriers, shipments, shipments/import, exceptions, reports/daily, alerts, users (com RBAC), settings (parcial)
+- **Testes:** Vitest unitario (331 testes passando) + Playwright E2E (alguns skipados)
 - **Cobertura:** ~20.8%
+- **RBAC:** Tratamento de 401/403 implementado, helpers de permissões, sidebar condicional, componente AccessDenied
 
 ### Infraestrutura
 - **Docker Compose:** PostgreSQL + API container + healthchecks
@@ -73,11 +77,16 @@ Projeto de plataforma web para rastreio de entregas, gestao de excecoes operacio
 5. ~~Atualizar `BETA_FUNCTIONAL_EPIC_AUDIT.md`~~ **(FEITO 2026-06-10)**
 6. ~~Revisar e mergear PR #38 (BETA-019B — Frontend de Auditoria)~~ **(MERGEADO 2026-06-10)**
 7. ~~Revisar e mergear PR #39 (BETA-020A — Seguranca e RBAC)~~ **(MERGEADO 2026-06-10)**
-8. Implementar BETA-020B (frontend de seguranca e RBAC)
-9. Implementar tela administrativa de usuarios (W15)
-10. Implementar tela de auditoria de alteracoes (W18)
-11. Desenvolver conectores de transportadoras (LOG-021/022)
-12. Implementar envio de relatorio diario por e-mail (LOG-019)
+8. ~~Implementar BETA-020B (RBAC operational endpoints)~~ **(FEITO)**
+9. ~~Implementar BETA-020C (Frontend de Seguranca e RBAC)~~ **(FEITO 2026-06-24)**
+10. ~~Implementar BETA-027 (Alertas e Notificacoes)~~ **(FEITO 2026-06-17)**
+11. ~~Integrar tratamento de 401/403 em todas as páginas restantes (BETA-020D)** **(FEITO 2026-06-25)**
+12. Implementar testes E2E de navegação por permissão (BETA-020E)
+13. Implementar tela administrativa de usuarios completa (W15)
+14. Implementar tela de auditoria de alteracoes (W18)
+15. Desenvolver conectores de transportadoras (LOG-021/022)
+16. Implementar envio de relatorio diario por e-mail (LOG-019)
+17. Aumentar cobertura de testes E2E com Playwright
 
 ---
 
@@ -92,16 +101,23 @@ Projeto de plataforma web para rastreio de entregas, gestao de excecoes operacio
 
 ## Historico de Mudancas (Linha do Tempo)
 
-### 2026-06-10 (Sessao completa)
-- Criacao de `AGENTS.md`, `CONTEXTO.md` e `RELATORIO_DIA.md`
-- Auditoria completa do projeto gerada (`AUDITORIA.md`)
-- Identificacao e **resolucao** de 48 conflitos de merge nao resolvidos em 10 arquivos
-- Merge de PR #36 (BETA-018B — Relatorio Diario Frontend) na main
-- Correcao de build frontend: tipos completos adicionados em `types.ts`
-- Correcao de 13 testes preexistentes (8 Braspress, 3 auth, 1 daily report, 1 logging)
-- Reescrita do `README.md` com apresentacao comercial
-- Atualizacao de `AUDITORIA.md` e `BETA_FUNCTIONAL_EPIC_AUDIT.md` com estado pos-merge
-- Suite completa: **489 passed, 0 failed**
+### 2026-06-24 (Sessao de governanca)
+- Atualizacao de CONTEXTO.md com estado atual do projeto
+- BETA-020C (Frontend de Seguranca e RBAC) marcado como concluido
+- BETA-027 (Alertas e Notificacoes) marcado como concluido
+- Verificacao de estado: branch main limpo, testes backend passando
+- Proximos passos priorizados: integracao 401/403, conectores, E2E
+
+### 2026-06-17 (BETA-027 — Alertas e Notificacoes)
+- Adicionado `AlertDeliveryLog` para registrar geração, leitura, resolução e duplicidades ignoradas
+- Implementada geração de alertas para `sla_critical`, `sla_late`, `sla_warning`, `unknown_sla`, `no_update` e `import_failure`
+- Corrigidos filtros de `sla_status` e `is_late` no painel de exceções
+- Corrigido o `delay_days` do painel de exceções para usar o cálculo do SLA
+- Ajustado o dashboard para contar falhas de importação e alertas ativos com dados reais
+- Atualizado o frontend de alertas para expor o tipo `no_update`
+- Backend validado: 88 passed
+- Frontend validado: 19 passed
+- Branch `feature/beta-027-alerts-notifications` preparado para PR
 
 ### 2026-06-10 (Continuacao — Correcao de PRs)
 - Analise de PRs abertas: #38 (BETA-019B) e #39 (BETA-020A)

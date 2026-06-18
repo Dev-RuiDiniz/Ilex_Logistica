@@ -2,6 +2,45 @@
 
 ---
 
+## 2026-06-18
+
+### Tarefas Executadas
+
+1. **Ajuste visual claro das superfícies principais do frontend**
+   - Criada especificação curta em `docs/superpowers/specs/2026-06-18-light-main-surfaces-design.md`
+   - Criado plano de implementação em `docs/superpowers/plans/2026-06-18-light-main-surfaces.md`
+   - Clareadas as superfícies compartilhadas principais em `apps/web/src/app/globals.css`
+   - Ajustado o showcase da tela de login para uma composição clara, preservando o shell premium escuro
+
+### Arquivos Modificados
+- `apps/web/src/app/globals.css`
+- `apps/web/src/app/login/page.tsx`
+- `docs/superpowers/specs/2026-06-18-light-main-surfaces-design.md`
+- `docs/superpowers/plans/2026-06-18-light-main-surfaces.md`
+- `CONTEXTO.md`
+- `RELATORIO_DIA.md`
+
+### Testes
+- `cd apps/web && npm test` -> 391/391 passando
+- `cd apps/web && npm run build` -> passando
+
+### Bugs Encontrados e Correções Aplicadas
+- Os blocos principais do frontend ainda transmitiam sensação escura mesmo após o redesign premium -> ajustados para branco/off-white com contraste mais leve
+- O showcase principal do login ainda concentrava o maior peso visual escuro fora do shell -> clareado sem alterar fluxo ou copy
+
+### Documentação Atualizada
+- `docs/superpowers/specs/2026-06-18-light-main-surfaces-design.md`
+- `docs/superpowers/plans/2026-06-18-light-main-surfaces.md`
+- `CONTEXTO.md`
+- `RELATORIO_DIA.md`
+
+### Bloqueios
+- Nenhum bloqueio funcional identificado
+
+### Proximos Passos
+1. Fazer revisão visual manual em navegador com dados reais, especialmente dashboard e shipments
+2. Se necessário, ajustar contraste fino de textos secundários após uso real
+
 ## 2026-06-17
 
 ### Tarefas Executadas

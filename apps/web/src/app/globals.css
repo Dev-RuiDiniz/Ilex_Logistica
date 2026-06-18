@@ -1,13 +1,13 @@
 @import "tailwindcss";
 
 :root {
-  --background: #edf2f7;
+  --background: #f6f8fb;
   --foreground: #102033;
   --muted: #5d6b7d;
-  --line: rgba(16, 32, 51, 0.1);
-  --panel: rgba(255, 255, 255, 0.88);
+  --line: rgba(16, 32, 51, 0.08);
+  --panel: rgba(255, 255, 255, 0.96);
   --panel-strong: #ffffff;
-  --panel-soft: #f5f8fc;
+  --panel-soft: #fbfcfe;
   --brand: #15314b;
   --brand-strong: #0c2136;
   --brand-accent: #2e6a8e;
@@ -15,8 +15,8 @@
   --success: #2f7a63;
   --warning: #c07a22;
   --danger: #b6523d;
-  --shadow-soft: 0 18px 60px rgba(21, 49, 75, 0.08);
-  --shadow-card: 0 12px 40px rgba(16, 32, 51, 0.08);
+  --shadow-soft: 0 16px 44px rgba(21, 49, 75, 0.07);
+  --shadow-card: 0 10px 26px rgba(16, 32, 51, 0.06);
   --radius-xl: 28px;
   --radius-lg: 22px;
   --radius-md: 16px;
@@ -36,9 +36,9 @@
 
 html {
   background:
-    radial-gradient(circle at top left, rgba(46, 106, 142, 0.14), transparent 28%),
-    radial-gradient(circle at top right, rgba(198, 125, 47, 0.1), transparent 22%),
-    linear-gradient(180deg, #eef3f9 0%, #e8eef6 100%);
+    radial-gradient(circle at top left, rgba(46, 106, 142, 0.1), transparent 26%),
+    radial-gradient(circle at top right, rgba(198, 125, 47, 0.08), transparent 20%),
+    linear-gradient(180deg, #f8fbfd 0%, #f1f5fa 100%);
 }
 
 body {
@@ -74,8 +74,8 @@ textarea:focus-visible {
 .app-shell-root {
   min-height: 100vh;
   background:
-    radial-gradient(circle at top left, rgba(46, 106, 142, 0.15), transparent 30%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.86) 0%, rgba(239, 244, 250, 0.92) 100%);
+    radial-gradient(circle at top left, rgba(46, 106, 142, 0.1), transparent 30%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.92) 0%, rgba(244, 248, 252, 0.98) 100%);
 }
 
 .app-shell-header {
@@ -104,19 +104,19 @@ textarea:focus-visible {
   border: 1px solid var(--line);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-card);
-  backdrop-filter: blur(12px);
+  backdrop-filter: blur(10px);
 }
 
 .surface-panel-strong {
   background: var(--panel-strong);
-  border: 1px solid rgba(16, 32, 51, 0.08);
+  border: 1px solid rgba(16, 32, 51, 0.07);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-card);
 }
 
 .surface-muted {
   background: var(--panel-soft);
-  border: 1px solid rgba(16, 32, 51, 0.08);
+  border: 1px solid rgba(16, 32, 51, 0.06);
   border-radius: var(--radius-md);
 }
 
@@ -127,9 +127,11 @@ textarea:focus-visible {
   padding: 1.75rem;
   border-radius: var(--radius-xl);
   background:
-    linear-gradient(135deg, rgba(12, 33, 54, 0.96), rgba(27, 61, 92, 0.94)),
-    linear-gradient(180deg, rgba(198, 125, 47, 0.1), transparent);
-  color: #f6f9fc;
+    radial-gradient(circle at top right, rgba(46, 106, 142, 0.12), transparent 26%),
+    radial-gradient(circle at bottom left, rgba(198, 125, 47, 0.08), transparent 24%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(248, 250, 253, 0.96));
+  color: var(--foreground);
+  border: 1px solid rgba(16, 32, 51, 0.07);
   box-shadow: var(--shadow-soft);
 }
 
@@ -138,7 +140,7 @@ textarea:focus-visible {
   font-weight: 700;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: rgba(216, 228, 239, 0.74);
+  color: rgba(46, 72, 99, 0.68);
 }
 
 .page-title {
@@ -152,7 +154,7 @@ textarea:focus-visible {
   max-width: 58rem;
   font-size: 0.98rem;
   line-height: 1.65;
-  color: rgba(225, 233, 242, 0.84);
+  color: rgba(68, 86, 107, 0.88);
 }
 
 .page-grid {
@@ -272,8 +274,8 @@ textarea:focus-visible {
   gap: 1rem;
   border-radius: var(--radius-lg);
   padding: 1.15rem;
-  border: 1px solid rgba(16, 32, 51, 0.08);
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(244, 248, 252, 0.9));
+  border: 1px solid rgba(16, 32, 51, 0.07);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.99), rgba(249, 251, 253, 0.98));
   box-shadow: var(--shadow-card);
 }
 
@@ -297,26 +299,26 @@ textarea:focus-visible {
 }
 
 .metric-card[data-tone="danger"] {
-  background: linear-gradient(180deg, rgba(255, 241, 238, 0.98), rgba(255, 248, 246, 0.98));
+  background: linear-gradient(180deg, rgba(255, 246, 243, 0.99), rgba(255, 251, 249, 0.99));
 }
 
 .metric-card[data-tone="warning"] {
-  background: linear-gradient(180deg, rgba(255, 248, 235, 0.98), rgba(255, 251, 244, 0.98));
+  background: linear-gradient(180deg, rgba(255, 251, 241, 0.99), rgba(255, 253, 248, 0.99));
 }
 
 .metric-card[data-tone="success"] {
-  background: linear-gradient(180deg, rgba(239, 250, 246, 0.98), rgba(246, 252, 249, 0.98));
+  background: linear-gradient(180deg, rgba(244, 252, 249, 0.99), rgba(249, 253, 251, 0.99));
 }
 
 .metric-card[data-tone="accent"] {
-  background: linear-gradient(180deg, rgba(237, 245, 250, 0.98), rgba(247, 250, 253, 0.98));
+  background: linear-gradient(180deg, rgba(243, 248, 252, 0.99), rgba(250, 252, 254, 0.99));
 }
 
 .table-shell {
   overflow: hidden;
   border-radius: var(--radius-lg);
-  border: 1px solid rgba(16, 32, 51, 0.08);
-  background: rgba(255, 255, 255, 0.96);
+  border: 1px solid rgba(16, 32, 51, 0.07);
+  background: rgba(255, 255, 255, 0.99);
   box-shadow: var(--shadow-card);
 }
 
@@ -327,7 +329,7 @@ textarea:focus-visible {
 }
 
 .data-table thead th {
-  background: rgba(237, 243, 249, 0.92);
+  background: rgba(244, 248, 252, 0.98);
   color: #3b4958;
   font-size: 0.74rem;
   text-transform: uppercase;
@@ -343,11 +345,11 @@ textarea:focus-visible {
 }
 
 .data-table tbody tr:nth-child(even) {
-  background: rgba(245, 248, 252, 0.66);
+  background: rgba(248, 250, 253, 0.9);
 }
 
 .data-table tbody tr:hover {
-  background: rgba(236, 244, 250, 0.82);
+  background: rgba(241, 247, 252, 0.96);
 }
 
 .empty-state,
@@ -364,18 +366,18 @@ textarea:focus-visible {
 }
 
 .empty-state {
-  background: rgba(255, 255, 255, 0.8);
-  border: 1px dashed rgba(16, 32, 51, 0.15);
+  background: rgba(255, 255, 255, 0.96);
+  border: 1px dashed rgba(16, 32, 51, 0.12);
 }
 
 .loading-state {
-  background: rgba(245, 248, 252, 0.92);
-  border: 1px solid rgba(16, 32, 51, 0.08);
+  background: rgba(251, 252, 254, 0.98);
+  border: 1px solid rgba(16, 32, 51, 0.07);
 }
 
 .error-state {
-  background: rgba(255, 242, 240, 0.92);
-  border: 1px solid rgba(182, 82, 61, 0.18);
+  background: rgba(255, 247, 245, 0.98);
+  border: 1px solid rgba(182, 82, 61, 0.16);
   color: #8d4234;
 }
 

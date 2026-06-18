@@ -117,7 +117,7 @@ export default function DashboardPage() {
   if (loading) {
     return (
       <div className="loading-state surface-panel-strong">
-        <p className="page-kicker !text-slate-500">Dashboard</p>
+        <p className="page-kicker !text-slate-600">Dashboard</p>
         <div className="section-title">Carregando...</div>
         <p className="section-subtitle">Montando a visão operacional do dia.</p>
       </div>
@@ -427,7 +427,7 @@ export default function DashboardPage() {
         </div>
       </section>
 
-      <p className="text-sm text-slate-500">
+      <p className="text-sm text-slate-700">
         Gerado em: {data.generated_at ? new Date(data.generated_at).toLocaleString("pt-BR") : "-"}
       </p>
     </div>

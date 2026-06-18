@@ -82,7 +82,7 @@ export default function AuditPage() {
     return (
       <div data-testid="audit-page" className="p-6">
         <h1 className="text-2xl font-bold mb-6">Auditoria Operacional</h1>
-        <div className="text-gray-500">Carregando...</div>
+        <div className="text-slate-700">Carregando...</div>
       </div>
     );
   }
@@ -104,19 +104,19 @@ export default function AuditPage() {
       {summary && (
         <div data-testid="audit-summary" className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
           <div className="bg-white p-4 rounded-lg shadow">
-            <div className="text-sm text-gray-500">Total de Logs</div>
+            <div className="text-sm text-slate-700">Total de Logs</div>
             <div className="text-2xl font-bold">{summary.total_logs}</div>
           </div>
           <div className="bg-white p-4 rounded-lg shadow">
-            <div className="text-sm text-gray-500">Sucesso</div>
+            <div className="text-sm text-slate-700">Sucesso</div>
             <div className="text-2xl font-bold text-green-600">{summary.success_count}</div>
           </div>
           <div className="bg-white p-4 rounded-lg shadow">
-            <div className="text-sm text-gray-500">Falhas</div>
+            <div className="text-sm text-slate-700">Falhas</div>
             <div className="text-2xl font-bold text-red-600">{summary.failed_count}</div>
           </div>
           <div className="bg-white p-4 rounded-lg shadow">
-            <div className="text-sm text-gray-500">Críticos</div>
+            <div className="text-sm text-slate-700">Críticos</div>
             <div className="text-2xl font-bold text-red-800">{summary.critical_count}</div>
           </div>
         </div>
@@ -126,7 +126,7 @@ export default function AuditPage() {
       <div data-testid="audit-filters" className="bg-white p-4 rounded-lg shadow mb-6">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Event Type</label>
+            <label className="mb-1 block text-sm font-medium text-slate-800">Event Type</label>
             <input
               type="text"
               value={filters.event_type || ""}
@@ -136,7 +136,7 @@ export default function AuditPage() {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Entity Type</label>
+            <label className="mb-1 block text-sm font-medium text-slate-800">Entity Type</label>
             <input
               type="text"
               value={filters.entity_type || ""}
@@ -146,7 +146,7 @@ export default function AuditPage() {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Severity</label>
+            <label className="mb-1 block text-sm font-medium text-slate-800">Severity</label>
             <select
               value={filters.severity || ""}
               onChange={(e) => handleFilterChange("severity", e.target.value as AuditSeverity | undefined)}
@@ -159,7 +159,7 @@ export default function AuditPage() {
             </select>
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
+            <label className="mb-1 block text-sm font-medium text-slate-800">Status</label>
             <select
               value={filters.status || ""}
               onChange={(e) => handleFilterChange("status", e.target.value as AuditStatus | undefined)}
@@ -181,7 +181,7 @@ export default function AuditPage() {
           </button>
           <button
             onClick={clearFilters}
-            className="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300"
+            className="rounded-md bg-gray-200 px-4 py-2 text-slate-800 hover:bg-gray-300"
           >
             Limpar Filtros
           </button>
@@ -190,7 +190,7 @@ export default function AuditPage() {
 
       {/* Logs Table */}
       {logs.length === 0 ? (
-        <div data-testid="audit-empty-state" className="text-center py-8 text-gray-500">
+        <div data-testid="audit-empty-state" className="py-8 text-center text-slate-700">
           Nenhum log encontrado
         </div>
       ) : (
@@ -198,14 +198,14 @@ export default function AuditPage() {
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Data</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Event Type</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Action</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Entity</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Severity</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actor</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Message</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-slate-700 uppercase tracking-wider">Data</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-slate-700 uppercase tracking-wider">Event Type</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-slate-700 uppercase tracking-wider">Action</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-slate-700 uppercase tracking-wider">Entity</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-slate-700 uppercase tracking-wider">Severity</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-slate-700 uppercase tracking-wider">Status</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-slate-700 uppercase tracking-wider">Actor</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-slate-700 uppercase tracking-wider">Message</th>
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
@@ -216,7 +216,7 @@ export default function AuditPage() {
                   className="hover:bg-gray-50 cursor-pointer"
                   onClick={() => setSelectedLog(log)}
                 >
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-700">
                     {formatDate(log.created_at)}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
@@ -256,7 +256,7 @@ export default function AuditPage() {
                 <h2 className="text-xl font-bold">Detalhe do Log #{selectedLog.id}</h2>
                 <button
                   onClick={() => setSelectedLog(null)}
-                  className="text-gray-500 hover:text-gray-700"
+                  className="text-slate-700 hover:text-slate-900"
                 >
                   Fechar
                 </button>
@@ -265,49 +265,49 @@ export default function AuditPage() {
               <div className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <span className="text-sm font-medium text-gray-700">Event Type:</span>
+                    <span className="text-sm font-medium text-slate-800">Event Type:</span>
                     <div className="text-sm">{selectedLog.event_type}</div>
                   </div>
                   <div>
-                    <span className="text-sm font-medium text-gray-700">Action:</span>
+                    <span className="text-sm font-medium text-slate-800">Action:</span>
                     <div className="text-sm">{selectedLog.action}</div>
                   </div>
                   <div>
-                    <span className="text-sm font-medium text-gray-700">Entity Type:</span>
+                    <span className="text-sm font-medium text-slate-800">Entity Type:</span>
                     <div className="text-sm">{selectedLog.entity_type}</div>
                   </div>
                   <div>
-                    <span className="text-sm font-medium text-gray-700">Entity ID:</span>
+                    <span className="text-sm font-medium text-slate-800">Entity ID:</span>
                     <div className="text-sm">{selectedLog.entity_id || "N/A"}</div>
                   </div>
                   <div>
-                    <span className="text-sm font-medium text-gray-700">Severity:</span>
+                    <span className="text-sm font-medium text-slate-800">Severity:</span>
                     <div className="text-sm"><AuditSeverityBadge severity={selectedLog.severity} /></div>
                   </div>
                   <div>
-                    <span className="text-sm font-medium text-gray-700">Status:</span>
+                    <span className="text-sm font-medium text-slate-800">Status:</span>
                     <div className="text-sm"><AuditStatusBadge status={selectedLog.status} /></div>
                   </div>
                   <div>
-                    <span className="text-sm font-medium text-gray-700">Actor:</span>
+                    <span className="text-sm font-medium text-slate-800">Actor:</span>
                     <div className="text-sm">{selectedLog.actor_email || selectedLog.actor_user_id || "System"}</div>
                   </div>
                   <div>
-                    <span className="text-sm font-medium text-gray-700">Source:</span>
+                    <span className="text-sm font-medium text-slate-800">Source:</span>
                     <div className="text-sm">{selectedLog.source || "N/A"}</div>
                   </div>
                   <div>
-                    <span className="text-sm font-medium text-gray-700">Request ID:</span>
+                    <span className="text-sm font-medium text-slate-800">Request ID:</span>
                     <div className="text-sm">{selectedLog.request_id || "N/A"}</div>
                   </div>
                   <div>
-                    <span className="text-sm font-medium text-gray-700">Created At:</span>
+                    <span className="text-sm font-medium text-slate-800">Created At:</span>
                     <div className="text-sm">{formatDate(selectedLog.created_at)}</div>
                   </div>
                 </div>
 
                 <div>
-                  <span className="text-sm font-medium text-gray-700">Message:</span>
+                  <span className="text-sm font-medium text-slate-800">Message:</span>
                   <div className="text-sm mt-1">{selectedLog.message}</div>
                 </div>
 

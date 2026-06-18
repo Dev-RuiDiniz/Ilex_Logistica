@@ -134,29 +134,29 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 IX
               </div>
               <div className="space-y-1">
-                <p className="text-[0.7rem] font-bold uppercase tracking-[0.28em] text-slate-300/70">
+                <p className="text-[0.7rem] font-bold uppercase tracking-[0.28em] text-slate-200/90">
                   Ilex Logistica
                 </p>
                 <h1 className="text-xl font-extrabold tracking-[-0.04em] text-white">
                   Exceções com inteligência
                 </h1>
-                <p className="max-w-2xl text-sm text-slate-300/80">{pageContext.note}</p>
+                <p className="max-w-2xl text-sm text-slate-200/95">{pageContext.note}</p>
               </div>
             </div>
 
             <div className="flex flex-col gap-3 lg:items-end">
               <div className="flex flex-wrap items-center gap-2">
-                <span className="rounded-full border border-white/10 bg-white/6 px-3 py-1.5 text-xs font-semibold text-slate-200">
+                <span className="rounded-full border border-white/10 bg-white/6 px-3 py-1.5 text-xs font-semibold text-slate-100">
                   {getRoleBadgeLabel(role)}
                 </span>
-                <span className="rounded-full border border-white/10 bg-white/6 px-3 py-1.5 text-xs font-semibold text-slate-300">
+                <span className="rounded-full border border-white/10 bg-white/6 px-3 py-1.5 text-xs font-semibold text-slate-200">
                   {session?.email}
                 </span>
                 <button onClick={onLogout} className="button-secondary !border-white/10 !bg-white !px-4 !py-2 !text-xs !font-bold">
                   Sair
                 </button>
               </div>
-              <p className="text-xs uppercase tracking-[0.16em] text-slate-400">
+              <p className="text-xs uppercase tracking-[0.16em] text-slate-300">
                 {pageContext.title}
               </p>
             </div>
@@ -167,8 +167,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       <div className="app-shell-main mx-auto grid max-w-[1440px] gap-5 px-4 py-5 lg:grid-cols-[300px_minmax(0,1fr)] lg:px-8 lg:py-8">
         <aside className="app-shell-sidebar rounded-[28px] p-4 lg:p-5">
           <div className="mb-5 rounded-[22px] border border-white/8 bg-white/4 p-4">
-            <p className="text-[0.68rem] uppercase tracking-[0.24em] text-slate-400">Controle da operação</p>
-            <p className="mt-2 text-sm leading-6 text-slate-200">
+            <p className="text-[0.68rem] uppercase tracking-[0.24em] text-slate-300">Controle da operação</p>
+            <p className="mt-2 text-sm leading-6 text-slate-100">
               Navegue por prioridade, monitore a rede e mantenha contexto claro em cada fluxo.
             </p>
           </div>
@@ -176,7 +176,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           <nav className="space-y-5">
             {navSections.map((section) => (
               <div key={section.heading}>
-                <p className="mb-2 px-3 text-[0.7rem] font-bold uppercase tracking-[0.22em] text-slate-400">
+                <p className="mb-2 px-3 text-[0.7rem] font-bold uppercase tracking-[0.22em] text-slate-300">
                   {section.heading}
                 </p>
                 <div className="space-y-1.5">
@@ -194,11 +194,11 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                           className={`group flex items-center justify-between rounded-2xl px-3 py-3 text-sm font-semibold ${
                             active
                               ? "bg-white text-slate-950 shadow-lg"
-                              : "text-slate-200 hover:bg-white/8 hover:text-white"
+                              : "text-slate-100 hover:bg-white/8 hover:text-white"
                           }`}
                         >
                           <span>{item.label}</span>
-                          <span className={`text-[0.68rem] uppercase tracking-[0.16em] ${active ? "text-slate-500" : "text-slate-400 group-hover:text-slate-300"}`}>
+                          <span className={`text-[0.68rem] uppercase tracking-[0.16em] ${active ? "text-slate-600" : "text-slate-300 group-hover:text-slate-200"}`}>
                             abrir
                           </span>
                         </Link>

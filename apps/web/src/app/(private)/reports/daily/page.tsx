@@ -318,9 +318,9 @@ export default function DailyReportPage() {
           <div className="surface-panel p-4 md:p-6">
             <h3 className="mb-3 text-base font-semibold">Histórico de Relatórios</h3>
             {loading ? (
-              <p className="text-sm text-slate-600">Carregando...</p>
+              <p className="text-sm text-slate-700">Carregando...</p>
             ) : reports.length === 0 ? (
-              <p className="text-sm text-slate-600">Nenhum relatório encontrado.</p>
+              <p className="text-sm text-slate-700">Nenhum relatório encontrado.</p>
             ) : (
               <div className="table-shell overflow-x-auto">
                 <table className="data-table">
@@ -393,7 +393,7 @@ export default function DailyReportPage() {
                 <h3 className="text-lg font-semibold">
                   Relatório de {new Date(selectedReport.report_date).toLocaleDateString("pt-BR")}
                 </h3>
-                <p className="text-sm text-slate-600">
+                <p className="text-sm text-slate-700">
                   Gerado em {new Date(selectedReport.generated_at).toLocaleString("pt-BR")}
                 </p>
               </div>
@@ -411,7 +411,7 @@ export default function DailyReportPage() {
             </div>
 
             {selectedReport.period_start && selectedReport.period_end && (
-              <p className="mb-4 text-sm text-slate-600">
+              <p className="mb-4 text-sm text-slate-700">
                 Período: {new Date(selectedReport.period_start).toLocaleDateString("pt-BR")} a{" "}
                 {new Date(selectedReport.period_end).toLocaleDateString("pt-BR")}
               </p>
@@ -427,35 +427,35 @@ export default function DailyReportPage() {
             {summary && kpis && (
               <div className="mb-6 grid gap-3 md:grid-cols-4">
                 <div className="metric-card" data-tone="accent">
-                  <div className="text-sm text-slate-600">Total de Envios</div>
+                  <div className="text-sm text-slate-700">Total de Envios</div>
                   <div className="text-2xl font-semibold">{summary.total_shipments}</div>
                 </div>
                 <div className="metric-card" data-tone="success">
-                  <div className="text-sm text-slate-600">No Prazo</div>
+                  <div className="text-sm text-slate-700">No Prazo</div>
                   <div className="text-2xl font-semibold text-green-600">{summary.on_time_count}</div>
                 </div>
                 <div className="metric-card" data-tone="warning">
-                  <div className="text-sm text-slate-600">Atrasadas</div>
+                  <div className="text-sm text-slate-700">Atrasadas</div>
                   <div className="text-2xl font-semibold text-orange-600">{summary.late_count}</div>
                 </div>
                 <div className="metric-card" data-tone="danger">
-                  <div className="text-sm text-slate-600">Críticas</div>
+                  <div className="text-sm text-slate-700">Críticas</div>
                   <div className="text-2xl font-semibold text-red-600">{summary.critical_count}</div>
                 </div>
                 <div className="metric-card" data-tone="accent">
-                  <div className="text-sm text-slate-600">Alertas Ativos</div>
+                  <div className="text-sm text-slate-700">Alertas Ativos</div>
                   <div className="text-2xl font-semibold text-purple-600">{kpis.active_alerts_count ?? 0}</div>
                 </div>
                 <div className="metric-card" data-tone="accent">
-                  <div className="text-sm text-slate-600">Taxa de Entrega</div>
+                  <div className="text-sm text-slate-700">Taxa de Entrega</div>
                   <div className="text-2xl font-semibold">{((kpis.delivery_rate ?? 0) * 100).toFixed(1)}%</div>
                 </div>
                 <div className="metric-card" data-tone="warning">
-                  <div className="text-sm text-slate-600">Exceções</div>
+                  <div className="text-sm text-slate-700">Exceções</div>
                   <div className="text-2xl font-semibold">{summary.exceptions_count}</div>
                 </div>
                 <div className="metric-card" data-tone="danger">
-                  <div className="text-sm text-slate-600">Falhas de Importação</div>
+                  <div className="text-sm text-slate-700">Falhas de Importação</div>
                   <div className="text-2xl font-semibold">{importFailures?.rejected_count || 0}</div>
                 </div>
               </div>
@@ -511,7 +511,7 @@ export default function DailyReportPage() {
                       }`}
                     >
                       <div className="font-semibold">{alert.title}</div>
-                      <div className="text-slate-600">{alert.message}</div>
+                      <div className="text-slate-700">{alert.message}</div>
                     </div>
                   ))}
                 </div>

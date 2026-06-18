@@ -7,6 +7,7 @@
 ## Visao Geral Atual
 
 **Atualizações recentes:**
+- **2026-06-18:** Normalização global de legibilidade textual aplicada ao frontend inteiro. O `web` recebeu reforço de contraste em subtítulos, labels, estados vazios, tabelas e telas legadas como `audit`, `exceptions`, `shipments/import`, `deliveries` e `settings/sla`, mantendo a base clara das superfícies.
 - **2026-06-18:** Ajuste visual incremental aplicado ao frontend para remover o peso escuro das superfícies principais. `page-hero`, painéis, tabelas, cards e estados compartilhados ficaram mais claros, mantendo `header` e `sidebar` com a identidade premium escura.
 - **2026-06-17:** Frontend redesenhado com a direcao visual "Excecoes com Inteligencia". O `web` agora possui design system proprio, login premium, shell privado com navegacao por dominio e padroes consistentes para dashboard, filtros, tabelas e formularios nas telas centrais.
 - **2026-06-17:** Seed oficial de usuarios de desenvolvimento adicionado ao backend com script operacional em `scripts/seed_dev_users.py`, documentação registrada no README e migration incremental `20260627_02` para alinhar a coluna `roles.description` no PostgreSQL real da stack local.
@@ -33,7 +34,7 @@ Projeto de plataforma web para rastreio de entregas, gestao de excecoes operacio
 ### Frontend (`apps/web`)
 - **Status:** Build passando, frontend dev validado em porta alternativa quando `3000` estiver ocupada
 - **Telas prontas:** login, carriers, shipments, shipments/import, exceptions, reports/daily, alerts, users (com RBAC), settings (parcial)
-- **Sistema visual:** design system proprietario com hero de pagina, surfaces, metric cards, data tables e formularios padronizados; conteudo principal ajustado para base mais clara nas superfícies centrais
+- **Sistema visual:** design system proprietario com hero de pagina, surfaces, metric cards, data tables e formularios padronizados; conteudo principal ajustado para base mais clara nas superfícies centrais e com contraste textual reforçado no frontend inteiro
 - **Testes:** Vitest unitario (391 testes passando) + Playwright E2E versionado
 - **Cobertura:** ~20.8%
 - **RBAC:** Tratamento de 401/403 implementado, helpers de permissões, sidebar condicional, componente AccessDenied
@@ -114,6 +115,12 @@ Projeto de plataforma web para rastreio de entregas, gestao de excecoes operacio
 - Clareadas superfícies compartilhadas do frontend sem alterar header e sidebar
 - Ajustado o showcase principal do login para composição mais luminosa
 - Validação do frontend concluída com `npm test` e `npm run build`
+
+### 2026-06-18 (Normalização global de contraste textual)
+- Reforçados tokens e classes de texto do design system em `globals.css`
+- Padronizada a legibilidade de labels, subtítulos, notas, tabelas e estados auxiliares
+- Ajustadas telas antigas do frontend para convergir com a nova hierarquia de leitura
+- Frontend validado novamente com `npm test` e `npm run build`
 
 ### 2026-06-17 (BETA-030 - Redesign premium do frontend)
 - Criado design system visual proprio do `web` em `globals.css`

@@ -130,7 +130,7 @@ export default function SlaRulesPage() {
     <section className="space-y-4">
       <header>
         <h2 className="text-xl font-semibold">Regras SLA</h2>
-        <p className="text-sm text-slate-600">Configuração de prazos e alertas de SLA.</p>
+        <p className="text-sm text-slate-700">Configuração de prazos e alertas de SLA.</p>
       </header>
 
       {error && <p className="rounded bg-red-50 px-3 py-2 text-sm text-red-700">{error}</p>}
@@ -223,13 +223,13 @@ export default function SlaRulesPage() {
           <tbody>
             {loading ? (
               <tr>
-                <td colSpan={6} className="px-3 py-3 text-slate-500">
+                <td colSpan={6} className="px-3 py-3 text-slate-700">
                   Carregando...
                 </td>
               </tr>
             ) : items.length === 0 ? (
               <tr>
-                <td colSpan={6} className="px-3 py-3 text-slate-500">
+                <td colSpan={6} className="px-3 py-3 text-slate-700">
                   Nenhuma regra SLA encontrada.
                 </td>
               </tr>

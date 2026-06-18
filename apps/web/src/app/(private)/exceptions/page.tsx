@@ -51,7 +51,7 @@ export default function ExceptionsPage() {
       <header className="flex items-center justify-between">
         <div>
           <h2 className="text-xl font-semibold">Painel de Exceções</h2>
-          <p className="text-sm text-slate-600">Fila priorizada por atraso e criticidade.</p>
+          <p className="text-sm text-slate-700">Fila priorizada por atraso e criticidade.</p>
         </div>
         <select value={criticality} onChange={(e) => setCriticality(e.target.value)} className="rounded border px-3 py-2 text-sm">
           <option value="">Todas</option>
@@ -73,9 +73,9 @@ export default function ExceptionsPage() {
           </thead>
           <tbody>
             {loading ? (
-              <tr><td className="px-3 py-3 text-slate-500" colSpan={4}>Carregando...</td></tr>
+              <tr><td className="px-3 py-3 text-slate-700" colSpan={4}>Carregando...</td></tr>
             ) : items.length === 0 ? (
-              <tr><td className="px-3 py-3 text-slate-500" colSpan={4}>Sem exceções no momento.</td></tr>
+              <tr><td className="px-3 py-3 text-slate-700" colSpan={4}>Sem exceções no momento.</td></tr>
             ) : (
               items.map((item) => (
                 <tr key={item.id} className="border-t">

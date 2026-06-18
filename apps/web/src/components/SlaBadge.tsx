@@ -7,7 +7,7 @@ interface SlaBadgeProps {
 
 export function SlaBadge({ status }: SlaBadgeProps) {
   if (!status) {
-    return <span className="text-slate-400">-</span>;
+    return <span className="text-slate-600">-</span>;
   }
 
   return (

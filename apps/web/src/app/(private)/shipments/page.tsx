@@ -695,13 +695,13 @@ export default function ShipmentsPage() {
           <tbody>
             {loading ? (
               <tr>
-                <td colSpan={13} className="px-3 py-3 text-slate-500">
+                <td colSpan={13} className="px-3 py-3 text-slate-700">
                   Carregando...
                 </td>
               </tr>
             ) : items.length === 0 ? (
               <tr>
-                <td colSpan={13} className="px-3 py-3 text-slate-500">
+                <td colSpan={13} className="px-3 py-3 text-slate-700">
                   Nenhum envio encontrado.
                 </td>
               </tr>
@@ -735,7 +735,7 @@ export default function ShipmentsPage() {
       {/* Paginação */}
       {!loading && totalPages > 1 && (
         <div className="surface-panel-strong flex items-center justify-between px-4 py-3">
-          <p className="text-sm text-slate-600">
+          <p className="text-sm text-slate-700">
             Página {page} de {totalPages} ({total} registros)
           </p>
           <div className="flex gap-2">
@@ -758,7 +758,7 @@ export default function ShipmentsPage() {
       )}
 
       {/* Limitação documentada */}
-      <p className="text-xs text-slate-500">
+      <p className="text-xs text-slate-700">
         Esta listagem é limitada a 20 registros por página. Use os filtros para refinar sua busca.
       </p>
     </section>

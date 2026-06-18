@@ -106,27 +106,27 @@ export default function AlertsPage() {
       {/* Summary Cards */}
       <div className="grid grid-cols-1 gap-4 md:grid-cols-3 lg:grid-cols-6">
         <div className="metric-card" data-tone="accent">
-          <div className="text-sm text-gray-600">Total</div>
+          <div className="text-sm text-slate-700">Total</div>
           <div className="text-2xl font-bold">{summary.total_alerts}</div>
         </div>
         <div className="metric-card" data-tone="accent">
-          <div className="text-sm text-gray-600">Ativos</div>
+          <div className="text-sm text-slate-700">Ativos</div>
           <div className="text-2xl font-bold text-blue-600">{summary.active_count}</div>
         </div>
         <div className="metric-card" data-tone="warning">
-          <div className="text-sm text-gray-600">Não Lidos</div>
+          <div className="text-sm text-slate-700">Não Lidos</div>
           <div className="text-2xl font-bold text-yellow-600">{summary.total_alerts - summary.read_count}</div>
         </div>
         <div className="metric-card" data-tone="success">
-          <div className="text-sm text-gray-600">Resolvidos</div>
+          <div className="text-sm text-slate-700">Resolvidos</div>
           <div className="text-2xl font-bold text-green-600">{summary.resolved_count}</div>
         </div>
         <div className="metric-card" data-tone="danger">
-          <div className="text-sm text-gray-600">Críticos</div>
+          <div className="text-sm text-slate-700">Críticos</div>
           <div className="text-2xl font-bold text-red-600">{summary.critical_count}</div>
         </div>
         <div className="metric-card" data-tone="warning">
-          <div className="text-sm text-gray-600">Warnings</div>
+          <div className="text-sm text-slate-700">Warnings</div>
           <div className="text-2xl font-bold text-orange-600">{summary.warning_count}</div>
         </div>
       </div>
@@ -230,7 +230,7 @@ export default function AlertsPage() {
 
       {/* Alerts List */}
       {alerts.length === 0 ? (
-        <div className="empty-state surface-panel-strong text-gray-600">
+        <div className="empty-state surface-panel-strong text-slate-700">
           Nenhum alerta encontrado
         </div>
       ) : (
@@ -238,14 +238,14 @@ export default function AlertsPage() {
           <table className="data-table w-full">
             <thead className="bg-gray-50">
               <tr>
-                <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">Severidade</th>
-                <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">Tipo</th>
-                <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">Status</th>
-                <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">Título</th>
-                <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">Mensagem</th>
-                <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">Origem</th>
-                <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">Gerado em</th>
-                <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">Ações</th>
+                <th className="px-4 py-3 text-left text-sm font-medium text-slate-800">Severidade</th>
+                <th className="px-4 py-3 text-left text-sm font-medium text-slate-800">Tipo</th>
+                <th className="px-4 py-3 text-left text-sm font-medium text-slate-800">Status</th>
+                <th className="px-4 py-3 text-left text-sm font-medium text-slate-800">Título</th>
+                <th className="px-4 py-3 text-left text-sm font-medium text-slate-800">Mensagem</th>
+                <th className="px-4 py-3 text-left text-sm font-medium text-slate-800">Origem</th>
+                <th className="px-4 py-3 text-left text-sm font-medium text-slate-800">Gerado em</th>
+                <th className="px-4 py-3 text-left text-sm font-medium text-slate-800">Ações</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200">
@@ -280,11 +280,11 @@ export default function AlertsPage() {
                     </span>
                   </td>
                   <td className="px-4 py-3 text-sm font-medium">{alert.title}</td>
-                  <td className="px-4 py-3 text-sm text-gray-600">{alert.message}</td>
+                  <td className="px-4 py-3 text-sm text-slate-700">{alert.message}</td>
                   <td className="px-4 py-3 text-sm">
                     {alert.source_type} {alert.source_id}
                   </td>
-                  <td className="px-4 py-3 text-sm text-gray-600">
+                  <td className="px-4 py-3 text-sm text-slate-700">
                     {new Date(alert.generated_at).toLocaleString('pt-BR')}
                   </td>
                   <td className="px-4 py-3">

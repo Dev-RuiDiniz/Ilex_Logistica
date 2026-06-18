@@ -145,7 +145,7 @@ export default function ShipmentsImportPage() {
     <section className="space-y-4">
       <header>
         <h2 className="text-xl font-semibold">Importar Envios</h2>
-        <p className="text-sm text-slate-600">Upload de arquivo CSV ou XLSX para importação em lote de envios.</p>
+        <p className="text-sm text-slate-700">Upload de arquivo CSV ou XLSX para importação em lote de envios.</p>
       </header>
 
       {!editable && <p className="rounded bg-amber-50 px-3 py-2 text-sm text-amber-700">Perfil com permissão somente leitura.</p>}
@@ -181,7 +181,7 @@ export default function ShipmentsImportPage() {
       {state === "file_selected" && (
         <div className="rounded border bg-white p-4 space-y-4">
           <div>
-            <p className="text-sm text-slate-600">Arquivo selecionado: {fileName}</p>
+            <p className="text-sm text-slate-700">Arquivo selecionado: {fileName}</p>
           </div>
           <div className="flex gap-2">
             <button
@@ -206,7 +206,7 @@ export default function ShipmentsImportPage() {
         <div className="rounded border bg-white p-4">
           <div className="flex items-center gap-2">
             <div className="h-4 w-4 animate-spin rounded-full border-2 border-slate-900 border-t-transparent" />
-            <p className="text-sm text-slate-600">Validando arquivo...</p>
+            <p className="text-sm text-slate-700">Validando arquivo...</p>
           </div>
         </div>
       )}
@@ -217,19 +217,19 @@ export default function ShipmentsImportPage() {
             <h3 className="text-base font-semibold">Resumo da Validação</h3>
             <div className="mt-2 grid grid-cols-4 gap-4 text-sm">
               <div>
-                <span className="text-slate-600">Total de linhas:</span>
+                <span className="text-slate-700">Total de linhas:</span>
                 <span className="ml-2 font-semibold">{previewResponse.total_rows}</span>
               </div>
               <div>
-                <span className="text-slate-600">Linhas válidas:</span>
+                <span className="text-slate-700">Linhas válidas:</span>
                 <span className="ml-2 font-semibold text-green-700">{previewResponse.valid_rows}</span>
               </div>
               <div>
-                <span className="text-slate-600">Linhas inválidas:</span>
+                <span className="text-slate-700">Linhas inválidas:</span>
                 <span className="ml-2 font-semibold text-red-700">{previewResponse.invalid_rows}</span>
               </div>
               <div>
-                <span className="text-slate-600">Duplicatas:</span>
+                <span className="text-slate-700">Duplicatas:</span>
                 <span className="ml-2 font-semibold text-amber-700">{previewResponse.duplicate_rows}</span>
               </div>
             </div>
@@ -370,7 +370,7 @@ export default function ShipmentsImportPage() {
         <div className="rounded border bg-white p-4">
           <div className="flex items-center gap-2">
             <div className="h-4 w-4 animate-spin rounded-full border-2 border-slate-900 border-t-transparent" />
-            <p className="text-sm text-slate-600">Processando importação...</p>
+            <p className="text-sm text-slate-700">Processando importação...</p>
           </div>
         </div>
       )}
@@ -381,19 +381,19 @@ export default function ShipmentsImportPage() {
             <h3 className="text-base font-semibold text-green-700">Importação Concluída</h3>
             <div className="mt-2 grid grid-cols-4 gap-4 text-sm">
               <div>
-                <span className="text-slate-600">Total de linhas:</span>
+                <span className="text-slate-700">Total de linhas:</span>
                 <span className="ml-2 font-semibold">{confirmResponse.total_rows}</span>
               </div>
               <div>
-                <span className="text-slate-600">Importados:</span>
+                <span className="text-slate-700">Importados:</span>
                 <span className="ml-2 font-semibold text-green-700">{confirmResponse.imported_count}</span>
               </div>
               <div>
-                <span className="text-slate-600">Rejeitados:</span>
+                <span className="text-slate-700">Rejeitados:</span>
                 <span className="ml-2 font-semibold text-red-700">{confirmResponse.rejected_count}</span>
               </div>
               <div>
-                <span className="text-slate-600">Duplicatas:</span>
+                <span className="text-slate-700">Duplicatas:</span>
                 <span className="ml-2 font-semibold text-amber-700">{confirmResponse.duplicates_count}</span>
               </div>
             </div>
@@ -427,19 +427,19 @@ export default function ShipmentsImportPage() {
             {confirmResponse && (
               <div className="mt-2 grid grid-cols-4 gap-4 text-sm">
                 <div>
-                  <span className="text-slate-600">Total de linhas:</span>
+                  <span className="text-slate-700">Total de linhas:</span>
                   <span className="ml-2 font-semibold">{confirmResponse.total_rows}</span>
                 </div>
                 <div>
-                  <span className="text-slate-600">Importados:</span>
+                  <span className="text-slate-700">Importados:</span>
                   <span className="ml-2 font-semibold text-green-700">{confirmResponse.imported_count}</span>
                 </div>
                 <div>
-                  <span className="text-slate-600">Rejeitados:</span>
+                  <span className="text-slate-700">Rejeitados:</span>
                   <span className="ml-2 font-semibold text-red-700">{confirmResponse.rejected_count}</span>
                 </div>
                 <div>
-                  <span className="text-slate-600">Duplicatas:</span>
+                  <span className="text-slate-700">Duplicatas:</span>
                   <span className="ml-2 font-semibold text-amber-700">{confirmResponse.duplicates_count}</span>
                 </div>
               </div>

@@ -175,13 +175,13 @@ export default function CarriersPage() {
           <tbody>
             {loading ? (
               <tr>
-                <td colSpan={editable ? 4 : 3} className="px-3 py-3 text-slate-500">
+                <td colSpan={editable ? 4 : 3} className="px-3 py-3 text-slate-700">
                   Carregando...
                 </td>
               </tr>
             ) : filtered.length === 0 ? (
               <tr>
-                <td colSpan={editable ? 4 : 3} className="px-3 py-3 text-slate-500">
+                <td colSpan={editable ? 4 : 3} className="px-3 py-3 text-slate-700">
                   Nenhuma transportadora encontrada.
                 </td>
               </tr>

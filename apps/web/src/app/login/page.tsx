@@ -57,7 +57,7 @@ export default function LoginPage() {
                 <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#15314b] text-xs font-black tracking-[0.2em] text-white">
                   IX
                 </span>
-                <span className="text-xs font-bold uppercase tracking-[0.24em] text-slate-600">
+                <span className="text-xs font-bold uppercase tracking-[0.24em] text-slate-700">
                   Ilex Logistica
                 </span>
               </div>
@@ -69,7 +69,7 @@ export default function LoginPage() {
                 <h1 className="max-w-3xl text-4xl font-black tracking-[-0.06em] text-slate-950 md:text-5xl">
                   Priorize alertas, acompanhe envios e reaja mais rápido.
                 </h1>
-                <p className="max-w-2xl text-base leading-8 text-slate-600">
+                <p className="max-w-2xl text-base leading-8 text-slate-700">
                   Um painel pensado para operação logística com leitura clara, contexto executivo
                   e decisões mais rápidas em SLA, transportadoras e tratativas.
                 </p>
@@ -78,12 +78,12 @@ export default function LoginPage() {
 
             <div className="grid gap-4 lg:grid-cols-[1.2fr_0.9fr]">
               <div className="rounded-[28px] border border-slate-200 bg-white/88 p-5 backdrop-blur">
-                <p className="mb-4 text-[0.68rem] font-bold uppercase tracking-[0.22em] text-slate-500">
+                <p className="mb-4 text-[0.68rem] font-bold uppercase tracking-[0.22em] text-slate-700">
                   O que muda na rotina
                 </p>
                 <ul className="space-y-3">
                   {highlights.map((item) => (
-                    <li key={item} className="flex items-start gap-3 text-sm leading-6 text-slate-700">
+                    <li key={item} className="flex items-start gap-3 text-sm leading-6 text-slate-800">
                       <span className="mt-1.5 h-2.5 w-2.5 rounded-full bg-amber-300 shadow-[0_0_0_6px_rgba(198,125,47,0.15)]" />
                       <span>{item}</span>
                     </li>
@@ -92,19 +92,19 @@ export default function LoginPage() {
               </div>
 
               <div className="rounded-[28px] border border-slate-200 bg-[#f8fbfe] p-5 backdrop-blur">
-                <p className="text-[0.68rem] font-bold uppercase tracking-[0.22em] text-slate-500">
+                <p className="text-[0.68rem] font-bold uppercase tracking-[0.22em] text-slate-700">
                   Leituras essenciais
                 </p>
                 <div className="mt-4 grid gap-3">
                   <div className="rounded-2xl border border-slate-200 bg-white p-4">
-                    <div className="text-[0.7rem] uppercase tracking-[0.2em] text-slate-500">Exceções críticas</div>
+                    <div className="text-[0.7rem] uppercase tracking-[0.2em] text-slate-700">Exceções críticas</div>
                     <div className="mt-2 text-3xl font-black tracking-[-0.05em] text-slate-950">24</div>
-                    <div className="mt-1 text-sm text-slate-600">Foco imediato para tratativa</div>
+                    <div className="mt-1 text-sm text-slate-700">Foco imediato para tratativa</div>
                   </div>
                   <div className="rounded-2xl border border-slate-200 bg-white p-4">
-                    <div className="text-[0.7rem] uppercase tracking-[0.2em] text-slate-500">SLA monitorado</div>
+                    <div className="text-[0.7rem] uppercase tracking-[0.2em] text-slate-700">SLA monitorado</div>
                     <div className="mt-2 text-3xl font-black tracking-[-0.05em] text-slate-950">92,4%</div>
-                    <div className="mt-1 text-sm text-slate-600">Clareza para operação e liderança</div>
+                    <div className="mt-1 text-sm text-slate-700">Clareza para operação e liderança</div>
                   </div>
                 </div>
               </div>
@@ -118,13 +118,13 @@ export default function LoginPage() {
         >
           <form onSubmit={onSubmit} className="w-full max-w-md space-y-5">
             <div className="space-y-3">
-              <p className="text-[0.72rem] font-bold uppercase tracking-[0.24em] text-slate-500">
+              <p className="text-[0.72rem] font-bold uppercase tracking-[0.24em] text-slate-700">
                 Acesso seguro
               </p>
               <h2 className="text-3xl font-black tracking-[-0.05em] text-slate-950">
                 Entrar no painel
               </h2>
-              <p className="text-sm leading-7 text-slate-600">
+              <p className="text-sm leading-7 text-slate-700">
                 Use suas credenciais para acessar a operação privada da Ilex com contexto,
                 prioridade e governança.
               </p>
@@ -168,7 +168,7 @@ export default function LoginPage() {
               <button type="submit" disabled={loading} className="button-primary w-full !py-4 !text-sm">
                 {loading ? "Entrando..." : "Entrar na operação"}
               </button>
-              <div className="rounded-[20px] border border-slate-200/80 bg-slate-50 px-4 py-3 text-sm text-slate-600">
+              <div className="rounded-[20px] border border-slate-200/80 bg-slate-50 px-4 py-3 text-sm text-slate-700">
                 Ambientes de desenvolvimento usam os acessos seed documentados no README.
               </div>
             </div>

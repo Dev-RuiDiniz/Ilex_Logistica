@@ -6,6 +6,64 @@
 
 ### Tarefas Executadas
 
+1. **Normalização global de legibilidade de texto**
+   - Criada especificação curta em `docs/superpowers/specs/2026-06-18-global-text-legibility-design.md`
+   - Criado plano de implementação em `docs/superpowers/plans/2026-06-18-global-text-legibility.md`
+   - Reforçados tokens e classes base de hierarquia textual em `apps/web/src/app/globals.css`
+   - Ajustados contrastes em páginas e componentes legados, incluindo `audit`, `alerts`, `exceptions`, `shipments/import`, `deliveries`, `settings/sla`, `reports` e componentes auxiliares
+
+### Arquivos Modificados
+- `apps/web/src/app/globals.css`
+- `apps/web/src/app/login/page.tsx`
+- `apps/web/src/app/(private)/layout.tsx`
+- `apps/web/src/app/(private)/page.tsx`
+- `apps/web/src/app/(private)/dashboard/page.tsx`
+- `apps/web/src/app/(private)/alerts/page.tsx`
+- `apps/web/src/app/(private)/audit/page.tsx`
+- `apps/web/src/app/(private)/exceptions/page.tsx`
+- `apps/web/src/app/(private)/reports/daily/page.tsx`
+- `apps/web/src/app/(private)/settings/sla/page.tsx`
+- `apps/web/src/app/(private)/shipments/page.tsx`
+- `apps/web/src/app/(private)/shipments/import/page.tsx`
+- `apps/web/src/app/(private)/shipments/deliveries/page.tsx`
+- `apps/web/src/app/(private)/shipments/[id]/page.tsx`
+- `apps/web/src/app/(private)/shipments/deliveries/[id]/page.tsx`
+- `apps/web/src/app/(private)/shipments/analytics/exceptions/page.tsx`
+- `apps/web/src/app/(private)/shipments/analytics/carrier-efficiency/DateRangePicker.tsx`
+- `apps/web/src/app/(private)/shipments/analytics/carrier-efficiency/CarrierEfficiencyCharts.tsx`
+- `apps/web/src/app/(private)/carriers/page.tsx`
+- `apps/web/src/components/AccessDenied.tsx`
+- `apps/web/src/components/AuditJsonViewer.tsx`
+- `apps/web/src/components/SlaBadge.tsx`
+- `apps/web/src/components/app-shell.tsx`
+- `docs/superpowers/specs/2026-06-18-global-text-legibility-design.md`
+- `docs/superpowers/plans/2026-06-18-global-text-legibility.md`
+- `CONTEXTO.md`
+- `RELATORIO_DIA.md`
+
+### Testes
+- `cd apps/web && npm test` -> 391/391 passando
+- `cd apps/web && npm run build` -> passando
+
+### Bugs Encontrados e Correções Aplicadas
+- Subtítulos, labels e textos tabulares ainda variavam demais entre telas novas e antigas -> normalizados com reforço global de contraste
+- Páginas legadas ainda dependiam de `gray/slate` suaves demais -> substituídos por tons mais nítidos sem perder a semântica visual
+
+### Documentação Atualizada
+- `docs/superpowers/specs/2026-06-18-global-text-legibility-design.md`
+- `docs/superpowers/plans/2026-06-18-global-text-legibility.md`
+- `CONTEXTO.md`
+- `RELATORIO_DIA.md`
+
+### Bloqueios
+- Nenhum bloqueio funcional identificado
+
+### Proximos Passos
+1. Fazer revisão visual assistida em navegador com dados reais para contraste fino em badges e estados desabilitados
+2. Se necessário, consolidar utilitários semânticos de texto para reduzir classes pontuais residuais
+
+### Tarefas Executadas
+
 1. **Ajuste visual claro das superfícies principais do frontend**
    - Criada especificação curta em `docs/superpowers/specs/2026-06-18-light-main-surfaces-design.md`
    - Criado plano de implementação em `docs/superpowers/plans/2026-06-18-light-main-surfaces.md`

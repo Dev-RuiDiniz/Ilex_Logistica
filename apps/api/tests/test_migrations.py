@@ -41,6 +41,17 @@ def test_migrations_use_postgres_safe_boolean_defaults():
     assert "server_default=sa.text('1')" not in text
 
 
+def test_migrations_include_role_description_column():
+    """Testa que a estrutura versionada inclui description na tabela roles."""
+    versions_dir = Path(__file__).parent.parent / "migrations" / "versions"
+    migration_text = "\n".join(
+        path.read_text(encoding="utf-8")
+        for path in sorted(versions_dir.glob("*.py"))
+    )
+
+    assert 'op.add_column("roles", sa.Column("description", sa.String(length=255), nullable=True))' in migration_text
+
+
 def test_migrations_import():
     """Testa que configuracao do Alembic pode ser importada."""
     config = get_alembic_config()

@@ -6,32 +6,54 @@
 
 ### Tarefas Executadas
 
-1. **Setup local da stack completa**
+1. **Seeds oficiais de usuarios para desenvolvimento**
+   - Criado modulo `apps/api/app/modules/users/seed_dev_users.py` com 7 usuarios padrao e execucao idempotente
+   - Criado script `scripts/seed_dev_users.py` para popular a base local diretamente pela raiz do monorepo
+   - Validado login real com `admin@ilex.com / 123456` na API local
+   - Registrados acessos de teste no README e em documentacao tecnica
+
+2. **Correcao de drift entre modelo e schema real**
+   - Detectado no PostgreSQL local que `roles.description` existia no model, mas nao nas migrations aplicadas
+   - Adicionada migration `20260627_02_add_role_description.py`
+   - Reaplicado `alembic upgrade head` na stack local para alinhar o schema real
+
+3. **README com visao comercial do produto**
+   - Reescrito `README.md` para apresentar proposta de valor, publico-alvo, fluxo operacional e modulos do sistema
+   - Adicionada secao de seeds de desenvolvimento com usuarios, senhas e links locais
+
+4. **Setup local da stack completa**
    - Instaladas dependências locais da API (`pip install -e .[dev]`) e do frontend (`npm install`)
    - Criados arquivos locais `infra/.env` e `apps/web/.env.local`
    - Docker Desktop inicializado e stack local subida com `db` + `api`
    - Frontend dev validado em porta livre (`3002`) por conflito do host com `3000`
 
-2. **Correções de infraestrutura para bootstrap real**
+5. **Correções de infraestrutura para bootstrap real**
    - Corrigidos caminhos do monorepo em `infra/docker-compose.yml` e `infra/docker/api/Dockerfile`
    - Adicionado hardening no Dockerfile para normalizar CRLF do `api-entrypoint.sh`
    - Atualizados testes de `infra` para refletir o layout atual e o workflow `beta-ci.yml`
 
-3. **Correções de migrations para ambiente local**
+6. **Correções de migrations para ambiente local**
    - Unificada a árvore Alembic em um único `head` com merge revision `20260627_01`
    - Ajustado `apps/api/migrations/env.py` para usar a URL de banco em runtime
    - Corrigido `server_default` booleano de `sla_rules` para compatibilidade com PostgreSQL
    - Adicionados testes de regressão em `apps/api/tests/test_migrations.py`
 
-4. **Validações executadas**
+7. **Validações executadas**
    - `python -m pytest -q` em `infra` → 8/8 passando
+   - `cd apps/api && python -m pytest tests/test_dev_user_seeds.py -q` → 2/2 passando
    - `python scripts/validate_migrations.py` → passando
    - `npm test` em `apps/web` → 390/390 passando
    - `npm run build` em `apps/web` → passando
    - `python scripts/check_secrets.py --repo-root . --self-test` → passando
-   - `docker compose ... ps`, `curl /health`, `curl /api/v1/health`, `alembic current` → OK
+   - `docker compose ... ps`, `curl /health`, `curl /api/v1/health`, `alembic current`, `POST /api/v1/auth/login` → OK
 
 ### Arquivos Modificados
+- `apps/api/app/modules/users/seed_dev_users.py`
+- `apps/api/tests/test_dev_user_seeds.py`
+- `apps/api/migrations/versions/20260627_02_add_role_description.py`
+- `scripts/seed_dev_users.py`
+- `README.md`
+- `docs/BETA_DEV_USERS_SEEDS.md`
 - `infra/docker-compose.yml`
 - `infra/docker/api/Dockerfile`
 - `infra/infra_checks.py`
@@ -47,12 +69,15 @@
 
 ### Testes
 - Infra: 8/8 passando
+- Seeds de usuarios: 2/2 passando
 - Migrations: 6/6 passando em `tests/test_migrations.py`
 - Frontend: 390/390 passando
 - Build frontend: OK
 - Secret self-test: OK
 
 ### Bugs Encontrados e Correções Aplicadas
+- Script inicial de seed caia no SQLite padrao e nao na base Dockerizada local -> corrigido com leitura automatica de `infra/.env` e adaptacao para `127.0.0.1:<POSTGRES_PORT>`
+- Drift real entre model `Role` e schema PostgreSQL (`roles.description`) -> corrigido com migration incremental
 - Dockerfile/compose ainda apontavam para `Api/` e `Infra/` antigos
 - Entrypoint da API falhava por CRLF no shebang em build Windows
 - Alembic tinha dois `heads` e impedía `alembic upgrade head`
@@ -60,6 +85,8 @@
 - Migration `20260615_01` usava default booleano incompatível com PostgreSQL
 
 ### Documentação Atualizada
+- `README.md`
+- `docs/BETA_DEV_USERS_SEEDS.md`
 - `infra/LOCAL_SETUP.md`
 - `CONTEXTO.md`
 - `RELATORIO_DIA.md`
@@ -71,6 +98,7 @@
 1. Abrir tarefa separada para reconciliar `AlertDeliveryLog` entre model, migrations e testes
 2. Revisar testes de importação e promoção de delivery que hoje divergem do comportamento autenticado atual
 3. Se necessário, adicionar documentação operacional sobre portas alternativas para hosts já ocupados
+4. Considerar endpoint ou comando administrativo autenticado para reprocessar seeds em ambientes de homologacao
 
 ---
 

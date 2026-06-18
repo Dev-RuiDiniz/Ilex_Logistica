@@ -7,6 +7,7 @@
 ## Visao Geral Atual
 
 **Atualizações recentes:**
+- **2026-06-17:** Seed oficial de usuarios de desenvolvimento adicionado ao backend com script operacional em `scripts/seed_dev_users.py`, documentação registrada no README e migration incremental `20260627_02` para alinhar a coluna `roles.description` no PostgreSQL real da stack local.
 - **2026-06-17:** Setup local da stack corrigido no monorepo atual. Infra ajustada para usar caminhos `apps/api` e `infra/...` no Docker build, entrypoint normalizado para evitar falha por CRLF em Windows e `infra/LOCAL_SETUP.md` alinhado ao layout real do repositório.
 - **2026-06-17:** Bootstrap de migrations estabilizado para ambiente local. `apps/api/migrations/env.py` passou a priorizar a URL de banco em runtime, a árvore Alembic foi unificada em um único `head` com merge revision `20260627_01` e a migration `20260615_01` recebeu default booleano compatível com PostgreSQL.
 - **2026-06-17:** Ambiente local validado com `db` e `api` saudáveis via Docker Compose, migrations em PostgreSQL real, frontend com `npm test` (390/390) e `npm run build` passando. Neste host específico, o PostgreSQL do Ilex foi exposto em `5433` e o frontend dev subiu em `3002` por conflito com portas já ocupadas por outros projetos.
@@ -23,6 +24,7 @@ Projeto de plataforma web para rastreio de entregas, gestao de excecoes operacio
 - **Status:** API sobe localmente via Docker, com migrations aplicadas em PostgreSQL
 - **Modulos prontos:** auth, users, carriers, shipments, imports (CSV/XLSX), sla, alerts, reports, dashboard
 - **Migrations:** 11 versoes Alembic
+- **Seeds operacionais:** usuarios de desenvolvimento/homologacao padronizados e idempotentes
 - **Testes:** validações de migrations passando; suíte completa atual tem regressões fora do escopo de setup local
 - **Cobertura:** ~88% (declarado)
 
@@ -97,6 +99,7 @@ Projeto de plataforma web para rastreio de entregas, gestao de excecoes operacio
 - **Banco dev:** SQLite por padrao (`ilex.db`); PostgreSQL via Docker Compose para testes de integracao
 - **Auth:** JWT com refresh token; secret de fallback hardcoded em dev (requer env var em prod)
 - **RBAC:** 4 perfis (admin, logistica, gestor, auditoria)
+- **Acessos seed locais:** admin, manager, operator, viewer, logistica, gestor e auditoria com senha padrao documentada
 - **Importacao:** Parser CSV/XLSX com validacao linha a linha, deteccao de duplicidade, layout Braspress
 
 ---
@@ -120,6 +123,13 @@ Projeto de plataforma web para rastreio de entregas, gestao de excecoes operacio
 - Backend validado: 88 passed
 - Frontend validado: 19 passed
 - Branch `feature/beta-027-alerts-notifications` preparado para PR
+
+### 2026-06-17 (Seeds de usuarios e README comercial)
+- Criado seed idempotente de usuarios locais em `apps/api/app/modules/users/seed_dev_users.py`
+- Criado script `scripts/seed_dev_users.py` com leitura automatica de `infra/.env`
+- Registrados 7 usuarios padrao para desenvolvimento e homologacao local
+- Adicionada migration `20260627_02_add_role_description.py` para alinhar schema real do Postgres com o modelo `Role`
+- README reestruturado com posicionamento comercial, fluxo operacional da plataforma e acessos de teste
 
 ### 2026-06-10 (Continuacao — Correcao de PRs)
 - Analise de PRs abertas: #38 (BETA-019B) e #39 (BETA-020A)

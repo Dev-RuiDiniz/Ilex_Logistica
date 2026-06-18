@@ -1,137 +1,177 @@
-# Ilex Logística
+# Ilex Logistica
 
-> Plataforma inteligente para rastreio de entregas, identificação de atrasos e gestão de exceções operacionais.
+> Plataforma operacional para empresas que precisam enxergar, priorizar e agir sobre entregas em risco antes que o atraso vire custo, retrabalho ou desgaste com o cliente.
 
-**Versão Beta concluída | Pronto para produção**
-
----
-
-## O que é o Ilex Logística?
-
-O **Ilex Logística** é uma plataforma web completa que centraliza o monitoramento de envios, automatiza a identificação de atrasos e criticidade, e oferece ferramentas avançadas de importação, relatórios e gestão operacional para empresas de logística e transporte.
-
-### Problemas que resolvemos
-
-- **Rastreio fragmentado** — centralize todos os envios em um único painel
-- **Atrasos descobertos tarde demais** — alertas automáticos baseados em regras de SLA configuráveis
-- **Importação manual de planilhas** — upload de CSV/XLSX com validação automática, detecção de duplicidade e mapeamento inteligente de colunas (incluindo layout Braspress)
-- **Falta de visibilidade operacional** — dashboards com KPIs, relatórios diários automáticos e análise de eficiência por transportadora
-- **Controle de acesso inexistente** — autenticação JWT com RBAC (4 perfis: admin, logística, gestor, auditoria)
+**Status atual:** beta funcional consolidada, com stack completa local (`api` + `db` + `web`) e perfis seed para desenvolvimento e homologacao.
 
 ---
 
-## Funcionalidades Principais
+## Visao Comercial
 
-| Módulo | O que faz | Status |
-|--------|-----------|--------|
-| **Envios (Shipments)** | Cadastro, rastreio, filtros avançados, campos fiscais/financeiros e cálculo de SLA | Implementado |
-| **Importação** | Upload CSV/XLSX com preview, validação linha a linha, confirmação e layout Braspress assistido | Implementado |
-| **Transportadoras** | CRUD completo com análise de eficiência e ranking | Implementado |
-| **SLA & Criticidade** | Regras de prazo configuráveis, cálculo automático de atraso e alertas | Implementado |
-| **Alertas** | Notificações operacionais por status e criticidade | Implementado |
-| **Relatórios** | Relatório diário automático com resumo, KPIs, exceções e falhas de importação | Implementado |
-| **Dashboard** | Visão consolidada com indicadores operacionais | Implementado |
-| **Usuários & Permissões** | Autenticação JWT, 4 perfis de acesso e controle granular | Implementado |
-| **Auditoria** | Logs de coleta e histórico de importações versionado | Parcial |
+O **Ilex Logistica** foi desenhado para operadores logisticos, embarcadores e times de torre de controle que hoje dependem de planilhas, consultas manuais em portais de transportadoras e acompanhamento reativo de SLA.
+
+Na pratica, a plataforma transforma o processo operacional em um fluxo unico:
+
+1. **Recebe cargas e remessas** por cadastro ou importacao assistida.
+2. **Normaliza e valida os dados** antes de entrar na operacao.
+3. **Calcula SLA, atraso e criticidade** automaticamente.
+4. **Prioriza excecoes** com alertas e filas de trabalho.
+5. **Entrega visibilidade gerencial** com dashboards, relatorios e auditoria.
+
+O resultado esperado e simples de explicar para negocio:
+
+- Menos tempo gasto consolidando status manualmente
+- Deteccao antecipada de desvios operacionais
+- Melhor governanca sobre importacoes, tratativas e usuarios
+- Mais previsibilidade para transportadoras, gestores e auditoria
 
 ---
 
-## Arquitetura do Monorepo
+## O Que a Plataforma Faz
+
+| Frente | Como gera valor |
+|--------|------------------|
+| **Rastreio e visibilidade** | Centraliza envios em um unico painel com filtros, status e consulta rapida |
+| **Gestao de excecoes** | Mostra entregas atrasadas, com risco de SLA ou sem atualizacao relevante |
+| **Importacao operacional** | Recebe CSV/XLSX com validacao, preview, deteccao de duplicidade e suporte a layout Braspress |
+| **Regras de SLA** | Permite parametrizar prazos e deixar o calculo de atraso automatizado |
+| **Alertas** | Sinaliza ocorrencias que exigem acao do time operacional |
+| **Relatorios** | Resume desempenho diario, falhas, excecoes e indicadores para acompanhamento |
+| **RBAC e auditoria** | Controla quem pode ver ou alterar cada area, com trilha para operacao e compliance |
+
+---
+
+## Para Quem o Ilex Serve
+
+- Operacoes logisticas internas
+- Torres de controle
+- Transportadoras com necessidade de governanca operacional
+- Times de gestao que precisam de KPI, SLA e visibilidade de gargalos
+- Auditoria e liderancas que precisam rastrear quem fez o que
+
+---
+
+## Como Funciona no Dia a Dia
+
+1. O time importa ou registra os envios.
+2. A API processa, valida e grava a base operacional.
+3. O motor de regras calcula SLA e classifica criticidade.
+4. O frontend organiza a fila por prioridade operacional.
+5. Gestores e auditores acompanham indicadores, historico e excecoes.
+
+---
+
+## Modulos Principais
+
+| Modulo | Status | Resumo |
+|--------|--------|--------|
+| **Auth e usuarios** | Implementado | Login JWT, refresh token, RBAC por permissao e perfis operacionais |
+| **Envios** | Implementado | Cadastro, filtros, listagem, detalhe, campos financeiros/fiscais e status |
+| **Importacoes** | Implementado | Preview, confirmacao, suporte CSV/XLSX e layout Braspress |
+| **Transportadoras** | Implementado | Cadastro, inativacao, consulta e eficiencia por transportadora |
+| **SLA** | Implementado | Regras configuraveis, atraso e criticidade automatizados |
+| **Alertas** | Implementado | Gatilhos operacionais e visao de pendencias |
+| **Relatorios** | Implementado | Relatorio diario e KPIs operacionais |
+| **Dashboard** | Implementado | Visao consolidada da operacao |
+| **Auditoria** | Parcial | Logs e trilhas operacionais ja existentes, com expansao administrativa pendente |
+
+---
+
+## Stack do Monorepo
 
 ```text
 .
-├── .github/         # Workflows CI/CD, templates e automação
 ├── apps/
-│   ├── api/         # Backend Python (FastAPI) — 489 testes automatizados
-│   └── web/         # Frontend Next.js (TypeScript) — build otimizado
-├── infra/           # Docker Compose, PostgreSQL, observabilidade
-├── integrations/    # Guias de integração com transportadoras
-└── docs/            # 50+ documentos: arquitetura, roadmaps, QA
+│   ├── api/      # FastAPI + SQLAlchemy + Alembic
+│   └── web/      # Next.js + React + TypeScript
+├── infra/        # Docker Compose, banco e artefatos operacionais
+├── scripts/      # Validacoes e automacoes locais
+└── docs/         # Especificacoes, auditorias e historico do produto
 ```
 
-## Stack Tecnológica
+### Tecnologias
 
-| Camada | Tecnologia |
-|--------|------------|
-| **Backend** | Python 3.12+, FastAPI, SQLAlchemy 2.0, Alembic, Pydantic |
+| Camada | Stack |
+|--------|-------|
+| **Backend** | Python 3.12+, FastAPI, SQLAlchemy 2, Alembic, Pydantic |
 | **Frontend** | Next.js 16, React 19, TypeScript 5, Tailwind CSS 4 |
-| **Banco de Dados** | PostgreSQL 16 (produção) / SQLite (dev) |
-| **Autenticação** | JWT com refresh token, bcrypt, RBAC com 4 perfis |
-| **Infraestrutura** | Docker, Docker Compose, GitHub Actions |
-| **Testes** | pytest 8.3+ (API), Vitest 4+ (Web), Playwright (E2E) |
-| **Governança** | Secret scan, validação de migrations, checklist beta |
+| **Banco** | PostgreSQL 16 na stack Docker, SQLite em cenarios locais isolados |
+| **Seguranca** | JWT, hash de senha, RBAC por role/permissao |
+| **Qualidade** | pytest, Vitest, Playwright, validacao de migrations e secret scan |
 
 ---
 
-## Comece em Minutos
+## Setup Local Rapido
 
 ```bash
-# 1. Clone
-git clone https://github.com/Dev-RuiDiniz/Ilex_Logistica.git
-cd Ilex_Logistica
+# API + banco
+cd infra
+docker compose up --build -d
 
-# 2. Backend
-cd apps/api && pip install -e ".[dev]" && pytest -q
-
-# 3. Frontend
-cd apps/web && npm install && npm run build
-
-# 4. Infraestrutura
-cd infra && docker compose up -d
+# frontend
+cd ../apps/web
+npm install
+npm run dev
 ```
 
-Para detalhes completos de setup, consulte [`infra/LOCAL_SETUP.md`](infra/LOCAL_SETUP.md).
+### Enderecos locais
+
+- API: `http://127.0.0.1:8000`
+- API docs: `http://127.0.0.1:8000/docs`
+- API health: `http://127.0.0.1:8000/health`
+- API v1 health: `http://127.0.0.1:8000/api/v1/health`
+- Web: `http://localhost:3000`
+
+Se a porta `3000` estiver ocupada no host, o Next.js sobe automaticamente em outra porta livre, como `http://localhost:3002`.
+
+Para detalhes completos do ambiente, consulte [`infra/LOCAL_SETUP.md`](infra/LOCAL_SETUP.md).
 
 ---
 
-## Qualidade e Testes
+## Seeds de Desenvolvimento
 
-- **489 testes automatizados** no backend (pytest)
-- **Build do frontend validado** com TypeScript strict
-- **Secret scan automatizado** para segurança
-- **Migrations versionadas** com testes de roundtrip (upgrade/downgrade)
-- **CI/CD** com GitHub Actions para validação contínua
+O repositório agora inclui um seed oficial para acessos locais:
 
 ```bash
-# Rodar validações localmente
-python scripts/check_secrets.py --repo-root .
+python scripts/seed_dev_users.py
+```
+
+### Usuarios seed
+
+| Perfil | E-mail | Senha |
+|--------|--------|-------|
+| **Admin** | `admin@ilex.com` | `123456` |
+| **Manager** | `manager@ilex.com` | `123456` |
+| **Operator** | `operator@ilex.com` | `123456` |
+| **Viewer** | `viewer@ilex.com` | `123456` |
+| **Logistica** | `logistica@ilex.com` | `123456` |
+| **Gestor** | `gestor@ilex.com` | `123456` |
+| **Auditoria** | `audit@ilex.com` | `123456` |
+
+Uso recomendado: ambiente local, QA tecnico e homologacao controlada. Nao usar essas credenciais em producao.
+
+---
+
+## Validacao e Qualidade
+
+```bash
+cd apps/api && python -m pytest -q
+cd apps/web && npm test
 python scripts/validate_migrations.py
-python scripts/beta_validate.py
+python scripts/check_secrets.py --repo-root . --self-test
 ```
 
 ---
 
-## Fluxo de Contribuição
+## Roadmap Imediato
 
-Branches por tipo de mudança:
-- `feature/<tema>` — novas funcionalidades
-- `fix/<tema>` — correções
-- `chore/<tema>` — infraestrutura e configuração
-
-Commits em português com escopo:
-- `feat(api): adiciona endpoint de eficiência por transportadora`
-- `fix(web): corrige validação de SLA no formulário`
+1. Completar a tela administrativa de usuarios
+2. Expandir auditoria operacional e administrativa
+3. Evoluir conectores com transportadoras
+4. Ampliar E2E e automacoes de release
 
 ---
 
-## Status e Roadmap
-
-| Fase | Status | Descrição |
-|------|--------|-----------|
-| **Fase 1** | Concluída | Consolidação do monorepo, 36 PRs mergeados, base técnica sólida |
-| **Fase 2** | Em andamento | CI/CD completo, testes E2E, conectores de transportadoras |
-| **Fase 3** | Planejada | Otimização de pipelines, versionamento e automações de release |
-
-**Próximos passos priorizados:**
-1. Conectores de transportadoras (LOG-021/022)
-2. Tela de tratativas operacionais (W11)
-3. Envio de relatório diário por e-mail (LOG-019)
-4. Cobertura de testes E2E com Playwright
-
----
-
-## Licença e Contato
+## Contato
 
 Desenvolvido por [Dev-RuiDiniz](https://github.com/Dev-RuiDiniz).
-
-Para dúvidas, sugestões ou parcerias, abra uma issue ou entre em contato pelo GitHub.

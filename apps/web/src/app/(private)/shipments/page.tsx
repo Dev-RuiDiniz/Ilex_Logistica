@@ -262,40 +262,45 @@ export default function ShipmentsPage() {
   };
 
   return (
-    <section className="space-y-4">
-      <header className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
-        <div>
-          <h2 className="text-xl font-semibold">Envios</h2>
-          <p className="text-sm text-slate-600">Listagem de envios com filtros, busca e ordenação.</p>
-        </div>
+    <section className="page-stack">
+      <header className="page-hero">
+        <p className="page-kicker">Operação de envios</p>
+        <h2 className="page-title !text-[clamp(1.65rem,1.3rem+0.8vw,2.4rem)]">Envios</h2>
+        <p className="page-subtitle">
+          Filtre por janela, criticidade e contexto fiscal para encontrar rapidamente o que
+          precisa de acompanhamento ou tratativa.
+        </p>
       </header>
 
-      {!canView && <p className="rounded bg-amber-50 px-3 py-2 text-sm text-amber-700">Perfil sem permissão para visualizar envios.</p>}
+      {!canView && <p className="error-state">Perfil sem permissão para visualizar envios.</p>}
 
-      {/* Filtros e busca */}
-      <div className="rounded border bg-white p-4 space-y-4">
+      <div className="surface-panel p-5 md:p-6 space-y-5">
+        <div>
+          <h3 className="section-title">Busca e filtros</h3>
+          <p className="section-subtitle">Separe rapidamente o operacional do crítico com filtros combinados.</p>
+        </div>
         <div className="flex flex-col gap-2 md:flex-row md:items-end">
           <div className="flex-1">
-            <label className="block text-sm font-medium">Buscar</label>
+            <label className="field-label">Buscar</label>
             <input
               value={search}
               onChange={onSearch}
               placeholder="Buscar por tracking, NF, cliente, etc."
-              className="mt-1 w-full rounded border px-3 py-2 text-sm"
+              className="field"
               disabled={loading}
             />
           </div>
           <button
             onClick={onSearchSubmit}
             disabled={loading}
-            className="rounded bg-slate-900 px-4 py-2 text-sm text-white disabled:opacity-60"
+            className="button-primary"
           >
             Buscar
           </button>
         </div>
 
         {/* Filtro temporal por mês/ano */}
-        <div className="border-t pt-4">
+        <div className="surface-muted p-4">
           <div className="flex items-center gap-2 mb-2">
             <input
               type="checkbox"
@@ -305,16 +310,16 @@ export default function ShipmentsPage() {
               disabled={loading}
               className="rounded"
             />
-            <label htmlFor="useMonthYearFilter" className="text-sm font-medium">Filtro por mês/ano</label>
+            <label htmlFor="useMonthYearFilter" className="text-sm font-semibold text-slate-800">Filtro por mês/ano</label>
           </div>
           {useMonthYearFilter && (
             <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
               <div>
-                <label className="block text-sm font-medium">Aplicar em</label>
+                <label className="field-label">Aplicar em</label>
                 <select
                   value={monthYearTarget}
                   onChange={(e) => setMonthYearTarget(e.target.value as "estimated_delivery" | "due_date")}
-                  className="mt-1 w-full rounded border px-3 py-2 text-sm"
+                  className="field-select"
                   disabled={loading}
                 >
                   <option value="estimated_delivery">Entrega estimada</option>
@@ -322,11 +327,11 @@ export default function ShipmentsPage() {
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium">Mês</label>
+                <label className="field-label">Mês</label>
                 <select
                   value={selectedMonth}
                   onChange={(e) => setSelectedMonth(e.target.value)}
-                  className="mt-1 w-full rounded border px-3 py-2 text-sm"
+                  className="field-select"
                   disabled={loading}
                 >
                   <option value="">Selecione</option>
@@ -345,11 +350,11 @@ export default function ShipmentsPage() {
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium">Ano</label>
+                <label className="field-label">Ano</label>
                 <select
                   value={selectedYear}
                   onChange={(e) => setSelectedYear(e.target.value)}
-                  className="mt-1 w-full rounded border px-3 py-2 text-sm"
+                  className="field-select"
                   disabled={loading}
                 >
                   <option value="">Selecione</option>
@@ -365,15 +370,15 @@ export default function ShipmentsPage() {
         </div>
 
         {/* Filtros avançados manuais */}
-        <div className="border-t pt-4">
-          <h4 className="text-sm font-semibold mb-2">Filtros manuais</h4>
+        <div className="surface-muted p-4">
+          <h4 className="section-title !text-base">Filtros manuais</h4>
           <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
             <div>
-              <label className="block text-sm font-medium">Status</label>
+              <label className="field-label">Status</label>
               <select
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
-                className="mt-1 w-full rounded border px-3 py-2 text-sm"
+                className="field-select"
                 disabled={loading}
               >
                 <option value="">Todos</option>
@@ -384,22 +389,22 @@ export default function ShipmentsPage() {
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium">Carrier ID</label>
+              <label className="field-label">Carrier ID</label>
               <input
                 type="number"
                 value={carrierIdFilter}
                 onChange={(e) => setCarrierIdFilter(e.target.value)}
                 placeholder="ID da transportadora"
-                className="mt-1 w-full rounded border px-3 py-2 text-sm"
+                className="field"
                 disabled={loading}
               />
             </div>
             <div>
-              <label className="block text-sm font-medium">Criticidade</label>
+              <label className="field-label">Criticidade</label>
               <select
                 value={criticalityFilter}
                 onChange={(e) => setCriticalityFilter(e.target.value)}
-                className="mt-1 w-full rounded border px-3 py-2 text-sm"
+                className="field-select"
                 disabled={loading}
               >
                 <option value="">Todas</option>
@@ -410,214 +415,214 @@ export default function ShipmentsPage() {
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium">Cliente</label>
+              <label className="field-label">Cliente</label>
               <input
                 type="text"
                 value={customerNameFilter}
                 onChange={(e) => setCustomerNameFilter(e.target.value)}
                 placeholder="Nome do cliente"
-                className="mt-1 w-full rounded border px-3 py-2 text-sm"
+                className="field"
                 disabled={loading}
               />
             </div>
             <div>
-              <label className="block text-sm font-medium">UF Destino</label>
+              <label className="field-label">UF Destino</label>
               <input
                 type="text"
                 value={destinationUfFilter}
                 onChange={(e) => setDestinationUfFilter(e.target.value)}
                 placeholder="UF (ex: SP)"
                 maxLength={2}
-                className="mt-1 w-full rounded border px-3 py-2 text-sm uppercase"
+                className="field uppercase"
                 disabled={loading}
               />
             </div>
             <div>
-              <label className="block text-sm font-medium">Entrega estimada (de)</label>
+              <label className="field-label">Entrega estimada (de)</label>
               <input
                 type="date"
                 value={estimatedDeliveryFrom}
                 onChange={(e) => setEstimatedDeliveryFrom(e.target.value)}
-                className="mt-1 w-full rounded border px-3 py-2 text-sm"
+                className="field"
                 disabled={loading || useMonthYearFilter}
               />
             </div>
             <div>
-              <label className="block text-sm font-medium">Entrega estimada (até)</label>
+              <label className="field-label">Entrega estimada (até)</label>
               <input
                 type="date"
                 value={estimatedDeliveryTo}
                 onChange={(e) => setEstimatedDeliveryTo(e.target.value)}
-                className="mt-1 w-full rounded border px-3 py-2 text-sm"
+                className="field"
                 disabled={loading || useMonthYearFilter}
               />
             </div>
             <div>
-              <label className="block text-sm font-medium">Vencimento (de)</label>
+              <label className="field-label">Vencimento (de)</label>
               <input
                 type="date"
                 value={dueDateFrom}
                 onChange={(e) => setDueDateFrom(e.target.value)}
-                className="mt-1 w-full rounded border px-3 py-2 text-sm"
+                className="field"
                 disabled={loading || useMonthYearFilter}
               />
             </div>
             <div>
-              <label className="block text-sm font-medium">Vencimento (até)</label>
+              <label className="field-label">Vencimento (até)</label>
               <input
                 type="date"
                 value={dueDateTo}
                 onChange={(e) => setDueDateTo(e.target.value)}
-                className="mt-1 w-full rounded border px-3 py-2 text-sm"
+                className="field"
                 disabled={loading || useMonthYearFilter}
               />
             </div>
             <div>
-              <label className="block text-sm font-medium">Coleta/Saída (de)</label>
+              <label className="field-label">Coleta/Saída (de)</label>
               <input
                 type="date"
                 value={collectionDepartureFrom}
                 onChange={(e) => setCollectionDepartureFrom(e.target.value)}
-                className="mt-1 w-full rounded border px-3 py-2 text-sm"
+                className="field"
                 disabled={loading}
               />
             </div>
             <div>
-              <label className="block text-sm font-medium">Coleta/Saída (até)</label>
+              <label className="field-label">Coleta/Saída (até)</label>
               <input
                 type="date"
                 value={collectionDepartureTo}
                 onChange={(e) => setCollectionDepartureTo(e.target.value)}
-                className="mt-1 w-full rounded border px-3 py-2 text-sm"
+                className="field"
                 disabled={loading}
               />
             </div>
             <div>
-              <label className="block text-sm font-medium">Número NF</label>
+              <label className="field-label">Número NF</label>
               <input
                 type="text"
                 value={invoiceNumberFilter}
                 onChange={(e) => setInvoiceNumberFilter(e.target.value)}
                 placeholder="Número da NF"
-                className="mt-1 w-full rounded border px-3 py-2 text-sm"
+                className="field"
                 disabled={loading}
               />
             </div>
             <div>
-              <label className="block text-sm font-medium">Chave NF-e</label>
+              <label className="field-label">Chave NF-e</label>
               <input
                 type="text"
                 value={invoiceKeyFilter}
                 onChange={(e) => setInvoiceKeyFilter(e.target.value)}
                 placeholder="Chave de acesso NF-e"
-                className="mt-1 w-full rounded border px-3 py-2 text-sm"
+                className="field"
                 disabled={loading}
               />
             </div>
             <div>
-              <label className="block text-sm font-medium">Documento Fiscal</label>
+              <label className="field-label">Documento Fiscal</label>
               <input
                 type="text"
                 value={fiscalDocumentFilter}
                 onChange={(e) => setFiscalDocumentFilter(e.target.value)}
                 placeholder="Documento fiscal"
-                className="mt-1 w-full rounded border px-3 py-2 text-sm"
+                className="field"
                 disabled={loading}
               />
             </div>
             <div>
-              <label className="block text-sm font-medium">Valor Frete Mín.</label>
+              <label className="field-label">Valor Frete Mín.</label>
               <input
                 type="number"
                 step="0.01"
                 value={freightValueMin}
                 onChange={(e) => setFreightValueMin(e.target.value)}
                 placeholder="0.00"
-                className="mt-1 w-full rounded border px-3 py-2 text-sm"
+                className="field"
                 disabled={loading}
               />
             </div>
             <div>
-              <label className="block text-sm font-medium">Valor Frete Máx.</label>
+              <label className="field-label">Valor Frete Máx.</label>
               <input
                 type="number"
                 step="0.01"
                 value={freightValueMax}
                 onChange={(e) => setFreightValueMax(e.target.value)}
                 placeholder="0.00"
-                className="mt-1 w-full rounded border px-3 py-2 text-sm"
+                className="field"
                 disabled={loading}
               />
             </div>
             <div>
-              <label className="block text-sm font-medium">Valor NF Mín.</label>
+              <label className="field-label">Valor NF Mín.</label>
               <input
                 type="number"
                 step="0.01"
                 value={invoiceValueMin}
                 onChange={(e) => setInvoiceValueMin(e.target.value)}
                 placeholder="0.00"
-                className="mt-1 w-full rounded border px-3 py-2 text-sm"
+                className="field"
                 disabled={loading}
               />
             </div>
             <div>
-              <label className="block text-sm font-medium">Valor NF Máx.</label>
+              <label className="field-label">Valor NF Máx.</label>
               <input
                 type="number"
                 step="0.01"
                 value={invoiceValueMax}
                 onChange={(e) => setInvoiceValueMax(e.target.value)}
                 placeholder="0.00"
-                className="mt-1 w-full rounded border px-3 py-2 text-sm"
+                className="field"
                 disabled={loading}
               />
             </div>
             <div>
-              <label className="block text-sm font-medium">% Frete Mín.</label>
+              <label className="field-label">% Frete Mín.</label>
               <input
                 type="number"
                 step="0.01"
                 value={freightPercentageMin}
                 onChange={(e) => setFreightPercentageMin(e.target.value)}
                 placeholder="0.00"
-                className="mt-1 w-full rounded border px-3 py-2 text-sm"
+                className="field"
                 disabled={loading}
               />
             </div>
             <div>
-              <label className="block text-sm font-medium">% Frete Máx.</label>
+              <label className="field-label">% Frete Máx.</label>
               <input
                 type="number"
                 step="0.01"
                 value={freightPercentageMax}
                 onChange={(e) => setFreightPercentageMax(e.target.value)}
                 placeholder="0.00"
-                className="mt-1 w-full rounded border px-3 py-2 text-sm"
+                className="field"
                 disabled={loading}
               />
             </div>
             <div>
-              <label className="block text-sm font-medium">Valor Total Mín.</label>
+              <label className="field-label">Valor Total Mín.</label>
               <input
                 type="number"
                 step="0.01"
                 value={amountMin}
                 onChange={(e) => setAmountMin(e.target.value)}
                 placeholder="0.00"
-                className="mt-1 w-full rounded border px-3 py-2 text-sm"
+                className="field"
                 disabled={loading}
               />
             </div>
             <div>
-              <label className="block text-sm font-medium">Valor Total Máx.</label>
+              <label className="field-label">Valor Total Máx.</label>
               <input
                 type="number"
                 step="0.01"
                 value={amountMax}
                 onChange={(e) => setAmountMax(e.target.value)}
                 placeholder="0.00"
-                className="mt-1 w-full rounded border px-3 py-2 text-sm"
+                className="field"
                 disabled={loading}
               />
             </div>
@@ -625,13 +630,13 @@ export default function ShipmentsPage() {
         </div>
 
         {/* Ordenação */}
-        <div className="flex flex-col gap-2 md:flex-row md:items-center border-t pt-4">
+        <div className="surface-muted flex flex-col gap-2 p-4 md:flex-row md:items-center">
           <div className="flex-1">
-            <label className="block text-sm font-medium">Ordenar por</label>
+            <label className="field-label">Ordenar por</label>
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
-              className="mt-1 w-full rounded border px-3 py-2 text-sm"
+              className="field-select"
               disabled={loading}
             >
               <option value="created_at">Data de criação</option>
@@ -644,33 +649,33 @@ export default function ShipmentsPage() {
           <button
             onClick={toggleSortOrder}
             disabled={loading}
-            className="rounded border px-4 py-2 text-sm disabled:opacity-60"
+            className="button-secondary"
           >
             {sortOrder === "asc" ? "Ascendente" : "Descendente"}
           </button>
           <button
             onClick={onApplyFilters}
             disabled={loading}
-            className="rounded bg-slate-900 px-4 py-2 text-sm text-white disabled:opacity-60"
+            className="button-primary"
           >
             Aplicar Filtros
           </button>
           <button
             onClick={onClearFilters}
             disabled={loading}
-            className="rounded border px-4 py-2 text-sm disabled:opacity-60"
+            className="button-ghost"
           >
             Limpar Filtros
           </button>
         </div>
       </div>
 
-      {error && <p className="rounded bg-red-50 px-3 py-2 text-sm text-red-700">{error}</p>}
+      {error && <p className="error-state">{error}</p>}
 
       {/* Tabela */}
-      <div className="overflow-x-auto rounded border">
-        <table className="w-full text-sm">
-          <thead className="bg-slate-100 text-left">
+      <div className="table-shell overflow-x-auto">
+        <table className="data-table">
+          <thead className="text-left">
             <tr>
               <th className="px-3 py-2">Tracking</th>
               <th className="px-3 py-2">NF</th>
@@ -702,7 +707,7 @@ export default function ShipmentsPage() {
               </tr>
             ) : (
               items.map((item) => (
-                <tr key={item.id} className="border-t">
+                <tr key={item.id}>
                   <td className="px-3 py-2">
                     <a href={`/shipments/${item.id}`} className="text-blue-700 hover:underline">
                       {item.tracking_code}
@@ -729,7 +734,7 @@ export default function ShipmentsPage() {
 
       {/* Paginação */}
       {!loading && totalPages > 1 && (
-        <div className="flex items-center justify-between">
+        <div className="surface-panel-strong flex items-center justify-between px-4 py-3">
           <p className="text-sm text-slate-600">
             Página {page} de {totalPages} ({total} registros)
           </p>
@@ -737,14 +742,14 @@ export default function ShipmentsPage() {
             <button
               onClick={() => setPage((p) => Math.max(1, p - 1))}
               disabled={page === 1}
-              className="rounded border px-3 py-1 text-sm disabled:opacity-60"
+              className="button-secondary !px-3 !py-2"
             >
               Anterior
             </button>
             <button
               onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
               disabled={page === totalPages}
-              className="rounded border px-3 py-1 text-sm disabled:opacity-60"
+              className="button-secondary !px-3 !py-2"
             >
               Próxima
             </button>

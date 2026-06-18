@@ -187,14 +187,17 @@ export default function DailyReportPage() {
   }
 
   return (
-    <section className="space-y-6">
-      <header className="flex items-center justify-between">
-        <div>
-          <h2 className="text-xl font-semibold">Relatório Diário</h2>
-          <p className="text-sm text-slate-600">Visão consolidada da operação diária.</p>
+    <section className="page-stack">
+      <header className="page-hero">
+        <p className="page-kicker">Leitura executiva</p>
+        <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+          <div>
+            <h2 className="page-title !text-[clamp(1.65rem,1.3rem+0.8vw,2.4rem)]">Relatório Diário</h2>
+            <p className="page-subtitle">Consolide operação, exceções e desempenho em um único resumo acionável.</p>
+          </div>
         </div>
         <button
-          className="rounded bg-slate-900 px-4 py-2 text-sm text-white hover:bg-slate-800 disabled:opacity-50"
+          className="button-secondary self-start !bg-white"
           onClick={() => setSelectedReport(null)}
           disabled={!selectedReport}
         >
@@ -211,14 +214,14 @@ export default function DailyReportPage() {
       {!selectedReport ? (
         <>
           {/* Filters */}
-          <div className="rounded border p-4">
+          <div className="surface-panel p-4 md:p-6">
             <h3 className="mb-3 text-base font-semibold">Filtros</h3>
             <div className="grid gap-3 md:grid-cols-4">
               <div>
                 <label className="mb-1 block text-sm font-medium">Data Inicial</label>
                 <input
                   type="date"
-                  className="w-full rounded border px-3 py-2 text-sm"
+                  className="field"
                   value={dateFrom}
                   onChange={(e) => setDateFrom(e.target.value)}
                 />
@@ -227,7 +230,7 @@ export default function DailyReportPage() {
                 <label className="mb-1 block text-sm font-medium">Data Final</label>
                 <input
                   type="date"
-                  className="w-full rounded border px-3 py-2 text-sm"
+                  className="field"
                   value={dateTo}
                   onChange={(e) => setDateTo(e.target.value)}
                 />
@@ -235,7 +238,7 @@ export default function DailyReportPage() {
               <div>
                 <label className="mb-1 block text-sm font-medium">Status</label>
                 <select
-                  className="w-full rounded border px-3 py-2 text-sm"
+                  className="field-select"
                   value={status}
                   onChange={(e) => setStatus(e.target.value as DailyReportStatus | "")}
                 >
@@ -248,7 +251,7 @@ export default function DailyReportPage() {
               </div>
               <div className="flex items-end">
                 <button
-                  className="w-full rounded border px-4 py-2 text-sm hover:bg-slate-50"
+                  className="button-secondary w-full"
                   onClick={handleClearFilters}
                 >
                   Limpar Filtros
@@ -258,28 +261,28 @@ export default function DailyReportPage() {
           </div>
 
           {/* Generate/Search by Date */}
-          <div className="rounded border p-4">
+          <div className="surface-panel p-4 md:p-6">
             <h3 className="mb-3 text-base font-semibold">Gerar ou Buscar Relatório</h3>
             <div className="grid gap-3 md:grid-cols-3">
               <div>
                 <label className="mb-1 block text-sm font-medium">Data</label>
                 <input
                   type="date"
-                  className="w-full rounded border px-3 py-2 text-sm"
+                  className="field"
                   value={searchDate}
                   onChange={(e) => setSearchDate(e.target.value)}
                 />
               </div>
               <div className="flex items-end gap-2">
                 <button
-                  className="flex-1 rounded bg-slate-900 px-4 py-2 text-sm text-white hover:bg-slate-800 disabled:opacity-50"
+                  className="button-primary flex-1"
                   onClick={handleGenerateReport}
                   disabled={generating}
                 >
                   {generating ? "Gerando..." : "Gerar Relatório"}
                 </button>
                 <button
-                  className="flex-1 rounded border px-4 py-2 text-sm hover:bg-slate-50"
+                  className="button-secondary flex-1"
                   onClick={handleSearchByDate}
                   disabled={loading}
                 >
@@ -287,14 +290,14 @@ export default function DailyReportPage() {
                 </button>
                 <div className="flex gap-2">
                   <button
-                    className="rounded bg-green-600 px-4 py-2 text-sm text-white hover:bg-green-700 disabled:opacity-50"
+                    className="button-primary !bg-[linear-gradient(135deg,#2f7a63_0%,#459277_100%)]"
                     onClick={() => handleExportReport("csv")}
                     disabled={exporting || reports.length === 0}
                   >
                     {exporting ? "Exportando..." : "Exportar CSV"}
                   </button>
                   <button
-                    className="rounded bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-700 disabled:opacity-50"
+                    className="button-primary !bg-[linear-gradient(135deg,#2e6a8e_0%,#3b83ae_100%)]"
                     onClick={() => handleExportReport("json")}
                     disabled={exporting || reports.length === 0}
                   >
@@ -312,15 +315,15 @@ export default function DailyReportPage() {
           </div>
 
           {/* Report List */}
-          <div className="rounded border p-4">
+          <div className="surface-panel p-4 md:p-6">
             <h3 className="mb-3 text-base font-semibold">Histórico de Relatórios</h3>
             {loading ? (
               <p className="text-sm text-slate-600">Carregando...</p>
             ) : reports.length === 0 ? (
               <p className="text-sm text-slate-600">Nenhum relatório encontrado.</p>
             ) : (
-              <div className="overflow-x-auto">
-                <table className="w-full text-sm">
+              <div className="table-shell overflow-x-auto">
+                <table className="data-table">
                   <thead>
                     <tr className="border-b">
                       <th className="px-3 py-2 text-left">Data</th>
@@ -366,7 +369,7 @@ export default function DailyReportPage() {
                           <td className="px-3 py-2">{reportSummary?.exceptions_count || 0}</td>
                           <td className="px-3 py-2">
                             <button
-                              className="rounded border px-2 py-1 text-xs hover:bg-slate-50"
+                              className="button-secondary !px-3 !py-2 !text-xs"
                               onClick={() => handleViewDetails(report.id)}
                             >
                               Ver Detalhes
@@ -384,7 +387,7 @@ export default function DailyReportPage() {
       ) : (
         <>
           {/* Report Detail */}
-          <div className="rounded border p-4">
+          <div className="surface-panel p-4 md:p-6">
             <div className="mb-4 flex items-center justify-between">
               <div>
                 <h3 className="text-lg font-semibold">
@@ -423,35 +426,35 @@ export default function DailyReportPage() {
             {/* KPIs */}
             {summary && kpis && (
               <div className="mb-6 grid gap-3 md:grid-cols-4">
-                <div className="rounded border p-3">
+                <div className="metric-card" data-tone="accent">
                   <div className="text-sm text-slate-600">Total de Envios</div>
                   <div className="text-2xl font-semibold">{summary.total_shipments}</div>
                 </div>
-                <div className="rounded border p-3">
+                <div className="metric-card" data-tone="success">
                   <div className="text-sm text-slate-600">No Prazo</div>
                   <div className="text-2xl font-semibold text-green-600">{summary.on_time_count}</div>
                 </div>
-                <div className="rounded border p-3">
+                <div className="metric-card" data-tone="warning">
                   <div className="text-sm text-slate-600">Atrasadas</div>
                   <div className="text-2xl font-semibold text-orange-600">{summary.late_count}</div>
                 </div>
-                <div className="rounded border p-3">
+                <div className="metric-card" data-tone="danger">
                   <div className="text-sm text-slate-600">Críticas</div>
                   <div className="text-2xl font-semibold text-red-600">{summary.critical_count}</div>
                 </div>
-                <div className="rounded border p-3">
+                <div className="metric-card" data-tone="accent">
                   <div className="text-sm text-slate-600">Alertas Ativos</div>
                   <div className="text-2xl font-semibold text-purple-600">{kpis.active_alerts_count ?? 0}</div>
                 </div>
-                <div className="rounded border p-3">
+                <div className="metric-card" data-tone="accent">
                   <div className="text-sm text-slate-600">Taxa de Entrega</div>
                   <div className="text-2xl font-semibold">{((kpis.delivery_rate ?? 0) * 100).toFixed(1)}%</div>
                 </div>
-                <div className="rounded border p-3">
+                <div className="metric-card" data-tone="warning">
                   <div className="text-sm text-slate-600">Exceções</div>
                   <div className="text-2xl font-semibold">{summary.exceptions_count}</div>
                 </div>
-                <div className="rounded border p-3">
+                <div className="metric-card" data-tone="danger">
                   <div className="text-sm text-slate-600">Falhas de Importação</div>
                   <div className="text-2xl font-semibold">{importFailures?.rejected_count || 0}</div>
                 </div>
@@ -460,7 +463,7 @@ export default function DailyReportPage() {
 
             {/* Exceptions */}
             {exceptions.length > 0 && (
-              <div className="mb-6 rounded border p-4">
+              <div className="surface-muted mb-6 p-4">
                 <h4 className="mb-3 text-base font-semibold">Exceções Priorizadas</h4>
                 <div className="max-h-64 overflow-y-auto">
                   <table className="w-full text-sm">
@@ -493,7 +496,7 @@ export default function DailyReportPage() {
 
             {/* Alerts */}
             {alerts.length > 0 && (
-              <div className="mb-6 rounded border p-4">
+              <div className="surface-muted mb-6 p-4">
                 <h4 className="mb-3 text-base font-semibold">Alertas Críticos/Ativos</h4>
                 <div className="max-h-64 overflow-y-auto space-y-2">
                   {alerts.slice(0, 10).map((alert) => (
@@ -517,7 +520,7 @@ export default function DailyReportPage() {
 
             {/* Carrier Efficiency */}
             {carrierEfficiency.length > 0 && (
-              <div className="mb-6 rounded border p-4">
+              <div className="surface-muted mb-6 p-4">
                 <h4 className="mb-3 text-base font-semibold">Top Transportadoras por Eficiência</h4>
                 <div className="max-h-64 overflow-y-auto">
                   <table className="w-full text-sm">

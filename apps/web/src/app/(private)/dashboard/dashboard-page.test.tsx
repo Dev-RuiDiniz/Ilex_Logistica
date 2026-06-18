@@ -75,6 +75,7 @@ describe("DashboardPage", () => {
     render(<DashboardPage />);
 
     await waitFor(() => {
+      expect(screen.getByText("Painel de controle")).toBeInTheDocument();
       const kpiSection = screen.getByTestId("dashboard-kpi-cards");
       within(kpiSection).getByText("Total");
       within(kpiSection).getByText("No Prazo");

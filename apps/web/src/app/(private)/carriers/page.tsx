@@ -1,13 +1,13 @@
-﻿"use client";
+"use client";
 
 import { FormEvent, useEffect, useMemo, useState } from "react";
 
+import { AccessDenied } from "@/components/AccessDenied";
+import { useAuth } from "@/features/auth/auth-provider";
 import { createCarrier, inactivateCarrier, listCarriers, updateCarrier } from "@/lib/api";
 import { canEditCarriers } from "@/lib/permissions";
-import { useAuth } from "@/features/auth/auth-provider";
-import { useApiErrorHandler } from "@/lib/useApiErrorHandler";
-import { AccessDenied } from "@/components/AccessDenied";
 import type { Carrier } from "@/lib/types";
+import { useApiErrorHandler } from "@/lib/useApiErrorHandler";
 
 type FormState = {
   id?: number;
@@ -64,11 +64,8 @@ export default function CarriersPage() {
   };
 
   useEffect(() => {
-    // A carga depende da sessao resolvida no provider e precisa disparar no mount dessa tela.
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     void load();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [session?.accessToken]);
+  }, [session?.accessToken]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const filtered = useMemo(() => filterCarriersByQuery(items, query), [items, query]);
 
@@ -135,28 +132,39 @@ export default function CarriersPage() {
   }
 
   return (
-    <section className="space-y-4">
-      <header className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
-        <div>
-          <h2 className="text-xl font-semibold">Transportadoras</h2>
-          <p className="text-sm text-slate-600">Listagem com filtro, cadastro, edicao e inativacao.</p>
-        </div>
-        <input
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          placeholder="Buscar por nome"
-          className="w-full rounded border px-3 py-2 text-sm md:w-64"
-        />
+    <section className="page-stack">
+      <header className="page-hero">
+        <p className="page-kicker">Rede de transporte</p>
+        <h2 className="page-title !text-[clamp(1.65rem,1.3rem+0.8vw,2.4rem)]">Transportadoras</h2>
+        <p className="page-subtitle">
+          Organize parceiros, códigos e metadados com uma visão clara da rede ativa e do
+          que exige manutenção.
+        </p>
       </header>
 
-      {error && <p className="rounded bg-red-50 px-3 py-2 text-sm text-red-700">{error}</p>}
+      <div className="surface-panel p-5 md:p-6">
+        <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+          <div>
+            <h3 className="section-title">Cadastro e acompanhamento</h3>
+            <p className="section-subtitle">Encontre rápido, edite com clareza e mantenha a base consistente.</p>
+          </div>
+          <input
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Buscar por nome"
+            className="field md:w-72"
+          />
+        </div>
+      </div>
+
+      {error && <p className="error-state">{error}</p>}
       {!editable && (
-        <p className="rounded bg-amber-50 px-3 py-2 text-sm text-amber-700">Perfil com permissao somente leitura.</p>
+        <p className="surface-muted px-4 py-3 text-sm text-amber-700">Perfil com permissao somente leitura.</p>
       )}
 
-      <div className="overflow-hidden rounded border">
-        <table className="w-full text-sm">
-          <thead className="bg-slate-100 text-left">
+      <div className="table-shell">
+        <table className="data-table">
+          <thead className="text-left">
             <tr>
               <th className="px-3 py-2">Nome</th>
               <th className="px-3 py-2">Codigo</th>
@@ -179,19 +187,19 @@ export default function CarriersPage() {
               </tr>
             ) : (
               filtered.map((item) => (
-                <tr key={item.id} className="border-t">
+                <tr key={item.id}>
                   <td className="px-3 py-2">{item.name}</td>
                   <td className="px-3 py-2">{item.external_code ?? "-"}</td>
                   <td className="px-3 py-2">{item.is_active ? "Ativo" : "Inativo"}</td>
                   {editable && (
                     <td className="px-3 py-2">
                       <div className="flex gap-2">
-                        <button onClick={() => onEdit(item)} className="rounded border px-2 py-1">
+                        <button onClick={() => onEdit(item)} className="button-secondary !px-3 !py-2">
                           Editar
                         </button>
                         <button
                           onClick={() => onInactivate(item)}
-                          className="rounded border px-2 py-1 text-red-700"
+                          className="button-danger !px-3 !py-2"
                           disabled={inactivatingId === item.id}
                         >
                           {inactivatingId === item.id ? "Inativando..." : "Inativar"}
@@ -207,8 +215,8 @@ export default function CarriersPage() {
       </div>
 
       {editable && (
-        <form onSubmit={onSubmit} className="grid gap-3 rounded border p-4 md:grid-cols-2">
-          <h3 className="text-base font-semibold md:col-span-2">
+        <form onSubmit={onSubmit} className="surface-panel grid gap-3 p-5 md:grid-cols-2 md:p-6">
+          <h3 className="section-title md:col-span-2">
             {form.id ? "Editar transportadora" : "Nova transportadora"}
           </h3>
           <input
@@ -217,25 +225,25 @@ export default function CarriersPage() {
             placeholder="Nome"
             required
             minLength={2}
-            className="rounded border px-3 py-2"
+            className="field"
           />
           <input
             value={form.external_code}
             onChange={(e) => setForm((f) => ({ ...f, external_code: e.target.value }))}
             placeholder="Codigo externo"
-            className="rounded border px-3 py-2"
+            className="field"
           />
           <textarea
             value={form.metadata_json}
             onChange={(e) => setForm((f) => ({ ...f, metadata_json: e.target.value }))}
-            className="min-h-24 rounded border px-3 py-2 font-mono text-sm md:col-span-2"
+            className="field-textarea min-h-24 font-mono text-sm md:col-span-2"
           />
-          {formError && <p className="rounded bg-red-50 px-3 py-2 text-sm text-red-700 md:col-span-2">{formError}</p>}
+          {formError && <p className="error-state md:col-span-2">{formError}</p>}
           <div className="flex gap-2 md:col-span-2">
-            <button type="submit" disabled={saving} className="rounded bg-slate-900 px-4 py-2 text-white">
+            <button type="submit" disabled={saving} className="button-primary">
               {saving ? "Salvando..." : form.id ? "Atualizar" : "Cadastrar"}
             </button>
-            <button type="button" onClick={() => setForm(initialForm)} className="rounded border px-4 py-2">
+            <button type="button" onClick={() => setForm(initialForm)} className="button-ghost">
               Limpar
             </button>
           </div>

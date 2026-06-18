@@ -7,14 +7,15 @@
 ## Visao Geral Atual
 
 **Atualizações recentes:**
+- **2026-06-17:** Frontend redesenhado com a direcao visual "Excecoes com Inteligencia". O `web` agora possui design system proprio, login premium, shell privado com navegacao por dominio e padroes consistentes para dashboard, filtros, tabelas e formularios nas telas centrais.
 - **2026-06-17:** Seed oficial de usuarios de desenvolvimento adicionado ao backend com script operacional em `scripts/seed_dev_users.py`, documentação registrada no README e migration incremental `20260627_02` para alinhar a coluna `roles.description` no PostgreSQL real da stack local.
 - **2026-06-17:** Setup local da stack corrigido no monorepo atual. Infra ajustada para usar caminhos `apps/api` e `infra/...` no Docker build, entrypoint normalizado para evitar falha por CRLF em Windows e `infra/LOCAL_SETUP.md` alinhado ao layout real do repositório.
 - **2026-06-17:** Bootstrap de migrations estabilizado para ambiente local. `apps/api/migrations/env.py` passou a priorizar a URL de banco em runtime, a árvore Alembic foi unificada em um único `head` com merge revision `20260627_01` e a migration `20260615_01` recebeu default booleano compatível com PostgreSQL.
-- **2026-06-17:** Ambiente local validado com `db` e `api` saudáveis via Docker Compose, migrations em PostgreSQL real, frontend com `npm test` (390/390) e `npm run build` passando. Neste host específico, o PostgreSQL do Ilex foi exposto em `5433` e o frontend dev subiu em `3002` por conflito com portas já ocupadas por outros projetos.
+- **2026-06-17:** Ambiente local validado com `db` e `api` saudáveis via Docker Compose, migrations em PostgreSQL real, frontend com `npm test` (391/391) e `npm run build` passando. Neste host específico, o PostgreSQL do Ilex foi exposto em `5433` e o frontend dev subiu em `3002` por conflito com portas já ocupadas por outros projetos.
 
 Projeto de plataforma web para rastreio de entregas, gestao de excecoes operacionais e relatorios logisticos. Monorepo com API Python/FastAPI + frontend Next.js + infra Docker + documentacao extensa.
 
-**Fase atual:** Branch `fix/infra-setup-local` com stack local funcional para `db` + `api` + `web`, mas com regressões existentes na suíte completa da API fora do escopo de bootstrap local.
+**Fase atual:** Branch `fix/infra-setup-local` com stack local funcional para `db` + `api` + `web`, frontend premium consolidado nas telas centrais e regressões existentes apenas na suíte completa da API fora do escopo de bootstrap local.
 
 ---
 
@@ -31,7 +32,8 @@ Projeto de plataforma web para rastreio de entregas, gestao de excecoes operacio
 ### Frontend (`apps/web`)
 - **Status:** Build passando, frontend dev validado em porta alternativa quando `3000` estiver ocupada
 - **Telas prontas:** login, carriers, shipments, shipments/import, exceptions, reports/daily, alerts, users (com RBAC), settings (parcial)
-- **Testes:** Vitest unitario (390 testes passando) + Playwright E2E versionado
+- **Sistema visual:** design system proprietario com hero de pagina, surfaces, metric cards, data tables e formularios padronizados
+- **Testes:** Vitest unitario (391 testes passando) + Playwright E2E versionado
 - **Cobertura:** ~20.8%
 - **RBAC:** Tratamento de 401/403 implementado, helpers de permissões, sidebar condicional, componente AccessDenied
 
@@ -101,10 +103,18 @@ Projeto de plataforma web para rastreio de entregas, gestao de excecoes operacio
 - **RBAC:** 4 perfis (admin, logistica, gestor, auditoria)
 - **Acessos seed locais:** admin, manager, operator, viewer, logistica, gestor e auditoria com senha padrao documentada
 - **Importacao:** Parser CSV/XLSX com validacao linha a linha, deteccao de duplicidade, layout Braspress
+- **UX frontend:** paleta clara com azul profundo/grafite, sem dark mode neste ciclo e sem alteracao de contratos do backend
 
 ---
 
 ## Historico de Mudancas (Linha do Tempo)
+
+### 2026-06-17 (BETA-030 - Redesign premium do frontend)
+- Criado design system visual proprio do `web` em `globals.css`
+- Redesenhados login, `AppShell`, dashboard e telas operacionais centrais
+- Padronizados botoes, formularios, filtros, metricas, tabelas e estados visuais
+- Suite `npm test` do frontend validada com 391/391 testes passando
+- Build de producao do `web` validado com sucesso
 
 ### 2026-06-24 (Sessao de governanca)
 - Atualizacao de CONTEXTO.md com estado atual do projeto

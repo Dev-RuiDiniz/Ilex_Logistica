@@ -6,6 +6,67 @@
 
 ### Tarefas Executadas
 
+1. **BETA-030 - Redesign completo do frontend**
+   - Reescrito o sistema visual global em `apps/web/src/app/globals.css` com tokens de cor, superficies, tipografia, sombras e componentes-base
+   - Redesenhados `AppShell`, login, dashboard, alerts, carriers, shipments, users e reports/daily com linguagem premium de torre de controle
+   - Organizada a navegacao privada por dominios, com melhor hierarquia para leitura operacional
+   - Padronizados filtros, formularios, metric cards, tabelas, empty states, loading e error states
+   - Mantidos fluxos, rotas e contratos da API sem regressao funcional
+
+2. **TDD e validacao do redesign**
+   - Expandida a suite de testes antes da implementacao para cobrir a nova estrutura de login, shell e dashboard
+   - Atualizados testes de markup para refletir a nova experiencia visual
+   - Validado frontend completo com suite unitaria e build de producao
+
+3. **Documentacao da entrega**
+   - Criado `docs/BETA_030_FRONTEND_REDESIGN_PREMIUM.md` com objetivo, escopo, solucao e evidencias
+   - Atualizados `CONTEXTO.md` e `RELATORIO_DIA.md` com o novo estado do frontend
+
+### Arquivos Modificados
+- `apps/web/src/app/globals.css`
+- `apps/web/src/app/layout.tsx`
+- `apps/web/src/app/login/page.tsx`
+- `apps/web/src/app/login/page.test.tsx`
+- `apps/web/src/app/(private)/layout.tsx`
+- `apps/web/src/app/(private)/dashboard/page.tsx`
+- `apps/web/src/app/(private)/dashboard/dashboard-page.test.tsx`
+- `apps/web/src/app/(private)/shipments/page.tsx`
+- `apps/web/src/app/(private)/carriers/page.tsx`
+- `apps/web/src/app/(private)/alerts/page.tsx`
+- `apps/web/src/app/(private)/reports/daily/page.tsx`
+- `apps/web/src/app/(private)/users/page.tsx`
+- `apps/web/src/components/app-shell.tsx`
+- `apps/web/src/components/app-shell.navigation.test.tsx`
+- `apps/web/src/components/AccessDenied.tsx`
+- `docs/BETA_030_FRONTEND_REDESIGN_PREMIUM.md`
+- `CONTEXTO.md`
+- `RELATORIO_DIA.md`
+
+### Testes
+- `cd apps/web && npm test` -> 391/391 passando
+- `cd apps/web && npm run build` -> passando
+
+### Bugs Encontrados e Correcoes Aplicadas
+- Login apresentava hierarquia visual fraca e pouco contraste -> substituido por layout com showcase e painel premium
+- Dashboard transmitia leitura dispersa -> reorganizado com hero, filtros agrupados e KPIs com severidade
+- Navegacao privada tinha baixa escaneabilidade -> sidebar refeita por dominios com estados mais claros
+- Estruturas visuais estavam inconsistentes entre telas -> padronizacao global aplicada
+
+### Documentacao Atualizada
+- `docs/BETA_030_FRONTEND_REDESIGN_PREMIUM.md`
+- `CONTEXTO.md`
+- `RELATORIO_DIA.md`
+
+### Bloqueios
+- Nenhum bloqueio funcional no frontend apos o redesign
+
+### Proximos Passos
+1. Rodar validacao visual assistida em navegador com dados reais da stack local
+2. Propagar a nova linguagem para eventuais telas residuais ainda menos refinadas
+3. Abrir tarefa separada para as regressões conhecidas da suite completa da API
+
+### Tarefas Executadas
+
 1. **Seeds oficiais de usuarios para desenvolvimento**
    - Criado modulo `apps/api/app/modules/users/seed_dev_users.py` com 7 usuarios padrao e execucao idempotente
    - Criado script `scripts/seed_dev_users.py` para popular a base local diretamente pela raiz do monorepo

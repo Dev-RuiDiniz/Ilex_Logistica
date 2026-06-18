@@ -96,45 +96,49 @@ export default function AlertsPage() {
   }
 
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold mb-6">Alertas</h1>
+    <div className="page-stack">
+      <section className="page-hero">
+        <p className="page-kicker">Monitoramento ativo</p>
+        <h1 className="page-title !text-[clamp(1.65rem,1.3rem+0.8vw,2.4rem)]">Alertas</h1>
+        <p className="page-subtitle">Priorize ocorrências, acompanhe leitura e resolva desvios com contexto operacional.</p>
+      </section>
 
       {/* Summary Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-6">
-        <div className="bg-white p-4 rounded-lg shadow">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-3 lg:grid-cols-6">
+        <div className="metric-card" data-tone="accent">
           <div className="text-sm text-gray-600">Total</div>
           <div className="text-2xl font-bold">{summary.total_alerts}</div>
         </div>
-        <div className="bg-white p-4 rounded-lg shadow">
+        <div className="metric-card" data-tone="accent">
           <div className="text-sm text-gray-600">Ativos</div>
           <div className="text-2xl font-bold text-blue-600">{summary.active_count}</div>
         </div>
-        <div className="bg-white p-4 rounded-lg shadow">
+        <div className="metric-card" data-tone="warning">
           <div className="text-sm text-gray-600">Não Lidos</div>
           <div className="text-2xl font-bold text-yellow-600">{summary.total_alerts - summary.read_count}</div>
         </div>
-        <div className="bg-white p-4 rounded-lg shadow">
+        <div className="metric-card" data-tone="success">
           <div className="text-sm text-gray-600">Resolvidos</div>
           <div className="text-2xl font-bold text-green-600">{summary.resolved_count}</div>
         </div>
-        <div className="bg-white p-4 rounded-lg shadow">
+        <div className="metric-card" data-tone="danger">
           <div className="text-sm text-gray-600">Críticos</div>
           <div className="text-2xl font-bold text-red-600">{summary.critical_count}</div>
         </div>
-        <div className="bg-white p-4 rounded-lg shadow">
+        <div className="metric-card" data-tone="warning">
           <div className="text-sm text-gray-600">Warnings</div>
           <div className="text-2xl font-bold text-orange-600">{summary.warning_count}</div>
         </div>
       </div>
 
       {/* Filters */}
-      <div className="bg-white p-4 rounded-lg shadow mb-6">
+      <div className="surface-panel p-4 md:p-6">
         <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4">
           <div>
             <label htmlFor="status-filter" className="block text-sm font-medium mb-1">Status</label>
             <select
               id="status-filter"
-              className="w-full border rounded p-2"
+              className="field-select"
               value={filters.status || ''}
               onChange={(e) => handleFilterChange('status', e.target.value || undefined)}
             >
@@ -148,7 +152,7 @@ export default function AlertsPage() {
             <label htmlFor="severity-filter" className="block text-sm font-medium mb-1">Severidade</label>
             <select
               id="severity-filter"
-              className="w-full border rounded p-2"
+              className="field-select"
               value={filters.severity || ''}
               onChange={(e) => handleFilterChange('severity', e.target.value || undefined)}
             >
@@ -162,7 +166,7 @@ export default function AlertsPage() {
             <label htmlFor="type-filter" className="block text-sm font-medium mb-1">Tipo</label>
             <select
               id="type-filter"
-              className="w-full border rounded p-2"
+              className="field-select"
               value={filters.alert_type || ''}
               onChange={(e) => handleFilterChange('alert_type', e.target.value || undefined)}
             >
@@ -179,7 +183,7 @@ export default function AlertsPage() {
             <label htmlFor="read-filter" className="block text-sm font-medium mb-1">Lido</label>
             <select
               id="read-filter"
-              className="w-full border rounded p-2"
+              className="field-select"
               value={filters.is_read === undefined ? '' : String(filters.is_read)}
               onChange={(e) => handleFilterChange('is_read', e.target.value === '' ? undefined : e.target.value === 'true')}
             >
@@ -192,7 +196,7 @@ export default function AlertsPage() {
             <label htmlFor="resolved-filter" className="block text-sm font-medium mb-1">Resolvido</label>
             <select
               id="resolved-filter"
-              className="w-full border rounded p-2"
+              className="field-select"
               value={filters.is_resolved === undefined ? '' : String(filters.is_resolved)}
               onChange={(e) => handleFilterChange('is_resolved', e.target.value === '' ? undefined : e.target.value === 'true')}
             >
@@ -205,7 +209,7 @@ export default function AlertsPage() {
             <button
               data-testid="clear-filters-button"
               onClick={handleClearFilters}
-              className="w-full bg-gray-200 hover:bg-gray-300 text-gray-800 px-4 py-2 rounded"
+              className="button-secondary w-full"
             >
               Limpar Filtros
             </button>
@@ -214,11 +218,11 @@ export default function AlertsPage() {
       </div>
 
       {/* Actions */}
-      <div className="mb-6">
+      <div>
         <button
           data-testid="generate-alerts-button"
           onClick={handleGenerateAlerts}
-          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded"
+          className="button-primary"
         >
           Gerar Alertas
         </button>
@@ -226,12 +230,12 @@ export default function AlertsPage() {
 
       {/* Alerts List */}
       {alerts.length === 0 ? (
-        <div className="bg-white p-6 rounded-lg shadow text-center text-gray-600">
+        <div className="empty-state surface-panel-strong text-gray-600">
           Nenhum alerta encontrado
         </div>
       ) : (
-        <div className="bg-white rounded-lg shadow overflow-hidden">
-          <table className="w-full">
+        <div className="table-shell overflow-hidden">
+          <table className="data-table w-full">
             <thead className="bg-gray-50">
               <tr>
                 <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">Severidade</th>

@@ -96,29 +96,30 @@ export default function UsersPage() {
   };
 
   return (
-    <section className="space-y-4">
-      <header>
-        <h2 className="text-xl font-semibold">Usuários e Permissões</h2>
-        <p className="text-sm text-slate-600">Gestão de contas e papéis de acesso.</p>
+    <section className="page-stack">
+      <header className="page-hero">
+        <p className="page-kicker">Segurança e acesso</p>
+        <h2 className="page-title !text-[clamp(1.65rem,1.3rem+0.8vw,2.4rem)]">Usuários e Permissões</h2>
+        <p className="page-subtitle">Gerencie contas, papéis e governança de acesso com mais clareza operacional.</p>
       </header>
-      {error && <p className="rounded bg-red-50 px-3 py-2 text-sm text-red-700">{error}</p>}
-      <form onSubmit={onCreate} className="grid gap-2 rounded border p-4 md:grid-cols-4">
-        <input value={email} onChange={(e) => setEmail(e.target.value)} className="rounded border px-3 py-2 text-sm" placeholder="E-mail" required />
-        <input value={fullName} onChange={(e) => setFullName(e.target.value)} className="rounded border px-3 py-2 text-sm" placeholder="Nome completo" required />
-        <select value={selectedRole} onChange={(e) => setSelectedRole(e.target.value as UserRole)} className="rounded border px-3 py-2 text-sm">
+      {error && <p className="error-state">{error}</p>}
+      <form onSubmit={onCreate} className="surface-panel grid gap-3 p-5 md:grid-cols-4 md:p-6">
+        <input value={email} onChange={(e) => setEmail(e.target.value)} className="field" placeholder="E-mail" required />
+        <input value={fullName} onChange={(e) => setFullName(e.target.value)} className="field" placeholder="Nome completo" required />
+        <select value={selectedRole} onChange={(e) => setSelectedRole(e.target.value as UserRole)} className="field-select">
           {roleOptions.map((item) => <option key={item} value={item}>{item}</option>)}
         </select>
         <button 
-          className={`rounded px-4 py-2 text-sm ${canWriteUsers(role) ? "bg-slate-900 text-white" : "bg-slate-300 text-slate-500 cursor-not-allowed"}`} 
+          className={canWriteUsers(role) ? "button-primary" : "button-secondary cursor-not-allowed"} 
           type="submit" 
           disabled={!canWriteUsers(role)}
         >
           Criar
         </button>
       </form>
-      <div className="overflow-hidden rounded border">
-        <table className="w-full text-sm">
-          <thead className="bg-slate-100 text-left">
+      <div className="table-shell overflow-hidden">
+        <table className="data-table">
+          <thead className="text-left">
             <tr>
               <th className="px-3 py-2">E-mail</th>
               <th className="px-3 py-2">Nome</th>
@@ -129,7 +130,7 @@ export default function UsersPage() {
           </thead>
           <tbody>
             {items.map((item) => (
-              <tr key={item.id} className="border-t">
+              <tr key={item.id}>
                 <td className="px-3 py-2">{item.email}</td>
                 <td className="px-3 py-2">{item.full_name}</td>
                 <td className="px-3 py-2">{item.roles.join(", ")}</td>
@@ -137,7 +138,7 @@ export default function UsersPage() {
                 <td className="px-3 py-2">
                   <div className="flex gap-2">
                     <select
-                      className={`rounded border px-2 py-1 text-xs ${canWriteUsers(role) ? "" : "bg-slate-100 text-slate-400 cursor-not-allowed"}`}
+                      className={`field-select !px-2 !py-1 text-xs ${canWriteUsers(role) ? "" : "bg-slate-100 text-slate-400 cursor-not-allowed"}`}
                       defaultValue={item.roles[0] ?? "logistica"}
                       onChange={(e) => void onPromote(item, e.target.value as UserRole)}
                       disabled={!canWriteUsers(role)}
@@ -145,7 +146,7 @@ export default function UsersPage() {
                       {roleOptions.map((roleItem) => <option key={roleItem} value={roleItem}>{roleItem}</option>)}
                     </select>
                     <button 
-                      className={`rounded border px-2 py-1 text-xs ${canWriteUsers(role) ? "text-red-700" : "text-slate-400 cursor-not-allowed"}`} 
+                      className={canWriteUsers(role) ? "button-danger !px-3 !py-2 !text-xs" : "button-secondary cursor-not-allowed !px-3 !py-2 !text-xs"} 
                       onClick={() => void onInactivate(item)} 
                       type="button"
                       disabled={!canWriteUsers(role)}

@@ -9,14 +9,15 @@ interface AccessDeniedProps {
 
 export function AccessDenied({ message = "Você não tem permissão para acessar esta página.", showBackButton = true }: AccessDeniedProps) {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-slate-50">
-      <div className="rounded border bg-white p-8 text-center shadow-sm">
-        <h1 className="mb-2 text-2xl font-semibold text-slate-900">Acesso Negado</h1>
-        <p className="mb-6 text-slate-600">{message}</p>
+    <div className="flex min-h-[60vh] items-center justify-center">
+      <div className="surface-panel max-w-xl px-8 py-10 text-center">
+        <p className="page-kicker !text-slate-500">Governança</p>
+        <h1 className="mt-3 text-3xl font-black tracking-[-0.05em] text-slate-950">Acesso Negado</h1>
+        <p className="mx-auto mt-3 max-w-md text-sm leading-7 text-slate-600">{message}</p>
         {showBackButton && (
           <Link
             href="/"
-            className="inline-block rounded bg-slate-900 px-4 py-2 text-sm text-white hover:bg-slate-800"
+            className="button-primary mt-6 inline-flex"
           >
             Voltar ao Dashboard
           </Link>

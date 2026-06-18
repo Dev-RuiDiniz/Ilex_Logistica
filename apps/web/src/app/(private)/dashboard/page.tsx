@@ -1,11 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getDashboardSummary, getDashboardTrend } from "@/lib/dashboard-api";
-import type { DashboardFilters, DashboardSummaryResponse, DashboardTrendResponse, DashboardTrendFilters } from "@/lib/types";
-import { DateRangePicker } from "@/app/(private)/shipments/analytics/carrier-efficiency/DateRangePicker";
-import { useApiErrorHandler } from "@/lib/useApiErrorHandler";
-import { AccessDenied } from "@/components/AccessDenied";
 import {
   LineChart,
   Line,
@@ -16,6 +11,36 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
+
+import { DateRangePicker } from "@/app/(private)/shipments/analytics/carrier-efficiency/DateRangePicker";
+import { AccessDenied } from "@/components/AccessDenied";
+import { getDashboardSummary, getDashboardTrend } from "@/lib/dashboard-api";
+import type {
+  DashboardFilters,
+  DashboardSummaryResponse,
+  DashboardTrendFilters,
+  DashboardTrendResponse,
+} from "@/lib/types";
+import { useApiErrorHandler } from "@/lib/useApiErrorHandler";
+
+const kpiCards = [
+  { key: "total_shipments", label: "Total", tone: "accent", note: "Base monitorada", render: (data: DashboardSummaryResponse) => data.total_shipments },
+  { key: "on_time_count", label: "No Prazo", tone: "success", note: "Fluxo saudável", render: (data: DashboardSummaryResponse) => data.on_time_count },
+  { key: "late_count", label: "Atrasadas", tone: "warning", note: "Exigem correção", render: (data: DashboardSummaryResponse) => data.late_count },
+  { key: "critical_count", label: "Críticas", tone: "danger", note: "Ação imediata", render: (data: DashboardSummaryResponse) => data.critical_count },
+  { key: "warning_count", label: "Atenção", tone: "warning", note: "Risco operacional", render: (data: DashboardSummaryResponse) => data.warning_count },
+  { key: "unknown_sla_count", label: "Sem SLA", tone: "accent", note: "Revisar parametrização", render: (data: DashboardSummaryResponse) => data.unknown_sla_count },
+  { key: "exceptions_count", label: "Exceções", tone: "danger", note: "Fila priorizada", render: (data: DashboardSummaryResponse) => data.exceptions_count },
+  { key: "carriers_count", label: "Transportadoras", tone: "accent", note: "Rede ativa", render: (data: DashboardSummaryResponse) => data.carriers_count },
+  {
+    key: "active_alerts_count",
+    label: "Alertas Ativos",
+    tone: "warning",
+    note: "Monitoramento vivo",
+    render: (data: DashboardSummaryResponse) => data.active_alerts_count === 0 ? "Nenhum alerta ativo" : data.active_alerts_count,
+  },
+  { key: "import_failure_count", label: "Falhas Importação", tone: "danger", note: "Pipeline sob atenção", render: (data: DashboardSummaryResponse) => data.import_failure_count },
+];
 
 export default function DashboardPage() {
   const [data, setData] = useState<DashboardSummaryResponse | null>(null);
@@ -55,7 +80,6 @@ export default function DashboardPage() {
         setTrendData(result);
       } catch (err) {
         handleApiError(err instanceof Error ? err : new Error("Erro ao carregar tendência"));
-        console.error("Erro ao carregar tendência:", err);
       } finally {
         setTrendLoading(false);
       }
@@ -92,41 +116,54 @@ export default function DashboardPage() {
 
   if (loading) {
     return (
-      <div className="p-6">
-        <div className="text-gray-500">Carregando...</div>
+      <div className="loading-state surface-panel-strong">
+        <p className="page-kicker !text-slate-500">Dashboard</p>
+        <div className="section-title">Carregando...</div>
+        <p className="section-subtitle">Montando a visão operacional do dia.</p>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="p-6">
-        <div className="text-red-500">Erro: {error}</div>
+      <div className="error-state">
+        <div className="section-title">Erro: {error}</div>
+        <p className="section-subtitle !text-[#8d4234]">Não foi possível consolidar os indicadores agora.</p>
       </div>
     );
   }
 
   if (!data) {
     return (
-      <div className="p-6">
-        <div className="text-gray-500">Sem dados</div>
+      <div className="empty-state">
+        <div className="section-title">Sem dados</div>
+        <p className="section-subtitle">Ainda não há indicadores consolidados para o período selecionado.</p>
       </div>
     );
   }
 
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold mb-4">Dashboard Beta</h1>
+    <div className="page-grid">
+      <section className="page-hero">
+        <p className="page-kicker">Painel diário</p>
+        <h1 className="page-title">Painel de controle</h1>
+        <p className="page-subtitle">
+          Monitore envios, detecte gargalos e acompanhe o que merece resposta
+          imediata com uma leitura executiva da operação.
+        </p>
+      </section>
 
-      {/* Filtros */}
-      <div className="mb-4 p-4 bg-white rounded-lg shadow" data-testid="dashboard-filters">
-        <h2 className="text-lg font-semibold mb-3">Filtros</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <section className="surface-panel p-5 md:p-6" data-testid="dashboard-filters">
+        <div className="mb-5">
+          <h2 className="section-title">Filtros</h2>
+          <p className="section-subtitle">Refine a leitura principal por janela, cliente, UF e status de SLA.</p>
+        </div>
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
           <div>
-            <label className="block text-sm font-medium mb-1">Mês</label>
+            <label className="field-label">Mês</label>
             <input
               aria-label="Mês"
-              className="w-full p-2 border rounded"
+              className="field"
               id="filter-month"
               max="12"
               min="1"
@@ -136,10 +173,10 @@ export default function DashboardPage() {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium mb-1">Ano</label>
+            <label className="field-label">Ano</label>
             <input
               aria-label="Ano"
-              className="w-full p-2 border rounded"
+              className="field"
               id="filter-year"
               max="2100"
               min="2020"
@@ -149,10 +186,10 @@ export default function DashboardPage() {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium mb-1">Cliente</label>
+            <label className="field-label">Cliente</label>
             <input
               aria-label="Cliente"
-              className="w-full p-2 border rounded"
+              className="field"
               id="filter-customer"
               type="text"
               value={filters.customer_name ?? ""}
@@ -160,10 +197,10 @@ export default function DashboardPage() {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium mb-1">UF</label>
+            <label className="field-label">UF</label>
             <input
               aria-label="UF"
-              className="w-full p-2 border rounded"
+              className="field"
               id="filter-uf"
               maxLength={2}
               type="text"
@@ -172,10 +209,10 @@ export default function DashboardPage() {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium mb-1">Status SLA</label>
+            <label className="field-label">Status SLA</label>
             <select
               aria-label="Status SLA"
-              className="w-full p-2 border rounded"
+              className="field-select"
               id="filter-sla-status"
               value={filters.sla_status ?? ""}
               onChange={(e) => handleFilterChange("sla_status", e.target.value)}
@@ -189,10 +226,10 @@ export default function DashboardPage() {
             </select>
           </div>
           <div>
-            <label className="block text-sm font-medium mb-1">Atrasada</label>
+            <label className="field-label">Atrasada</label>
             <select
               aria-label="Atrasada"
-              className="w-full p-2 border rounded"
+              className="field-select"
               id="filter-is-late"
               value={filters.is_late === undefined ? "" : String(filters.is_late)}
               onChange={(e) => handleFilterChange("is_late", e.target.value === "true" ? true : e.target.value === "false" ? false : undefined)}
@@ -203,225 +240,196 @@ export default function DashboardPage() {
             </select>
           </div>
         </div>
-        <button
-          data-testid="clear-main-filters"
-          className="mt-4 px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
-          onClick={clearFilters}
-        >
-          Limpar Filtros
-        </button>
-      </div>
+        <div className="section-actions mt-5">
+          <button data-testid="clear-main-filters" className="button-secondary" onClick={clearFilters}>
+            Limpar Filtros
+          </button>
+        </div>
+      </section>
 
-      {/* Filtros de Período para Tendência */}
-      <div className="mb-4 p-4 bg-white rounded-lg shadow" data-testid="dashboard-trend-filters">
-        <h2 className="text-lg font-semibold mb-3">Período da Tendência</h2>
+      <section className="surface-panel p-5 md:p-6" data-testid="dashboard-trend-filters">
+        <div className="mb-5">
+          <h2 className="section-title">Período da Tendência</h2>
+          <p className="section-subtitle">Compare evolução de volume, SLA e exceções por recorte temporal.</p>
+        </div>
         <DateRangePicker
           label="Período de Entrega Estimada"
           value={{ from: trendFilters.estimated_delivery_from, to: trendFilters.estimated_delivery_to }}
           onChange={(v) => setTrendFilters((prev) => ({ ...prev, ...v }))}
           placeholder={{ from: "Data inicial", to: "Data final" }}
         />
-        <div className="flex items-end gap-2 mt-3">
-          <label className="block text-sm font-medium mb-1">Dias</label>
-          <input
-            type="number"
-            min="1"
-            max="90"
-            className="w-24 p-2 border rounded"
-            value={trendFilters.days ?? ""}
-            onChange={(e) => handleTrendFilterChange("days", e.target.value ? parseInt(e.target.value) : undefined)}
-          />
-          <button
-            className="mt-4 px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
-            onClick={clearTrendFilters}
-          >
+        <div className="mt-4 flex flex-wrap items-end gap-3">
+          <div>
+            <label className="field-label">Dias</label>
+            <input
+              type="number"
+              min="1"
+              max="90"
+              className="field w-28"
+              value={trendFilters.days ?? ""}
+              onChange={(e) => handleTrendFilterChange("days", e.target.value ? parseInt(e.target.value) : undefined)}
+            />
+          </div>
+          <button className="button-secondary" onClick={clearTrendFilters}>
             Limpar Filtros
           </button>
         </div>
-      </div>
+      </section>
 
-      {/* Cards de KPI */}
-      <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-6" data-testid="dashboard-kpi-cards">
-        <div className="bg-white p-4 rounded-lg shadow">
-          <div className="text-sm text-gray-500">Total</div>
-          <div className="text-2xl font-bold">{data.total_shipments}</div>
-        </div>
-        <div className="bg-green-50 p-4 rounded-lg shadow border border-green-200">
-          <div className="text-sm text-green-600">No Prazo</div>
-          <div className="text-2xl font-bold text-green-600">{data.on_time_count}</div>
-        </div>
-        <div className="bg-orange-50 p-4 rounded-lg shadow border border-orange-200">
-          <div className="text-sm text-orange-600">Atrasadas</div>
-          <div className="text-2xl font-bold text-orange-600">{data.late_count}</div>
-        </div>
-        <div className="bg-red-50 p-4 rounded-lg shadow border border-red-200">
-          <div className="text-sm text-red-600">Críticas</div>
-          <div className="text-2xl font-bold text-red-600">{data.critical_count}</div>
-        </div>
-        <div className="bg-yellow-50 p-4 rounded-lg shadow border border-yellow-200">
-          <div className="text-sm text-yellow-600">Atenção</div>
-          <div className="text-2xl font-bold text-yellow-600">{data.warning_count}</div>
-        </div>
-        <div className="bg-gray-50 p-4 rounded-lg shadow border border-gray-200">
-          <div className="text-sm text-gray-600">Sem SLA</div>
-          <div className="text-2xl font-bold text-gray-600">{data.unknown_sla_count}</div>
-        </div>
-        <div className="bg-purple-50 p-4 rounded-lg shadow border border-purple-200">
-          <div className="text-sm text-purple-600">Exceções</div>
-          <div className="text-2xl font-bold text-purple-600">{data.exceptions_count}</div>
-        </div>
-        <div className="bg-blue-50 p-4 rounded-lg shadow border border-blue-200">
-          <div className="text-sm text-blue-600">Transportadoras</div>
-          <div className="text-2xl font-bold text-blue-600">{data.carriers_count}</div>
-        </div>
-        <div className="bg-indigo-50 p-4 rounded-lg shadow border border-indigo-200">
-          <div className="text-sm text-indigo-600">Alertas Ativos</div>
-          <div className="text-2xl font-bold text-indigo-600">
-            {data.active_alerts_count === 0 ? "Nenhum alerta ativo" : data.active_alerts_count}
+      <section className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-5" data-testid="dashboard-kpi-cards">
+        {kpiCards.map((card) => (
+          <article key={card.key} className="metric-card" data-tone={card.tone}>
+            <div className="space-y-2">
+              <div className="metric-card-label">{card.label}</div>
+              <strong>{card.render(data)}</strong>
+            </div>
+            <div className="space-y-2">
+              <div className="metric-card-note">{card.note}</div>
+              {card.key === "active_alerts_count" && data.active_alerts_count > 0 && (
+                <a href="/alerts" className="inline-flex text-sm font-semibold text-[#15314b] hover:text-[#2e6a8e]">
+                  Ver alertas →
+                </a>
+              )}
+            </div>
+          </article>
+        ))}
+      </section>
+
+      <section className="grid gap-5 xl:grid-cols-[1.5fr_1fr]">
+        <div className="surface-panel p-5 md:p-6">
+          <div className="mb-4">
+            <h2 className="section-title">Tendência dos KPIs</h2>
+            <p className="section-subtitle">Acompanhe ritmo da operação e sinais de desvio nos últimos dias.</p>
           </div>
-          {data.active_alerts_count > 0 && (
-            <a href="/alerts" className="text-sm text-indigo-800 hover:text-indigo-600 mt-1 block">
-              Ver alertas →
-            </a>
+          {trendLoading ? (
+            <div className="loading-state">Carregando tendências...</div>
+          ) : trendData && trendData.trend_data && trendData.trend_data.length > 0 ? (
+            <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
+              <div className="surface-muted p-4">
+                <h3 className="mb-3 text-base font-bold tracking-[-0.03em] text-slate-900">Total de entregas por dia</h3>
+                <div className="h-64">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <LineChart data={trendData.trend_data}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="rgba(16,32,51,0.12)" />
+                      <XAxis dataKey="date" tickFormatter={(v) => v.slice(5)} />
+                      <YAxis />
+                      <Tooltip />
+                      <Legend />
+                      <Line type="monotone" dataKey="total_shipments" stroke="#2e6a8e" strokeWidth={2.5} dot={{ r: 4 }} name="Total" />
+                      <Line type="monotone" dataKey="on_time_count" stroke="#2f7a63" strokeWidth={2.5} dot={{ r: 4 }} name="No Prazo" />
+                      <Line type="monotone" dataKey="late_count" stroke="#b6523d" strokeWidth={2.5} dot={{ r: 4 }} name="Atrasadas" />
+                      <Line type="monotone" dataKey="critical_count" stroke="#c67d2f" strokeWidth={2.5} dot={{ r: 4 }} name="Críticas" />
+                      <Line type="monotone" dataKey="warning_count" stroke="#c07a22" strokeWidth={2.5} dot={{ r: 4 }} name="Atenção" />
+                    </LineChart>
+                  </ResponsiveContainer>
+                </div>
+              </div>
+              <div className="surface-muted p-4">
+                <h3 className="mb-3 text-base font-bold tracking-[-0.03em] text-slate-900">Exceções e sem SLA</h3>
+                <div className="h-64">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <LineChart data={trendData.trend_data}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="rgba(16,32,51,0.12)" />
+                      <XAxis dataKey="date" tickFormatter={(v) => v.slice(5)} />
+                      <YAxis />
+                      <Tooltip />
+                      <Legend />
+                      <Line type="monotone" dataKey="exceptions_count" stroke="#15314b" strokeWidth={2.5} dot={{ r: 4 }} name="Exceções" />
+                      <Line type="monotone" dataKey="unknown_sla_count" stroke="#64748b" strokeWidth={2.5} dot={{ r: 4 }} name="Sem SLA" />
+                    </LineChart>
+                  </ResponsiveContainer>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="empty-state">Sem dados de tendência para o período selecionado</div>
           )}
         </div>
-        <div className="bg-pink-50 p-4 rounded-lg shadow border border-pink-200">
-          <div className="text-sm text-pink-600">Falhas Importação</div>
-          <div className="text-2xl font-bold text-pink-600">{data.import_failure_count}</div>
+
+        <div className="page-stack">
+          <div className="surface-panel p-5" data-testid="top-carriers">
+            <h2 className="section-title">Top Transportadoras por Eficiência</h2>
+            <p className="section-subtitle mt-1">Quem sustenta melhor o nível de serviço no período.</p>
+            {data.top_carriers_by_efficiency.length === 0 ? (
+              <div className="empty-state mt-4 !min-h-[11rem]">Nenhuma transportadora encontrada</div>
+            ) : (
+              <div className="table-shell mt-4">
+                <table className="data-table">
+                  <thead>
+                    <tr>
+                      <th className="text-left">Transportadora</th>
+                      <th className="text-right">Total</th>
+                      <th className="text-right">No Prazo</th>
+                      <th className="text-right">Atrasadas</th>
+                      <th className="text-right">% No Prazo</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {data.top_carriers_by_efficiency.map((carrier) => (
+                      <tr key={carrier.carrier_id}>
+                        <td>{carrier.carrier_name || "-"}</td>
+                        <td className="text-right">{carrier.total_shipments}</td>
+                        <td className="text-right">{carrier.on_time_count}</td>
+                        <td className="text-right">{carrier.late_count}</td>
+                        <td className="text-right">{carrier.on_time_percentage.toFixed(1)}%</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+
+          <div className="surface-panel p-5" data-testid="top-exceptions">
+            <h2 className="section-title">Top Exceções Priorizadas</h2>
+            <p className="section-subtitle mt-1">Fila crítica para resposta rápida do time.</p>
+            {data.top_exceptions.length === 0 ? (
+              <div className="empty-state mt-4 !min-h-[11rem]">Nenhuma exceção encontrada</div>
+            ) : (
+              <div className="table-shell mt-4">
+                <table className="data-table">
+                  <thead>
+                    <tr>
+                      <th className="text-left">Prioridade</th>
+                      <th className="text-left">Tipo</th>
+                      <th className="text-left">Motivo</th>
+                      <th className="text-left">Rastreio</th>
+                      <th className="text-left">NF</th>
+                      <th className="text-left">Transportadora</th>
+                      <th className="text-left">Cliente</th>
+                      <th className="text-left">UF</th>
+                      <th className="text-left">Status SLA</th>
+                      <th className="text-left">Criticidade</th>
+                      <th className="text-right">Atraso (dias)</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {data.top_exceptions.map((exc) => (
+                      <tr key={exc.shipment_id}>
+                        <td>{exc.priority}</td>
+                        <td>{exc.exception_type || "-"}</td>
+                        <td>{exc.exception_reason || "-"}</td>
+                        <td>{exc.tracking_code}</td>
+                        <td>{exc.invoice_number || "-"}</td>
+                        <td>{exc.carrier_name || "-"}</td>
+                        <td>{exc.customer_name || "-"}</td>
+                        <td>{exc.destination_uf || "-"}</td>
+                        <td>{exc.sla_status}</td>
+                        <td>{exc.criticality}</td>
+                        <td className="text-right">{exc.delay_days}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
         </div>
-      </div>
+      </section>
 
-      {/* Gráficos de Tendência */}
-      <div className="mb-6">
-        <h2 className="text-lg font-semibold mb-3">Tendência dos KPIs (Últimos 30 dias)</h2>
-        {trendLoading ? (
-          <div className="p-6 text-center text-gray-500">Carregando tendências...</div>
-        ) : trendData && trendData.trend_data && trendData.trend_data.length > 0 ? (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Total Shipments / On Time / Late / Critical / Warning */}
-            <div className="bg-white p-4 rounded-lg shadow">
-              <h3 className="text-lg font-semibold mb-3">Total de Entregas por Dia</h3>
-              <div className="h-64">
-                <ResponsiveContainer width="100%" height="100%">
-                  <LineChart data={trendData.trend_data}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="date" tickFormatter={(v) => v.slice(5)} />
-                    <YAxis />
-                    <Tooltip />
-                    <Legend />
-                    <Line type="monotone" dataKey="total_shipments" stroke="#3b82f6" strokeWidth={2} dot={{ r: 4 }} name="Total" />
-                    <Line type="monotone" dataKey="on_time_count" stroke="#22c55e" strokeWidth={2} dot={{ r: 4 }} name="No Prazo" />
-                    <Line type="monotone" dataKey="late_count" stroke="#ef4444" strokeWidth={2} dot={{ r: 4 }} name="Atrasadas" />
-                    <Line type="monotone" dataKey="critical_count" stroke="#f97316" strokeWidth={2} dot={{ r: 4 }} name="Críticas" />
-                    <Line type="monotone" dataKey="warning_count" stroke="#f59e0b" strokeWidth={2} dot={{ r: 4 }} name="Atenção" />
-                  </LineChart>
-                </ResponsiveContainer>
-              </div>
-            </div>
-
-            {/* Exceptions / Unknown SLA */}
-            <div className="bg-white p-4 rounded-lg shadow">
-              <h3 className="text-lg font-semibold mb-3">Exceções e Sem SLA por Dia</h3>
-              <div className="h-64">
-                <ResponsiveContainer width="100%" height="100%">
-                  <LineChart data={trendData.trend_data}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="date" tickFormatter={(v) => v.slice(5)} />
-                    <YAxis />
-                    <Tooltip />
-                    <Legend />
-                    <Line type="monotone" dataKey="exceptions_count" stroke="#8b5cf6" strokeWidth={2} dot={{ r: 4 }} name="Exceções" />
-                    <Line type="monotone" dataKey="unknown_sla_count" stroke="#6b7280" strokeWidth={2} dot={{ r: 4 }} name="Sem SLA" />
-                  </LineChart>
-                </ResponsiveContainer>
-              </div>
-            </div>
-          </div>
-        ) : (
-          <div className="bg-white p-6 rounded-lg shadow text-center text-gray-500">
-            Sem dados de tendência para o período selecionado
-          </div>
-        )}
-      </div>
-
-      {/* Top Transportadoras por Eficiência */}
-      <div className="mb-6 p-4 bg-white rounded-lg shadow" data-testid="top-carriers">
-        <h2 className="text-lg font-semibold mb-3">Top Transportadoras por Eficiência</h2>
-        {data.top_carriers_by_efficiency.length === 0 ? (
-          <div className="text-gray-500">Nenhuma transportadora encontrada</div>
-        ) : (
-          <table className="w-full">
-            <thead>
-              <tr className="border-b">
-                <th className="text-left p-2">Transportadora</th>
-                <th className="text-right p-2">Total</th>
-                <th className="text-right p-2">No Prazo</th>
-                <th className="text-right p-2">Atrasadas</th>
-                <th className="text-right p-2">% No Prazo</th>
-              </tr>
-            </thead>
-            <tbody>
-              {data.top_carriers_by_efficiency.map((carrier) => (
-                <tr key={carrier.carrier_id} className="border-b">
-                  <td className="p-2">{carrier.carrier_name || "-"}</td>
-                  <td className="text-right p-2">{carrier.total_shipments}</td>
-                  <td className="text-right p-2">{carrier.on_time_count}</td>
-                  <td className="text-right p-2">{carrier.late_count}</td>
-                  <td className="text-right p-2">{carrier.on_time_percentage.toFixed(1)}%</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        )}
-      </div>
-
-      {/* Top Exceções Priorizadas */}
-      <div className="mb-6 p-4 bg-white rounded-lg shadow" data-testid="top-exceptions">
-        <h2 className="text-lg font-semibold mb-3">Top Exceções Priorizadas</h2>
-        {data.top_exceptions.length === 0 ? (
-          <div className="text-gray-500">Nenhuma exceção encontrada</div>
-        ) : (
-          <table className="w-full">
-            <thead>
-              <tr className="border-b">
-                <th className="text-left p-2">Prioridade</th>
-                <th className="text-left p-2">Tipo</th>
-                <th className="text-left p-2">Motivo</th>
-                <th className="text-left p-2">Rastreio</th>
-                <th className="text-left p-2">NF</th>
-                <th className="text-left p-2">Transportadora</th>
-                <th className="text-left p-2">Cliente</th>
-                <th className="text-left p-2">UF</th>
-                <th className="text-left p-2">Status SLA</th>
-                <th className="text-left p-2">Criticidade</th>
-                <th className="text-right p-2">Atraso (dias)</th>
-              </tr>
-            </thead>
-            <tbody>
-              {data.top_exceptions.map((exc) => (
-                <tr key={exc.shipment_id} className="border-b">
-                  <td className="p-2">{exc.priority}</td>
-                  <td className="p-2">{exc.exception_type || "-"}</td>
-                  <td className="p-2">{exc.exception_reason || "-"}</td>
-                  <td className="p-2">{exc.tracking_code}</td>
-                  <td className="p-2">{exc.invoice_number || "-"}</td>
-                  <td className="p-2">{exc.carrier_name || "-"}</td>
-                  <td className="p-2">{exc.customer_name || "-"}</td>
-                  <td className="p-2">{exc.destination_uf || "-"}</td>
-                  <td className="p-2">{exc.sla_status}</td>
-                  <td className="p-2">{exc.criticality}</td>
-                  <td className="text-right p-2">{exc.delay_days}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        )}
-      </div>
-
-      {/* Data de Geração */}
-      <div className="text-sm text-gray-500">
+      <p className="text-sm text-slate-500">
         Gerado em: {data.generated_at ? new Date(data.generated_at).toLocaleString("pt-BR") : "-"}
-      </div>
+      </p>
     </div>
   );
 }

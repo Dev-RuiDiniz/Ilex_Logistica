@@ -7,7 +7,7 @@ Padronizar variáveis locais para executar API e banco com `docker compose` dura
 ## Pré-requisitos
 
 - Docker com plugin Compose disponível no terminal.
-- Repositórios `Api` e `Infra` clonados lado a lado dentro da pasta `ilex-logistica`.
+- Monorepo `Ilex_Logistica` clonado localmente com a estrutura `apps/api`, `apps/web` e `infra/`.
 
 ## Configuração
 
@@ -20,8 +20,8 @@ cp .env.example .env
 2. Para execução fora do compose, use também os templates específicos:
 
 ```bash
-cp env/api.env.example ../Api/.env
-cp env/web.env.example ../Web/.env.local
+cp env/api.env.example ../apps/api/.env
+cp env/web.env.example ../apps/web/.env.local
 ```
 
 3. Substitua valores `change-me-local-only` por valores locais não produtivos.
@@ -56,6 +56,8 @@ cp env/web.env.example ../Web/.env.local
 ```bash
 docker compose up --build
 ```
+
+Se a porta `5432` já estiver em uso no host, ajuste `POSTGRES_PORT` no `infra/.env` para uma porta livre, como `5433`.
 
 ## Parada do ambiente
 
@@ -134,7 +136,7 @@ docker compose up --build
 ## Checklist de setup local
 
 - [ ] Docker com plugin Compose disponível no terminal.
-- [ ] Repositórios `Api`, `Web` e `Infra` clonados lado a lado em `ilex-logistica`.
+- [ ] Monorepo `Ilex_Logistica` clonado com `apps/api`, `apps/web` e `infra/`.
 - [ ] Arquivo `.env` criado a partir de `.env.example`.
 - [ ] Secrets locais substituídos por valores não produtivos.
 - [ ] Nenhum `.env` real aparece em `git status --short`.

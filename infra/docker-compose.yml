@@ -27,7 +27,7 @@ services:
   api:
     build:
       context: ..
-      dockerfile: Infra/docker/api/Dockerfile
+      dockerfile: infra/docker/api/Dockerfile
     container_name: ilex-api
     environment:
       ILEX_APP_NAME: ${ILEX_APP_NAME:-Ilex API}

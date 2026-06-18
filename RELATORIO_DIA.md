@@ -2,6 +2,78 @@
 
 ---
 
+## 2026-06-17
+
+### Tarefas Executadas
+
+1. **Setup local da stack completa**
+   - Instaladas dependências locais da API (`pip install -e .[dev]`) e do frontend (`npm install`)
+   - Criados arquivos locais `infra/.env` e `apps/web/.env.local`
+   - Docker Desktop inicializado e stack local subida com `db` + `api`
+   - Frontend dev validado em porta livre (`3002`) por conflito do host com `3000`
+
+2. **Correções de infraestrutura para bootstrap real**
+   - Corrigidos caminhos do monorepo em `infra/docker-compose.yml` e `infra/docker/api/Dockerfile`
+   - Adicionado hardening no Dockerfile para normalizar CRLF do `api-entrypoint.sh`
+   - Atualizados testes de `infra` para refletir o layout atual e o workflow `beta-ci.yml`
+
+3. **Correções de migrations para ambiente local**
+   - Unificada a árvore Alembic em um único `head` com merge revision `20260627_01`
+   - Ajustado `apps/api/migrations/env.py` para usar a URL de banco em runtime
+   - Corrigido `server_default` booleano de `sla_rules` para compatibilidade com PostgreSQL
+   - Adicionados testes de regressão em `apps/api/tests/test_migrations.py`
+
+4. **Validações executadas**
+   - `python -m pytest -q` em `infra` → 8/8 passando
+   - `python scripts/validate_migrations.py` → passando
+   - `npm test` em `apps/web` → 390/390 passando
+   - `npm run build` em `apps/web` → passando
+   - `python scripts/check_secrets.py --repo-root . --self-test` → passando
+   - `docker compose ... ps`, `curl /health`, `curl /api/v1/health`, `alembic current` → OK
+
+### Arquivos Modificados
+- `infra/docker-compose.yml`
+- `infra/docker/api/Dockerfile`
+- `infra/infra_checks.py`
+- `infra/tests/test_c01_compose.py`
+- `infra/tests/test_c03_c04_workflows.py`
+- `infra/LOCAL_SETUP.md`
+- `apps/api/migrations/env.py`
+- `apps/api/migrations/versions/20260615_01_create_sla_rules.py`
+- `apps/api/migrations/versions/20260627_01_create_alert_delivery_logs.py`
+- `apps/api/tests/test_migrations.py`
+- `CONTEXTO.md`
+- `RELATORIO_DIA.md`
+
+### Testes
+- Infra: 8/8 passando
+- Migrations: 6/6 passando em `tests/test_migrations.py`
+- Frontend: 390/390 passando
+- Build frontend: OK
+- Secret self-test: OK
+
+### Bugs Encontrados e Correções Aplicadas
+- Dockerfile/compose ainda apontavam para `Api/` e `Infra/` antigos
+- Entrypoint da API falhava por CRLF no shebang em build Windows
+- Alembic tinha dois `heads` e impedía `alembic upgrade head`
+- `env.py` das migrations ignorava `ILEX_DATABASE_URL` em runtime por priorizar o default do `alembic.ini`
+- Migration `20260615_01` usava default booleano incompatível com PostgreSQL
+
+### Documentação Atualizada
+- `infra/LOCAL_SETUP.md`
+- `CONTEXTO.md`
+- `RELATORIO_DIA.md`
+
+### Bloqueios
+- A suíte completa da API ainda falha em vários testes fora do escopo de setup local, principalmente em `test_alert_delivery_log_model.py`, fluxos de importação e expectativas de autenticação.
+
+### Próximos Passos
+1. Abrir tarefa separada para reconciliar `AlertDeliveryLog` entre model, migrations e testes
+2. Revisar testes de importação e promoção de delivery que hoje divergem do comportamento autenticado atual
+3. Se necessário, adicionar documentação operacional sobre portas alternativas para hosts já ocupados
+
+---
+
 ## 2026-06-25 (Parte 5)
 
 ### Tarefas Executadas

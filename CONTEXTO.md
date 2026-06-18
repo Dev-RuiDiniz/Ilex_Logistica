@@ -1,44 +1,40 @@
 # CONTEXTO.md — Estado e Contexto do Projeto Ilex Logistica
 
-**Atualizado em:** 2026-06-25
+**Atualizado em:** 2026-06-17
 
 ---
 
 ## Visao Geral Atual
 
+**Atualizações recentes:**
+- **2026-06-17:** Setup local da stack corrigido no monorepo atual. Infra ajustada para usar caminhos `apps/api` e `infra/...` no Docker build, entrypoint normalizado para evitar falha por CRLF em Windows e `infra/LOCAL_SETUP.md` alinhado ao layout real do repositório.
+- **2026-06-17:** Bootstrap de migrations estabilizado para ambiente local. `apps/api/migrations/env.py` passou a priorizar a URL de banco em runtime, a árvore Alembic foi unificada em um único `head` com merge revision `20260627_01` e a migration `20260615_01` recebeu default booleano compatível com PostgreSQL.
+- **2026-06-17:** Ambiente local validado com `db` e `api` saudáveis via Docker Compose, migrations em PostgreSQL real, frontend com `npm test` (390/390) e `npm run build` passando. Neste host específico, o PostgreSQL do Ilex foi exposto em `5433` e o frontend dev subiu em `3002` por conflito com portas já ocupadas por outros projetos.
+
 Projeto de plataforma web para rastreio de entregas, gestao de excecoes operacionais e relatorios logisticos. Monorepo com API Python/FastAPI + frontend Next.js + infra Docker + documentacao extensa.
 
-**Fase atual:** Branch `main` com BETA-020F e BETA-029 concluídos. Projeto em estado estável com 489 testes backend passando e 331 testes frontend passando.
-
-**Atualizações recentes:**
-- **2026-06-25:** BETA-Test-E2E-Completion completado — Habilitados 14 testes E2E (8 daily-report, 6 alerts), instaladas dependências faltantes (recharts, date-fns), adicionados 14 testes unitários para carriers/page.tsx. Cobertura de testes frontend: 63.82% (meta: 50% ✅).
-- **2026-06-25:** BETA-029 completado — Completado Épico 10 (Dashboard Beta) com habilitação de 6 testes E2E. Layout responsivo, loading states, error handling e empty states já estavam implementados.
-- **2026-06-25:** BETA-020F completado — Removido error-handler.ts e error-handler.test.ts legacy após completa migração para useApiErrorHandler.
-- **2026-06-25:** BETA-020E completado — Testes E2E de navegação por permissão (7 testes) validando acesso por perfil (admin, logística, gestor, auditoria) nas 18 páginas integradas, redirecionamento 401 e exibição 403.
-- **2026-06-25:** BETA-020D completado — Integração de tratamento de erros 401/403 em 18 páginas privadas do frontend usando hook `useApiErrorHandler`. 5 testes unitários do hook, 320 testes frontend passando.
-- **2026-06-24:** BETA-020C completado — Frontend de Segurança e RBAC com tratamento de 401/403, helpers de permissões, sidebar condicional e componente AccessDenied. 30 novos testes frontend.
-- **2026-06-17:** BETA-027 completado — Alertas e Notificações com `AlertDeliveryLog`, deduplicação por origem, geração de alertas para múltiplos tipos e integração com dashboard/exceções. 88 testes backend + 19 testes frontend.
+**Fase atual:** Branch `fix/infra-setup-local` com stack local funcional para `db` + `api` + `web`, mas com regressões existentes na suíte completa da API fora do escopo de bootstrap local.
 
 ---
 
 ## Estado dos Componentes
 
 ### Backend (`apps/api`)
-- **Status:** Funcional, conflitos de merge RESOLVIDOS
+- **Status:** API sobe localmente via Docker, com migrations aplicadas em PostgreSQL
 - **Modulos prontos:** auth, users, carriers, shipments, imports (CSV/XLSX), sla, alerts, reports, dashboard
 - **Migrations:** 11 versoes Alembic
-- **Testes:** 489 testes passando, 0 falhando
+- **Testes:** validações de migrations passando; suíte completa atual tem regressões fora do escopo de setup local
 - **Cobertura:** ~88% (declarado)
 
 ### Frontend (`apps/web`)
-- **Status:** Build passando, RBAC integrado
+- **Status:** Build passando, frontend dev validado em porta alternativa quando `3000` estiver ocupada
 - **Telas prontas:** login, carriers, shipments, shipments/import, exceptions, reports/daily, alerts, users (com RBAC), settings (parcial)
-- **Testes:** Vitest unitario (331 testes passando) + Playwright E2E (alguns skipados)
+- **Testes:** Vitest unitario (390 testes passando) + Playwright E2E versionado
 - **Cobertura:** ~20.8%
 - **RBAC:** Tratamento de 401/403 implementado, helpers de permissões, sidebar condicional, componente AccessDenied
 
 ### Infraestrutura
-- **Docker Compose:** PostgreSQL + API container + healthchecks
+- **Docker Compose:** PostgreSQL + API container + healthchecks, compatível com layout atual do monorepo
 - **CI/CD:** GitHub Actions workflow `beta-ci.yml` (conflitos resolvidos, CI deve funcionar)
 - **Scripts:** beta_validate, validate_migrations, check_secrets, validate_docs
 
@@ -67,8 +63,8 @@ Projeto de plataforma web para rastreio de entregas, gestao de excecoes operacio
 | ~~Build frontend com erros de tipo~~ | ~~MEDIO~~ | **RESOLVIDO** — tipos completos adicionados em `types.ts`, build passando |
 | ~~PR #38 com conflitos~~ | ~~ALTO~~ | **MERGEADO** em 2026-06-10 |
 | ~~PR #39 com base incorreta~~ | ~~ALTO~~ | **MERGEADO** em 2026-06-10 |
-| Cobertura Web baixa | MEDIO | 20.8% — limita confianca no frontend |
-| E2E incompletos | MEDIO | Testes skipados para telas nao implementadas |
+| Suite completa da API com regressões | ALTO | `python -m pytest -q` ainda falha em testes antigos de `AlertDeliveryLog`, imports e expectativas de autenticação, apesar do bootstrap local estar funcional |
+| Porta 3000 ocupada no host atual | BAIXO | Frontend local precisou subir em `3002`; conflito é do ambiente e não da aplicação |
 
 ---
 

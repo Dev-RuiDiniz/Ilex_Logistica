@@ -1,18 +1,19 @@
-﻿from logging.config import fileConfig
+from logging.config import fileConfig
 
 from alembic import context
 from sqlalchemy import engine_from_config, pool
 
-from app.core.config import settings
+from app.core.config import Settings
+from app.database import models  # noqa: F401
 from app.database.base import Base
-from app.database import models  # noqa: F401\r\nfrom app.modules import sla  # noqa: F401
+from app.modules import sla  # noqa: F401
 
 config = context.config
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
-if not config.get_main_option("sqlalchemy.url"):
-    config.set_main_option("sqlalchemy.url", settings.database_url)
+runtime_settings = Settings()
+config.set_main_option("sqlalchemy.url", runtime_settings.database_url)
 target_metadata = Base.metadata
 
 

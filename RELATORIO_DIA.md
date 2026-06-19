@@ -6,7 +6,13 @@
 
 ### Tarefas Executadas
 
-1. **Normalização global de legibilidade de texto**
+1. **Correção do login web local bloqueado por CORS**
+   - Reproduzido o bug no ambiente real: a API aceitava `POST /api/v1/auth/login`, mas rejeitava a preflight `OPTIONS` do browser com `405`
+   - Adicionado teste de regressão em `apps/api/tests/test_auth.py` cobrindo a preflight da origem `http://localhost:3002`
+   - Habilitado `CORSMiddleware` na API com origens locais configuráveis para `localhost` e `127.0.0.1`
+   - Atualizada a configuração operacional em `infra/docker-compose.yml`, `infra/.env.example` e `infra/LOCAL_SETUP.md`
+
+2. **Normalização global de legibilidade de texto**
    - Criada especificação curta em `docs/superpowers/specs/2026-06-18-global-text-legibility-design.md`
    - Criado plano de implementação em `docs/superpowers/plans/2026-06-18-global-text-legibility.md`
    - Reforçados tokens e classes base de hierarquia textual em `apps/web/src/app/globals.css`
@@ -32,24 +38,33 @@
 - `apps/web/src/app/(private)/shipments/analytics/carrier-efficiency/DateRangePicker.tsx`
 - `apps/web/src/app/(private)/shipments/analytics/carrier-efficiency/CarrierEfficiencyCharts.tsx`
 - `apps/web/src/app/(private)/carriers/page.tsx`
+- `apps/api/app/core/config.py`
+- `apps/api/app/main.py`
+- `apps/api/tests/test_auth.py`
 - `apps/web/src/components/AccessDenied.tsx`
 - `apps/web/src/components/AuditJsonViewer.tsx`
 - `apps/web/src/components/SlaBadge.tsx`
 - `apps/web/src/components/app-shell.tsx`
+- `infra/docker-compose.yml`
+- `infra/.env.example`
+- `infra/LOCAL_SETUP.md`
 - `docs/superpowers/specs/2026-06-18-global-text-legibility-design.md`
 - `docs/superpowers/plans/2026-06-18-global-text-legibility.md`
 - `CONTEXTO.md`
 - `RELATORIO_DIA.md`
 
 ### Testes
+- `python -m pytest apps/api/tests/test_auth.py -q` -> 4/4 passando
 - `cd apps/web && npm test` -> 391/391 passando
 - `cd apps/web && npm run build` -> passando
 
 ### Bugs Encontrados e Correções Aplicadas
+- Login web em `http://localhost:3002/login` mostrava credencial inválida apesar do usuário seed existir -> causa raiz confirmada como falha de CORS na preflight `OPTIONS`, corrigida com `CORSMiddleware`
 - Subtítulos, labels e textos tabulares ainda variavam demais entre telas novas e antigas -> normalizados com reforço global de contraste
 - Páginas legadas ainda dependiam de `gray/slate` suaves demais -> substituídos por tons mais nítidos sem perder a semântica visual
 
 ### Documentação Atualizada
+- `infra/LOCAL_SETUP.md`
 - `docs/superpowers/specs/2026-06-18-global-text-legibility-design.md`
 - `docs/superpowers/plans/2026-06-18-global-text-legibility.md`
 - `CONTEXTO.md`

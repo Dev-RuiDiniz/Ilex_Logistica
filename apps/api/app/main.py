@@ -2,7 +2,9 @@
 import os
 
 from fastapi import FastAPI, Request
+from fastapi.middleware.cors import CORSMiddleware
 
+from app.core.config import settings
 from app.core.errors import register_exception_handlers
 from app.modules.auth.router import router as auth_router
 from app.modules.audit.router import router as audit_router
@@ -22,6 +24,13 @@ def create_app() -> FastAPI:
     logging.basicConfig(
         level=logging.INFO,
         format="%(asctime)s %(levelname)s %(name)s %(message)s",
+    )
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=settings.cors_origins,
+        allow_credentials=False,
+        allow_methods=["*"],
+        allow_headers=["*"],
     )
 
     # Enable logging middleware unless explicitly disabled for testing

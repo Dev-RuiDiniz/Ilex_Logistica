@@ -1,12 +1,13 @@
 # CONTEXTO.md — Estado e Contexto do Projeto Ilex Logistica
 
-**Atualizado em:** 2026-06-17
+**Atualizado em:** 2026-06-18
 
 ---
 
 ## Visao Geral Atual
 
 **Atualizações recentes:**
+- **2026-06-18:** Login web local destravado no ambiente Docker com suporte de CORS no backend FastAPI. A API agora responde corretamente à preflight `OPTIONS` para origens locais do frontend (`localhost` e `127.0.0.1`, incluindo porta `3002`), eliminando o falso erro de credenciais inválidas no browser.
 - **2026-06-18:** Normalização global de legibilidade textual aplicada ao frontend inteiro. O `web` recebeu reforço de contraste em subtítulos, labels, estados vazios, tabelas e telas legadas como `audit`, `exceptions`, `shipments/import`, `deliveries` e `settings/sla`, mantendo a base clara das superfícies.
 - **2026-06-18:** Ajuste visual incremental aplicado ao frontend para remover o peso escuro das superfícies principais. `page-hero`, painéis, tabelas, cards e estados compartilhados ficaram mais claros, mantendo `header` e `sidebar` com a identidade premium escura.
 - **2026-06-17:** Frontend redesenhado com a direcao visual "Excecoes com Inteligencia". O `web` agora possui design system proprio, login premium, shell privado com navegacao por dominio e padroes consistentes para dashboard, filtros, tabelas e formularios nas telas centrais.
@@ -71,6 +72,7 @@ Projeto de plataforma web para rastreio de entregas, gestao de excecoes operacio
 | ~~PR #39 com base incorreta~~ | ~~ALTO~~ | **MERGEADO** em 2026-06-10 |
 | Suite completa da API com regressões | ALTO | `python -m pytest -q` ainda falha em testes antigos de `AlertDeliveryLog`, imports e expectativas de autenticação, apesar do bootstrap local estar funcional |
 | Porta 3000 ocupada no host atual | BAIXO | Frontend local precisou subir em `3002`; conflito é do ambiente e não da aplicação |
+| ~~Login web local falhando por CORS~~ | ~~ALTO~~ | **RESOLVIDO em 2026-06-18** — preflight `OPTIONS` para `/api/v1/auth/login` passou a responder para origens locais permitidas |
 
 ---
 

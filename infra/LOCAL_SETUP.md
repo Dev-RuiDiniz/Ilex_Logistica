@@ -50,6 +50,7 @@ cp env/web.env.example ../apps/web/.env.local
 | `ILEX_JWT_ALGORITHM` | API | Não | Algoritmo JWT | `HS256` |
 | `ILEX_JWT_ACCESS_MINUTES` | API | Não | Expiração do access token | `30` |
 | `ILEX_JWT_REFRESH_MINUTES` | API | Não | Expiração do refresh token | `1440` |
+| `ILEX_CORS_ALLOWED_ORIGINS` | API | Não | Origens do frontend autorizadas para chamadas browser -> API | `http://localhost:3000,...,http://127.0.0.1:3002` |
 
 ## Execução prevista
 
@@ -58,6 +59,8 @@ docker compose up --build
 ```
 
 Se a porta `5432` já estiver em uso no host, ajuste `POSTGRES_PORT` no `infra/.env` para uma porta livre, como `5433`.
+
+Se o frontend subir em porta alternativa, como `3002`, confirme que essa origem esteja presente em `ILEX_CORS_ALLOWED_ORIGINS`.
 
 ## Parada do ambiente
 

@@ -69,16 +69,69 @@ describe("Shipments SLA filters", () => {
     render(<ShipmentsPage />);
 
     await waitFor(() => {
-      expect(screen.getByText("Todos")).toBeInTheDocument();
+      expect(screen.getByText("SLA Status")).toBeInTheDocument();
     });
 
-    const statusSelect = screen.getByText("Todos").closest("select") as HTMLSelectElement;
-    fireEvent.change(statusSelect, { target: { value: "in_transit" } });
+    const slaSelect = screen.getByText("SLA Status").closest("div")?.querySelector("select") as HTMLSelectElement;
+    fireEvent.change(slaSelect, { target: { value: "critical" } });
+    fireEvent.click(screen.getByText("Aplicar Filtros"));
 
     await waitFor(() => {
       expect(vi.mocked(listShipments)).toHaveBeenCalledWith(
         "test-token",
-        expect.objectContaining({ status: "in_transit" })
+        expect.objectContaining({ sla_status: "critical" })
+      );
+    });
+  });
+
+  it("Deve renderizar dropdown de SLA Status com todas as opções", async () => {
+    vi.mocked(listShipments).mockResolvedValueOnce({
+      items: [],
+      total: 0,
+      total_pages: 0,
+      page: 1,
+      page_size: 20,
+    });
+
+    render(<ShipmentsPage />);
+
+    await waitFor(() => {
+      expect(screen.getByText("SLA Status")).toBeInTheDocument();
+    });
+
+    const slaSelect = screen.getByText("SLA Status").closest("div")?.querySelector("select") as HTMLSelectElement;
+    expect(slaSelect).toBeTruthy();
+    const options = Array.from(slaSelect.options).map((o) => o.value);
+    expect(options).toContain("");
+    expect(options).toContain("critical");
+    expect(options).toContain("warning");
+    expect(options).toContain("normal");
+    expect(options).toContain("unknown");
+  });
+
+  it("Deve aplicar filtro por sla_status=critical", async () => {
+    vi.mocked(listShipments).mockResolvedValueOnce({
+      items: [],
+      total: 0,
+      total_pages: 0,
+      page: 1,
+      page_size: 20,
+    });
+
+    render(<ShipmentsPage />);
+
+    await waitFor(() => {
+      expect(screen.getByText("SLA Status")).toBeInTheDocument();
+    });
+
+    const slaSelect = screen.getByText("SLA Status").closest("div")?.querySelector("select") as HTMLSelectElement;
+    fireEvent.change(slaSelect, { target: { value: "critical" } });
+    fireEvent.click(screen.getByText("Aplicar Filtros"));
+
+    await waitFor(() => {
+      expect(vi.mocked(listShipments)).toHaveBeenCalledWith(
+        "test-token",
+        expect.objectContaining({ sla_status: "critical" })
       );
     });
   });
@@ -94,13 +147,153 @@ describe("Shipments SLA filters", () => {
 
     render(<ShipmentsPage />);
 
-    // O filtro is_late não está exposto no UI atual, mas o parâmetro existe na API
-    // Verificamos que o componente aceita o parâmetro
-    expect(true).toBe(true);
+    await waitFor(() => {
+      expect(screen.getByText("Atrasado?")).toBeInTheDocument();
+    });
+
+    const isLateSelect = screen.getByText("Atrasado?").closest("div")?.querySelector("select") as HTMLSelectElement;
+    fireEvent.change(isLateSelect, { target: { value: "true" } });
+    fireEvent.click(screen.getByText("Aplicar Filtros"));
+
+    await waitFor(() => {
+      expect(vi.mocked(listShipments)).toHaveBeenCalledWith(
+        "test-token",
+        expect.objectContaining({ is_late: true })
+      );
+    });
   });
 
   it("Deve aplicar filtro por is_late=false", async () => {
-    expect(true).toBe(true);
+    vi.mocked(listShipments).mockResolvedValueOnce({
+      items: [],
+      total: 0,
+      total_pages: 0,
+      page: 1,
+      page_size: 20,
+    });
+
+    render(<ShipmentsPage />);
+
+    await waitFor(() => {
+      expect(screen.getByText("Atrasado?")).toBeInTheDocument();
+    });
+
+    const isLateSelect = screen.getByText("Atrasado?").closest("div")?.querySelector("select") as HTMLSelectElement;
+    fireEvent.change(isLateSelect, { target: { value: "false" } });
+    fireEvent.click(screen.getByText("Aplicar Filtros"));
+
+    await waitFor(() => {
+      expect(vi.mocked(listShipments)).toHaveBeenCalledWith(
+        "test-token",
+        expect.objectContaining({ is_late: false })
+      );
+    });
+  });
+
+  it("Deve combinar filtros sla_status e is_late", async () => {
+    vi.mocked(listShipments).mockResolvedValueOnce({
+      items: [],
+      total: 0,
+      total_pages: 0,
+      page: 1,
+      page_size: 20,
+    });
+
+    render(<ShipmentsPage />);
+
+    await waitFor(() => {
+      expect(screen.getByText("SLA Status")).toBeInTheDocument();
+    });
+
+    const slaSelect = screen.getByText("SLA Status").closest("div")?.querySelector("select") as HTMLSelectElement;
+    fireEvent.change(slaSelect, { target: { value: "warning" } });
+
+    const isLateSelect = screen.getByText("Atrasado?").closest("div")?.querySelector("select") as HTMLSelectElement;
+    fireEvent.change(isLateSelect, { target: { value: "true" } });
+
+    fireEvent.click(screen.getByText("Aplicar Filtros"));
+
+    await waitFor(() => {
+      expect(vi.mocked(listShipments)).toHaveBeenCalledWith(
+        "test-token",
+        expect.objectContaining({ sla_status: "warning", is_late: true })
+      );
+    });
+  });
+
+  it("Deve limpar filtros SLA ao clicar em Limpar Filtros", async () => {
+    vi.mocked(listShipments).mockResolvedValueOnce({
+      items: [],
+      total: 0,
+      total_pages: 0,
+      page: 1,
+      page_size: 20,
+    });
+
+    render(<ShipmentsPage />);
+
+    await waitFor(() => {
+      expect(screen.getByText("SLA Status")).toBeInTheDocument();
+    });
+
+    const slaSelect = screen.getByText("SLA Status").closest("div")?.querySelector("select") as HTMLSelectElement;
+    fireEvent.change(slaSelect, { target: { value: "critical" } });
+
+    const isLateSelect = screen.getByText("Atrasado?").closest("div")?.querySelector("select") as HTMLSelectElement;
+    fireEvent.change(isLateSelect, { target: { value: "true" } });
+
+    fireEvent.click(screen.getByText("Aplicar Filtros"));
+
+    await waitFor(() => {
+      expect(vi.mocked(listShipments)).toHaveBeenCalledWith(
+        "test-token",
+        expect.objectContaining({ sla_status: "critical", is_late: true })
+      );
+    });
+
+    vi.mocked(listShipments).mockResolvedValueOnce({
+      items: [],
+      total: 0,
+      total_pages: 0,
+      page: 1,
+      page_size: 20,
+    });
+
+    fireEvent.click(screen.getByText("Limpar Filtros"));
+
+    await waitFor(() => {
+      expect(vi.mocked(listShipments)).toHaveBeenCalledWith(
+        "test-token",
+        expect.objectContaining({
+          sla_status: undefined,
+          is_late: undefined,
+        })
+      );
+    });
+  });
+
+  it("Deve exibir loading state com filtros SLA", async () => {
+    vi.mocked(listShipments).mockImplementation(() => new Promise(() => {}));
+
+    render(<ShipmentsPage />);
+
+    expect(screen.getByText("Carregando...")).toBeInTheDocument();
+  });
+
+  it("Deve exibir empty state com filtros SLA", async () => {
+    vi.mocked(listShipments).mockResolvedValueOnce({
+      items: [],
+      total: 0,
+      total_pages: 0,
+      page: 1,
+      page_size: 20,
+    });
+
+    render(<ShipmentsPage />);
+
+    await waitFor(() => {
+      expect(screen.getByText("Nenhum envio encontrado.")).toBeInTheDocument();
+    });
   });
 
   it("Deve aplicar filtro por criticality", async () => {

@@ -111,6 +111,14 @@ Projeto de plataforma web para rastreio de entregas, gestao de excecoes operacio
 
 ## Historico de Mudancas (Linha do Tempo)
 
+### 2026-06-23 (Sessão 2 — BETA-1.1 e BETA-1.2)
+- BETA-1.1 (Filtros SLA Backend): Implementados filtros `sla_status` e `is_late` no endpoint GET /shipments
+  - Router com validação 422, service com filtragem em memória (limite 1000), 10 testes backend
+- BETA-1.2 (Filtros SLA Frontend): Adicionados dropdowns "SLA Status" e "Atrasado?" na tela de Envios
+  - 8 testes novos/substituídos (stubs removidos), 396/396 testes frontend passando, build OK
+- ROADMAP_BETA.md atualizado: Épico 1 com 2/3 tarefas concluídas (80%)
+- Documentação criada: docs/BETA_1.1_FILTROS_SLA_BACKEND.md, docs/BETA_1.2_FILTROS_SLA_FRONTEND.md
+
 ### 2026-06-23 (Auditoria e ROADMAP_BETA)
 - Auditoria completa do projeto com leitura de toda documentação
 - Atualização de AUDITORIA.md com estado real (75% completo, 90/120 funcionalidades)

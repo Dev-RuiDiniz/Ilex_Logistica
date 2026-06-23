@@ -2,6 +2,46 @@
 
 ---
 
+## 2026-06-23 (Sessão 2)
+
+### Tarefas Executadas
+
+1. **BETA-1.1: Filtros por Criticidade no Backend**
+   - Implementados filtros `sla_status` e `is_late` no endpoint GET /shipments
+   - Adicionados parâmetros no router.py com validação (422 para valores inválidos)
+   - Implementada filtragem em memória no service.py (limite 1000 registros)
+   - Criados 10 testes backend (test_shipments_sla_filters.py)
+   - Criada documentação docs/BETA_1.1_FILTROS_SLA_BACKEND.md
+
+2. **BETA-1.2: Filtros por Criticidade no Frontend**
+   - Adicionados dropdowns "SLA Status" e "Atrasado?" na tela de Envios
+   - Substituídos 2 stubs de teste por testes reais
+   - Corrigido teste ambíguo (`getByText("Todos")` → `getByText("SLA Status")`)
+   - Adicionados 6 novos testes de frontend
+   - Criada documentação docs/BETA_1.2_FILTROS_SLA_FRONTEND.md
+   - Atualizado ROADMAP_BETA.md (Tarefa 1.2 concluída, 2/3)
+
+### Arquivos Modificados
+- `apps/api/app/modules/shipments/router.py` — filtros sla_status e is_late
+- `apps/api/app/modules/shipments/service.py` — filtragem em memória
+- `apps/api/tests/test_shipments_sla_filters.py` — 10 testes backend (novo)
+- `apps/web/src/app/(private)/shipments/page.tsx` — dropdowns SLA na UI
+- `apps/web/src/app/(private)/shipments/shipments-sla-filters.test.tsx` — 8 testes novos/substituídos
+- `docs/BETA_1.1_FILTROS_SLA_BACKEND.md` — documentação (novo)
+- `docs/BETA_1.2_FILTROS_SLA_FRONTEND.md` — documentação (novo)
+- `ROADMAP_BETA.md` — Tarefa 1.1 e 1.2 marcadas como concluídas
+
+### Testes
+- Backend: 10/10 testes SLA filters passando
+- Frontend: 396/396 testes passando (32 no arquivo SLA filters)
+- Build: Compiled successfully
+
+### Próximos Passos
+1. Executar Tarefa 1.3 (Tela de Gestão de Regras SLA)
+2. Commit e push das alterações
+
+---
+
 ## 2026-06-23
 
 ### Tarefas Executadas

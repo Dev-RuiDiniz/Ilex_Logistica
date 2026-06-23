@@ -48,6 +48,10 @@ export default function ShipmentsPage() {
   const [amountMin, setAmountMin] = useState("");
   const [amountMax, setAmountMax] = useState("");
 
+  // Filtros SLA (BETA-1.2)
+  const [slaStatusFilter, setSlaStatusFilter] = useState("");
+  const [isLateFilter, setIsLateFilter] = useState("");
+
   // Filtro temporal por mês/ano
   const [useMonthYearFilter, setUseMonthYearFilter] = useState(false);
   const [monthYearTarget, setMonthYearTarget] = useState<"estimated_delivery" | "due_date">("estimated_delivery");
@@ -116,6 +120,9 @@ export default function ShipmentsPage() {
         amount_max: amountMax ? parseFloat(amountMax) : undefined,
         sort_by: sortBy,
         sort_order: sortOrder,
+        // Filtros SLA (BETA-1.2)
+        sla_status: slaStatusFilter || undefined,
+        is_late: isLateFilter === "" ? undefined : isLateFilter === "true",
       };
       const response = await listShipments(session.accessToken, params);
       setItems(response.items);
@@ -161,6 +168,8 @@ export default function ShipmentsPage() {
     freightPercentageMax,
     amountMin,
     amountMax,
+    slaStatusFilter,
+    isLateFilter,
   ]);
 
   useEffect(() => {
@@ -247,6 +256,8 @@ export default function ShipmentsPage() {
     setFreightPercentageMax("");
     setAmountMin("");
     setAmountMax("");
+    setSlaStatusFilter("");
+    setIsLateFilter("");
     setUseMonthYearFilter(false);
     setMonthYearTarget("estimated_delivery");
     setSelectedMonth("");
@@ -407,6 +418,34 @@ export default function ShipmentsPage() {
                 <option value="baixa">Baixa</option>
                 <option value="media">Média</option>
                 <option value="alta">Alta</option>
+              </select>
+            </div>
+            <div>
+              <label className="block text-sm font-medium">SLA Status</label>
+              <select
+                value={slaStatusFilter}
+                onChange={(e) => setSlaStatusFilter(e.target.value)}
+                className="mt-1 w-full rounded border px-3 py-2 text-sm"
+                disabled={loading}
+              >
+                <option value="">Todos</option>
+                <option value="critical">Crítico</option>
+                <option value="warning">Warning</option>
+                <option value="normal">Normal</option>
+                <option value="unknown">Desconhecido</option>
+              </select>
+            </div>
+            <div>
+              <label className="block text-sm font-medium">Atrasado?</label>
+              <select
+                value={isLateFilter}
+                onChange={(e) => setIsLateFilter(e.target.value)}
+                className="mt-1 w-full rounded border px-3 py-2 text-sm"
+                disabled={loading}
+              >
+                <option value="">Todos</option>
+                <option value="true">Sim</option>
+                <option value="false">Não</option>
               </select>
             </div>
             <div>

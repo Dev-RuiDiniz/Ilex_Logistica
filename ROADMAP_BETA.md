@@ -40,14 +40,14 @@ Para toda funcionalidade:
 
 | Épico | Status Atual | % Completo | Tarefas Pendentes | Prioridade | Progresso |
 |-------|--------------|------------|-------------------|------------|-----------|
-| 1 - SLA, atraso e criticidade | Parcial | 70% | 3 tarefas | Alta | [ ] 0/3 |
+| 1 - SLA, atraso e criticidade | Parcial | 70% | 2 tarefas | Alta | [x] 1/3 |
 | 3 - Campos fiscais/financeiros | Parcial | 93% | 5 tarefas | Alta | [ ] 0/5 |
 | 4 - Eficiência por transportadora | Parcial | 50% | 4 tarefas | Alta | [ ] 0/4 |
 | 6 - Relatório diário automático | Parcial | 50% | 4 tarefas | Alta | [ ] 0/4 |
 | 8 - Integrações assistidas | Parcial | 44% | 5 tarefas | Média | [ ] 0/5 |
 | Tratativas Operacionais | ❌ Pendente | 0% | 4 tarefas | Média | [ ] 0/4 |
 
-**Total:** 25 tarefas pendentes
+**Total:** 24 tarefas pendentes
 
 ---
 
@@ -55,9 +55,9 @@ Para toda funcionalidade:
 
 **Status Atual:** 70% completo  
 **Objetivo:** Completar filtros por criticidade, tela de gestão de regras SLA e testes frontend  
-**Progresso:** [ ] 0/3 tarefas concluídas
+**Progresso:** [x] 1/3 tarefas concluídas
 
-### [ ] Tarefa 1.1: Filtros por Criticidade no Backend
+### [x] Tarefa 1.1: Filtros por Criticidade no Backend
 
 #### Especificação SDD
 

@@ -65,9 +65,19 @@ def list_shipments_endpoint(
     freight_percentage_max: Annotated[float | None, Query()] = None,
     amount_min: Annotated[float | None, Query()] = None,
     amount_max: Annotated[float | None, Query()] = None,
+    # Filtros SLA (BETA-1.1)
+    sla_status: Annotated[str | None, Query()] = None,
+    is_late: Annotated[bool | None, Query()] = None,
     db: Session = Depends(get_db),
     current_user: User = Depends(require_permission("shipments:read")),
     ) -> ShipmentListResponse:
+    # Validar sla_status
+    if sla_status and sla_status not in ["critical", "warning", "normal", "unknown"]:
+        raise HTTPException(
+            status_code=422,
+            detail="sla_status inválido. Valores válidos: critical, warning, normal, unknown"
+        )
+    
     return list_shipments(
         db=db,
         page=page,
@@ -101,6 +111,9 @@ def list_shipments_endpoint(
         freight_percentage_max=freight_percentage_max,
         amount_min=amount_min,
         amount_max=amount_max,
+        # Filtros SLA (BETA-1.1)
+        sla_status=sla_status,
+        is_late=is_late,
     )
 
 

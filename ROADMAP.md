@@ -14,6 +14,7 @@
 - ❌ **PENDENTE** - Funcionalidade não iniciada
 - 📋 **SDD** - Especificação detalhada disponível
 - 🧪 **TDD** - Critérios de teste definidos
+- [ ] **CHECKBOX** - Marque para acompanhar progresso manualmente
 
 ---
 

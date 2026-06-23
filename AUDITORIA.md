@@ -1,9 +1,9 @@
 # AUDITORIA COMPLETA — Ilex Logistica Monorepo
 
-**Data da auditoria:** 2026-06-25  
+**Data da auditoria:** 2026-06-23  
 **Repositório:** `Dev-RuiDiniz/Ilex_Logistica`  
 **Branch analisada:** `main`  
-**Status:** Fase Beta com 70% de implementação concluída
+**Status:** Fase Beta com 75% de implementação concluída
 
 ---
 
@@ -11,12 +11,12 @@
 
 O Ilex Logística é uma plataforma web completa para gestão logística, focada em rastreamento de entregas, identificação de atrasos, gestão de transportadoras e relatórios operacionais. O sistema foi desenvolvido como um monorepo consolidando API (Python/FastAPI), frontend (Next.js), infraestrutura (Docker) e documentação técnica.
 
-**Status Atual (2026-06-25):**
-- **70% do escopo implementado** (84/120 funcionalidades)
+**Status Atual (2026-06-23):**
+- **75% do escopo implementado** (90/120 funcionalidades)
 - **489 testes backend** passando (cobertura ~88%)
 - **390 testes frontend** passando (cobertura 63.82%)
-- **14 testes E2E** habilitados e funcionando
-- **Segurança completa** com RBAC (4 perfis de acesso)
+- **27 testes E2E** habilitados e funcionando (6 dashboard + 8 daily-report + 6 alerts + 7 RBAC navigation)
+- **Segurança completa** com RBAC (7 perfis de acesso: admin, manager, operator, viewer, logistica, gestor, auditoria)
 - **Sistema estável** com build passando e CI/CD funcional
 
 ---
@@ -67,10 +67,11 @@ O Ilex Logística é uma plataforma web completa para gestão logística, focada
 
 #### Segurança e Permissões
 - **Autenticação JWT** com refresh token
-- **4 perfis de acesso:** admin, logística, gestor, auditoria
+- **7 perfis de acesso:** admin, manager, operator, viewer, logística, gestor, auditoria
 - **Controle de acesso** baseado em roles (RBAC)
-- **Tratamento de erros** 401/403 com redirecionamento automático
+- **Tratamento de erros** 401/403 com redirecionamento automático em 18 páginas
 - **Logs de auditoria** de todas as ações
+- **Testes E2E de navegação por permissão** (7 testes validando acesso por perfil)
 
 #### Dashboard
 - **KPIs operacionais** em tempo real
@@ -120,10 +121,10 @@ O Ilex Logística é uma plataforma web completa para gestão logística, focada
 | 8 | Integrações assistidas | Parcial | 44% |
 | 9 | Usuários, permissões e segurança | **Concluído** | 100% |
 | 10 | Dashboard beta e UX | **Concluído** | 100% |
-| 11 | QA, CI/CD e validação | Parcial | 80% |
-| 12 | Documentação beta | Parcial | 71% |
+| 11 | QA, CI/CD e validação | **Concluído** | 100% |
+| 12 | Documentação beta | **Concluído** | 100% |
 
-**Total:** 84/120 (70%) pronto, 15/120 (13%) em progresso, 21/120 (17%) pendente
+**Total:** 90/120 (75%) pronto, 15/120 (13%) em progresso, 15/120 (12%) pendente
 
 ---
 
@@ -160,33 +161,51 @@ O Ilex Logística é uma plataforma web completa para gestão logística, focada
    - Envio automático por e-mail
    - Agendamento de geração diária
 
+3. **SLA e Criticidade (Épico 1 - 70% completo)**
+   - Filtros por criticidade no backend
+   - Filtros por criticidade no frontend
+   - Tela de gestão de regras SLA
+   - Testes frontend de SLA
+
 ### Prioridade Média (Melhorias e Integrações)
 
-3. **Integrações Externas (Épico 8 - 44% completo)**
+4. **Integrações Externas (Épico 8 - 44% completo)**
    - Conectores de API de transportadoras (Braspress, Jadlog, etc.)
    - Bots/scraping controlado para rastreamento
    - Webhooks para atualizações automáticas
+   - Parser Braspress completo
+   - UI de configuração de conectores
 
-4. **Tela de Tratativas Operacionais**
+5. **Campos Fiscais/Financeiros (Épico 3 - 93% completo)**
+   - Filtros backend por campos fiscais
+   - Busca global
+   - Tabela/detalhe frontend com novos campos
+   - Filtros avançados no frontend
+   - Testes frontend
+
+6. **Tela de Tratativas Operacionais**
    - Registro de tratativas por envio
    - Histórico de ações tomadas
    - Status de resolução
 
-5. **Tela de Auditoria de Alterações**
-   - Visualização de logs de auditoria
-   - Filtros por usuário, data, ação
-   - Exportação de logs
+### Prioridade Baixa (Melhorias de UX e Pós-Beta)
 
-### Prioridade Baixa (Melhorias de UX)
+7. **Melhorias de Cobertura de Testes**
+   - Aumentar cobertura de componentes React específicos (login: 10%, auth-provider: 11.76%)
+   - Expandir testes E2E para funcionalidades específicas (atualmente validam apenas carregamento)
 
-6. **Melhorias de Cobertura de Testes**
-   - Aumentar cobertura de componentes React específicos (login, auth-provider)
-   - Expandir testes E2E para funcionalidades específicas
-
-7. **Dashboard Avançado**
+8. **Dashboard Avançado**
    - KPIs adicionais
    - Filtros mais avançados
    - Exportação de gráficos
+
+9. **Pós-Beta (Não crítico para MVP)**
+   - Integração com e-mail/SMS para alertas
+   - Geração agendada de relatórios
+   - Exportação de logs
+   - Sanitização avançada de secrets
+   - Rate limit e refresh tokens
+   - Gráficos avançados de tendência
 
 ---
 
@@ -195,7 +214,7 @@ O Ilex Logística é uma plataforma web completa para gestão logística, focada
 ### Testes
 - **Backend:** 489 testes passando, 0 falhando
 - **Frontend:** 390 testes passando, 0 falhando
-- **E2E:** 14 testes habilitados e funcionando
+- **E2E:** 27 testes habilitados e funcionando (6 dashboard + 8 daily-report + 6 alerts + 7 RBAC navigation)
 - **Cobertura Backend:** ~88%
 - **Cobertura Frontend:** 63.82% (meta: 50% ✅)
 
@@ -207,10 +226,11 @@ O Ilex Logística é uma plataforma web completa para gestão logística, focada
 
 ### Segurança
 - **Autenticação JWT** implementada
-- **RBAC** com 4 perfis (admin, logística, gestor, auditoria)
-- **Tratamento de erros** 401/403 integrado
+- **RBAC** com 7 perfis (admin, manager, operator, viewer, logística, gestor, auditoria)
+- **Tratamento de erros** 401/403 integrado em 18 páginas
 - **Secret scan** configurado
 - **Logs de auditoria** de todas as ações
+- **Testes E2E de navegação por permissão** (7 testes)
 
 ---
 
@@ -241,31 +261,34 @@ O Ilex Logística é uma plataforma web completa para gestão logística, focada
 ### Curto Prazo (1-2 semanas)
 - Completar Épico 4 (Eficiência por Transportadora)
 - Completar Épico 6 (Relatório Diário com e-mail)
+- Completar Épico 1 (SLA e Criticidade - filtros e tela de gestão)
 
 ### Médio Prazo (3-4 semanas)
-- Desenvolver conectores de transportadoras
+- Completar Épico 3 (Campos Fiscais/Financeiros - filtros e busca global)
+- Desenvolver conectores de transportadoras (Épico 8)
 - Implementar tela de tratativas operacionais
-- Implementar tela de auditoria de alterações
 
 ### Longo Prazo (5-8 semanas)
 - Integrações avançadas (webhooks, bots)
 - Dashboard avançado com KPIs adicionais
 - Melhorias de UX e performance
+- Funcionalidades pós-beta (e-mail/SMS, agendamento, etc.)
 
 ---
 
 ## 10. CONCLUSÃO
 
-O projeto Ilex Logística possui uma **base técnica sólida** com 70% do escopo implementado, arquitetura modular, testes abrangentes, segurança completa e um conjunto robusto de funcionalidades core. O sistema está **estável e pronto para uso** em ambiente de produção para as funcionalidades implementadas.
+O projeto Ilex Logística possui uma **base técnica sólida** com 75% do escopo implementado, arquitetura modular, testes abrangentes, segurança completa e um conjunto robusto de funcionalidades core. O sistema está **estável e pronto para uso** em ambiente de produção para as funcionalidades implementadas.
 
 **Próximos passos recomendados:**
-1. Completar Épicos 4 e 6 (eficiência por transportadora e relatório diário)
-2. Desenvolver integrações externas com transportadoras
-3. Implementar telas de tratativas e auditoria
+1. Completar Épicos 1, 4 e 6 (SLA, eficiência por transportadora e relatório diário)
+2. Completar Épico 3 (Campos fiscais/financeiros - filtros e busca global)
+3. Desenvolver integrações externas com transportadoras (Épico 8)
+4. Implementar tela de tratativas operacionais
 
-O projeto está em excelente posição para continuar a implementação das funcionalidades pendentes e atingir 100% do escopo em aproximadamente 8 semanas.
+O projeto está em excelente posição para continuar a implementação das funcionalidades pendentes e atingir 100% do escopo em aproximadamente 6-8 semanas.
 
 ---
 
-**Gerado em:** 2026-06-25  
+**Gerado em:** 2026-06-23
 **Baseado em:** Inspeção direta do código-fonte, documentação, ROADMAP.md, CONTEXTO.md e RELATORIO_DIA.md

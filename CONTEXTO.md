@@ -88,11 +88,15 @@ Projeto de plataforma web para rastreio de entregas, gestao de excecoes operacio
 12. ~~Implementar testes E2E de navegação por permissão (BETA-020E)** **(FEITO 2026-06-25)**
 13. ~~Remover `error-handler.ts` antigo após completa migração (BETA-020F)** **(FEITO 2026-06-25)**
 14. ~~Completar Épico 10 - Dashboard Beta (BETA-029)** **(FEITO 2026-06-25)**
-15. Implementar tela administrativa de usuarios completa (W15)
-16. Implementar tela de auditoria de alteracoes (W18)
-17. Desenvolver conectores de transportadoras (LOG-021/022)
-18. Implementar envio de relatorio diario por e-mail (LOG-019)
-19. Aumentar cobertura de testes E2E com Playwright
+15. **Executar tarefas do ROADMAP_BETA.md (prioridade: Épicos 1, 4, 6)**
+16. Completar Épico 1 - SLA e Criticidade (3 tarefas: filtros backend, filtros frontend, tela de gestão SLA)
+17. Completar Épico 4 - Eficiência por Transportadora (4 tarefas: endpoint agregação, ranking, tela frontend, gráficos)
+18. Completar Épico 6 - Relatório Diário (4 tarefas: geração manual, tela frontend, envio e-mail, agendamento)
+19. Implementar tela administrativa de usuarios completa (W15)
+20. Implementar tela de auditoria de alteracoes (W18)
+21. Desenvolver conectores de transportadoras (LOG-021/022)
+22. Implementar envio de relatorio diario por e-mail (LOG-019)
+23. Aumentar cobertura de testes E2E com Playwright
 
 ---
 
@@ -106,6 +110,14 @@ Projeto de plataforma web para rastreio de entregas, gestao de excecoes operacio
 ---
 
 ## Historico de Mudancas (Linha do Tempo)
+
+### 2026-06-23 (Auditoria e ROADMAP_BETA)
+- Auditoria completa do projeto com leitura de toda documentação
+- Atualização de AUDITORIA.md com estado real (75% completo, 90/120 funcionalidades)
+- Criação de ROADMAP_BETA.md com especificações SDD/TDD para 25 tarefas pendentes
+- Identificação de 6 épicos parciais com prioridades definidas
+- Criação de plano de execução para Tarefa 1.1 (Filtros SLA Backend)
+- Estimativa de conclusão: 6-8 semanas para completar funcionalidades pendentes
 
 ### 2026-06-24 (Sessao de governanca)
 - Atualizacao de CONTEXTO.md com estado atual do projeto

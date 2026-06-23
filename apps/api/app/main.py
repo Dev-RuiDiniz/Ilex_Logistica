@@ -2,6 +2,7 @@
 import os
 
 from fastapi import FastAPI, Request
+from fastapi.middleware.cors import CORSMiddleware
 
 from app.core.errors import register_exception_handlers
 from app.modules.auth.router import router as auth_router
@@ -19,6 +20,15 @@ from app.modules.alerts.router import router as alerts_router
 
 def create_app() -> FastAPI:
     app = FastAPI(title="Ilex API", version="1.0.0")
+
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=["http://localhost:3000", "http://127.0.0.1:3000"],
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
+
     logging.basicConfig(
         level=logging.INFO,
         format="%(asctime)s %(levelname)s %(name)s %(message)s",

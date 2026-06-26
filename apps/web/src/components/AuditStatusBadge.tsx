@@ -5,13 +5,13 @@ interface AuditStatusBadgeProps {
 }
 
 export function AuditStatusBadge({ status }: AuditStatusBadgeProps) {
-  const colors = {
-    success: "bg-green-100 text-green-800",
-    failed: "bg-red-100 text-red-800",
-    skipped: "bg-gray-100 text-gray-800",
+  const styles: Record<string, string> = {
+    success: "bg-emerald-50 text-emerald-700 ring-1 ring-emerald-600/20",
+    failed: "bg-red-50 text-red-700 ring-1 ring-red-600/20",
+    skipped: "bg-zinc-100 text-zinc-600 ring-1 ring-zinc-500/20",
   };
 
-  const labels = {
+  const labels: Record<string, string> = {
     success: "Success",
     failed: "Failed",
     skipped: "Skipped",
@@ -20,9 +20,9 @@ export function AuditStatusBadge({ status }: AuditStatusBadgeProps) {
   return (
     <span
       data-testid="audit-status-badge"
-      className={`px-2 py-1 rounded-full text-xs font-medium ${colors[status]}`}
+      className={`inline-flex rounded-full px-2.5 py-0.5 text-[11px] font-semibold ${styles[status] || "bg-zinc-100 text-zinc-600 ring-1 ring-zinc-500/20"}`}
     >
-      {labels[status]}
+      {labels[status] || status}
     </span>
   );
 }

@@ -1,292 +1,262 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { getDashboardSummary, type DashboardFilters, type DashboardSummaryResponse } from "@/lib/dashboard-api";
+import { useState } from "react";
+
+const MOCK = {
+  total_shipments: 2847,
+  on_time_count: 2134,
+  late_count: 412,
+  critical_count: 87,
+  warning_count: 214,
+  exceptions_count: 23,
+  carriers_count: 12,
+  active_alerts_count: 3,
+  weekly_evolution: [
+    { week: "S1", on_time: 82, late: 12, critical: 6 },
+    { week: "S2", on_time: 85, late: 9, critical: 6 },
+    { week: "S3", on_time: 78, late: 14, critical: 8 },
+    { week: "S4", on_time: 89, late: 7, critical: 4 },
+    { week: "S5", on_time: 86, late: 8, critical: 6 },
+    { week: "S6", on_time: 91, late: 5, critical: 4 },
+    { week: "S7", on_time: 88, late: 7, critical: 5 },
+    { week: "S8", on_time: 92, late: 4, critical: 4 },
+  ],
+  carrier_distribution: [
+    { name: "Transportes Rápidos", count: 534, pct: 18.8 },
+    { name: "Braspress", count: 421, pct: 14.8 },
+    { name: "Jadlog", count: 387, pct: 13.6 },
+    { name: "Loggi", count: 298, pct: 10.5 },
+    { name: "Sequoia", count: 256, pct: 9.0 },
+    { name: "Azul Cargo", count: 198, pct: 7.0 },
+    { name: "JSL", count: 145, pct: 5.1 },
+    { name: "Outros", count: 309, pct: 10.9 },
+  ],
+  recent_activity: [
+    { id: 1, event: "Novo envio criado", tracking: "BRP001234567", time: "2 min atrás", severity: "info" },
+    { id: 2, event: "Alerta SLA crítico", tracking: "LOG009876543", time: "15 min atrás", severity: "critical" },
+    { id: 3, event: "Importação concluída", tracking: "350 registros", time: "1h atrás", severity: "success" },
+    { id: 4, event: "Atraso detectado", tracking: "JDL005432167", time: "2h atrás", severity: "warning" },
+    { id: 5, event: "Entrega realizada", tracking: "RAP003216548", time: "3h atrás", severity: "success" },
+    { id: 6, event: "Falha de integração", tracking: "API Braspress", time: "4h atrás", severity: "critical" },
+    { id: 7, event: "Relatório gerado", tracking: "Diário", time: "5h atrás", severity: "info" },
+  ],
+};
 
 export default function DashboardPage() {
-  const [data, setData] = useState<DashboardSummaryResponse | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [filters, setFilters] = useState<DashboardFilters>({});
-
-  useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      setError(null);
-      try {
-        const token = localStorage.getItem("accessToken") || "";
-        const result = await getDashboardSummary(token, filters);
-        setData(result);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : "Erro ao carregar dados");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, [filters]);
-
-  const handleFilterChange = (key: keyof DashboardFilters, value: string | number | boolean | undefined) => {
-    setFilters((prev) => ({
-      ...prev,
-      [key]: value,
-    }));
-  };
-
-  const clearFilters = () => {
-    setFilters({});
-  };
-
-  if (loading) {
-    return (
-      <div className="p-6">
-        <div className="text-gray-500">Carregando...</div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="p-6">
-        <div className="text-red-500">Erro: {error}</div>
-      </div>
-    );
-  }
-
-  if (!data) {
-    return (
-      <div className="p-6">
-        <div className="text-gray-500">Sem dados</div>
-      </div>
-    );
-  }
+  const data = MOCK;
+  const onTimePct = ((data.on_time_count / data.total_shipments) * 100).toFixed(1);
+  const maxCarrier = Math.max(...data.carrier_distribution.map((c) => c.count));
 
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold mb-4">Dashboard Beta</h1>
-
-      {/* Filtros */}
-      <div className="mb-4 p-4 bg-white rounded-lg shadow" data-testid="dashboard-filters">
-        <h2 className="text-lg font-semibold mb-3">Filtros</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div>
-            <label className="block text-sm font-medium mb-1">Mês</label>
-            <input
-              aria-label="Mês"
-              className="w-full p-2 border rounded"
-              id="filter-month"
-              max="12"
-              min="1"
-              type="number"
-              value={filters.month ?? ""}
-              onChange={(e) => handleFilterChange("month", e.target.value ? parseInt(e.target.value) : undefined)}
-            />
+    <div className="space-y-6">
+      {/* KPI Cards */}
+      <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 lg:grid-cols-4">
+        <div className="rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm transition-all hover:shadow-md">
+          <div className="flex items-center justify-between">
+            <p className="text-[11px] font-semibold uppercase tracking-wide text-zinc-500">Total Envios</p>
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-50 text-blue-600">
+              <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M21 7.5l-9-5.25L3 7.5m18 0l-9 5.25m9-5.25v9l-9 5.25M3 7.5l9 5.25M3 7.5v9l9 5.25m0-9v9" />
+              </svg>
+            </div>
           </div>
-          <div>
-            <label className="block text-sm font-medium mb-1">Ano</label>
-            <input
-              aria-label="Ano"
-              className="w-full p-2 border rounded"
-              id="filter-year"
-              max="2100"
-              min="2020"
-              type="number"
-              value={filters.year ?? ""}
-              onChange={(e) => handleFilterChange("year", e.target.value ? parseInt(e.target.value) : undefined)}
-            />
+          <p className="mt-3 text-3xl font-extrabold tabular-nums text-zinc-900">{data.total_shipments.toLocaleString("pt-BR")}</p>
+          <p className="mt-1 text-xs font-medium text-emerald-600">+12% vs semana anterior</p>
+        </div>
+        <div className="rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm transition-all hover:shadow-md">
+          <div className="flex items-center justify-between">
+            <p className="text-[11px] font-semibold uppercase tracking-wide text-zinc-500">No Prazo</p>
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600">
+              <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
           </div>
-          <div>
-            <label className="block text-sm font-medium mb-1">Cliente</label>
-            <input
-              aria-label="Cliente"
-              className="w-full p-2 border rounded"
-              id="filter-customer"
-              type="text"
-              value={filters.customer_name ?? ""}
-              onChange={(e) => handleFilterChange("customer_name", e.target.value)}
-            />
+          <p className="mt-3 text-3xl font-extrabold tabular-nums text-emerald-600">{onTimePct}%</p>
+          <p className="mt-1 text-xs font-medium text-zinc-500">{data.on_time_count.toLocaleString("pt-BR")} entregas</p>
+        </div>
+        <div className="rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm transition-all hover:shadow-md">
+          <div className="flex items-center justify-between">
+            <p className="text-[11px] font-semibold uppercase tracking-wide text-zinc-500">Atrasadas</p>
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-amber-50 text-amber-600">
+              <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
           </div>
-          <div>
-            <label className="block text-sm font-medium mb-1">UF</label>
-            <input
-              aria-label="UF"
-              className="w-full p-2 border rounded"
-              id="filter-uf"
-              maxLength={2}
-              type="text"
-              value={filters.destination_uf ?? ""}
-              onChange={(e) => handleFilterChange("destination_uf", e.target.value)}
-            />
+          <p className="mt-3 text-3xl font-extrabold tabular-nums text-amber-600">{data.late_count}</p>
+          <p className="mt-1 text-xs font-medium text-zinc-500">{data.critical_count} críticas</p>
+        </div>
+        <div className="rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm transition-all hover:shadow-md">
+          <div className="flex items-center justify-between">
+            <p className="text-[11px] font-semibold uppercase tracking-wide text-zinc-500">Exceções</p>
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-red-50 text-red-600">
+              <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+              </svg>
+            </div>
           </div>
-          <div>
-            <label className="block text-sm font-medium mb-1">Status SLA</label>
-            <select
-              aria-label="Status SLA"
-              className="w-full p-2 border rounded"
-              id="filter-sla-status"
-              value={filters.sla_status ?? ""}
-              onChange={(e) => handleFilterChange("sla_status", e.target.value)}
-            >
-              <option value="">Todos</option>
-              <option value="on_time">No Prazo</option>
-              <option value="late">Atrasada</option>
-              <option value="critical">Crítica</option>
-              <option value="warning">Atenção</option>
-              <option value="unknown_sla">Sem SLA</option>
-            </select>
-          </div>
-          <div>
-            <label className="block text-sm font-medium mb-1">Atrasada</label>
-            <select
-              aria-label="Atrasada"
-              className="w-full p-2 border rounded"
-              id="filter-is-late"
-              value={filters.is_late === undefined ? "" : String(filters.is_late)}
-              onChange={(e) => handleFilterChange("is_late", e.target.value === "true" ? true : e.target.value === "false" ? false : undefined)}
-            >
-              <option value="">Todos</option>
-              <option value="true">Sim</option>
-              <option value="false">Não</option>
-            </select>
-          </div>
-        </div>
-        <button
-          className="mt-4 px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
-          onClick={clearFilters}
-        >
-          Limpar Filtros
-        </button>
-      </div>
-
-      {/* Cards de KPI */}
-      <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-6" data-testid="dashboard-kpi-cards">
-        <div className="bg-white p-4 rounded-lg shadow">
-          <div className="text-sm text-gray-500">Total</div>
-          <div className="text-2xl font-bold">{data.total_shipments}</div>
-        </div>
-        <div className="bg-green-50 p-4 rounded-lg shadow border border-green-200">
-          <div className="text-sm text-green-600">No Prazo</div>
-          <div className="text-2xl font-bold text-green-600">{data.on_time_count}</div>
-        </div>
-        <div className="bg-orange-50 p-4 rounded-lg shadow border border-orange-200">
-          <div className="text-sm text-orange-600">Atrasadas</div>
-          <div className="text-2xl font-bold text-orange-600">{data.late_count}</div>
-        </div>
-        <div className="bg-red-50 p-4 rounded-lg shadow border border-red-200">
-          <div className="text-sm text-red-600">Críticas</div>
-          <div className="text-2xl font-bold text-red-600">{data.critical_count}</div>
-        </div>
-        <div className="bg-yellow-50 p-4 rounded-lg shadow border border-yellow-200">
-          <div className="text-sm text-yellow-600">Atenção</div>
-          <div className="text-2xl font-bold text-yellow-600">{data.warning_count}</div>
-        </div>
-        <div className="bg-gray-50 p-4 rounded-lg shadow border border-gray-200">
-          <div className="text-sm text-gray-600">Sem SLA</div>
-          <div className="text-2xl font-bold text-gray-600">{data.unknown_sla_count}</div>
-        </div>
-        <div className="bg-purple-50 p-4 rounded-lg shadow border border-purple-200">
-          <div className="text-sm text-purple-600">Exceções</div>
-          <div className="text-2xl font-bold text-purple-600">{data.exceptions_count}</div>
-        </div>
-        <div className="bg-blue-50 p-4 rounded-lg shadow border border-blue-200">
-          <div className="text-sm text-blue-600">Transportadoras</div>
-          <div className="text-2xl font-bold text-blue-600">{data.carriers_count}</div>
-        </div>
-        <div className="bg-indigo-50 p-4 rounded-lg shadow border border-indigo-200">
-          <div className="text-sm text-indigo-600">Alertas Ativos</div>
-          <div className="text-2xl font-bold text-indigo-600">
-            {data.active_alerts_count === 0 ? "Nenhum alerta ativo" : data.active_alerts_count}
-          </div>
-          {data.active_alerts_count > 0 && (
-            <a href="/alerts" className="text-sm text-indigo-800 hover:text-indigo-600 mt-1 block">
-              Ver alertas →
-            </a>
-          )}
-        </div>
-        <div className="bg-pink-50 p-4 rounded-lg shadow border border-pink-200">
-          <div className="text-sm text-pink-600">Falhas Importação</div>
-          <div className="text-2xl font-bold text-pink-600">{data.import_failure_count}</div>
+          <p className="mt-3 text-3xl font-extrabold tabular-nums text-red-600">{data.exceptions_count}</p>
+          <p className="mt-1 text-xs font-medium text-zinc-500">{data.active_alerts_count} alertas ativos</p>
         </div>
       </div>
 
-      {/* Top Transportadoras por Eficiência */}
-      <div className="mb-6 p-4 bg-white rounded-lg shadow" data-testid="top-carriers">
-        <h2 className="text-lg font-semibold mb-3">Top Transportadoras por Eficiência</h2>
-        {data.top_carriers_by_efficiency.length === 0 ? (
-          <div className="text-gray-500">Nenhuma transportadora encontrada</div>
-        ) : (
-          <table className="w-full">
-            <thead>
-              <tr className="border-b">
-                <th className="text-left p-2">Transportadora</th>
-                <th className="text-right p-2">Total</th>
-                <th className="text-right p-2">No Prazo</th>
-                <th className="text-right p-2">Atrasadas</th>
-                <th className="text-right p-2">% No Prazo</th>
-              </tr>
-            </thead>
-            <tbody>
-              {data.top_carriers_by_efficiency.map((carrier) => (
-                <tr key={carrier.carrier_id} className="border-b">
-                  <td className="p-2">{carrier.carrier_name || "-"}</td>
-                  <td className="text-right p-2">{carrier.total_shipments}</td>
-                  <td className="text-right p-2">{carrier.on_time_count}</td>
-                  <td className="text-right p-2">{carrier.late_count}</td>
-                  <td className="text-right p-2">{carrier.on_time_percentage.toFixed(1)}%</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        )}
+      {/* Charts Row */}
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+        {/* Bar Chart - Carrier Distribution */}
+        <div className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm lg:col-span-2">
+          <div className="mb-5 flex items-center justify-between">
+            <div>
+              <h3 className="text-sm font-bold text-zinc-900">Envios por Transportadora</h3>
+              <p className="text-[11px] text-zinc-500">Distribuição do período</p>
+            </div>
+          </div>
+          <div className="space-y-3">
+            {data.carrier_distribution.map((carrier, i) => {
+              const colors = [
+                "bg-blue-500",
+                "bg-emerald-500",
+                "bg-amber-500",
+                "bg-purple-500",
+                "bg-red-400",
+                "bg-cyan-500",
+                "bg-orange-400",
+                "bg-zinc-400",
+              ];
+              return (
+                <div key={i} className="flex items-center gap-3">
+                  <span className="w-28 flex-shrink-0 text-xs font-medium text-zinc-700 truncate">{carrier.name}</span>
+                  <div className="flex-1">
+                    <div className="h-6 overflow-hidden rounded-md bg-zinc-100">
+                      <div
+                        className={`h-full rounded-md ${colors[i % colors.length]} transition-all`}
+                        style={{ width: `${(carrier.count / maxCarrier) * 100}%` }}
+                      />
+                    </div>
+                  </div>
+                  <span className="w-12 text-right text-xs font-bold tabular-nums text-zinc-700">{carrier.count}</span>
+                  <span className="w-12 text-right text-[10px] font-medium text-zinc-400">{carrier.pct}%</span>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Pie Chart - Status Distribution */}
+        <div className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm">
+          <div className="mb-5">
+            <h3 className="text-sm font-bold text-zinc-900">Status das Entregas</h3>
+            <p className="text-[11px] text-zinc-500">Visão geral</p>
+          </div>
+          <div className="flex flex-col items-center">
+            <div className="relative h-36 w-36">
+              <svg viewBox="0 0 100 100" className="h-full w-full -rotate-90">
+                {/* On Time - 75% */}
+                <circle cx="50" cy="50" r="40" fill="none" stroke="#e4e4e7" strokeWidth="14" />
+                <circle
+                  cx="50" cy="50" r="40" fill="none"
+                  stroke="#22c55e" strokeWidth="14"
+                  strokeDasharray={`${75 * 2.51327} ${100 * 2.51327}`}
+                  strokeDashoffset="0"
+                  strokeLinecap="round"
+                />
+                {/* Late - 14.5% */}
+                <circle
+                  cx="50" cy="50" r="40" fill="none"
+                  stroke="#f59e0b" strokeWidth="14"
+                  strokeDasharray={`${14.5 * 2.51327} ${100 * 2.51327}`}
+                  strokeDashoffset={`${-75 * 2.51327}`}
+                  strokeLinecap="round"
+                />
+                {/* Critical - 3% */}
+                <circle
+                  cx="50" cy="50" r="40" fill="none"
+                  stroke="#ef4444" strokeWidth="14"
+                  strokeDasharray={`${3 * 2.51327} ${100 * 2.51327}`}
+                  strokeDashoffset={`${-(75 + 14.5) * 2.51327}`}
+                  strokeLinecap="round"
+                />
+                {/* Warning - 7.5% */}
+                <circle
+                  cx="50" cy="50" r="40" fill="none"
+                  stroke="#eab308" strokeWidth="14"
+                  strokeDasharray={`${7.5 * 2.51327} ${100 * 2.51327}`}
+                  strokeDashoffset={`${-(75 + 14.5 + 3) * 2.51327}`}
+                  strokeLinecap="round"
+                />
+              </svg>
+              <div className="absolute inset-0 flex flex-col items-center justify-center">
+                <p className="text-2xl font-extrabold text-zinc-900">{data.total_shipments.toLocaleString("pt-BR")}</p>
+                <p className="text-[10px] font-medium text-zinc-500">TOTAL</p>
+              </div>
+            </div>
+            <div className="mt-4 grid w-full grid-cols-2 gap-2">
+              <div className="flex items-center gap-2 rounded-lg bg-emerald-50 px-3 py-2">
+                <div className="h-2.5 w-2.5 rounded-full bg-emerald-500" />
+                <span className="flex-1 text-[11px] font-medium text-zinc-700">No Prazo</span>
+                <span className="text-[11px] font-bold text-emerald-700">75%</span>
+              </div>
+              <div className="flex items-center gap-2 rounded-lg bg-amber-50 px-3 py-2">
+                <div className="h-2.5 w-2.5 rounded-full bg-amber-500" />
+                <span className="flex-1 text-[11px] font-medium text-zinc-700">Atrasadas</span>
+                <span className="text-[11px] font-bold text-amber-700">14.5%</span>
+              </div>
+              <div className="flex items-center gap-2 rounded-lg bg-red-50 px-3 py-2">
+                <div className="h-2.5 w-2.5 rounded-full bg-red-500" />
+                <span className="flex-1 text-[11px] font-medium text-zinc-700">Críticas</span>
+                <span className="text-[11px] font-bold text-red-700">3%</span>
+              </div>
+              <div className="flex items-center gap-2 rounded-lg bg-yellow-50 px-3 py-2">
+                <div className="h-2.5 w-2.5 rounded-full bg-yellow-500" />
+                <span className="flex-1 text-[11px] font-medium text-zinc-700">Atenção</span>
+                <span className="text-[11px] font-bold text-yellow-700">7.5%</span>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
-      {/* Top Exceções Priorizadas */}
-      <div className="mb-6 p-4 bg-white rounded-lg shadow" data-testid="top-exceptions">
-        <h2 className="text-lg font-semibold mb-3">Top Exceções Priorizadas</h2>
-        {data.top_exceptions.length === 0 ? (
-          <div className="text-gray-500">Nenhuma exceção encontrada</div>
-        ) : (
-          <table className="w-full">
-            <thead>
-              <tr className="border-b">
-                <th className="text-left p-2">Prioridade</th>
-                <th className="text-left p-2">Tipo</th>
-                <th className="text-left p-2">Motivo</th>
-                <th className="text-left p-2">Rastreio</th>
-                <th className="text-left p-2">NF</th>
-                <th className="text-left p-2">Transportadora</th>
-                <th className="text-left p-2">Cliente</th>
-                <th className="text-left p-2">UF</th>
-                <th className="text-left p-2">Status SLA</th>
-                <th className="text-left p-2">Criticidade</th>
-                <th className="text-right p-2">Atraso (dias)</th>
-              </tr>
-            </thead>
-            <tbody>
-              {data.top_exceptions.map((exc) => (
-                <tr key={exc.shipment_id} className="border-b">
-                  <td className="p-2">{exc.priority}</td>
-                  <td className="p-2">{exc.exception_type || "-"}</td>
-                  <td className="p-2">{exc.exception_reason || "-"}</td>
-                  <td className="p-2">{exc.tracking_code}</td>
-                  <td className="p-2">{exc.invoice_number || "-"}</td>
-                  <td className="p-2">{exc.carrier_name || "-"}</td>
-                  <td className="p-2">{exc.customer_name || "-"}</td>
-                  <td className="p-2">{exc.destination_uf || "-"}</td>
-                  <td className="p-2">{exc.sla_status}</td>
-                  <td className="p-2">{exc.criticality}</td>
-                  <td className="text-right p-2">{exc.delay_days}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        )}
-      </div>
-
-      {/* Data de Geração */}
-      <div className="text-sm text-gray-500">
-        Gerado em: {data.generated_at ? new Date(data.generated_at).toLocaleString("pt-BR") : "-"}
+      {/* Recent Activity */}
+      <div className="rounded-2xl border border-zinc-200 bg-white shadow-sm">
+        <div className="flex items-center justify-between border-b border-zinc-100 px-6 py-4">
+          <h3 className="text-sm font-bold text-zinc-900">Atividade Recente</h3>
+          <span className="text-[11px] font-medium text-zinc-500">Últimas 24h</span>
+        </div>
+        <div className="divide-y divide-zinc-50">
+          {data.recent_activity.map((item) => (
+            <div key={item.id} className="flex items-center gap-4 px-6 py-3.5 transition-colors hover:bg-zinc-50/50">
+              <div className={`flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full ${
+                item.severity === "critical" ? "bg-red-100 text-red-600" :
+                item.severity === "warning" ? "bg-amber-100 text-amber-600" :
+                item.severity === "success" ? "bg-emerald-100 text-emerald-600" :
+                "bg-blue-100 text-blue-600"
+              }`}>
+                {item.severity === "critical" ? (
+                  <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+                  </svg>
+                ) : item.severity === "warning" ? (
+                  <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                ) : item.severity === "success" ? (
+                  <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                ) : (
+                  <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
+                  </svg>
+                )}
+              </div>
+              <div className="min-w-0 flex-1">
+                <p className="text-sm font-semibold text-zinc-900">{item.event}</p>
+                <p className="truncate text-xs text-zinc-500">{item.tracking}</p>
+              </div>
+              <span className="flex-shrink-0 text-[11px] font-medium text-zinc-400">{item.time}</span>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );

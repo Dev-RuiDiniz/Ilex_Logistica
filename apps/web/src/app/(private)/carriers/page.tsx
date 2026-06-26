@@ -61,10 +61,7 @@ export default function CarriersPage() {
   };
 
   useEffect(() => {
-    // A carga depende da sessao resolvida no provider e precisa disparar no mount dessa tela.
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     void load();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session?.accessToken]);
 
   const filtered = useMemo(() => filterCarriersByQuery(items, query), [items, query]);
@@ -77,7 +74,7 @@ export default function CarriersPage() {
     setFormError("");
     try {
       if (!validateCarrierName(form.name)) {
-        throw new Error("Nome invalido");
+        throw new Error("Nome inválido");
       }
       const parsed = parseIntegrationMetadata(form.metadata_json);
       if (form.id) {
@@ -125,108 +122,168 @@ export default function CarriersPage() {
     }
   };
 
+  const inputClass = "w-full rounded-lg border border-zinc-200 bg-white px-3 py-2.5 text-sm text-black placeholder:text-zinc-400 transition-colors focus:border-red-500 focus:outline-none focus:ring-2 focus:ring-red-500/20 disabled:opacity-50";
+  const btnPrimary = "rounded-lg bg-zinc-900 px-4 py-2.5 text-sm font-semibold text-white transition-all hover:bg-zinc-800 disabled:opacity-50";
+  const btnSecondary = "rounded-lg border border-zinc-200 bg-white px-4 py-2.5 text-sm font-semibold text-zinc-700 transition-all hover:border-zinc-300 hover:bg-zinc-50 disabled:opacity-50";
+
   return (
-    <section className="space-y-4">
-      <header className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
+    <section className="space-y-5">
+      {/* Header */}
+      <header className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h2 className="text-xl font-semibold">Transportadoras</h2>
-          <p className="text-sm text-slate-600">Listagem com filtro, cadastro, edicao e inativacao.</p>
+          <h1 className="text-2xl font-extrabold tracking-tight text-zinc-900">Transportadoras</h1>
+          <p className="mt-1 text-sm font-medium text-zinc-500">Cadastro, edição e gestão de transportadoras</p>
         </div>
-        <input
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          placeholder="Buscar por nome"
-          className="w-full rounded border px-3 py-2 text-sm md:w-64"
-        />
+        <div className="flex items-center gap-2">
+          <div className="relative">
+            <svg className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+            </svg>
+            <input
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Buscar por nome..."
+              className="w-full rounded-lg border border-zinc-200 bg-white py-2.5 pl-10 pr-4 text-sm text-black placeholder:text-zinc-400 transition-colors focus:border-red-500 focus:outline-none focus:ring-2 focus:ring-red-500/20 md:w-64"
+            />
+          </div>
+        </div>
       </header>
 
-      {error && <p className="rounded bg-red-50 px-3 py-2 text-sm text-red-700">{error}</p>}
+      {/* Alerts */}
+      {error && (
+        <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-600">
+          {error}
+        </div>
+      )}
       {!editable && (
-        <p className="rounded bg-amber-50 px-3 py-2 text-sm text-amber-700">Perfil com permissao somente leitura.</p>
+        <div className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm font-medium text-amber-700">
+          Perfil com permissão somente leitura.
+        </div>
       )}
 
-      <div className="overflow-hidden rounded border">
-        <table className="w-full text-sm">
-          <thead className="bg-slate-100 text-left">
-            <tr>
-              <th className="px-3 py-2">Nome</th>
-              <th className="px-3 py-2">Codigo</th>
-              <th className="px-3 py-2">Status</th>
-              {editable && <th className="px-3 py-2">Acoes</th>}
-            </tr>
-          </thead>
-          <tbody>
-            {loading ? (
-              <tr>
-                <td colSpan={editable ? 4 : 3} className="px-3 py-3 text-slate-500">
-                  Carregando...
-                </td>
+      {/* Table */}
+      <div className="overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-sm">
+        <div className="flex items-center justify-between border-b border-zinc-100 px-6 py-4">
+          <p className="text-sm font-semibold text-zinc-700">
+            {filtered.length} transportadora{filtered.length !== 1 ? "s" : ""} encontrada{filtered.length !== 1 ? "s" : ""}
+          </p>
+        </div>
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="border-b border-zinc-100 bg-zinc-50/80">
+                <th className="px-6 py-3 text-left text-[11px] font-semibold uppercase tracking-wide text-zinc-500">Nome</th>
+                <th className="px-6 py-3 text-left text-[11px] font-semibold uppercase tracking-wide text-zinc-500">Código</th>
+                <th className="px-6 py-3 text-left text-[11px] font-semibold uppercase tracking-wide text-zinc-500">Status</th>
+                {editable && <th className="px-6 py-3 text-right text-[11px] font-semibold uppercase tracking-wide text-zinc-500">Ações</th>}
               </tr>
-            ) : filtered.length === 0 ? (
-              <tr>
-                <td colSpan={editable ? 4 : 3} className="px-3 py-3 text-slate-500">
-                  Nenhuma transportadora encontrada.
-                </td>
-              </tr>
-            ) : (
-              filtered.map((item) => (
-                <tr key={item.id} className="border-t">
-                  <td className="px-3 py-2">{item.name}</td>
-                  <td className="px-3 py-2">{item.external_code ?? "-"}</td>
-                  <td className="px-3 py-2">{item.is_active ? "Ativo" : "Inativo"}</td>
-                  {editable && (
-                    <td className="px-3 py-2">
-                      <div className="flex gap-2">
-                        <button onClick={() => onEdit(item)} className="rounded border px-2 py-1">
-                          Editar
-                        </button>
-                        <button
-                          onClick={() => onInactivate(item)}
-                          className="rounded border px-2 py-1 text-red-700"
-                          disabled={inactivatingId === item.id}
-                        >
-                          {inactivatingId === item.id ? "Inativando..." : "Inativar"}
-                        </button>
-                      </div>
-                    </td>
-                  )}
+            </thead>
+            <tbody>
+              {loading ? (
+                <tr>
+                  <td colSpan={editable ? 4 : 3} className="px-6 py-8 text-center text-sm text-zinc-400">
+                    <div className="flex items-center justify-center gap-2">
+                      <div className="h-4 w-4 animate-spin rounded-full border-2 border-zinc-200 border-t-red-500" />
+                      Carregando...
+                    </div>
+                  </td>
                 </tr>
-              ))
-            )}
-          </tbody>
-        </table>
+              ) : filtered.length === 0 ? (
+                <tr>
+                  <td colSpan={editable ? 4 : 3} className="px-6 py-8 text-center text-sm text-zinc-400">
+                    Nenhuma transportadora encontrada.
+                  </td>
+                </tr>
+              ) : (
+                filtered.map((item) => (
+                  <tr key={item.id} className="border-b border-zinc-50 transition-colors hover:bg-zinc-50/50">
+                    <td className="px-6 py-3.5 font-semibold text-zinc-900">{item.name}</td>
+                    <td className="px-6 py-3.5 font-mono text-xs text-zinc-600">{item.external_code ?? "-"}</td>
+                    <td className="px-6 py-3.5">
+                      <span className={`inline-flex rounded-full px-2.5 py-0.5 text-[11px] font-semibold ${
+                        item.is_active
+                          ? "bg-emerald-50 text-emerald-700 ring-1 ring-emerald-600/20"
+                          : "bg-zinc-100 text-zinc-500 ring-1 ring-zinc-300"
+                      }`}>
+                        {item.is_active ? "Ativo" : "Inativo"}
+                      </span>
+                    </td>
+                    {editable && (
+                      <td className="px-6 py-3.5">
+                        <div className="flex justify-end gap-2">
+                          <button
+                            onClick={() => onEdit(item)}
+                            className="rounded-lg border border-zinc-200 bg-white px-3 py-1.5 text-xs font-semibold text-zinc-700 transition-all hover:border-zinc-300 hover:bg-zinc-50"
+                          >
+                            Editar
+                          </button>
+                          <button
+                            onClick={() => onInactivate(item)}
+                            disabled={inactivatingId === item.id}
+                            className="rounded-lg border border-red-200 bg-white px-3 py-1.5 text-xs font-semibold text-red-600 transition-all hover:border-red-300 hover:bg-red-50 disabled:opacity-50"
+                          >
+                            {inactivatingId === item.id ? "Inativando..." : "Inativar"}
+                          </button>
+                        </div>
+                      </td>
+                    )}
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
 
+      {/* Form */}
       {editable && (
-        <form onSubmit={onSubmit} className="grid gap-3 rounded border p-4 md:grid-cols-2">
-          <h3 className="text-base font-semibold md:col-span-2">
-            {form.id ? "Editar transportadora" : "Nova transportadora"}
+        <form onSubmit={onSubmit} className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm">
+          <h3 className="mb-4 text-base font-bold text-zinc-900">
+            {form.id ? "Editar Transportadora" : "Nova Transportadora"}
           </h3>
-          <input
-            value={form.name}
-            onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
-            placeholder="Nome"
-            required
-            minLength={2}
-            className="rounded border px-3 py-2"
-          />
-          <input
-            value={form.external_code}
-            onChange={(e) => setForm((f) => ({ ...f, external_code: e.target.value }))}
-            placeholder="Codigo externo"
-            className="rounded border px-3 py-2"
-          />
-          <textarea
-            value={form.metadata_json}
-            onChange={(e) => setForm((f) => ({ ...f, metadata_json: e.target.value }))}
-            className="min-h-24 rounded border px-3 py-2 font-mono text-sm md:col-span-2"
-          />
-          {formError && <p className="rounded bg-red-50 px-3 py-2 text-sm text-red-700 md:col-span-2">{formError}</p>}
-          <div className="flex gap-2 md:col-span-2">
-            <button type="submit" disabled={saving} className="rounded bg-slate-900 px-4 py-2 text-white">
+          <div className="grid gap-4 md:grid-cols-2">
+            <div>
+              <label className="block text-[11px] font-semibold uppercase tracking-wide text-zinc-500">Nome</label>
+              <input
+                value={form.name}
+                onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
+                placeholder="Nome da transportadora"
+                required
+                minLength={2}
+                className={inputClass}
+              />
+            </div>
+            <div>
+              <label className="block text-[11px] font-semibold uppercase tracking-wide text-zinc-500">Código externo</label>
+              <input
+                value={form.external_code}
+                onChange={(e) => setForm((f) => ({ ...f, external_code: e.target.value }))}
+                placeholder="Código (opcional)"
+                className={inputClass}
+              />
+            </div>
+            <div className="md:col-span-2">
+              <label className="block text-[11px] font-semibold uppercase tracking-wide text-zinc-500">Metadados de integração (JSON)</label>
+              <textarea
+                value={form.metadata_json}
+                onChange={(e) => setForm((f) => ({ ...f, metadata_json: e.target.value }))}
+                placeholder='{"key": "value"}'
+                className={`${inputClass} min-h-24 font-mono`}
+              />
+            </div>
+          </div>
+
+          {formError && (
+            <div className="mt-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-600">
+              {formError}
+            </div>
+          )}
+
+          <div className="mt-5 flex gap-2">
+            <button type="submit" disabled={saving} className={btnPrimary}>
               {saving ? "Salvando..." : form.id ? "Atualizar" : "Cadastrar"}
             </button>
-            <button type="button" onClick={() => setForm(initialForm)} className="rounded border px-4 py-2">
+            <button type="button" onClick={() => setForm(initialForm)} className={btnSecondary}>
               Limpar
             </button>
           </div>

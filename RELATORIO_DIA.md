@@ -39,11 +39,17 @@
    - `apps/api/migrations/versions/cbee64373bd6_merge_alert_delivery_logs_and_rbac_heads.py`: criado novo merge consolidando as heads
    - `apps/web/src/app/(private)/alerts/page.tsx`, `reports/daily/page.tsx`, `shipments/import/page.tsx`, `audit/page.tsx`, `users/page.tsx`, `shipments/page.tsx`: corrigidos imports/uso de `handleApiError` removido e adicionados estados faltantes
 
+6. **Correção de CORS para login na VPS**
+   - `apps/api/app/main.py`: origens CORS agora lidas da variável `CORS_ALLOWED_ORIGINS`
+   - `infra/docker-compose.yml`: variável `CORS_ALLOWED_ORIGINS` repassada para o container da API
+   - `infra/env/vps.env.example` e `.env` da VPS atualizados com `http://2.25.168.34:3000`
+
 ### Arquivos Modificados/Criados
-- `infra/docker-compose.yml` — adicionado serviço `web`, ajustado contexto de build para raiz do monorepo
+- `infra/docker-compose.yml` — adicionado serviço `web`, ajustado contexto de build para raiz do monorepo; variável `CORS_ALLOWED_ORIGINS` repassada para o container da API
 - `infra/docker/api/Dockerfile` — caminhos de build atualizados para `apps/api` e `infra`; incluído `seed_demo.py`
 - `infra/docker/web/Dockerfile` — novo Dockerfile para frontend Next.js
 - `infra/env/vps.env.example` — novo template de variáveis para VPS
+- `apps/api/app/main.py` — CORS configurável via `CORS_ALLOWED_ORIGINS`
 - `apps/api/alembic.ini` — removido `sqlalchemy.url` hardcoded
 - `apps/api/migrations/versions/20260615_01_create_sla_rules.py` — corrigido `server_default`
 - `apps/api/migrations/versions/20260701_01_add_role_description.py` — nova migration
@@ -60,6 +66,7 @@
 - Healthcheck da API validado: `GET /health` → `{"status":"ok"}`
 - Frontend validado: `http://2.25.168.34:3000/` retorna tela de login
 - Login validado: `POST /api/v1/auth/login` retorna 200 com role `admin`
+- Login E2E validado via navegador: `admin@ilex.com / 123456` redireciona para `/`
 - Seed validado: 4 usuários, 4 transportadoras, 3 regras SLA e 10 shipments criados
 
 ### Documentação Atualizada

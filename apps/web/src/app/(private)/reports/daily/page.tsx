@@ -15,7 +15,7 @@ import {
   parseImportFailures,
 } from "@/lib/daily-report-api";
 import type { DailyReport, DailyReportFilters, DailyReportStatus } from "@/lib/types";
-import { handleApiError } from "@/lib/error-handler";
+import { useApiErrorHandler } from "@/lib/useApiErrorHandler";
 
 export default function DailyReportPage() {
   const [reports, setReports] = useState<DailyReport[]>([]);
@@ -46,7 +46,11 @@ export default function DailyReportPage() {
       const response = await getDailyReports(filters);
       if (!signal?.aborted) setReports(response.reports);
     } catch (err) {
-      if (!signal?.aborted) setError(handleApiError(err));
+      if (!signal?.aborted) {
+        const error = err instanceof Error ? err : new Error(String(err));
+        handleApiError(error);
+        setError(error.message);
+      }
     } finally {
       if (!signal?.aborted) setLoading(false);
     }

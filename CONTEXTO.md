@@ -11,6 +11,7 @@ Projeto de plataforma web para rastreio de entregas, gestao de excecoes operacio
 **Fase atual:** Branch `main` com BETA-020F e BETA-029 concluídos. Projeto em estado estável com 489 testes backend passando e 331 testes frontend passando.
 
 **Atualizações recentes:**
+- **2026-07-01:** Preparação de infraestrutura para deploy na VPS — `infra/docker-compose.yml` adaptado para serviços `db + api + web`; Dockerfile da API corrigido para monorepo (`apps/api`); Dockerfile do frontend criado; template `infra/env/vps.env.example` adicionado. Aguardando acesso à VPS para execução do deploy.
 - **2026-06-25:** BETA-Test-E2E-Completion completado — Habilitados 14 testes E2E (8 daily-report, 6 alerts), instaladas dependências faltantes (recharts, date-fns), adicionados 14 testes unitários para carriers/page.tsx. Cobertura de testes frontend: 63.82% (meta: 50% ✅).
 - **2026-06-25:** BETA-029 completado — Completado Épico 10 (Dashboard Beta) com habilitação de 6 testes E2E. Layout responsivo, loading states, error handling e empty states já estavam implementados.
 - **2026-06-25:** BETA-020F completado — Removido error-handler.ts e error-handler.test.ts legacy após completa migração para useApiErrorHandler.

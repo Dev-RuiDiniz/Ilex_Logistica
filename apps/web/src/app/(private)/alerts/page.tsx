@@ -11,7 +11,7 @@ import {
   type AlertItem,
   type AlertsSummary,
 } from "@/lib/alerts-api";
-import { handleApiError } from "@/lib/error-handler";
+import { useApiErrorHandler } from "@/lib/useApiErrorHandler";
 
 export default function AlertsPage() {
   const [alerts, setAlerts] = useState<AlertItem[]>([]);
@@ -32,7 +32,9 @@ export default function AlertsPage() {
       setAlerts(alertsData.alerts);
       setSummary(summaryData);
     } catch (err) {
-      setError(handleApiError(err));
+      const error = err instanceof Error ? err : new Error(String(err));
+      handleApiError(error);
+      setError(error.message);
     } finally {
       setLoading(false);
     }
@@ -43,7 +45,9 @@ export default function AlertsPage() {
       await generateAlerts();
       await fetchAlerts();
     } catch (err) {
-      setError(handleApiError(err));
+      const error = err instanceof Error ? err : new Error(String(err));
+      handleApiError(error);
+      setError(error.message);
     }
   };
 
@@ -52,7 +56,9 @@ export default function AlertsPage() {
       await markAlertAsRead(alertId);
       await fetchAlerts();
     } catch (err) {
-      setError(handleApiError(err));
+      const error = err instanceof Error ? err : new Error(String(err));
+      handleApiError(error);
+      setError(error.message);
     }
   };
 
@@ -61,7 +67,9 @@ export default function AlertsPage() {
       await resolveAlert(alertId);
       await fetchAlerts();
     } catch (err) {
-      setError(handleApiError(err));
+      const error = err instanceof Error ? err : new Error(String(err));
+      handleApiError(error);
+      setError(error.message);
     }
   };
 

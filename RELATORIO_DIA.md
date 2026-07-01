@@ -67,6 +67,8 @@
 - Frontend validado: `http://2.25.168.34:3000/` retorna tela de login
 - Login validado: `POST /api/v1/auth/login` retorna 200 com role `admin`
 - Login E2E validado via navegador: `admin@ilex.com / 123456` redireciona para `/`
+- Dashboard validado via API: 10 envios, 3 no prazo, 3 atrasados, 4 transportadoras
+- Dashboard E2E validado: carrega dados reais sem erros de CORS/console
 - Seed validado: 4 usuários, 4 transportadoras, 3 regras SLA e 10 shipments criados
 
 ### Documentação Atualizada

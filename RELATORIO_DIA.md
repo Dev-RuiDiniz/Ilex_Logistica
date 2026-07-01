@@ -44,6 +44,13 @@
    - `infra/docker-compose.yml`: variável `CORS_ALLOWED_ORIGINS` repassada para o container da API
    - `infra/env/vps.env.example` e `.env` da VPS atualizados com `http://2.25.168.34:3000`
 
+7. **Correção de autenticação real no frontend**
+   - `apps/web/src/features/auth/auth-provider.tsx`: remove `DEV_SESSION` hardcoded; inicializa a partir do `localStorage`
+   - `apps/web/src/app/layout.tsx`: `AuthProvider` movido para layout raiz, disponível em `/login`
+   - `apps/web/src/app/login/page.tsx`: usa `setSession` do contexto para propagar token real
+   - `apps/web/src/app/(private)/layout.tsx`: evita hydration mismatch com flag `mounted`
+   - `apps/web/src/components/app-shell.tsx` e `apps/web/src/app/(private)/dashboard/page.tsx`: `suppressHydrationWarning` em dados de sessão e datas
+
 ### Arquivos Modificados/Criados
 - `infra/docker-compose.yml` — adicionado serviço `web`, ajustado contexto de build para raiz do monorepo; variável `CORS_ALLOWED_ORIGINS` repassada para o container da API
 - `infra/docker/api/Dockerfile` — caminhos de build atualizados para `apps/api` e `infra`; incluído `seed_demo.py`
@@ -56,7 +63,12 @@
 - `apps/api/migrations/versions/cbee64373bd6_merge_alert_delivery_logs_and_rbac_heads.py` — novo merge
 - `apps/api/migrations/versions/20260627_01_create_alert_delivery_logs.py` — removido
 - `apps/api/migrations/versions/fcd5fd948bd2_merge_multiple_heads.py` — removido
-- `apps/web/src/app/login/page.tsx` — redesign premium
+- `apps/web/src/app/login/page.tsx` — redesign premium; usa `setSession` do contexto
+- `apps/web/src/app/layout.tsx` — `AuthProvider` global
+- `apps/web/src/app/(private)/layout.tsx` — guarda de autenticação e flag `mounted`
+- `apps/web/src/app/(private)/page.tsx` — renderiza dashboard real na raiz
+- `apps/web/src/features/auth/auth-provider.tsx` — remove `DEV_SESSION` hardcoded
+- `apps/web/src/components/app-shell.tsx` — `suppressHydrationWarning`
 - `apps/web/src/app/(private)/alerts/page.tsx`, `reports/daily/page.tsx`, `shipments/import/page.tsx`, `audit/page.tsx`, `users/page.tsx`, `shipments/page.tsx` — correções de build
 - `CONTEXTO.md` e `RELATORIO_DIA.md` — atualizados
 
@@ -67,8 +79,9 @@
 - Frontend validado: `http://2.25.168.34:3000/` retorna tela de login
 - Login validado: `POST /api/v1/auth/login` retorna 200 com role `admin`
 - Login E2E validado via navegador: `admin@ilex.com / 123456` redireciona para `/`
-- Dashboard validado via API: 10 envios, 3 no prazo, 3 atrasados, 4 transportadoras
-- Dashboard E2E validado: carrega dados reais sem erros de CORS/console
+- Dashboard validada via API: 10 envios, 3 no prazo, 3 atrasados, 4 transportadoras
+- Dashboard E2E validada: carrega dados reais sem erros de CORS/console
+- Página Envios E2E validada: 10 registros carregados sem redirecionar para login
 - Seed validado: 4 usuários, 4 transportadoras, 3 regras SLA e 10 shipments criados
 
 ### Documentação Atualizada

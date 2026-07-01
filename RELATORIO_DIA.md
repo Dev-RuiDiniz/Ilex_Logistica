@@ -19,6 +19,12 @@
    - Containers `ilex-db`, `ilex-api` e `ilex-web` subiram com healthchecks
    - Migrations aplicadas com sucesso via `alembic upgrade head`
 
+3. **Tela de login redesenhada no padrão premium**
+   - `apps/web/src/app/login/page.tsx` reescrito com layout de duas colunas
+   - Coluna esquerda: fundo preto, logo, headline e KPIs ilustrativos
+   - Coluna direita: formulário de login com foco vermelho e tipografia Plus Jakarta
+   - Build e deploy atualizado na VPS
+
 3. **Correções de bugs encontrados durante o deploy**
    - `apps/api/alembic.ini`: removido `sqlalchemy.url` hardcoded para usar `settings.database_url`
    - `apps/api/migrations/versions/20260615_01_create_sla_rules.py`: corrigido `server_default` booleano de `sa.text('1')` para `sa.true()` (compatibilidade PostgreSQL)

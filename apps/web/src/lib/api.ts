@@ -23,6 +23,8 @@
   SlaRecalculateResponse,
   CarrierEfficiencyResponse,
   CarrierEfficiencyFilters,
+  DashboardSummaryResponse,
+  DashboardTrendResponse,
 } from "@/lib/types";
 
 export function getApiBaseUrl(envValue = process.env.NEXT_PUBLIC_API_URL): string {
@@ -100,6 +102,18 @@ export async function apiLogin(email: string, password: string) {
 export async function listCarriers(token: string, includeInactive = false): Promise<Carrier[]> {
   const query = includeInactive ? "?include_inactive=true" : "";
   return request<Carrier[]>(`/carriers${query}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+}
+
+export async function getDashboardSummary(token: string): Promise<DashboardSummaryResponse> {
+  return request<DashboardSummaryResponse>("/dashboard/summary", {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+}
+
+export async function getDashboardTrend(token: string, days = 30): Promise<DashboardTrendResponse> {
+  return request<DashboardTrendResponse>(`/dashboard/trend?days=${days}`, {
     headers: { Authorization: `Bearer ${token}` },
   });
 }

@@ -57,6 +57,7 @@ export default function ShipmentsPage() {
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
 
   const canView = canViewShipments(session?.role ?? "auditoria");
+  const { handleApiError } = useApiErrorHandler();
 
   const load = useCallback(async () => {
     if (!session || !canView) return;

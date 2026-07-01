@@ -33,6 +33,21 @@ export default function ShipmentsPage() {
   const [customerNameFilter, setCustomerNameFilter] = useState("");
   const [destinationUfFilter, setDestinationUfFilter] = useState("");
 
+  // Filtros fiscais/financeiros (BETA-031) e SLA (BETA-1.2)
+  const [invoiceNumberFilter, setInvoiceNumberFilter] = useState("");
+  const [invoiceKeyFilter, setInvoiceKeyFilter] = useState("");
+  const [fiscalDocumentFilter, setFiscalDocumentFilter] = useState("");
+  const [freightValueMin, setFreightValueMin] = useState("");
+  const [freightValueMax, setFreightValueMax] = useState("");
+  const [invoiceValueMin, setInvoiceValueMin] = useState("");
+  const [invoiceValueMax, setInvoiceValueMax] = useState("");
+  const [freightPercentageMin, setFreightPercentageMin] = useState("");
+  const [freightPercentageMax, setFreightPercentageMax] = useState("");
+  const [amountMin, setAmountMin] = useState("");
+  const [amountMax, setAmountMax] = useState("");
+  const [slaStatusFilter, setSlaStatusFilter] = useState("");
+  const [isLateFilter, setIsLateFilter] = useState("");
+
   const [useMonthYearFilter, setUseMonthYearFilter] = useState(false);
   const [monthYearTarget, setMonthYearTarget] = useState<"estimated_delivery" | "due_date">("estimated_delivery");
   const [selectedMonth, setSelectedMonth] = useState("");
@@ -114,6 +129,10 @@ export default function ShipmentsPage() {
     estimatedDeliveryFrom, estimatedDeliveryTo, page, pageSize, search,
     selectedMonth, selectedYear, session, sortBy, sortOrder, statusFilter,
     useMonthYearFilter, monthYearTarget, customerNameFilter, destinationUfFilter,
+    invoiceNumberFilter, invoiceKeyFilter, fiscalDocumentFilter,
+    freightValueMin, freightValueMax, invoiceValueMin, invoiceValueMax,
+    freightPercentageMin, freightPercentageMax, amountMin, amountMax,
+    slaStatusFilter, isLateFilter,
   ]);
 
   useEffect(() => {

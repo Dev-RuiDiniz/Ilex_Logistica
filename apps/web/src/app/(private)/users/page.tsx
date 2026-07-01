@@ -19,6 +19,7 @@ export default function UsersPage() {
   const [fullName, setFullName] = useState("");
   const [selectedRole, setSelectedRole] = useState<UserRole>("logistica");
   const [loading, setLoading] = useState(true);
+  const { handleApiError, accessDenied, accessDeniedMessage } = useApiErrorHandler();
 
   useEffect(() => {
     let cancelled = false;

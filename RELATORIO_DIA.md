@@ -12,28 +12,53 @@
    - Adaptado `infra/docker-compose.yml` para orquestrar `db + api + web` com healthchecks e logs
    - Criado `infra/env/vps.env.example` com placeholders de variáveis para deploy na VPS
 
+2. **Deploy realizado na VPS `2.25.168.34`**
+   - Ambiente: Debian 13, Docker 29.5.2, Docker Compose v5.1.4
+   - Repositório clonado em `/opt/ilex` (branch `feature/infra-vps-docker`)
+   - `.env` gerado com secrets aleatórios (Postgres, JWT)
+   - Containers `ilex-db`, `ilex-api` e `ilex-web` subiram com healthchecks
+   - Migrations aplicadas com sucesso via `alembic upgrade head`
+
+3. **Correções de bugs encontrados durante o deploy**
+   - `apps/api/alembic.ini`: removido `sqlalchemy.url` hardcoded para usar `settings.database_url`
+   - `apps/api/migrations/versions/20260615_01_create_sla_rules.py`: corrigido `server_default` booleano de `sa.text('1')` para `sa.true()` (compatibilidade PostgreSQL)
+   - `apps/api/migrations/versions/20260627_01_create_alert_delivery_logs.py`: removida migration duplicada
+   - `apps/api/migrations/versions/fcd5fd948bd2_merge_multiple_heads.py`: removido merge anterior
+   - `apps/api/migrations/versions/cbee64373bd6_merge_alert_delivery_logs_and_rbac_heads.py`: criado novo merge consolidando as heads
+   - `apps/web/src/app/(private)/alerts/page.tsx`, `reports/daily/page.tsx`, `shipments/import/page.tsx`, `audit/page.tsx`, `users/page.tsx`, `shipments/page.tsx`: corrigidos imports/uso de `handleApiError` removido e adicionados estados faltantes
+
 ### Arquivos Modificados/Criados
 - `infra/docker-compose.yml` — adicionado serviço `web`, ajustado contexto de build para raiz do monorepo
 - `infra/docker/api/Dockerfile` — caminhos de build atualizados para `apps/api` e `infra`
 - `infra/docker/web/Dockerfile` — novo Dockerfile para frontend Next.js
 - `infra/env/vps.env.example` — novo template de variáveis para VPS
+- `apps/api/alembic.ini` — removido `sqlalchemy.url` hardcoded
+- `apps/api/migrations/versions/20260615_01_create_sla_rules.py` — corrigido `server_default`
+- `apps/api/migrations/versions/cbee64373bd6_merge_alert_delivery_logs_and_rbac_heads.py` — novo merge
+- `apps/api/migrations/versions/20260627_01_create_alert_delivery_logs.py` — removido
+- `apps/api/migrations/versions/fcd5fd948bd2_merge_multiple_heads.py` — removido
+- `apps/web/src/app/(private)/alerts/page.tsx`, `reports/daily/page.tsx`, `shipments/import/page.tsx`, `audit/page.tsx`, `users/page.tsx`, `shipments/page.tsx` — correções de build
+- `CONTEXTO.md` e `RELATORIO_DIA.md` — atualizados
 
 ### Testes
 - Validação local do Docker Compose não foi possível (Docker não disponível no ambiente Windows atual)
-- Estrutura de arquivos revisada; teste existente `infra/tests/test_c01_compose.py` continua válido para `db` e `api`
+- Build do frontend validado na VPS durante `docker compose up --build`
+- Healthcheck da API validado: `GET /health` → `{"status":"ok"}`
+- Frontend validado: `http://2.25.168.34:3000/` retorna tela de login
 
 ### Documentação Atualizada
 - `RELATORIO_DIA.md` — este registro
-- `CONTEXTO.md` — próxima ação: obter acesso à VPS e executar deploy
+- `CONTEXTO.md` — estado do deploy e próximos passos
 
 ### Bloqueios
-- Nenhum bloqueio crítico; aguardando credenciais de acesso à VPS para executar o deploy
+- Nenhum bloqueio crítico
 
 ### Proximos Passos
-1. Obter IP/usuário/SSH da VPS
-2. Conectar, instalar Docker se necessário, clonar repositório e subir ambiente
-3. Validar healthcheck da API e acesso ao frontend
-4. Atualizar `CONTEXTO.md` com estado do deploy
+1. Configurar firewall para fechar porta 5432 do Postgres (recomendado)
+2. Avaliar se é necessário rodar seed de dados de demo
+3. Criar usuário inicial para acesso ao painel
+4. Considerar nginx/traefik nas portas 80/443 com domínio/SSL
+5. Fazer merge da `feature/infra-vps-docker` para `main` quando validado
 
 ---
 

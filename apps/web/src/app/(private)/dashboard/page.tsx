@@ -270,7 +270,7 @@ export default function DashboardPage() {
                   <p className="text-sm font-semibold text-zinc-900">{item.event}</p>
                   <p className="truncate text-xs text-zinc-500">{item.tracking}</p>
                 </div>
-                <span className="flex-shrink-0 text-[11px] font-medium text-zinc-400">{item.time}</span>
+                <span className="flex-shrink-0 text-[11px] font-medium text-zinc-400" suppressHydrationWarning>{item.time}</span>
               </div>
             ))
           )}

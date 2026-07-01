@@ -70,17 +70,36 @@ export default function DashboardPage() {
     ? Math.max(...carriers.map((c) => c.total_shipments))
     : 1;
 
-  const recentActivity = (data.top_exceptions ?? []).slice(0, 7).map((exc) => ({
-    id: exc.shipment_id,
-    event: exc.exception_type
-      ? `Exceção: ${exc.exception_type}`
-      : `Atraso ${exc.delay_days > 0 ? `${exc.delay_days}d` : ""}`,
-    tracking: exc.tracking_code,
-    time: exc.last_update_at
-      ? new Date(exc.last_update_at).toLocaleString("pt-BR", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" })
-      : "",
-    severity: exc.priority >= 80 ? "critical" : exc.priority >= 50 ? "warning" : "info",
-  }));
+  const translateExceptionType = (type: string | null | undefined, slaStatus: string) => {
+    if (type === "late" || slaStatus === "late") return "Atraso";
+    if (type === "critical" || slaStatus === "critical") return "Crítico";
+    if (type === "warning" || slaStatus === "warning") return "Atenção";
+    if (type === "unknown") return "SLA indefinido";
+    return type ? type.charAt(0).toUpperCase() + type.slice(1) : "Exceção";
+  };
+
+  const getSeverity = (slaStatus: string, priority: number) => {
+    if (slaStatus === "critical" || priority >= 80) return "critical";
+    if (slaStatus === "late" || slaStatus === "warning" || priority >= 50) return "warning";
+    return "info";
+  };
+
+  const recentActivity = (data.top_exceptions ?? []).slice(0, 7).map((exc) => {
+    const severity = getSeverity(exc.sla_status, exc.priority);
+    const typeLabel = translateExceptionType(exc.exception_type, exc.sla_status);
+    const carrier = exc.carrier_name ?? "Transportadora não informada";
+    const destination = exc.destination_uf ? ` → ${exc.destination_uf}` : "";
+    const delay = exc.delay_days > 0 ? ` (${exc.delay_days}d atraso)` : "";
+    return {
+      id: exc.shipment_id,
+      event: `${typeLabel}${delay}`,
+      tracking: `${exc.tracking_code ?? "—"} • ${carrier}${destination}`,
+      time: exc.last_update_at
+        ? new Date(exc.last_update_at).toLocaleString("pt-BR", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" })
+        : "",
+      severity,
+    };
+  });
 
   return (
     <div className="space-y-6">

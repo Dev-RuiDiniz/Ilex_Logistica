@@ -4,7 +4,8 @@ import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import { apiLogin } from "@/lib/api";
-import { getPrimaryRole, saveSession } from "@/lib/session";
+import { useAuth } from "@/features/auth/auth-provider";
+import { getPrimaryRole } from "@/lib/session";
 
 export function getLoginErrorMessage(): string {
   return "Credenciais invalidas. Verifique e tente novamente.";
@@ -12,6 +13,7 @@ export function getLoginErrorMessage(): string {
 
 export default function LoginPage() {
   const router = useRouter();
+  const { setSession } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -23,7 +25,7 @@ export default function LoginPage() {
     setLoading(true);
     try {
       const result = await apiLogin(email, password);
-      saveSession({
+      setSession({
         email,
         accessToken: result.access_token,
         refreshToken: result.refresh_token,

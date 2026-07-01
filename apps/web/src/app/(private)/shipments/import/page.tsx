@@ -6,6 +6,8 @@ import { confirmShipmentsImport, previewShipmentImport } from "@/lib/api";
 import { canEditShipments } from "@/lib/permissions";
 import { handleApiError } from "@/lib/error-handler";
 import { useAuth } from "@/features/auth/auth-provider";
+import { useApiErrorHandler } from "@/lib/useApiErrorHandler";
+import { AccessDenied } from "@/components/AccessDenied";
 import type { ImportConfirmResponse, ImportPreviewV2Response, RowValidationError, ValidatedRowData } from "@/lib/types";
 
 function formatCurrencyBRL(value: number | null | undefined): string {
@@ -89,7 +91,8 @@ export default function ShipmentsImportPage() {
         setState("preview_success");
       }
     } catch (err) {
-      setError(handleApiError(err));
+      handleApiError(err instanceof Error ? err : new Error("Erro ao fazer preview da importação"));
+      setError(err instanceof Error ? err.message : "Erro ao fazer preview da importação");
       setState("api_error");
     }
   };
@@ -108,7 +111,8 @@ export default function ShipmentsImportPage() {
         setError("Importação falhou. Verifique os erros abaixo.");
       }
     } catch (err) {
-      setError(handleApiError(err));
+      handleApiError(err instanceof Error ? err : new Error("Erro ao confirmar importação"));
+      setError(err instanceof Error ? err.message : "Erro ao confirmar importação");
       setState("confirm_error");
     }
   };

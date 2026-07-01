@@ -19,6 +19,7 @@ export default function AlertsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [filters, setFilters] = useState<AlertsFilters>({});
+  const { accessDenied, accessDeniedMessage, handleApiError } = useApiErrorHandler();
 
   const fetchAlerts = async () => {
     try {

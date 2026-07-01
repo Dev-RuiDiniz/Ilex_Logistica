@@ -3,12 +3,20 @@
 import { useEffect, useState } from "react";
 import { getCarrierEfficiency } from "@/lib/api";
 import type { CarrierEfficiencyResponse, CarrierEfficiencyFilters } from "@/lib/types";
+import { CarrierEfficiencyCharts } from "./CarrierEfficiencyCharts";
+import { DateRangePicker } from "./DateRangePicker";
+import { useApiErrorHandler } from "@/lib/useApiErrorHandler";
+import { AccessDenied } from "@/components/AccessDenied";
 
 export default function CarrierEfficiencyPage() {
   const [data, setData] = useState<CarrierEfficiencyResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [filters, setFilters] = useState<CarrierEfficiencyFilters>({});
+  const [filters, setFilters] = useState<CarrierEfficiencyFilters & {
+    estimated_delivery_from?: string;
+    estimated_delivery_to?: string;
+  }>({});
+  const { accessDenied, accessDeniedMessage, handleApiError } = useApiErrorHandler();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -19,6 +27,7 @@ export default function CarrierEfficiencyPage() {
         setData(result);
         setError(null);
       } catch (err) {
+        handleApiError(err instanceof Error ? err : new Error("Erro ao carregar dados"));
         setError(err instanceof Error ? err.message : "Erro ao carregar dados");
       } finally {
         setLoading(false);
@@ -26,7 +35,7 @@ export default function CarrierEfficiencyPage() {
     };
 
     fetchData();
-  }, [filters]);
+  }, [filters, handleApiError]);
 
   const handleFilterChange = (key: keyof CarrierEfficiencyFilters, value: string | number | boolean | undefined) => {
     setFilters((prev) => ({
@@ -38,6 +47,10 @@ export default function CarrierEfficiencyPage() {
   const clearFilters = () => {
     setFilters({});
   };
+
+  if (accessDenied) {
+    return <AccessDenied message={accessDeniedMessage} />;
+  }
 
   if (loading) {
     return <div>Carregando...</div>;
@@ -167,6 +180,12 @@ export default function CarrierEfficiencyPage() {
               <option value="false">Não</option>
             </select>
           </div>
+          <DateRangePicker
+            label="Período de Entrega Estimada"
+            value={{ from: filters.estimated_delivery_from, to: filters.estimated_delivery_to }}
+            onChange={(v) => setFilters((prev) => ({ ...prev, ...v }))}
+            placeholder={{ from: "Data inicial", to: "Data final" }}
+          />
         </div>
         <button
           onClick={clearFilters}
@@ -208,6 +227,8 @@ export default function CarrierEfficiencyPage() {
           ))}
         </tbody>
       </table>
+
+      <CarrierEfficiencyCharts data={data?.carriers || []} />
     </div>
   );
 }

@@ -14,7 +14,8 @@ import { AuditSeverityBadge } from "@/components/AuditSeverityBadge";
 import { AuditStatusBadge } from "@/components/AuditStatusBadge";
 import { AuditJsonViewer } from "@/components/AuditJsonViewer";
 import { useAuth } from "@/features/auth/auth-provider";
-import { handleApiError } from "@/lib/error-handler";
+import { useApiErrorHandler } from "@/lib/useApiErrorHandler";
+import { AccessDenied } from "@/components/AccessDenied";
 
 export default function AuditPage() {
   const { session } = useAuth();
@@ -25,6 +26,7 @@ export default function AuditPage() {
   const [error, setError] = useState<string | null>(null);
   const [selectedLog, setSelectedLog] = useState<AuditLog | null>(null);
   const [filters, setFilters] = useState<AuditLogFilters>({ page: 1, page_size: 50 });
+  const { accessDenied, accessDeniedMessage, handleApiError } = useApiErrorHandler();
 
   const fetchLogs = useCallback(async () => {
     if (!token) return;
@@ -34,11 +36,12 @@ export default function AuditPage() {
       const response = await getAuditLogs(token, filters);
       setLogs(response.logs);
     } catch (err) {
-      setError(handleApiError(err));
+      handleApiError(err instanceof Error ? err : new Error("Erro ao carregar logs"));
+      setError(err instanceof Error ? err.message : "Erro ao carregar logs");
     } finally {
       setLoading(false);
     }
-  }, [token, filters]);
+  }, [token, filters, handleApiError]);
 
   const fetchSummary = useCallback(async () => {
     if (!token) return;
@@ -46,11 +49,12 @@ export default function AuditPage() {
       const data = await getAuditSummary(token);
       setSummary(data);
     } catch (err) {
+      handleApiError(err instanceof Error ? err : new Error("Erro ao carregar resumo"));
       console.error("Erro ao carregar summary:", err);
       const errorMessage = handleApiError(err);
       if (errorMessage.includes("Sessão expirada")) return;
     }
-  }, [token]);
+  }, [token, handleApiError]);
 
   useEffect(() => {
     const init = async () => {

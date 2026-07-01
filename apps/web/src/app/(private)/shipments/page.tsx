@@ -4,9 +4,10 @@ import { ChangeEvent, useCallback, useEffect, useState } from "react";
 
 import { listShipments } from "@/lib/api";
 import { canViewShipments } from "@/lib/permissions";
-import { handleApiError } from "@/lib/error-handler";
 import { buildGlobalSearchParams, monthYearToDateRange } from "@/lib/shipment-utils";
 import { useAuth } from "@/features/auth/auth-provider";
+import { useApiErrorHandler } from "@/lib/useApiErrorHandler";
+import { AccessDenied } from "@/components/AccessDenied";
 import type { Shipment, ShipmentListParams } from "@/lib/types";
 
 export default function ShipmentsPage() {
@@ -27,6 +28,8 @@ export default function ShipmentsPage() {
   const [estimatedDeliveryTo, setEstimatedDeliveryTo] = useState("");
   const [dueDateFrom, setDueDateFrom] = useState("");
   const [dueDateTo, setDueDateTo] = useState("");
+  const [collectionDepartureFrom, setCollectionDepartureFrom] = useState("");
+  const [collectionDepartureTo, setCollectionDepartureTo] = useState("");
   const [customerNameFilter, setCustomerNameFilter] = useState("");
   const [destinationUfFilter, setDestinationUfFilter] = useState("");
 
@@ -74,17 +77,35 @@ export default function ShipmentsPage() {
         estimated_delivery_to: estimatedDeliveryTo || temporalFilter.estimated_delivery_to || undefined,
         due_date_from: dueDateFrom || temporalFilter.due_date_from || undefined,
         due_date_to: dueDateTo || temporalFilter.due_date_to || undefined,
+        collection_departure_from: collectionDepartureFrom || undefined,
+        collection_departure_to: collectionDepartureTo || undefined,
         customer_name: customerNameFilter || undefined,
         destination_uf: destinationUfFilter || undefined,
+        invoice_number: invoiceNumberFilter || undefined,
+        invoice_key: invoiceKeyFilter || undefined,
+        fiscal_document: fiscalDocumentFilter || undefined,
+        // Filtros fiscais/financeiros (BETA-031)
+        freight_value_min: freightValueMin ? parseFloat(freightValueMin) : undefined,
+        freight_value_max: freightValueMax ? parseFloat(freightValueMax) : undefined,
+        invoice_value_min: invoiceValueMin ? parseFloat(invoiceValueMin) : undefined,
+        invoice_value_max: invoiceValueMax ? parseFloat(invoiceValueMax) : undefined,
+        freight_percentage_min: freightPercentageMin ? parseFloat(freightPercentageMin) : undefined,
+        freight_percentage_max: freightPercentageMax ? parseFloat(freightPercentageMax) : undefined,
+        amount_min: amountMin ? parseFloat(amountMin) : undefined,
+        amount_max: amountMax ? parseFloat(amountMax) : undefined,
         sort_by: sortBy,
         sort_order: sortOrder,
+        // Filtros SLA (BETA-1.2)
+        sla_status: slaStatusFilter || undefined,
+        is_late: isLateFilter === "" ? undefined : isLateFilter === "true",
       };
       const response = await listShipments(session.accessToken, params);
       setItems(response.items);
       setTotal(response.total);
       setTotalPages(response.total_pages);
     } catch (err) {
-      setError(handleApiError(err));
+      handleApiError(err instanceof Error ? err : new Error("Erro ao carregar envios"));
+      setError(err instanceof Error ? err.message : "Erro ao carregar envios");
     } finally {
       setLoading(false);
     }
@@ -173,8 +194,23 @@ export default function ShipmentsPage() {
     setEstimatedDeliveryTo("");
     setDueDateFrom("");
     setDueDateTo("");
+    setCollectionDepartureFrom("");
+    setCollectionDepartureTo("");
     setCustomerNameFilter("");
     setDestinationUfFilter("");
+    setInvoiceNumberFilter("");
+    setInvoiceKeyFilter("");
+    setFiscalDocumentFilter("");
+    setFreightValueMin("");
+    setFreightValueMax("");
+    setInvoiceValueMin("");
+    setInvoiceValueMax("");
+    setFreightPercentageMin("");
+    setFreightPercentageMax("");
+    setAmountMin("");
+    setAmountMax("");
+    setSlaStatusFilter("");
+    setIsLateFilter("");
     setUseMonthYearFilter(false);
     setMonthYearTarget("estimated_delivery");
     setSelectedMonth("");
@@ -333,6 +369,155 @@ export default function ShipmentsPage() {
             <div>
               <label className="block text-[11px] font-semibold text-zinc-500">Vencimento (até)</label>
               <input type="date" value={dueDateTo} onChange={(e) => setDueDateTo(e.target.value)} className={inputClass} disabled={loading || useMonthYearFilter} />
+            </div>
+            <div>
+              <label className="block text-sm font-medium">Coleta/Saída (de)</label>
+              <input
+                type="date"
+                value={collectionDepartureFrom}
+                onChange={(e) => setCollectionDepartureFrom(e.target.value)}
+                className="mt-1 w-full rounded border px-3 py-2 text-sm"
+                disabled={loading}
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium">Coleta/Saída (até)</label>
+              <input
+                type="date"
+                value={collectionDepartureTo}
+                onChange={(e) => setCollectionDepartureTo(e.target.value)}
+                className="mt-1 w-full rounded border px-3 py-2 text-sm"
+                disabled={loading}
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium">Número NF</label>
+              <input
+                type="text"
+                value={invoiceNumberFilter}
+                onChange={(e) => setInvoiceNumberFilter(e.target.value)}
+                placeholder="Número da NF"
+                className="mt-1 w-full rounded border px-3 py-2 text-sm"
+                disabled={loading}
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium">Chave NF-e</label>
+              <input
+                type="text"
+                value={invoiceKeyFilter}
+                onChange={(e) => setInvoiceKeyFilter(e.target.value)}
+                placeholder="Chave de acesso NF-e"
+                className="mt-1 w-full rounded border px-3 py-2 text-sm"
+                disabled={loading}
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium">Documento Fiscal</label>
+              <input
+                type="text"
+                value={fiscalDocumentFilter}
+                onChange={(e) => setFiscalDocumentFilter(e.target.value)}
+                placeholder="Documento fiscal"
+                className="mt-1 w-full rounded border px-3 py-2 text-sm"
+                disabled={loading}
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium">Valor Frete Mín.</label>
+              <input
+                type="number"
+                step="0.01"
+                value={freightValueMin}
+                onChange={(e) => setFreightValueMin(e.target.value)}
+                placeholder="0.00"
+                className="mt-1 w-full rounded border px-3 py-2 text-sm"
+                disabled={loading}
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium">Valor Frete Máx.</label>
+              <input
+                type="number"
+                step="0.01"
+                value={freightValueMax}
+                onChange={(e) => setFreightValueMax(e.target.value)}
+                placeholder="0.00"
+                className="mt-1 w-full rounded border px-3 py-2 text-sm"
+                disabled={loading}
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium">Valor NF Mín.</label>
+              <input
+                type="number"
+                step="0.01"
+                value={invoiceValueMin}
+                onChange={(e) => setInvoiceValueMin(e.target.value)}
+                placeholder="0.00"
+                className="mt-1 w-full rounded border px-3 py-2 text-sm"
+                disabled={loading}
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium">Valor NF Máx.</label>
+              <input
+                type="number"
+                step="0.01"
+                value={invoiceValueMax}
+                onChange={(e) => setInvoiceValueMax(e.target.value)}
+                placeholder="0.00"
+                className="mt-1 w-full rounded border px-3 py-2 text-sm"
+                disabled={loading}
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium">% Frete Mín.</label>
+              <input
+                type="number"
+                step="0.01"
+                value={freightPercentageMin}
+                onChange={(e) => setFreightPercentageMin(e.target.value)}
+                placeholder="0.00"
+                className="mt-1 w-full rounded border px-3 py-2 text-sm"
+                disabled={loading}
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium">% Frete Máx.</label>
+              <input
+                type="number"
+                step="0.01"
+                value={freightPercentageMax}
+                onChange={(e) => setFreightPercentageMax(e.target.value)}
+                placeholder="0.00"
+                className="mt-1 w-full rounded border px-3 py-2 text-sm"
+                disabled={loading}
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium">Valor Total Mín.</label>
+              <input
+                type="number"
+                step="0.01"
+                value={amountMin}
+                onChange={(e) => setAmountMin(e.target.value)}
+                placeholder="0.00"
+                className="mt-1 w-full rounded border px-3 py-2 text-sm"
+                disabled={loading}
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium">Valor Total Máx.</label>
+              <input
+                type="number"
+                step="0.01"
+                value={amountMax}
+                onChange={(e) => setAmountMax(e.target.value)}
+                placeholder="0.00"
+                className="mt-1 w-full rounded border px-3 py-2 text-sm"
+                disabled={loading}
+              />
             </div>
           </div>
         </div>

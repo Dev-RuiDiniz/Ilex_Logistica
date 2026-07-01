@@ -167,12 +167,15 @@ export async function listShipments(token: string, params: ShipmentListParams = 
   if (params.carrier_id) searchParams.append("carrier_id", params.carrier_id.toString());
   if (params.tracking_code) searchParams.append("tracking_code", params.tracking_code);
   if (params.invoice_number) searchParams.append("invoice_number", params.invoice_number);
+  if (params.invoice_key) searchParams.append("invoice_key", params.invoice_key);
   if (params.fiscal_document) searchParams.append("fiscal_document", params.fiscal_document);
   if (params.criticality) searchParams.append("criticality", params.criticality);
   if (params.estimated_delivery_from) searchParams.append("estimated_delivery_from", params.estimated_delivery_from);
   if (params.estimated_delivery_to) searchParams.append("estimated_delivery_to", params.estimated_delivery_to);
   if (params.due_date_from) searchParams.append("due_date_from", params.due_date_from);
   if (params.due_date_to) searchParams.append("due_date_to", params.due_date_to);
+  if (params.collection_departure_from) searchParams.append("collection_departure_from", params.collection_departure_from);
+  if (params.collection_departure_to) searchParams.append("collection_departure_to", params.collection_departure_to);
   if (params.customer_name) searchParams.append("customer_name", params.customer_name);
   if (params.destination_uf) searchParams.append("destination_uf", params.destination_uf);
   if (params.month) searchParams.append("month", params.month.toString());
@@ -183,6 +186,15 @@ export async function listShipments(token: string, params: ShipmentListParams = 
   // BETA-013A: SLA filters
   if (params.sla_status) searchParams.append("sla_status", params.sla_status);
   if (params.is_late !== undefined) searchParams.append("is_late", params.is_late.toString());
+  // BETA-031: Filtros fiscais/financeiros
+  if (params.freight_value_min !== undefined) searchParams.append("freight_value_min", params.freight_value_min.toString());
+  if (params.freight_value_max !== undefined) searchParams.append("freight_value_max", params.freight_value_max.toString());
+  if (params.invoice_value_min !== undefined) searchParams.append("invoice_value_min", params.invoice_value_min.toString());
+  if (params.invoice_value_max !== undefined) searchParams.append("invoice_value_max", params.invoice_value_max.toString());
+  if (params.freight_percentage_min !== undefined) searchParams.append("freight_percentage_min", params.freight_percentage_min.toString());
+  if (params.freight_percentage_max !== undefined) searchParams.append("freight_percentage_max", params.freight_percentage_max.toString());
+  if (params.amount_min !== undefined) searchParams.append("amount_min", params.amount_min.toString());
+  if (params.amount_max !== undefined) searchParams.append("amount_max", params.amount_max.toString());
 
   const query = searchParams.toString();
   return request<ShipmentListResponse>(`/shipments${query ? `?${query}` : ""}`, {

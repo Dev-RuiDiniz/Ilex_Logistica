@@ -4,7 +4,8 @@ import { FormEvent, useEffect, useState } from "react";
 
 import { createSlaRule, listSlaRules, recalculateSla, updateSlaRule } from "@/lib/api";
 import { useAuth } from "@/features/auth/auth-provider";
-import { handleApiError } from "@/lib/error-handler";
+import { useApiErrorHandler } from "@/lib/useApiErrorHandler";
+import { AccessDenied } from "@/components/AccessDenied";
 import type { SlaRule, SlaRuleCreate } from "@/lib/types";
 
 export default function SlaRulesPage() {
@@ -15,6 +16,7 @@ export default function SlaRulesPage() {
   const [isCreating, setIsCreating] = useState(false);
   const [isRecalculating, setIsRecalculating] = useState(false);
   const [recalcResult, setRecalcResult] = useState<{ processed_count: number; updated_count: number; skipped_count: number; error_count: number } | null>(null);
+  const { accessDenied, accessDeniedMessage, handleApiError } = useApiErrorHandler();
 
   // Form state
   const [transitDays, setTransitDays] = useState("");
@@ -33,21 +35,25 @@ export default function SlaRulesPage() {
         const rules = await listSlaRules(session.accessToken);
         if (!cancelled) setItems(rules);
       } catch (err) {
-        if (!cancelled) setError(handleApiError(err));
+        if (!cancelled) {
+          handleApiError(err instanceof Error ? err : new Error("Erro ao carregar regras SLA"));
+          setError(err instanceof Error ? err.message : "Erro ao carregar regras SLA");
+        }
       } finally {
         if (!cancelled) setLoading(false);
       }
     };
     void run();
     return () => { cancelled = true; };
-  }, [session]);
+  }, [session, handleApiError]);
 
   const reloadRules = async () => {
     if (!session) return;
     try {
       setItems(await listSlaRules(session.accessToken));
     } catch (err) {
-      setError(handleApiError(err));
+      handleApiError(err instanceof Error ? err : new Error("Erro ao recarregar regras SLA"));
+      setError(err instanceof Error ? err.message : "Erro ao recarregar regras SLA");
     }
   };
 
@@ -73,7 +79,8 @@ export default function SlaRulesPage() {
       setIsActive(true);
       await reloadRules();
     } catch (err) {
-      setError(handleApiError(err));
+      handleApiError(err instanceof Error ? err : new Error("Erro ao criar regra SLA"));
+      setError(err instanceof Error ? err.message : "Erro ao criar regra SLA");
     } finally {
       setIsCreating(false);
     }
@@ -85,7 +92,8 @@ export default function SlaRulesPage() {
       await updateSlaRule(session.accessToken, rule.id, { is_active: !rule.is_active });
       await reloadRules();
     } catch (err) {
-      setError(handleApiError(err));
+      handleApiError(err instanceof Error ? err : new Error("Erro ao atualizar regra SLA"));
+      setError(err instanceof Error ? err.message : "Erro ao atualizar regra SLA");
     }
   };
 
@@ -97,7 +105,8 @@ export default function SlaRulesPage() {
       const result = await recalculateSla(session.accessToken);
       setRecalcResult(result);
     } catch (err) {
-      setError(handleApiError(err));
+      handleApiError(err instanceof Error ? err : new Error("Erro ao recalcular SLA"));
+      setError(err instanceof Error ? err.message : "Erro ao recalcular SLA");
     } finally {
       setIsRecalculating(false);
     }
@@ -112,6 +121,10 @@ export default function SlaRulesPage() {
     }
     return "Global";
   };
+
+  if (accessDenied) {
+    return <AccessDenied message={accessDeniedMessage} />;
+  }
 
   return (
     <section className="space-y-4">

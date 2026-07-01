@@ -39,12 +39,15 @@ def list_shipments(
     carrier_id: int | None = None,
     tracking_code: str | None = None,
     invoice_number: str | None = None,
+    invoice_key: str | None = None,
     fiscal_document: str | None = None,
     criticality: str | None = None,
     estimated_delivery_from: str | None = None,
     estimated_delivery_to: str | None = None,
     due_date_from: str | None = None,
     due_date_to: str | None = None,
+    collection_departure_from: str | None = None,
+    collection_departure_to: str | None = None,
     customer_name: str | None = None,
     destination_uf: str | None = None,
     month: int | None = None,
@@ -52,6 +55,18 @@ def list_shipments(
     search: str | None = None,
     sort_by: str = "created_at",
     sort_order: str = "desc",
+    # Filtros fiscais/financeiros (BETA-031)
+    freight_value_min: float | None = None,
+    freight_value_max: float | None = None,
+    invoice_value_min: float | None = None,
+    invoice_value_max: float | None = None,
+    freight_percentage_min: float | None = None,
+    freight_percentage_max: float | None = None,
+    amount_min: float | None = None,
+    amount_max: float | None = None,
+    # Filtros SLA (BETA-1.1)
+    sla_status: str | None = None,
+    is_late: bool | None = None,
 ) -> dict[str, Any]:
     """List shipments with pagination, filtering and sorting."""
     from app.modules.shipments.models import Shipment
@@ -112,32 +127,104 @@ def list_shipments(
     
     if year:
         query = query.filter(extract('year', Shipment.estimated_delivery) == year)
+
+    # Filtros fiscais/financeiros (BETA-031)
+    if invoice_key:
+        query = query.filter(Shipment.invoice_key.ilike(f"%{invoice_key}%"))
     
-    if search:
-        from sqlalchemy import or_
-        search_pattern = f"%{search}%"
-        query = query.filter(
-            or_(
-                Shipment.tracking_code.ilike(search_pattern),
-                Shipment.invoice_number.ilike(search_pattern),
-                Shipment.customer_name.ilike(search_pattern),
-                Shipment.destination_uf.ilike(search_pattern)
-            )
-        )
+    if collection_departure_from:
+        try:
+            from_date = datetime.fromisoformat(collection_departure_from.replace("Z", "+00:00"))
+            query = query.filter(Shipment.collection_departure_date >= from_date)
+        except (ValueError, AttributeError):
+            pass
+    
+    if collection_departure_to:
+        try:
+            to_date = datetime.fromisoformat(collection_departure_to.replace("Z", "+00:00"))
+            query = query.filter(Shipment.collection_departure_date <= to_date)
+        except (ValueError, AttributeError):
+            pass
 
-    # Get total count
-    total = query.count()
+    if freight_value_min is not None:
+        query = query.filter(Shipment.freight_value >= freight_value_min)
+    if freight_value_max is not None:
+        query = query.filter(Shipment.freight_value <= freight_value_max)
+    
+    if invoice_value_min is not None:
+        query = query.filter(Shipment.invoice_value >= invoice_value_min)
+    if invoice_value_max is not None:
+        query = query.filter(Shipment.invoice_value <= invoice_value_max)
+    
+    if freight_percentage_min is not None:
+        query = query.filter(Shipment.freight_percentage >= freight_percentage_min)
+    if freight_percentage_max is not None:
+        query = query.filter(Shipment.freight_percentage <= freight_percentage_max)
+    
+    if amount_min is not None:
+        query = query.filter(Shipment.amount >= amount_min)
+    if amount_max is not None:
+        query = query.filter(Shipment.amount <= amount_max)
 
-    # Apply sorting
-    sort_column = getattr(Shipment, sort_by, Shipment.created_at)
-    if sort_order.lower() == "desc":
-        query = query.order_by(sort_column.desc())
+    # Filtros SLA (BETA-1.1) - Calculados dinamicamente
+    if sla_status or is_late is not None:
+        from app.modules.sla.service import recalculate_shipment_sla
+        
+        # Buscar todos os registros (limitado a 1000 para performance)
+        all_items = query.limit(1000).all()
+        
+        filtered_items = []
+        for item in all_items:
+            sla_result = recalculate_shipment_sla(db, item.id)
+            item_sla_status = sla_result.get("sla_status")
+            item_is_late = sla_result.get("is_late", False)
+            
+            # Aplicar filtros
+            if sla_status and item_sla_status != sla_status:
+                continue
+            if is_late is not None and item_is_late != is_late:
+                continue
+            
+            filtered_items.append(item)
+        
+        # Aplicar sorting manual na lista filtrada
+        sort_column = getattr(Shipment, sort_by, Shipment.created_at)
+        reverse = sort_order.lower() == "desc"
+        filtered_items.sort(key=lambda x: getattr(x, sort_column.name), reverse=reverse)
+        
+        # Paginação manual
+        total = len(filtered_items)
+        offset = (page - 1) * page_size
+        items = filtered_items[offset:offset + page_size]
     else:
-        query = query.order_by(sort_column.asc())
+        # Se não há filtros SLA, usar fluxo normal
+        if search:
+            from sqlalchemy import or_
+            search_pattern = f"%{search}%"
+            query = query.filter(
+                or_(
+                    Shipment.tracking_code.ilike(search_pattern),
+                    Shipment.invoice_number.ilike(search_pattern),
+                    Shipment.invoice_key.ilike(search_pattern),
+                    Shipment.fiscal_document.ilike(search_pattern),
+                    Shipment.customer_name.ilike(search_pattern),
+                    Shipment.destination_uf.ilike(search_pattern)
+                )
+            )
 
-    # Apply pagination
-    offset = (page - 1) * page_size
-    items = query.offset(offset).limit(page_size).all()
+        # Get total count
+        total = query.count()
+
+        # Apply sorting
+        sort_column = getattr(Shipment, sort_by, Shipment.created_at)
+        if sort_order.lower() == "desc":
+            query = query.order_by(sort_column.desc())
+        else:
+            query = query.order_by(sort_column.asc())
+
+        # Apply pagination
+        offset = (page - 1) * page_size
+        items = query.offset(offset).limit(page_size).all()
 
     # Convert to dict format
     items_data = []

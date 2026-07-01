@@ -1,6 +1,7 @@
 """Service de dashboard summary para BETA-016A."""
 
-from datetime import UTC, datetime
+from collections import defaultdict
+from datetime import UTC, datetime, timedelta
 from typing import Any
 
 from sqlalchemy import extract, func
@@ -254,5 +255,122 @@ def calculate_dashboard_summary(
             "sla_status": sla_status,
             "is_late": is_late,
             "exception_type": exception_type,
+        },
+    }
+
+
+def calculate_dashboard_trend(
+    db: Session,
+    estimated_delivery_from: str | None = None,
+    estimated_delivery_to: str | None = None,
+    days: int = 30,
+) -> dict[str, Any]:
+    """Calcula tendência diária dos KPIs para gráficos de séries temporais.
+
+    Args:
+        db: Database session
+        estimated_delivery_from: Data inicial (ISO format)
+        estimated_delivery_to: Data final (ISO format)
+        days: Número de dias para retrospectiva (padrão 30)
+
+    Returns:
+        Dicionário com listas de dados diários para gráficos
+    """
+    # Determinar intervalo de datas
+    if estimated_delivery_to:
+        try:
+            end_date = datetime.fromisoformat(estimated_delivery_to.replace("Z", "+00:00"))
+        except (ValueError, AttributeError):
+            end_date = datetime.now(UTC)
+    else:
+        end_date = datetime.now(UTC)
+
+    if estimated_delivery_from:
+        try:
+            start_date = datetime.fromisoformat(estimated_delivery_from.replace("Z", "+00:00"))
+        except (ValueError, AttributeError):
+            start_date = end_date - timedelta(days=days)
+    else:
+        start_date = end_date - timedelta(days=days)
+
+    # Garantir que start_date <= end_date
+    if start_date > end_date:
+        start_date, end_date = end_date, start_date
+
+    # Limitar a 90 dias máximo
+    if (end_date - start_date).days > 90:
+        start_date = end_date - timedelta(days=90)
+
+    # Preparar estrutura de dados por dia
+    daily_data = defaultdict(lambda: {
+        "date": None,
+        "total_shipments": 0,
+        "on_time_count": 0,
+        "late_count": 0,
+        "critical_count": 0,
+        "warning_count": 0,
+        "unknown_sla_count": 0,
+        "exceptions_count": 0,
+    })
+
+    # Inicializar todas as datas no intervalo
+    current = start_date
+    while current <= end_date:
+        date_key = current.date().isoformat()
+        daily_data[date_key]["date"] = date_key
+        current += timedelta(days=1)
+
+    # Query shipments no intervalo
+    query = db.query(Shipment).filter(
+        Shipment.estimated_delivery >= start_date,
+        Shipment.estimated_delivery <= end_date + timedelta(days=1),
+        Shipment.is_active.is_(True),
+    )
+
+    shipments = query.all()
+
+    # Importar services necessários
+    from app.modules.sla.service import calculate_shipment_sla
+    from app.modules.shipments.exceptions_service import classify_exception_type
+
+    # Processar cada shipment
+    for shipment in shipments:
+        date_key = shipment.estimated_delivery.date().isoformat()
+
+        if date_key not in daily_data:
+            daily_data[date_key] = {"date": date_key}
+
+        daily_data[date_key]["total_shipments"] += 1
+
+        # Calcular SLA
+        sla_result = calculate_shipment_sla(db, shipment.id)
+        sla_status = sla_result.get("sla_status")
+
+        if sla_status == "on_time":
+            daily_data[date_key]["on_time_count"] += 1
+        elif sla_status == "late":
+            daily_data[date_key]["late_count"] += 1
+        elif sla_status == "critical":
+            daily_data[date_key]["critical_count"] += 1
+        elif sla_status == "warning":
+            daily_data[date_key]["warning_count"] += 1
+        elif sla_status == "unknown":
+            daily_data[date_key]["unknown_sla_count"] += 1
+
+        # Exceptions: late + critical + warning
+        if sla_status in ("late", "critical", "warning"):
+            daily_data[date_key]["exceptions_count"] += 1
+
+    # Converter para lista ordenada por data
+    trend_data = [
+        daily_data[key] for key in sorted(daily_data.keys())
+    ]
+
+    return {
+        "trend_data": trend_data,
+        "period": {
+            "start_date": start_date.date().isoformat(),
+            "end_date": end_date.date().isoformat(),
+            "days": len(trend_data),
         },
     }

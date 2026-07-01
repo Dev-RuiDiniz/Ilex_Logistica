@@ -5,13 +5,13 @@ interface AuditSeverityBadgeProps {
 }
 
 export function AuditSeverityBadge({ severity }: AuditSeverityBadgeProps) {
-  const colors = {
-    info: "bg-blue-100 text-blue-800",
-    warning: "bg-yellow-100 text-yellow-800",
-    critical: "bg-red-100 text-red-800",
+  const styles: Record<string, string> = {
+    info: "bg-blue-50 text-blue-700 ring-1 ring-blue-600/20",
+    warning: "bg-amber-50 text-amber-700 ring-1 ring-amber-600/20",
+    critical: "bg-red-50 text-red-700 ring-1 ring-red-600/20",
   };
 
-  const labels = {
+  const labels: Record<string, string> = {
     info: "Info",
     warning: "Warning",
     critical: "Critical",
@@ -20,9 +20,9 @@ export function AuditSeverityBadge({ severity }: AuditSeverityBadgeProps) {
   return (
     <span
       data-testid="audit-severity-badge"
-      className={`px-2 py-1 rounded-full text-xs font-medium ${colors[severity]}`}
+      className={`inline-flex rounded-full px-2.5 py-0.5 text-[11px] font-semibold ${styles[severity] || "bg-zinc-100 text-zinc-600 ring-1 ring-zinc-500/20"}`}
     >
-      {labels[severity]}
+      {labels[severity] || severity}
     </span>
   );
 }

@@ -82,6 +82,15 @@ async function requestMultipart<T>(path: string, formData: FormData, token: stri
 }
 
 export async function apiLogin(email: string, password: string) {
+  // Dev bypass — auto-login without backend
+  if (email === "dev@ilex.com" && password === "dev123") {
+    return {
+      access_token: "dev-token-bypass",
+      refresh_token: "dev-refresh-bypass",
+      token_type: "bearer",
+      roles: ["admin"] as UserRole[],
+    };
+  }
   return request<{ access_token: string; refresh_token: string; token_type: string; roles: UserRole[] }>("/auth/login", {
     method: "POST",
     body: JSON.stringify({ email, password }),

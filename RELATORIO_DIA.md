@@ -51,6 +51,15 @@
    - `apps/web/src/app/(private)/layout.tsx`: evita hydration mismatch com flag `mounted`
    - `apps/web/src/components/app-shell.tsx` e `apps/web/src/app/(private)/dashboard/page.tsx`: `suppressHydrationWarning` em dados de sessão e datas
 
+8. **Redesign da página `/shipments`**
+   - `apps/web/src/app/(private)/shipments/page.tsx`: reescrita com layout premium
+   - Header com contador de registros
+   - Barra de busca com ícone
+   - Filtros avançados colapsáveis, organizados em cards
+   - Tabela limpa com badges de status e criticidade
+   - Paginação estilizada
+   - `apps/web/src/app/globals.css`: adicionadas classes utilitárias `.btn-primary`, `.btn-secondary`, `.input`
+
 ### Arquivos Modificados/Criados
 - `infra/docker-compose.yml` — adicionado serviço `web`, ajustado contexto de build para raiz do monorepo; variável `CORS_ALLOWED_ORIGINS` repassada para o container da API
 - `infra/docker/api/Dockerfile` — caminhos de build atualizados para `apps/api` e `infra`; incluído `seed_demo.py`
@@ -69,7 +78,8 @@
 - `apps/web/src/app/(private)/page.tsx` — renderiza dashboard real na raiz
 - `apps/web/src/features/auth/auth-provider.tsx` — remove `DEV_SESSION` hardcoded
 - `apps/web/src/components/app-shell.tsx` — `suppressHydrationWarning`
-- `apps/web/src/app/(private)/alerts/page.tsx`, `reports/daily/page.tsx`, `shipments/import/page.tsx`, `audit/page.tsx`, `users/page.tsx`, `shipments/page.tsx` — correções de build
+- `apps/web/src/app/(private)/alerts/page.tsx`, `reports/daily/page.tsx`, `shipments/import/page.tsx`, `audit/page.tsx`, `users/page.tsx`, `shipments/page.tsx` — correções de build e redesign
+- `apps/web/src/app/globals.css` — classes utilitárias `.btn-primary`, `.btn-secondary`, `.input`
 - `CONTEXTO.md` e `RELATORIO_DIA.md` — atualizados
 
 ### Testes
@@ -82,6 +92,7 @@
 - Dashboard validada via API: 10 envios, 3 no prazo, 3 atrasados, 4 transportadoras
 - Dashboard E2E validada: carrega dados reais sem erros de CORS/console
 - Página Envios E2E validada: 10 registros carregados sem redirecionar para login
+- Página Envios redesenhada: layout premium, filtros colapsáveis, tabela organizada
 - Seed validado: 4 usuários, 4 transportadoras, 3 regras SLA e 10 shipments criados
 
 ### Documentação Atualizada

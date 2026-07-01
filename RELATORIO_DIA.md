@@ -2,6 +2,41 @@
 
 ---
 
+## 2026-07-01
+
+### Tarefas Executadas
+
+1. **Preparação de infraestrutura para deploy na VPS**
+   - Corrigido `infra/docker/api/Dockerfile` para usar caminhos do monorepo (`apps/api/` e `infra/`)
+   - Criado `infra/docker/web/Dockerfile` para build e execução do Next.js 16 em produção
+   - Adaptado `infra/docker-compose.yml` para orquestrar `db + api + web` com healthchecks e logs
+   - Criado `infra/env/vps.env.example` com placeholders de variáveis para deploy na VPS
+
+### Arquivos Modificados/Criados
+- `infra/docker-compose.yml` — adicionado serviço `web`, ajustado contexto de build para raiz do monorepo
+- `infra/docker/api/Dockerfile` — caminhos de build atualizados para `apps/api` e `infra`
+- `infra/docker/web/Dockerfile` — novo Dockerfile para frontend Next.js
+- `infra/env/vps.env.example` — novo template de variáveis para VPS
+
+### Testes
+- Validação local do Docker Compose não foi possível (Docker não disponível no ambiente Windows atual)
+- Estrutura de arquivos revisada; teste existente `infra/tests/test_c01_compose.py` continua válido para `db` e `api`
+
+### Documentação Atualizada
+- `RELATORIO_DIA.md` — este registro
+- `CONTEXTO.md` — próxima ação: obter acesso à VPS e executar deploy
+
+### Bloqueios
+- Nenhum bloqueio crítico; aguardando credenciais de acesso à VPS para executar o deploy
+
+### Proximos Passos
+1. Obter IP/usuário/SSH da VPS
+2. Conectar, instalar Docker se necessário, clonar repositório e subir ambiente
+3. Validar healthcheck da API e acesso ao frontend
+4. Atualizar `CONTEXTO.md` com estado do deploy
+
+---
+
 ## 2026-06-23 (Sessão 2)
 
 ### Tarefas Executadas

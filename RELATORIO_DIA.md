@@ -25,7 +25,13 @@
    - Coluna direita: formulário de login com foco vermelho e tipografia Plus Jakarta
    - Build e deploy atualizado na VPS
 
-3. **Correções de bugs encontrados durante o deploy**
+4. **Seed de dados de demo aplicado na VPS**
+   - `apps/api/seed_demo.py` incluído na imagem Docker da API
+   - Migration `20260701_01_add_role_description.py` criada para alinhar schema com modelo
+   - Usuários de demo criados: admin, logistica, gestor, auditoria
+   - Transportadoras, regras SLA e shipments de demo inseridos
+
+5. **Correções de bugs encontrados durante o deploy**
    - `apps/api/alembic.ini`: removido `sqlalchemy.url` hardcoded para usar `settings.database_url`
    - `apps/api/migrations/versions/20260615_01_create_sla_rules.py`: corrigido `server_default` booleano de `sa.text('1')` para `sa.true()` (compatibilidade PostgreSQL)
    - `apps/api/migrations/versions/20260627_01_create_alert_delivery_logs.py`: removida migration duplicada
@@ -35,14 +41,16 @@
 
 ### Arquivos Modificados/Criados
 - `infra/docker-compose.yml` — adicionado serviço `web`, ajustado contexto de build para raiz do monorepo
-- `infra/docker/api/Dockerfile` — caminhos de build atualizados para `apps/api` e `infra`
+- `infra/docker/api/Dockerfile` — caminhos de build atualizados para `apps/api` e `infra`; incluído `seed_demo.py`
 - `infra/docker/web/Dockerfile` — novo Dockerfile para frontend Next.js
 - `infra/env/vps.env.example` — novo template de variáveis para VPS
 - `apps/api/alembic.ini` — removido `sqlalchemy.url` hardcoded
 - `apps/api/migrations/versions/20260615_01_create_sla_rules.py` — corrigido `server_default`
+- `apps/api/migrations/versions/20260701_01_add_role_description.py` — nova migration
 - `apps/api/migrations/versions/cbee64373bd6_merge_alert_delivery_logs_and_rbac_heads.py` — novo merge
 - `apps/api/migrations/versions/20260627_01_create_alert_delivery_logs.py` — removido
 - `apps/api/migrations/versions/fcd5fd948bd2_merge_multiple_heads.py` — removido
+- `apps/web/src/app/login/page.tsx` — redesign premium
 - `apps/web/src/app/(private)/alerts/page.tsx`, `reports/daily/page.tsx`, `shipments/import/page.tsx`, `audit/page.tsx`, `users/page.tsx`, `shipments/page.tsx` — correções de build
 - `CONTEXTO.md` e `RELATORIO_DIA.md` — atualizados
 
@@ -51,6 +59,8 @@
 - Build do frontend validado na VPS durante `docker compose up --build`
 - Healthcheck da API validado: `GET /health` → `{"status":"ok"}`
 - Frontend validado: `http://2.25.168.34:3000/` retorna tela de login
+- Login validado: `POST /api/v1/auth/login` retorna 200 com role `admin`
+- Seed validado: 4 usuários, 4 transportadoras, 3 regras SLA e 10 shipments criados
 
 ### Documentação Atualizada
 - `RELATORIO_DIA.md` — este registro
@@ -61,10 +71,8 @@
 
 ### Proximos Passos
 1. Configurar firewall para fechar porta 5432 do Postgres (recomendado)
-2. Avaliar se é necessário rodar seed de dados de demo
-3. Criar usuário inicial para acesso ao painel
-4. Considerar nginx/traefik nas portas 80/443 com domínio/SSL
-5. Fazer merge da `feature/infra-vps-docker` para `main` quando validado
+2. Considerar nginx/traefik nas portas 80/443 com domínio/SSL
+3. Fazer merge da `feature/infra-vps-docker` para `main` quando validado
 
 ---
 

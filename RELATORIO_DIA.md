@@ -74,7 +74,9 @@
 
 11. **Correção do carregamento infinito na página de detalhes do envio (`/shipments/[id]`)**
    - Diagnóstico: `NEXT_PUBLIC_API_URL` no `docker-compose.yml` estava configurado como `http://localhost:8000/api/v1`, fazendo com que o browser do usuário tentasse chamar a API no próprio `localhost`, resultando em 404 e loading eterno
-   - Solução: alterado `NEXT_PUBLIC_API_URL` para `/api/v1` (path relativo) e adicionado rewrite no `next.config.ts` para proxy das chamadas `/api/v1/:path*` para a API (`http://api:8000/api/v1/:path*` dentro da rede Docker)
+   - Solução de infra: alterado `NEXT_PUBLIC_API_URL` para `/api/v1` (path relativo) e adicionado rewrite no `next.config.ts` para proxy das chamadas `/api/v1/:path*` para a API (`http://api:8000/api/v1/:path*` dentro da rede Docker)
+   - Causa raiz no frontend: Next.js 16 passa `params` como `Promise`; as páginas `/shipments/[id]` e `/shipments/deliveries/[id]` acessavam `params.id` diretamente, resultando em `NaN` e `useEffect` que nunca executava a carga de dados
+   - Corrigido ambas as páginas para desembrulhar `params` com `React.use(params)` antes de usar o `id`
    - A mesma correção beneficia todas as páginas que usam chamadas de API no client-side
 
 12. **Commit e push**
@@ -113,7 +115,10 @@
 - `apps/web/src/app/(private)/dashboard/page.tsx` — botões de WhatsApp e email nas exceções, detalhes de NF/data de entrega/frete
 - `infra/docker-compose.yml` — `NEXT_PUBLIC_API_URL` alterado para path relativo `/api/v1`
 - `infra/.env.example` — atualizado para `/api/v1`
+- `infra/docker/web/Dockerfile` — copia `next.config.ts` para a imagem de runtime
 - `apps/web/next.config.ts` — rewrite de `/api/v1/:path*` para a API interna
+- `apps/web/src/app/(private)/shipments/[id]/page.tsx` — desembrulha `params` com `use(params)`
+- `apps/web/src/app/(private)/shipments/deliveries/[id]/page.tsx` — desembrulha `params` com `use(params)`
 - `apps/api/tests/test_carriers.py` — testes de CRUD com contato
 - `apps/web/src/app/(private)/audit/page.test.tsx` — texto de loading
 - `apps/web/src/components/app-shell.tsx` — labels da sidebar

@@ -1,11 +1,29 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { getAlerts, getAlertsSummary, generateAlerts, markAlertAsRead, resolveAlert } from './alerts-api';
+
+const token = 'test-token';
+
+const expectApiUrl = (path: string) => expect.stringContaining(`http://localhost:8000/api/v1${path}`);
+
+const expectAuthHeaders = () =>
+  expect.objectContaining({
+    method: expect.any(String),
+    headers: expect.objectContaining({
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    }),
+  });
 
 describe('alerts-api', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    global.fetch = vi.fn();
+    vi.stubGlobal('fetch', vi.fn());
+    vi.stubEnv('NEXT_PUBLIC_API_URL', 'http://localhost:8000/api/v1');
+  });
+
+  afterEach(() => {
+    vi.unstubAllEnvs();
   });
 
   describe('getAlerts', () => {
@@ -15,13 +33,11 @@ describe('alerts-api', () => {
         json: async () => ({ alerts: [], total: 0 }),
       });
 
-      await getAlerts({});
+      await getAlerts(token, {});
 
       expect(global.fetch).toHaveBeenCalledWith(
-        expect.stringContaining('/api/v1/alerts'),
-        expect.objectContaining({
-          method: 'GET',
-        })
+        expectApiUrl('/alerts'),
+        expectAuthHeaders()
       );
     });
 
@@ -31,7 +47,7 @@ describe('alerts-api', () => {
         json: async () => ({ alerts: [], total: 0 }),
       });
 
-      await getAlerts({
+      await getAlerts(token, {
         status: 'active',
         severity: 'critical',
         alert_type: 'sla_critical',
@@ -49,7 +65,7 @@ describe('alerts-api', () => {
         json: async () => ({ alerts: [], total: 0 }),
       });
 
-      await getAlerts({});
+      await getAlerts(token, {});
 
       const callArgs = (global.fetch as any).mock.calls[0];
       const url = callArgs[0];
@@ -63,7 +79,7 @@ describe('alerts-api', () => {
         json: async () => ({ alerts: [], total: 0 }),
       });
 
-      await getAlerts({
+      await getAlerts(token, {
         is_read: true,
         is_resolved: false,
       });
@@ -80,7 +96,7 @@ describe('alerts-api', () => {
         status: 500,
       });
 
-      await expect(getAlerts({})).rejects.toThrow();
+      await expect(getAlerts(token, {})).rejects.toThrow();
     });
   });
 
@@ -99,13 +115,11 @@ describe('alerts-api', () => {
         }),
       });
 
-      await getAlertsSummary();
+      await getAlertsSummary(token);
 
       expect(global.fetch).toHaveBeenCalledWith(
-        expect.stringContaining('/api/v1/alerts/summary'),
-        expect.objectContaining({
-          method: 'GET',
-        })
+        expectApiUrl('/alerts/summary'),
+        expectAuthHeaders()
       );
     });
   });
@@ -124,13 +138,11 @@ describe('alerts-api', () => {
         }),
       });
 
-      await generateAlerts();
+      await generateAlerts(token);
 
       expect(global.fetch).toHaveBeenCalledWith(
-        expect.stringContaining('/api/v1/alerts/generate'),
-        expect.objectContaining({
-          method: 'POST',
-        })
+        expectApiUrl('/alerts/generate'),
+        expectAuthHeaders()
       );
     });
   });
@@ -142,13 +154,11 @@ describe('alerts-api', () => {
         json: async () => ({ success: true, message: 'Alert marked as read' }),
       });
 
-      await markAlertAsRead(1);
+      await markAlertAsRead(token, 1);
 
       expect(global.fetch).toHaveBeenCalledWith(
-        expect.stringContaining('/api/v1/alerts/1/read'),
-        expect.objectContaining({
-          method: 'PATCH',
-        })
+        expectApiUrl('/alerts/1/read'),
+        expectAuthHeaders()
       );
     });
   });
@@ -160,13 +170,11 @@ describe('alerts-api', () => {
         json: async () => ({ success: true, message: 'Alert marked as resolved' }),
       });
 
-      await resolveAlert(1);
+      await resolveAlert(token, 1);
 
       expect(global.fetch).toHaveBeenCalledWith(
-        expect.stringContaining('/api/v1/alerts/1/resolve'),
-        expect.objectContaining({
-          method: 'PATCH',
-        })
+        expectApiUrl('/alerts/1/resolve'),
+        expectAuthHeaders()
       );
     });
   });

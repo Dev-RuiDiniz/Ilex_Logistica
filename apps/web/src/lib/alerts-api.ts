@@ -1,3 +1,5 @@
+import { buildApiUrl } from "@/lib/api";
+
 export type AlertType = 'sla_critical' | 'sla_late' | 'sla_warning' | 'unknown_sla' | 'import_failure' | 'no_update';
 
 export type AlertSeverity = 'critical' | 'warning' | 'info';
@@ -65,7 +67,14 @@ export interface ResolveAlertResponse {
   message: string;
 }
 
-export async function getAlerts(filters: AlertsFilters = {}): Promise<{ alerts: AlertItem[]; total: number }> {
+function authHeaders(token: string) {
+  return {
+    'Content-Type': 'application/json',
+    'Authorization': `Bearer ${token}`,
+  };
+}
+
+export async function getAlerts(token: string, filters: AlertsFilters = {}): Promise<{ alerts: AlertItem[]; total: number }> {
   const params = new URLSearchParams();
 
   if (filters.status) params.append('status', filters.status);
@@ -79,13 +88,11 @@ export async function getAlerts(filters: AlertsFilters = {}): Promise<{ alerts: 
   if (filters.offset) params.append('offset', String(filters.offset));
 
   const queryString = params.toString();
-  const url = `/api/v1/alerts${queryString ? `?${queryString}` : ''}`;
+  const url = buildApiUrl(`/alerts${queryString ? `?${queryString}` : ''}`);
 
   const response = await fetch(url, {
     method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
+    headers: authHeaders(token),
   });
 
   if (!response.ok) {
@@ -95,12 +102,10 @@ export async function getAlerts(filters: AlertsFilters = {}): Promise<{ alerts: 
   return response.json();
 }
 
-export async function getAlertsSummary(): Promise<AlertsSummary> {
-  const response = await fetch('/api/v1/alerts/summary', {
+export async function getAlertsSummary(token: string): Promise<AlertsSummary> {
+  const response = await fetch(buildApiUrl('/alerts/summary'), {
     method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
+    headers: authHeaders(token),
   });
 
   if (!response.ok) {
@@ -110,12 +115,10 @@ export async function getAlertsSummary(): Promise<AlertsSummary> {
   return response.json();
 }
 
-export async function generateAlerts(): Promise<GenerateAlertsResponse> {
-  const response = await fetch('/api/v1/alerts/generate', {
+export async function generateAlerts(token: string): Promise<GenerateAlertsResponse> {
+  const response = await fetch(buildApiUrl('/alerts/generate'), {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
+    headers: authHeaders(token),
   });
 
   if (!response.ok) {
@@ -125,12 +128,10 @@ export async function generateAlerts(): Promise<GenerateAlertsResponse> {
   return response.json();
 }
 
-export async function markAlertAsRead(alertId: number): Promise<MarkAlertReadResponse> {
-  const response = await fetch(`/api/v1/alerts/${alertId}/read`, {
+export async function markAlertAsRead(token: string, alertId: number): Promise<MarkAlertReadResponse> {
+  const response = await fetch(buildApiUrl(`/alerts/${alertId}/read`), {
     method: 'PATCH',
-    headers: {
-      'Content-Type': 'application/json',
-    },
+    headers: authHeaders(token),
   });
 
   if (!response.ok) {
@@ -140,12 +141,10 @@ export async function markAlertAsRead(alertId: number): Promise<MarkAlertReadRes
   return response.json();
 }
 
-export async function resolveAlert(alertId: number): Promise<ResolveAlertResponse> {
-  const response = await fetch(`/api/v1/alerts/${alertId}/resolve`, {
+export async function resolveAlert(token: string, alertId: number): Promise<ResolveAlertResponse> {
+  const response = await fetch(buildApiUrl(`/alerts/${alertId}/resolve`), {
     method: 'PATCH',
-    headers: {
-      'Content-Type': 'application/json',
-    },
+    headers: authHeaders(token),
   });
 
   if (!response.ok) {

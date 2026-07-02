@@ -11,6 +11,7 @@ import {
   type AlertItem,
   type AlertsSummary,
 } from "@/lib/alerts-api";
+import { useAuth } from "@/features/auth/auth-provider";
 import { useApiErrorHandler } from "@/lib/useApiErrorHandler";
 
 export default function AlertsPage() {
@@ -19,15 +20,17 @@ export default function AlertsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [filters, setFilters] = useState<AlertsFilters>({});
+  const { session } = useAuth();
   const { accessDenied, accessDeniedMessage, handleApiError } = useApiErrorHandler();
 
   const fetchAlerts = async () => {
+    if (!session) return;
     try {
       setLoading(true);
       setError(null);
       const [alertsData, summaryData] = await Promise.all([
-        getAlerts(filters),
-        getAlertsSummary(),
+        getAlerts(session.accessToken, filters),
+        getAlertsSummary(session.accessToken),
       ]);
       setAlerts(alertsData.alerts);
       setSummary(summaryData);
@@ -41,8 +44,9 @@ export default function AlertsPage() {
   };
 
   const handleGenerateAlerts = async () => {
+    if (!session) return;
     try {
-      await generateAlerts();
+      await generateAlerts(session.accessToken);
       await fetchAlerts();
     } catch (err) {
       const error = err instanceof Error ? err : new Error(String(err));
@@ -52,8 +56,9 @@ export default function AlertsPage() {
   };
 
   const handleMarkAsRead = async (alertId: number) => {
+    if (!session) return;
     try {
-      await markAlertAsRead(alertId);
+      await markAlertAsRead(session.accessToken, alertId);
       await fetchAlerts();
     } catch (err) {
       const error = err instanceof Error ? err : new Error(String(err));
@@ -63,8 +68,9 @@ export default function AlertsPage() {
   };
 
   const handleResolve = async (alertId: number) => {
+    if (!session) return;
     try {
-      await resolveAlert(alertId);
+      await resolveAlert(session.accessToken, alertId);
       await fetchAlerts();
     } catch (err) {
       const error = err instanceof Error ? err : new Error(String(err));
@@ -83,7 +89,7 @@ export default function AlertsPage() {
 
   useEffect(() => {
     fetchAlerts();
-  }, [filters]);
+  }, [filters, session]);
 
   const getSeverityBadge = (severity: string) => {
     const map: Record<string, string> = {

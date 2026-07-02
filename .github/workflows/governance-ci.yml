@@ -1,0 +1,25 @@
+name: Governança
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  governance:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: apps/api/pyproject.toml
+      - name: Install dependencies
+        run: python -m pip install pyyaml pytest
+      - name: Run documentation validation
+        run: python scripts/validate_docs.py
+      - name: Run secret scan
+        run: python scripts/check_secrets.py --repo-root . --self-test
+      - name: Run infrastructure tests
+        run: python -m pytest -q infra/tests

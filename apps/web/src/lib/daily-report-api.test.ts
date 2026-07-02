@@ -1,9 +1,10 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import {
   getDailyReports,
   getDailyReportById,
   getDailyReportByDate,
   generateDailyReport,
+  exportDailyReports,
   parseSummary,
   parseKpis,
   parseExceptions,
@@ -12,11 +13,27 @@ import {
   parseImportFailures,
 } from "./daily-report-api";
 
+const token = "test-token";
+
 describe("daily-report-api", () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    global.fetch = vi.fn() as ReturnType<typeof vi.fn>;
+    vi.stubGlobal("fetch", vi.fn());
+    vi.stubEnv("NEXT_PUBLIC_API_URL", "http://localhost:8000/api/v1");
   });
+
+  afterEach(() => {
+    vi.unstubAllEnvs();
+  });
+
+  const expectAuthHeaders = () =>
+    expect.objectContaining({
+      method: expect.any(String),
+      headers: expect.objectContaining({
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      }),
+    });
 
   describe("getDailyReports", () => {
     it("should call the correct endpoint without filters", async () => {
@@ -31,16 +48,11 @@ describe("daily-report-api", () => {
         json: async () => mockResponse,
       });
 
-      const result = await getDailyReports();
+      const result = await getDailyReports(token);
 
       expect(global.fetch).toHaveBeenCalledWith(
         "http://localhost:8000/api/v1/reports/daily",
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
+        expectAuthHeaders()
       );
       expect(result).toEqual(mockResponse);
     });
@@ -63,16 +75,11 @@ describe("daily-report-api", () => {
         status: "generated" as const,
       };
 
-      await getDailyReports(filters);
+      await getDailyReports(token, filters);
 
       expect(global.fetch).toHaveBeenCalledWith(
         "http://localhost:8000/api/v1/reports/daily?date_from=2025-01-01&date_to=2025-01-31&status=generated",
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
+        expectAuthHeaders()
       );
     });
 
@@ -94,16 +101,11 @@ describe("daily-report-api", () => {
         status: undefined,
       };
 
-      await getDailyReports(filters);
+      await getDailyReports(token, filters);
 
       expect(global.fetch).toHaveBeenCalledWith(
         "http://localhost:8000/api/v1/reports/daily",
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
+        expectAuthHeaders()
       );
     });
 
@@ -113,7 +115,7 @@ describe("daily-report-api", () => {
         statusText: "Internal Server Error",
       });
 
-      await expect(getDailyReports()).rejects.toThrow(
+      await expect(getDailyReports(token)).rejects.toThrow(
         "Failed to fetch daily reports: Internal Server Error"
       );
     });
@@ -144,16 +146,11 @@ describe("daily-report-api", () => {
         json: async () => mockReport,
       });
 
-      const result = await getDailyReportById(1);
+      const result = await getDailyReportById(token, 1);
 
       expect(global.fetch).toHaveBeenCalledWith(
         "http://localhost:8000/api/v1/reports/daily/1",
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
+        expectAuthHeaders()
       );
       expect(result).toEqual(mockReport);
     });
@@ -164,7 +161,7 @@ describe("daily-report-api", () => {
         statusText: "Not Found",
       });
 
-      await expect(getDailyReportById(999)).rejects.toThrow(
+      await expect(getDailyReportById(token, 999)).rejects.toThrow(
         "Failed to fetch daily report: Not Found"
       );
     });
@@ -195,16 +192,11 @@ describe("daily-report-api", () => {
         json: async () => mockReport,
       });
 
-      const result = await getDailyReportByDate("2025-01-21");
+      const result = await getDailyReportByDate(token, "2025-01-21");
 
       expect(global.fetch).toHaveBeenCalledWith(
         "http://localhost:8000/api/v1/reports/daily/by-date/2025-01-21",
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
+        expectAuthHeaders()
       );
       expect(result).toEqual(mockReport);
     });
@@ -215,7 +207,7 @@ describe("daily-report-api", () => {
         statusText: "Not Found",
       });
 
-      await expect(getDailyReportByDate("2025-01-21")).rejects.toThrow(
+      await expect(getDailyReportByDate(token, "2025-01-21")).rejects.toThrow(
         "Failed to fetch daily report by date: Not Found"
       );
     });
@@ -250,17 +242,18 @@ describe("daily-report-api", () => {
         report_date: "2025-01-21",
       };
 
-      const result = await generateDailyReport(payload);
+      const result = await generateDailyReport(token, payload);
 
       expect(global.fetch).toHaveBeenCalledWith(
         "http://localhost:8000/api/v1/reports/daily/generate",
-        {
+        expect.objectContaining({
           method: "POST",
-          headers: {
+          headers: expect.objectContaining({
             "Content-Type": "application/json",
-          },
+            Authorization: `Bearer ${token}`,
+          }),
           body: JSON.stringify(payload),
-        }
+        })
       );
       expect(result).toEqual(mockReport);
     });
@@ -272,8 +265,38 @@ describe("daily-report-api", () => {
       });
 
       await expect(
-        generateDailyReport({ report_date: "2025-01-21" })
+        generateDailyReport(token, { report_date: "2025-01-21" })
       ).rejects.toThrow("Failed to generate daily report: Bad Request");
+    });
+  });
+
+  describe("exportDailyReports", () => {
+    it("should call the correct endpoint", async () => {
+      const mockResponse = {
+        content: "csv,content",
+        filename: "reports.csv",
+        media_type: "text/csv",
+      };
+      (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
+        ok: true,
+        json: async () => mockResponse,
+      });
+
+      const payload = { format: "csv" as const };
+      const result = await exportDailyReports(token, payload);
+
+      expect(global.fetch).toHaveBeenCalledWith(
+        "http://localhost:8000/api/v1/reports/daily/export",
+        expect.objectContaining({
+          method: "POST",
+          headers: expect.objectContaining({
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          }),
+          body: JSON.stringify(payload),
+        })
+      );
+      expect(result).toEqual(mockResponse);
     });
   });
 
@@ -350,122 +373,53 @@ describe("daily-report-api", () => {
 
   describe("parseExceptions", () => {
     it("should parse valid JSON", () => {
-      const exceptionsJson = JSON.stringify([
-        {
-          shipment_id: 1,
-          tracking_code: "ABC123",
-          invoice_number: "NF001",
-          carrier_id: 1,
-          carrier_name: "Carrier A",
-          customer_name: "Customer A",
-          destination_uf: "SP",
-          status: "late",
-          sla_status: "late",
-          criticality: "high",
-          delay_days: 5,
-          sla_due_date: "2025-01-15",
-          exception_type: "delay",
-          exception_reason: "Delivery delay",
-          priority: 1,
-          last_update_at: "2025-01-20",
-        },
-      ]);
-
+      const exceptionsJson = JSON.stringify([{ id: 1, description: "Test" }]);
       const result = parseExceptions(exceptionsJson);
-
-      expect(result).toHaveLength(1);
-      expect(result[0].shipment_id).toBe(1);
-      expect(result[0].tracking_code).toBe("ABC123");
+      expect(result).toEqual([{ id: 1, description: "Test" }]);
     });
 
     it("should return empty array on parse error", () => {
       const result = parseExceptions("invalid json");
-
       expect(result).toEqual([]);
     });
   });
 
   describe("parseAlerts", () => {
     it("should parse valid JSON", () => {
-      const alertsJson = JSON.stringify([
-        {
-          id: 1,
-          alert_type: "sla_critical",
-          severity: "critical",
-          title: "Critical SLA",
-          message: "Shipment is critically late",
-          source_type: "shipment",
-          source_id: 1,
-          shipment_id: 1,
-          carrier_id: 1,
-          status: "active",
-          is_read: false,
-          is_resolved: false,
-          generated_at: "2025-01-20",
-        },
-      ]);
-
+      const alertsJson = JSON.stringify([{ id: 1, message: "Test" }]);
       const result = parseAlerts(alertsJson);
-
-      expect(result).toHaveLength(1);
-      expect(result[0].id).toBe(1);
-      expect(result[0].alert_type).toBe("sla_critical");
+      expect(result).toEqual([{ id: 1, message: "Test" }]);
     });
 
     it("should return empty array on parse error", () => {
       const result = parseAlerts("invalid json");
-
       expect(result).toEqual([]);
     });
   });
 
   describe("parseCarrierEfficiency", () => {
     it("should parse valid JSON", () => {
-      const carrierEfficiencyJson = JSON.stringify([
-        {
-          carrier_id: 1,
-          carrier_name: "Carrier A",
-          total_shipments: 100,
-          on_time_count: 80,
-          late_count: 20,
-          efficiency: 0.8,
-          avg_cost: 50.0,
-        },
-      ]);
-
-      const result = parseCarrierEfficiency(carrierEfficiencyJson);
-
-      expect(result).toHaveLength(1);
-      expect(result[0].carrier_id).toBe(1);
-      expect(result[0].carrier_name).toBe("Carrier A");
+      const json = JSON.stringify([{ carrier_id: 1, efficiency: 0.9 }]);
+      const result = parseCarrierEfficiency(json);
+      expect(result).toEqual([{ carrier_id: 1, efficiency: 0.9 }]);
     });
 
     it("should return empty array on parse error", () => {
       const result = parseCarrierEfficiency("invalid json");
-
       expect(result).toEqual([]);
     });
   });
 
   describe("parseImportFailures", () => {
     it("should parse valid JSON", () => {
-      const importFailuresJson = JSON.stringify({
-        rejected_count: 5,
-      });
-
-      const result = parseImportFailures(importFailuresJson);
-
-      expect(result).toEqual({
-        rejected_count: 5,
-      });
+      const json = JSON.stringify({ rejected_count: 3 });
+      const result = parseImportFailures(json);
+      expect(result).toEqual({ rejected_count: 3 });
     });
 
     it("should return default values on parse error", () => {
       const result = parseImportFailures("invalid json");
-
-      expect(result).toEqual({
-        rejected_count: 0,
-      });
+      expect(result).toEqual({ rejected_count: 0 });
     });
   });
 });

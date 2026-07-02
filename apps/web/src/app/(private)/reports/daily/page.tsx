@@ -15,6 +15,7 @@ import {
   parseImportFailures,
 } from "@/lib/daily-report-api";
 import type { DailyReport, DailyReportFilters, DailyReportStatus } from "@/lib/types";
+import { useAuth } from "@/features/auth/auth-provider";
 import { useApiErrorHandler } from "@/lib/useApiErrorHandler";
 
 export default function DailyReportPage() {
@@ -24,6 +25,7 @@ export default function DailyReportPage() {
   const [error, setError] = useState("");
   const [generating, setGenerating] = useState(false);
   const [generateError, setGenerateError] = useState("");
+  const { session } = useAuth();
   const { accessDenied, accessDeniedMessage, handleApiError } = useApiErrorHandler();
 
   // Export state
@@ -36,6 +38,7 @@ export default function DailyReportPage() {
   const [searchDate, setSearchDate] = useState("");
 
   const loadReports = async (signal?: AbortSignal) => {
+    if (!session) return;
     setLoading(true);
     setError("");
     try {
@@ -43,7 +46,7 @@ export default function DailyReportPage() {
       if (dateFrom) filters.date_from = dateFrom;
       if (dateTo) filters.date_to = dateTo;
       if (status) filters.status = status;
-      const response = await getDailyReports(filters);
+      const response = await getDailyReports(session.accessToken, filters);
       if (!signal?.aborted) setReports(response.reports);
     } catch (err) {
       if (!signal?.aborted) {
@@ -57,12 +60,14 @@ export default function DailyReportPage() {
   };
 
   useEffect(() => {
+    if (!session) return;
     const controller = new AbortController();
     loadReports(controller.signal);
     return () => controller.abort();
-  }, [dateFrom, dateTo, status]);
+  }, [dateFrom, dateTo, status, session]);
 
   const handleGenerateReport = async () => {
+    if (!session) return;
     if (!searchDate) {
       setGenerateError("Informe uma data para gerar o relatório.");
       return;
@@ -70,7 +75,7 @@ export default function DailyReportPage() {
     setGenerating(true);
     setGenerateError("");
     try {
-      const report = await generateDailyReport({ report_date: searchDate });
+      const report = await generateDailyReport(session.accessToken, { report_date: searchDate });
       setSelectedReport(report);
       await loadReports();
     } catch (err) {
@@ -81,6 +86,7 @@ export default function DailyReportPage() {
   };
 
   const handleExportReport = async (format: "csv" | "json") => {
+    if (!session) return;
     if (reports.length === 0) {
       setExportError("Nenhum relatório para exportar.");
       return;
@@ -89,7 +95,7 @@ export default function DailyReportPage() {
     setExporting(true);
     setExportError("");
     try {
-      const response = await exportDailyReports({
+      const response = await exportDailyReports(session.accessToken, {
         format,
         date_from: dateFrom || undefined,
         date_to: dateTo || undefined,
@@ -115,6 +121,7 @@ export default function DailyReportPage() {
   };
 
   const handleSearchByDate = async () => {
+    if (!session) return;
     if (!searchDate) {
       setError("Informe uma data para buscar.");
       return;
@@ -122,7 +129,7 @@ export default function DailyReportPage() {
     setLoading(true);
     setError("");
     try {
-      const report = await getDailyReportByDate(searchDate);
+      const report = await getDailyReportByDate(session.accessToken, searchDate);
       setSelectedReport(report);
     } catch (err) {
       setError("Relatório não encontrado para a data informada.");
@@ -132,10 +139,11 @@ export default function DailyReportPage() {
   };
 
   const handleViewDetails = async (reportId: number) => {
+    if (!session) return;
     setLoading(true);
     setError("");
     try {
-      const report = await getDailyReportById(reportId);
+      const report = await getDailyReportById(session.accessToken, reportId);
       setSelectedReport(report);
     } catch (err) {
       setError("Falha ao carregar detalhes do relatório.");

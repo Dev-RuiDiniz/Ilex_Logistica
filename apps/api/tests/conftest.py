@@ -5,6 +5,7 @@ import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session, sessionmaker
+from sqlalchemy.pool import StaticPool
 
 from app.core.security import hash_password
 from app.database.base import Base
@@ -12,8 +13,13 @@ from app.database.session import get_db
 from app.main import app
 from app.modules.users.models import Role, User
 
-TEST_DB_URL = "sqlite:///./test.db"
-engine = create_engine(TEST_DB_URL, connect_args={"check_same_thread": False}, future=True)
+TEST_DB_URL = "sqlite://"
+engine = create_engine(
+    TEST_DB_URL,
+    connect_args={"check_same_thread": False},
+    poolclass=StaticPool,
+    future=True,
+)
 TestingSessionLocal = sessionmaker(bind=engine, autoflush=False, autocommit=False, future=True)
 
 
@@ -25,11 +31,11 @@ def reset_database() -> Generator[None, None, None]:
     except Exception:
         # If drop fails, continue (tables may not exist)
         pass
-    
+
     # Create all tables
     Base.metadata.create_all(bind=engine)
     yield
-    
+
     # Drop all tables safely
     try:
         Base.metadata.drop_all(bind=engine)

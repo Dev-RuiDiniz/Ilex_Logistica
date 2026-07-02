@@ -5,15 +5,17 @@ from sqlalchemy.orm import Session
 
 from app.core.security import decode_token
 from app.database.session import get_db
-from app.modules.users.models import User, Permission
+from app.modules.users.models import User
 
-auth_scheme = HTTPBearer(auto_error=True)
+auth_scheme = HTTPBearer(auto_error=False)
 
 
 def get_current_user(
-    credentials: HTTPAuthorizationCredentials = Depends(auth_scheme),
+    credentials: HTTPAuthorizationCredentials | None = Depends(auth_scheme),
     db: Session = Depends(get_db),
 ) -> User:
+    if credentials is None:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="nao autenticado")
     try:
         payload = decode_token(credentials.credentials)
     except InvalidTokenError as exc:

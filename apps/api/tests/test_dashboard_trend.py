@@ -2,7 +2,6 @@
 
 from datetime import UTC, datetime, timedelta
 
-import pytest
 from sqlalchemy.orm import Session
 
 from app.modules.dashboard.service import calculate_dashboard_trend

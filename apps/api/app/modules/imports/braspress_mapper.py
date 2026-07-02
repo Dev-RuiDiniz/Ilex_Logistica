@@ -4,10 +4,9 @@ This module provides specific column mapping for Braspress assisted imports.
 It extends the generic mapper with Braspress-specific column variations and validation.
 """
 
-from typing import Dict, Optional
+from typing import Dict
 
 from app.modules.imports.mapper import (
-    COLUMN_MAPPER,
     get_optional_columns,
     get_required_columns,
     map_column,

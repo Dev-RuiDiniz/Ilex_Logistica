@@ -1,6 +1,13 @@
 ﻿from io import BytesIO
 from zipfile import ZIP_DEFLATED, ZipFile
 
+import pytest
+
+
+@pytest.fixture(autouse=True)
+def authenticated_requests(client, auth_headers):
+    client.headers.update(auth_headers)
+
 
 def build_xlsx_bytes(duplicate_nf: bool = False) -> bytes:
     content_types = """<?xml version=\"1.0\" encoding=\"UTF-8\"?>

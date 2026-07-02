@@ -1,6 +1,5 @@
 """Testes da API de exceções operacionais com SLA para BETA-015A."""
 
-import pytest
 from fastapi.testclient import TestClient
 
 

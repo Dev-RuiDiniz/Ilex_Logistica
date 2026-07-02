@@ -1,6 +1,5 @@
 """Tests for dashboard trend API for BETA-029."""
 
-import pytest
 from datetime import UTC, datetime, timedelta
 from fastapi.testclient import TestClient
 

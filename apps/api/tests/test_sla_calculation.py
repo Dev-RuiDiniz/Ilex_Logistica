@@ -1,7 +1,6 @@
 """Testes para cálculo SLA - BETA-013A."""
 
-import pytest
-from datetime import UTC, datetime, timedelta
+from datetime import UTC, datetime
 from sqlalchemy.orm import Session
 
 from app.modules.sla.service import (

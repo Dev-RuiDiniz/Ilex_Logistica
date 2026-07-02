@@ -1,7 +1,6 @@
 """Tests for daily report export API for BETA-028."""
 
 from datetime import UTC, datetime
-import pytest
 from fastapi.testclient import TestClient
 
 

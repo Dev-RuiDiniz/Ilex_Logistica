@@ -1,8 +1,6 @@
 """Testes da API de dashboard summary para BETA-016A."""
 
-import pytest
 from fastapi.testclient import TestClient
-from sqlalchemy.orm import Session
 
 
 def test_endpoint_retorna_200_sem_auth_por_enquanto(client: TestClient):

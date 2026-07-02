@@ -97,30 +97,11 @@ COLUMN_MAPPER: Dict[str, str] = {
     "numero_do_rastreio": "tracking_code",
     
     "numero_da_nf": "invoice_number",
-    "numero_nf": "invoice_number",
-    "nota_fiscal": "invoice_number",
-    
-    "cliente": "customer_name",
     "nome_do_cliente": "customer_name",
-    "destinatario": "customer_name",
-    "nome_destinatario": "customer_name",
-    
-    "uf_destino": "destination_uf",
-    "uf": "destination_uf",
-    "estado_destino": "destination_uf",
-    "estado": "destination_uf",
     
     "data_coleta_saida": "collection_departure_date",
     "data_de_coleta_saida": "collection_departure_date",
     "data_saida": "collection_departure_date",
-    
-    "valor_nf": "invoice_value",
-    "valor_nota_fiscal": "invoice_value",
-    "valor_nota": "invoice_value",
-    "valor_mercadoria": "invoice_value",
-    
-    "valor_frete": "freight_value",
-    "vlr_frete": "freight_value",
     
     "nome_transportadora": "carrier_name",
     

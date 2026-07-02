@@ -338,7 +338,6 @@ def calculate_dashboard_trend(
 
     # Importar services necessários
     from app.modules.sla.service import calculate_shipment_sla
-    from app.modules.shipments.exceptions_service import classify_exception_type
 
     # Processar cada shipment
     for shipment in shipments:

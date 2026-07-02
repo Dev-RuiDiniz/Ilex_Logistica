@@ -1,6 +1,5 @@
 """Tests for OperationalAuditLog model (BETA-019A)."""
 
-from datetime import UTC, datetime
 
 import pytest
 from sqlalchemy.orm import Session

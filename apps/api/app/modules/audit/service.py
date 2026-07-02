@@ -1,6 +1,5 @@
 """Audit Log service for BETA-017A."""
 
-from typing import Any
 
 from sqlalchemy.orm import Session
 

@@ -44,7 +44,7 @@ TRK001,Transportes A,2026-06-01,João Silva,11999999999,Rua A SP,Rua B RJ"""
     assert len(body["errors"]) == 0
 
 
-def test_upload_csv_sem_autenticacao_retorna_403(client: TestClient) -> None:
+def test_upload_csv_sem_autenticacao_retorna_401(client: TestClient) -> None:
     csv_content = """tracking_code,carrier_name,estimated_delivery,recipient_name,recipient_phone,origin_address,destination_address
 TRK001,Transportes A,2026-06-01,João Silva,11999999999,Rua A SP,Rua B RJ"""
 
@@ -54,7 +54,7 @@ TRK001,Transportes A,2026-06-01,João Silva,11999999999,Rua A SP,Rua B RJ"""
         files={"file": ("test.csv", csv_file, "text/csv")},
     )
 
-    assert response.status_code == 403
+    assert response.status_code == 401
 
 
 def test_upload_csv_arquivo_nao_csv_retorna_400(client: TestClient, db_session: Session, seed_roles: None) -> None:

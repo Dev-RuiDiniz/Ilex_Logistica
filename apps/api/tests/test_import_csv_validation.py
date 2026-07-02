@@ -5,6 +5,11 @@ from io import BytesIO
 from fastapi import UploadFile
 
 
+@pytest.fixture(autouse=True)
+def authenticated_requests(client, auth_headers):
+    client.headers.update(auth_headers)
+
+
 def _create_upload_file(content: bytes, filename: str = "test.csv") -> UploadFile:
     """Helper to create an UploadFile for testing."""
     file = BytesIO(content)

@@ -1,7 +1,6 @@
 """Schemas for daily report API for BETA-018A."""
 
-import json
-from datetime import UTC, datetime
+from datetime import datetime
 from typing import Any
 
 from pydantic import BaseModel, Field

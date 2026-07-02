@@ -2,11 +2,9 @@
 
 from datetime import UTC, datetime
 
-import pytest
 from sqlalchemy.orm import Session
 
 from app.modules.reports.service import generate_daily_report, get_daily_report_by_date, list_daily_reports
-from app.modules.reports.models import DailyReport
 
 
 def test_gera_relatorio_para_data_especifica(db_session: Session):

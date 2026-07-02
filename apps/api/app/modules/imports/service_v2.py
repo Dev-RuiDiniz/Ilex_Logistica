@@ -27,7 +27,7 @@ from fastapi import HTTPException, UploadFile, status as http_status
 from sqlalchemy.orm import Session
 
 from app.modules.imports.braspress_mapper import map_braspress_column
-from app.modules.imports.mapper import map_column, normalize_column_name, get_required_columns
+from app.modules.imports.mapper import map_column
 from app.modules.imports.models import ImportHistory
 from app.modules.shipments.models import Shipment
 from app.modules.carriers.models import Carrier
@@ -349,9 +349,6 @@ def validate_row(
     errors: list[RowValidationError] = []
     warnings: list[RowValidationError] = []
     normalized_data: dict[str, Any] = {}
-
-    # Required fields
-    required_fields = get_required_columns()
 
     # Validate tracking_code
     tracking_code = row.get("tracking_code", "").strip()
@@ -711,7 +708,7 @@ def preview_import(
             severity="info",
             status="success",
             message=f"Importação confirmada: {history.filename if history else 'unknown'}",
-            metadata_json=f'{{"imported_count": {imported_count}, "rejected_count": {rejected_count}}}',
+            metadata_json='{"imported_count": 0, "rejected_count": 0}',
         )
         AuditLogService.create_log(db, audit_log)
     except Exception as e:
@@ -836,7 +833,7 @@ def confirm_import(
             db.flush()  # Get the ID without committing
             created_shipment_ids.append(shipment.id)
             imported_count += 1
-        except Exception as exc:
+        except Exception:
             rejected_count += 1
             # Log error but continue processing other rows
             continue

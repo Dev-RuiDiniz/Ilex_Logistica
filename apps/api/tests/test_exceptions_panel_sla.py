@@ -1,6 +1,5 @@
 """Testes de exceções operacionais com SLA para BETA-015A."""
 
-import pytest
 from datetime import UTC, datetime, timedelta
 from decimal import Decimal
 from sqlalchemy.orm import Session
@@ -9,8 +8,6 @@ from app.modules.carriers.models import Carrier
 from app.modules.shipments.models import Shipment
 from app.modules.sla.models import SlaRule
 from app.modules.shipments.exceptions_service import (
-    calculate_exception_summary,
-    get_exception_items,
     get_exceptions_panel,
     classify_exception_type,
     calculate_exception_priority,

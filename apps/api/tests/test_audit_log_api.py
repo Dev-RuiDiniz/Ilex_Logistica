@@ -1,6 +1,5 @@
 """Tests for audit log API (BETA-019A)."""
 
-import pytest
 from sqlalchemy.orm import Session
 
 

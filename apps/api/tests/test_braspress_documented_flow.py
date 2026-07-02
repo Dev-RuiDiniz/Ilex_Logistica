@@ -3,7 +3,6 @@
 This module validates that the documentation exists and contains required information.
 """
 
-import json
 import re
 from pathlib import Path
 

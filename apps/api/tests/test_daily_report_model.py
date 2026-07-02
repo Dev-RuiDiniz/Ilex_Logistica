@@ -5,7 +5,6 @@ from datetime import UTC, datetime
 import pytest
 from sqlalchemy.orm import Session
 
-from app.database.session import get_db
 from app.modules.reports.models import DailyReport
 
 

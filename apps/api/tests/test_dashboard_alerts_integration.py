@@ -1,6 +1,5 @@
 """Tests for dashboard alerts integration (BETA-017A)."""
 
-import pytest
 from sqlalchemy.orm import Session
 
 

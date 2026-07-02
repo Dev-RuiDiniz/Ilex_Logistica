@@ -1,11 +1,8 @@
 """Tests for AuditLogService (BETA-019A)."""
 
-from datetime import UTC, datetime
 
-import pytest
 from sqlalchemy.orm import Session
 
-from app.modules.audit.models import OperationalAuditLog
 from app.modules.audit.schemas import AuditLogCreateRequest
 from app.modules.audit.service import AuditLogService
 from app.modules.users.models import User
@@ -203,7 +200,7 @@ def test_filtra_por_severity_e_status(db_session: Session):
 def test_filtra_por_periodo(db_session: Session):
     """Testa filtro por período (criado_at)."""
     # Criar logs em diferentes momentos
-    log1 = AuditLogService.create_log(
+    AuditLogService.create_log(
         db_session,
         AuditLogCreateRequest(
             event_type="test_event",
@@ -216,7 +213,7 @@ def test_filtra_por_periodo(db_session: Session):
     )
 
     # Simular log mais recente (modificando created_at manualmente para teste)
-    log2 = AuditLogService.create_log(
+    AuditLogService.create_log(
         db_session,
         AuditLogCreateRequest(
             event_type="test_event",

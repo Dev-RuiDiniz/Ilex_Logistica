@@ -1,7 +1,6 @@
 """Schemas do módulo dashboard para BETA-016A."""
 
 from datetime import datetime
-from typing import Any
 
 from pydantic import BaseModel
 

@@ -1,4 +1,3 @@
-import pytest
 from datetime import datetime, UTC
 from sqlalchemy.orm import Session
 

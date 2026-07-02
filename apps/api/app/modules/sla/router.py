@@ -7,10 +7,8 @@ from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
 
 from app.database.session import get_db
-from app.modules.auth.dependencies import get_current_user, require_roles, require_permission
-from app.modules.users.models import User
+from app.modules.auth.dependencies import require_roles, require_permission
 from app.modules.sla.service import (
-    get_applicable_sla_rule,
     recalculate_all_shipments_sla,
     recalculate_shipment_sla,
 )

@@ -8,7 +8,6 @@ from app.modules.dashboard.service import (
     calculate_dashboard_summary,
     calculate_dashboard_trend,
 )
-from app.modules.users.models import User
 
 router = APIRouter(prefix="/dashboard", tags=["dashboard"])
 

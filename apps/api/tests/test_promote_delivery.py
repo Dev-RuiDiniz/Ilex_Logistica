@@ -1,5 +1,13 @@
 # LOG-021: Testes Red para promoção Delivery → Shipment
 
+import pytest
+
+
+@pytest.fixture(autouse=True)
+def authenticated_requests(client, auth_headers):
+    client.headers.update(auth_headers)
+
+
 def test_promote_delivery_cria_shipment_com_payload_completo(client, db_session) -> None:
     """Promove Delivery existente com payload completo e cria Shipment."""
     # Criar Carrier
@@ -246,6 +254,7 @@ def test_promote_delivery_preserva_delivery_original(client, db_session) -> None
 
 
 def test_promote_delivery_exige_autenticacao(client) -> None:
+    client.headers.pop("Authorization", None)
     """Exige autenticação."""
     payload = {
         "tracking_code": "TRACK123",
@@ -258,7 +267,7 @@ def test_promote_delivery_exige_autenticacao(client) -> None:
     }
     
     response = client.post("/api/v1/imports/deliveries/1/promote", json=payload)
-    assert response.status_code == 404
+    assert response.status_code == 401
 
 
 def test_promote_delivery_resposta_nao_expoe_stack_trace(client, db_session) -> None:

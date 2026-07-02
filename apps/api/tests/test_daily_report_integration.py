@@ -2,11 +2,9 @@
 
 from datetime import UTC, datetime
 
-import pytest
 from sqlalchemy.orm import Session
 
 from app.modules.reports.service import generate_daily_report
-from app.modules.reports.models import DailyReport
 
 
 def test_relatorio_usa_dashboard_summary_real(db_session: Session):

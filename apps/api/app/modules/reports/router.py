@@ -1,4 +1,4 @@
-from datetime import UTC, datetime
+from datetime import datetime
 
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
@@ -127,7 +127,6 @@ def get_report(
     Returns:
         Daily report
     """
-    from app.modules.reports.models import DailyReport
 
     report = db.query(DailyReport).filter(DailyReport.id == report_id).first()
     if not report:

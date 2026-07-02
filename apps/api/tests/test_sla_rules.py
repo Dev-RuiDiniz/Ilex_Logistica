@@ -1,6 +1,5 @@
 """Testes para regras SLA - BETA-013A."""
 
-import pytest
 from datetime import UTC, datetime
 from sqlalchemy.orm import Session
 

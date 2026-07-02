@@ -1,10 +1,7 @@
 """Testes para API SLA - BETA-013A."""
 
-import pytest
 from datetime import UTC, datetime
-from fastapi.testclient import TestClient
 
-from app.main import app
 
 
 class TestSlaAPI:

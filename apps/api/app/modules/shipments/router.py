@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query, UploadFile, status
 from sqlalchemy.orm import Session
 
 from app.database.session import get_db
-from app.modules.auth.dependencies import get_current_user, require_roles, require_permission
+from app.modules.auth.dependencies import require_permission
 from app.modules.users.models import User
 from app.modules.shipments.schemas import (
     ImportConfirmRequest,

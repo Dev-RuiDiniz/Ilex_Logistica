@@ -5,7 +5,6 @@ from datetime import UTC, datetime
 import pytest
 from sqlalchemy.orm import Session
 
-from app.modules.audit.models import OperationalAuditLog
 from app.modules.audit.service import AuditLogService
 from app.modules.alerts.service import generate_alerts
 from app.modules.reports.service import generate_daily_report
@@ -20,7 +19,7 @@ def test_gerar_relatorio_diario_cria_log(db_session: Session):
     )
 
     # Gerar relatório diário
-    result = generate_daily_report(db_session, report_date=datetime.now(UTC).date())
+    generate_daily_report(db_session, report_date=datetime.now(UTC).date())
 
     # Verificar se log foi criado
     logs_after, total_after = AuditLogService.get_logs(
@@ -51,7 +50,7 @@ def test_gerar_alertas_cria_log(db_session: Session):
     )
 
     # Gerar alertas
-    result = generate_alerts(db_session)
+    generate_alerts(db_session)
 
     # Verificar se log foi criado
     logs_after, total_after = AuditLogService.get_logs(
@@ -82,7 +81,7 @@ def test_recalcular_sla_cria_log(db_session: Session):
     )
 
     # Recalcular SLA
-    result = recalculate_all_shipments_sla(db_session)
+    recalculate_all_shipments_sla(db_session)
 
     # Verificar se log foi criado
     logs_after, total_after = AuditLogService.get_logs(
@@ -168,7 +167,7 @@ def test_confirmar_importacao_cria_log(db_session: Session):
     )
 
     # Confirmar importação
-    result = confirm_import(db_session, history.id)
+    confirm_import(db_session, history.id)
 
     # Verificar se log foi criado
     logs_after, total_after = AuditLogService.get_logs(

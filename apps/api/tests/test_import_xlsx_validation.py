@@ -5,6 +5,11 @@ from io import BytesIO
 from zipfile import ZIP_DEFLATED, ZipFile
 
 
+@pytest.fixture(autouse=True)
+def authenticated_requests(client, auth_headers):
+    client.headers.update(auth_headers)
+
+
 def build_xlsx_bytes_v2(
     tracking_code: str = "BR123456789",
     carrier_id: str = "1",

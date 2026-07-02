@@ -1,6 +1,5 @@
 """Test RBAC for Reports API endpoints."""
 
-from datetime import UTC, datetime
 
 from fastapi.testclient import TestClient
 from sqlalchemy.orm import Session

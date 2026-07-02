@@ -10,7 +10,6 @@ This module tests the Braspress-specific import functionality including:
 """
 
 import json
-from datetime import date, datetime
 from io import BytesIO
 from pathlib import Path
 
@@ -26,7 +25,7 @@ from app.modules.imports.braspress_mapper import (
     validate_braspress_headers,
 )
 from app.modules.imports.models import ImportHistory
-from app.modules.imports.service_v2 import confirm_import, parse_uploaded_file_v2, preview_import
+from app.modules.imports.service_v2 import confirm_import, preview_import
 from app.modules.shipments.models import Shipment
 
 

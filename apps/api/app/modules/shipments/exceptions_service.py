@@ -1,6 +1,6 @@
 """Service de exceções operacionais com SLA para BETA-015A."""
 
-from datetime import UTC, datetime, timedelta
+from datetime import UTC, datetime
 from typing import Any
 
 from sqlalchemy.orm import Session
@@ -266,7 +266,7 @@ def _get_exception_reason(
     elif exception_type == "late":
         return f"Atraso de {delay_days} dias"
     elif exception_type == "warning":
-        return f"Atenção: próximo ao prazo"
+        return "Atenção: próximo ao prazo"
     elif exception_type == "unknown_sla":
         return "Sem SLA definido"
     else:

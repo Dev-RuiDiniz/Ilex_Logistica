@@ -2,10 +2,8 @@
 
 from datetime import UTC, datetime
 
-import pytest
 from fastapi.testclient import TestClient
 
-from app.modules.reports.schemas import DailyReportGenerateRequest
 
 
 def test_post_reports_daily_generate_retorna_relatorio(client: TestClient):

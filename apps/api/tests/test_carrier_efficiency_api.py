@@ -1,9 +1,7 @@
-import pytest
 from datetime import UTC, datetime
 from fastapi.testclient import TestClient
 from sqlalchemy.orm import Session
 
-from app.main import app
 from app.modules.carriers.models import Carrier
 from app.modules.shipments.models import Shipment
 

@@ -5,7 +5,6 @@ Este arquivo contém testes para validar a implementação dos campos
 fiscais/financeiros conforme BETA-011A.
 """
 
-import pytest
 from datetime import UTC, datetime
 from sqlalchemy.orm import Session
 

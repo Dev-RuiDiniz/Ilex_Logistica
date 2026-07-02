@@ -1,12 +1,16 @@
 """Tests for duplicate detection in imports - BETA-012A."""
 
 import pytest
-from io import BytesIO
+
+
+@pytest.fixture(autouse=True)
+def authenticated_requests(client, auth_headers):
+    client.headers.update(auth_headers)
 
 
 def test_detect_duplicates_in_file_tracking_code():
     """Test detecting duplicates by tracking_code within file."""
-    from app.modules.imports.service_v2 import detect_duplicates_in_file, ValidatedRow, RowValidationError
+    from app.modules.imports.service_v2 import detect_duplicates_in_file, ValidatedRow
     
     # Create validated rows with duplicate tracking_code
     rows = [

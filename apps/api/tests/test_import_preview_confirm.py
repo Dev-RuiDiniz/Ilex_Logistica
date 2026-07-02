@@ -1,7 +1,11 @@
 """Tests for import preview and confirm functionality - BETA-012A."""
 
 import pytest
-from io import BytesIO
+
+
+@pytest.fixture(autouse=True)
+def authenticated_requests(client, auth_headers):
+    client.headers.update(auth_headers)
 
 
 def test_preview_import_returns_summary(client):

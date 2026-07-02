@@ -188,7 +188,7 @@ Executar na raiz, adaptando apenas o ambiente, nunca omitindo gate aplicável.
 | Documentação | `python scripts/validate_docs.py` |
 | Qualquer commit | `python scripts/check_secrets.py --repo-root . --self-test` e `git diff --check` |
 
-Comandos auxiliares existentes: `scripts/validate_api.sh`, `scripts/validate_web.sh`, `scripts/validate_e2e.sh`, `scripts/coverage_api.sh`, `scripts/coverage_web.sh` e `scripts/beta_validate.py`. Em Windows, prefira os comandos nativos acima quando Bash não estiver disponível.
+Comando auxiliar existente: `scripts/beta_validate.py`.
 
 Não declarar “passou”, “corrigido” ou “concluído” sem saída fresca do comando correspondente. Se um gate falhar por causa preexistente, registrar comando, erro e distinção entre falha preexistente e mudança da tarefa; não ocultar nem adulterar o gate.
 

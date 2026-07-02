@@ -89,10 +89,11 @@ export default function DashboardPage() {
     const typeLabel = translateExceptionType(exc.exception_type, exc.sla_status);
     const carrier = exc.carrier_name ?? "Transportadora não informada";
     const destination = exc.destination_uf ? ` → ${exc.destination_uf}` : "";
-    const delay = exc.delay_days > 0 ? ` (${exc.delay_days}d atraso)` : "";
+    const delayText = exc.delay_days > 0 ? `de ${exc.delay_days}d` : "";
+    const event = delayText ? `${typeLabel} ${delayText}`.trim() : typeLabel;
     return {
       id: exc.shipment_id,
-      event: `${typeLabel}${delay}`,
+      event,
       tracking: `${exc.tracking_code ?? "—"} • ${carrier}${destination}`,
       time: exc.last_update_at
         ? new Date(exc.last_update_at).toLocaleString("pt-BR", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" })

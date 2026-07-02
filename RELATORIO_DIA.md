@@ -52,7 +52,15 @@
    - Frontend: tipo `DashboardExceptionItem` atualizado
    - Frontend: cada item da seção "Exceções em Destaque" exibe uma linha extra com: NF, data de entrega estimada e valor do frete
 
-8. **Commit e push**
+8. **Redesign visual da seção Exceções em Destaque**
+   - Card principal com fundo gradiente vermelho/branco, borda vermelha e sombra
+   - Header com ícone de alerta, título em destaque e badge de contagem
+   - Cada exceção exibida como card individual com borda lateral colorida por severidade
+   - Cores por severidade: vermelho (crítico), âmbar (atenção), azul (info)
+   - Badge de severidade, título em negrito, grid de detalhes e botões de contato
+   - Link "Ver envio" para a página de detalhes do envio
+
+9. **Commit e push**
    - Commit `8f7b69e`, `6650eb2`, `5f56a93`, `865faa4` e novo commit na branch `feature/infra-vps-docker`
    - Push para `https://github.com/Dev-RuiDiniz/Ilex_Logistica.git`
 

@@ -4,7 +4,6 @@ from fastapi.testclient import TestClient
 from sqlalchemy.orm import Session
 
 from conftest import create_user_with_roles
-from app.main import app
 
 
 def login(client: TestClient, email: str, password: str) -> str:
@@ -101,6 +100,7 @@ def test_exceptions_filtra_por_criticality(client: TestClient, db_session: Sessi
 
 
 def test_exceptions_route_registrada() -> None:
+    from app.main import app
     import app.modules.shipments.router as router_module
     assert "exceptions" in open(router_module.__file__, encoding="utf-8").read()
     routes = {getattr(r, "path", "") for r in app.routes}

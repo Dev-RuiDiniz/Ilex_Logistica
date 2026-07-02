@@ -11,6 +11,11 @@ afterEach(() => {
 
 vi.mock("@/lib/api");
 vi.mock("@/features/auth/auth-provider");
+vi.mock("next/navigation", () => ({
+  useSearchParams: () => new URLSearchParams(),
+  useRouter: () => ({ replace: vi.fn() }),
+  usePathname: () => "/shipments",
+}));
 
 const mockSession = {
   accessToken: "test-token",

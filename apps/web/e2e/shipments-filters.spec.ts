@@ -1,7 +1,8 @@
 import { test, expect } from '@playwright/test';
 import { AuthHelper } from './helpers/auth.helper';
 import { NavigationHelper } from './helpers/navigation.helper';
-import { testUsers, testShipments } from './fixtures/test-data';
+import { testUsers } from './fixtures/users';
+import { testShipments } from './fixtures/test-data';
 
 /**
  * Testes E2E: Entregas Monitoradas e Filtros
@@ -157,5 +158,138 @@ test.describe('Entregas Monitoradas e Filtros', () => {
         await page.waitForTimeout(1000);
       }
     }
+  });
+
+  // ===========================================================================
+  // P1.2 — Cenários adicionais: filtros combinados, URL/estado, ordenação
+  // ===========================================================================
+
+  test('deve aplicar filtros combinados (status + UF + cliente)', async ({ page }) => {
+    await navHelper.goToShipments();
+
+    // Selecionar status
+    const statusSelect = page.locator('select').first();
+    await statusSelect.selectOption('pending');
+
+    // Preencher cliente
+    const customerInput = page.getByPlaceholder(/cliente/i);
+    if (await customerInput.isVisible()) {
+      await customerInput.fill('Cliente');
+    }
+
+    // Aplicar filtros
+    const applyButton = page.getByRole('button', { name: /aplicar/i });
+    if (await applyButton.isVisible()) {
+      await applyButton.click();
+      await page.waitForTimeout(1000);
+    }
+
+    // Verificar que a URL contém status=pending
+    await expect(page).toHaveURL(/status=pending/);
+  });
+
+  test('deve persistir filtros na URL ao recarregar', async ({ page }) => {
+    await navHelper.goToShipments();
+
+    // Aplicar filtro de status
+    const statusSelect = page.locator('select').first();
+    await statusSelect.selectOption('pending');
+
+    // Aplicar filtros
+    const applyButton = page.getByRole('button', { name: /aplicar/i });
+    if (await applyButton.isVisible()) {
+      await applyButton.click();
+      await page.waitForTimeout(1000);
+    }
+
+    // Verificar URL contém status=pending
+    await expect(page).toHaveURL(/status=pending/);
+
+    // Recarregar página
+    await page.reload();
+
+    // Verificar que o filtro foi restaurado da URL
+    const statusSelectAfter = page.locator('select').first();
+    await expect(statusSelectAfter).toHaveValue('pending');
+  });
+
+  test('deve limpar filtros e remover query params da URL', async ({ page }) => {
+    await navHelper.goToShipments();
+
+    // Aplicar filtro de status
+    const statusSelect = page.locator('select').first();
+    await statusSelect.selectOption('pending');
+
+    const applyButton = page.getByRole('button', { name: /aplicar/i });
+    if (await applyButton.isVisible()) {
+      await applyButton.click();
+      await page.waitForTimeout(1000);
+    }
+
+    // Verificar URL tem query params
+    await expect(page).toHaveURL(/status=pending/);
+
+    // Limpar filtros
+    const clearButton = page.getByRole('button', { name: /limpar/i });
+    await clearButton.click();
+    await page.waitForTimeout(500);
+
+    // Verificar URL não tem query params
+    await expect(page).toHaveURL(/\/shipments$/);
+  });
+
+  test('deve ordenar por coluna diferente do padrão', async ({ page }) => {
+    await navHelper.goToShipments();
+
+    // Alterar ordenação
+    const sortSelect = page.locator('select').nth(1);
+    if (await sortSelect.isVisible()) {
+      await sortSelect.selectOption('estimated_delivery');
+
+      // Aplicar filtros para sincronizar URL
+      const applyButton = page.getByRole('button', { name: /aplicar/i });
+      if (await applyButton.isVisible()) {
+        await applyButton.click();
+        await page.waitForTimeout(1000);
+      }
+
+      // Verificar URL contém sort_by=estimated_delivery
+      await expect(page).toHaveURL(/sort_by=estimated_delivery/);
+    }
+  });
+
+  test('deve paginar e refletir page na URL', async ({ page }) => {
+    await navHelper.goToShipments();
+
+    // Verificar se botão Próxima está disponível
+    const nextButton = page.getByRole('button', { name: /próxima/i });
+    if (await nextButton.isVisible() && await nextButton.isEnabled()) {
+      await nextButton.click();
+      await page.waitForTimeout(1000);
+
+      // Verificar URL contém page=2
+      await expect(page).toHaveURL(/page=2/);
+    }
+  });
+
+  test('deve buscar com termo inexistente e mostrar estado vazio', async ({ page }) => {
+    await navHelper.goToShipments();
+
+    // Preencher busca com termo inexistente
+    const searchInput = page.getByPlaceholder(/buscar|pesquisar/i);
+    await searchInput.fill('ZZZINEXISTENTE123');
+
+    // Submeter busca
+    const searchButton = page.getByRole('button', { name: /buscar/i });
+    if (await searchButton.isVisible()) {
+      await searchButton.click();
+    } else {
+      await searchInput.press('Enter');
+    }
+
+    await page.waitForTimeout(1000);
+
+    // Verificar estado vazio
+    await expect(page.getByText(/nenhum envio encontrado/i)).toBeVisible();
   });
 });

@@ -53,7 +53,7 @@ def list_shipments_endpoint(
     collection_departure_to: Annotated[str | None, Query()] = None,
     customer_name: Annotated[str | None, Query()] = None,
     destination_uf: Annotated[str | None, Query()] = None,
-    month: Annotated[int | None, Query()] = None,
+    month: Annotated[int | None, Query(ge=1, le=12)] = None,
     year: Annotated[int | None, Query()] = None,
     search: Annotated[str | None, Query()] = None,
     sort_by: Annotated[str, Query()] = "created_at",

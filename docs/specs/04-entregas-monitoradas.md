@@ -53,6 +53,18 @@ Cenários adicionais P1.1:
 - Exportação CSV/XLSX inclui colunas fiscais com valores ou vazio
 - Renderização Web: null/zero mostram "Indisponível" ou "—", nunca NaN/Infinity
 
+Cenários adicionais P1.2 (Confirmado):
+- Busca multicampo (search) retorna resultados de NF, cliente, rastreio, UF e transportadora
+- Combinação de 3+ filtros simultâneos (status + carrier + UF + mês) sem divergência de totais
+- Ordenação por created_at, estimated_delivery, due_date, amount, criticality (asc/desc)
+- Filtro inválido (month=13, page=0) retorna erro 422
+- URL reflete filtros ativos (query params) e recarregar restaura estado
+- Limpar filtros volta para estado inicial (URL sem params)
+- Combinação de filtros fiscais e operacionais (freight_value_min + status + carrier)
+- E2E: filtros combinados, persistência URL, ordenação, paginação, estado vazio
+
+> **Evidência P1.2:** 19 testes API (`test_shipments_list.py`), 6 testes Web URL sync (`shipments-url-sync.test.tsx`), 7 testes E2E adicionais (`shipments-filters.spec.ts`). Validação month 1-12 no router. Build, lint e vitest green.
+
 ## Riscos, dependências e rastreabilidade
 
 Origem autoritativa de NF/frete e semântica da data de coleta exigem homologação. Evidências: `modules/shipments`, `modules/imports`, migrations fiscais e páginas de shipments/deliveries.

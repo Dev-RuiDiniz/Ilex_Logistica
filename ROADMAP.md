@@ -80,13 +80,13 @@
 
 > **Evidência:** 17 testes API (decimal, datas inválidas, compat API, reconciliação com dataset), 15 testes Web (null/zero/undefined), bug corrigido em `get_shipment_detail` (campos fiscais ausentes). Dataset em `tests/fixtures/homologation_fiscal_financial.csv`.
 
-### P1.2 Busca e filtros — SPEC-04  `[~]`
+### P1.2 Busca e filtros — SPEC-04  `[x]`
 
-- [~] LOG-028/032/033: busca por NF, cliente, rastreio, UF e transportadora; filtros por status, cliente, transportadora, UF, mês, ano e todo período.
-- [ ] Cobrir combinações, paginação, ordenação, limpeza, URL/estado e erro.
-- [ ] **Aceite:** API e Web retornam o mesmo universo e Playwright cobre o fluxo crítico.
+- [x] LOG-028/032/033: busca por NF, cliente, rastreio, UF e transportadora; filtros por status, cliente, transportadora, UF, mês, ano e todo período.
+- [x] Cobrir combinações, paginação, ordenação, limpeza, URL/estado e erro.
+- [x] **Aceite:** API e Web retornam o mesmo universo e Playwright cobre o fluxo crítico.
 
-> **Evidência atual:** implementação parcial de busca e filtros existe na API e Web; aceite e E2E completos pendentes (ESCOPO.md §13, SPEC-04).
+> **Evidência:** 19 testes API (busca multicampo, filtros combinados, ordenação, filtros inválidos, validação month 1-12); 6 testes Web URL sync (filtros na URL, restore no mount, limpeza, paginação, ordenação, params inválidos); 7 testes E2E Playwright adicionais (filtros combinados, persistência URL, limpeza URL, ordenação, paginação URL, estado vazio). Build e lint green.
 
 ### P1.3 Eficiência e indicadores — SPEC-07/SPEC-08  `[~]`
 

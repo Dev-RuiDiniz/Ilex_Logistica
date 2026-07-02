@@ -1,7 +1,8 @@
 "use client";
 
-import { ChangeEvent, useCallback, useEffect, useState } from "react";
+import { ChangeEvent, Suspense, useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import { useSearchParams, useRouter, usePathname } from "next/navigation";
 
 import { createShipment, listCarriers, listShipments } from "@/lib/api";
 import { canViewShipments, canWriteShipments } from "@/lib/permissions";
@@ -41,7 +42,10 @@ const SORT_OPTIONS = [
   { value: "criticality", label: "Criticidade" },
 ];
 
-export default function ShipmentsPage() {
+function ShipmentsPageContent() {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const pathname = usePathname();
   const { session } = useAuth();
   const [items, setItems] = useState<Shipment[]>([]);
   const [loading, setLoading] = useState(true);
@@ -249,9 +253,95 @@ export default function ShipmentsPage() {
     return () => clearTimeout(timer);
   }, [load]);
 
+  useEffect(() => {
+    const urlSearch = searchParams.get("search");
+    const urlStatus = searchParams.get("status");
+    const urlCarrierId = searchParams.get("carrier_id");
+    const urlCriticality = searchParams.get("criticality");
+    const urlCustomerName = searchParams.get("customer_name");
+    const urlDestinationUf = searchParams.get("destination_uf");
+    const urlInvoiceNumber = searchParams.get("invoice_number");
+    const urlSlaStatus = searchParams.get("sla_status");
+    const urlIsLate = searchParams.get("is_late");
+    const urlSortBy = searchParams.get("sort_by");
+    const urlSortOrder = searchParams.get("sort_order");
+    const urlPage = searchParams.get("page");
+
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    if (urlSearch) setSearch(urlSearch);
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    if (urlStatus) setStatusFilter(urlStatus);
+    if (urlCarrierId) setCarrierIdFilter(urlCarrierId);
+    if (urlCriticality) setCriticalityFilter(urlCriticality);
+    if (urlCustomerName) setCustomerNameFilter(urlCustomerName);
+    if (urlDestinationUf) setDestinationUfFilter(urlDestinationUf);
+    if (urlInvoiceNumber) setInvoiceNumberFilter(urlInvoiceNumber);
+    if (urlSlaStatus) setSlaStatusFilter(urlSlaStatus);
+    if (urlIsLate) setIsLateFilter(urlIsLate);
+    if (urlSortBy) setSortBy(urlSortBy);
+    if (urlSortOrder === "asc" || urlSortOrder === "desc") setSortOrder(urlSortOrder);
+    if (urlPage) {
+      const p = parseInt(urlPage, 10);
+      if (p > 0) setPage(p);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const syncUrl = useCallback(() => {
+    const params = new URLSearchParams();
+    if (search) params.set("search", search);
+    if (statusFilter) params.set("status", statusFilter);
+    if (carrierIdFilter) params.set("carrier_id", carrierIdFilter);
+    if (criticalityFilter) params.set("criticality", criticalityFilter);
+    if (estimatedDeliveryFrom) params.set("estimated_delivery_from", estimatedDeliveryFrom);
+    if (estimatedDeliveryTo) params.set("estimated_delivery_to", estimatedDeliveryTo);
+    if (dueDateFrom) params.set("due_date_from", dueDateFrom);
+    if (dueDateTo) params.set("due_date_to", dueDateTo);
+    if (collectionDepartureFrom) params.set("collection_departure_from", collectionDepartureFrom);
+    if (collectionDepartureTo) params.set("collection_departure_to", collectionDepartureTo);
+    if (customerNameFilter) params.set("customer_name", customerNameFilter);
+    if (destinationUfFilter) params.set("destination_uf", destinationUfFilter);
+    if (invoiceNumberFilter) params.set("invoice_number", invoiceNumberFilter);
+    if (invoiceKeyFilter) params.set("invoice_key", invoiceKeyFilter);
+    if (fiscalDocumentFilter) params.set("fiscal_document", fiscalDocumentFilter);
+    if (freightValueMin) params.set("freight_value_min", freightValueMin);
+    if (freightValueMax) params.set("freight_value_max", freightValueMax);
+    if (invoiceValueMin) params.set("invoice_value_min", invoiceValueMin);
+    if (invoiceValueMax) params.set("invoice_value_max", invoiceValueMax);
+    if (freightPercentageMin) params.set("freight_percentage_min", freightPercentageMin);
+    if (freightPercentageMax) params.set("freight_percentage_max", freightPercentageMax);
+    if (amountMin) params.set("amount_min", amountMin);
+    if (amountMax) params.set("amount_max", amountMax);
+    if (slaStatusFilter) params.set("sla_status", slaStatusFilter);
+    if (isLateFilter) params.set("is_late", isLateFilter);
+    if (sortBy !== "created_at") params.set("sort_by", sortBy);
+    if (sortOrder !== "desc") params.set("sort_order", sortOrder);
+    if (page > 1) params.set("page", String(page));
+    const queryString = params.toString();
+    router.replace(queryString ? `${pathname}?${queryString}` : pathname, { scroll: false });
+  }, [
+    router, pathname, search, statusFilter, carrierIdFilter, criticalityFilter,
+    estimatedDeliveryFrom, estimatedDeliveryTo, dueDateFrom, dueDateTo,
+    collectionDepartureFrom, collectionDepartureTo, customerNameFilter, destinationUfFilter,
+    invoiceNumberFilter, invoiceKeyFilter, fiscalDocumentFilter,
+    freightValueMin, freightValueMax, invoiceValueMin, invoiceValueMax,
+    freightPercentageMin, freightPercentageMax, amountMin, amountMax,
+    slaStatusFilter, isLateFilter, sortBy, sortOrder, page,
+  ]);
+
+  const urlSynced = useRef(false);
+  useEffect(() => {
+    if (!urlSynced.current) {
+      urlSynced.current = true;
+      return;
+    }
+    syncUrl();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [page, sortBy, sortOrder]);
+
   const onSearch = (event: ChangeEvent<HTMLInputElement>) => setSearch(event.target.value);
-  const onSearchSubmit = () => { setPage(1); void load(); };
-  const onApplyFilters = () => { setPage(1); void load(); };
+  const onSearchSubmit = () => { setPage(1); void load(); syncUrl(); };
+  const onApplyFilters = () => { setPage(1); void load(); syncUrl(); };
   const onClearFilters = () => {
     setSearch("");
     setStatusFilter("");
@@ -286,6 +376,7 @@ export default function ShipmentsPage() {
     setSortOrder("desc");
     setPage(1);
     void load();
+    router.replace(pathname, { scroll: false });
   };
   const toggleSortOrder = () => { setSortOrder((prev) => (prev === "asc" ? "desc" : "asc")); };
 
@@ -957,6 +1048,14 @@ function CreateShipmentModal({
         </form>
       </div>
     </div>
+  );
+}
+
+export default function ShipmentsPage() {
+  return (
+    <Suspense fallback={<div className="p-4 text-sm text-zinc-500">Carregando envios...</div>}>
+      <ShipmentsPageContent />
+    </Suspense>
   );
 }
 

@@ -100,8 +100,8 @@ def test_exceptions_filtra_por_criticality(client: TestClient, db_session: Sessi
 
 
 def test_exceptions_route_registrada() -> None:
-    from app.main import app
+    from app.main import create_app
     import app.modules.shipments.router as router_module
     assert "exceptions" in open(router_module.__file__, encoding="utf-8").read()
-    routes = {getattr(r, "path", "") for r in app.routes}
+    routes = {getattr(r, "path", "") for r in create_app().routes}
     assert "/api/v1/shipments/exceptions" in routes

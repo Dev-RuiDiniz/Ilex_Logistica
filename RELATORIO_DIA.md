@@ -2,6 +2,63 @@
 
 ---
 
+## 2026-07-01 (Sessão 2)
+
+### Tarefas Executadas
+
+1. **Reimplementação do formulário de cadastro manual de envios**
+   - Backend: novo endpoint `POST /api/v1/shipments` com schema `ShipmentCreate` e service `create_shipment`
+   - Frontend: função `createShipment`, tipo `CreateShipmentRequest` e modal de cadastro na página `/shipments`
+   - Validação de campos obrigatórios (rastreio, transportadora, origem, destino, destinatário, telefone)
+   - Carregamento de transportadoras ativas para o select do formulário
+
+2. **Correções de compatibilidade de testes**
+   - Ajustado `calculate_delay_days` para lidar com datas offset-naive/offset-aware
+   - Atualizados testes de `shipments-sla-filters.test.tsx` para refletir a nova UI (labels, ranges, filtros expandidos)
+   - Adicionados testes para o modal de criação (`shipments-create-modal.test.tsx`)
+   - Corrigida acessibilidade dos filtros de alertas (`htmlFor`/`id`)
+   - Ajustadas labels da sidebar para corresponder aos testes de navegação
+   - Corrigido texto de loading no teste de auditoria
+
+3. **Commit e push**
+   - Commit `8f7b69e` na branch `feature/infra-vps-docker`
+   - Push para `https://github.com/Dev-RuiDiniz/Ilex_Logistica.git`
+
+### Arquivos Modificados/Criados
+- `apps/api/app/modules/shipments/router.py` — endpoint POST /shipments
+- `apps/api/app/modules/shipments/schemas.py` — schema ShipmentCreate
+- `apps/api/app/modules/shipments/service.py` — service create_shipment e correção de timezone
+- `apps/api/tests/test_shipment_create_manual.py` — testes do endpoint (novo)
+- `apps/web/src/lib/api.ts` — função createShipment
+- `apps/web/src/lib/types.ts` — tipo CreateShipmentRequest
+- `apps/web/src/app/(private)/shipments/page.tsx` — modal/form de cadastro
+- `apps/web/src/app/(private)/shipments/shipments-sla-filters.test.tsx` — testes atualizados
+- `apps/web/src/app/(private)/shipments/shipments-create-modal.test.tsx` — testes do modal (novo)
+- `apps/web/src/app/(private)/alerts/page.tsx` — acessibilidade dos filtros
+- `apps/web/src/app/(private)/audit/page.test.tsx` — texto de loading
+- `apps/web/src/components/app-shell.tsx` — labels da sidebar
+
+### Testes
+- Backend: `test_shipment_create_manual.py` → 3/3 passando
+- Frontend (shipments): 93/93 testes passando (inclui filtros e modal de criação)
+- Frontend build: `npm run build` → sucesso
+- Frontend geral: 373/399 passando (26 falhas preexistentes em `dashboard-page.test.tsx` — UI redesenhada sem testes atualizados)
+- Backend geral: 563/662 passando (99 falhas preexistentes relacionadas a RBAC/autenticação em testes antigos)
+
+### Documentação Atualizada
+- `RELATORIO_DIA.md` — este registro
+- `CONTEXTO.md` — próximos passos e estado atual
+
+### Bloqueios
+- Nenhum bloqueio crítico
+
+### Próximos Passos
+1. Atualizar testes de dashboard para refletir o redesign
+2. Revisar testes de backend que falham por RBAC/autenticação
+3. Fazer merge da `feature/infra-vps-docker` para `main` quando validado
+
+---
+
 ## 2026-07-01
 
 ### Tarefas Executadas

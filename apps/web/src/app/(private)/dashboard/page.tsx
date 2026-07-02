@@ -78,9 +78,9 @@ export default function DashboardPage() {
     return type ? type.charAt(0).toUpperCase() + type.slice(1) : "Exceção";
   };
 
-  const getSeverity = (slaStatus: string, priority: number) => {
-    if (slaStatus === "critical" || priority >= 80) return "critical";
-    if (slaStatus === "late" || slaStatus === "warning" || priority >= 50) return "warning";
+  const getSeverity = (slaStatus: string, _priority: number) => {
+    if (slaStatus === "critical") return "critical";
+    if (slaStatus === "late" || slaStatus === "warning") return "warning";
     return "info";
   };
 

@@ -10,6 +10,8 @@
 - Mapeamento LOG-027 a LOG-041 entre confirmado, parcial e planejado.
 - Expansão do escopo mestre e criação de 12 especificações SDD por domínio em `docs/specs/`.
 - Criação de índice e matriz de rastreabilidade entre requisitos, módulos, LOG-IDs e testes esperados.
+- Reestruturação do `AGENTS.md` como manual operacional completo para SDD, TDD, arquitetura, segurança, documentação, validação e Git.
+- Formalização da política de commit local por tarefa em pt-BR e push somente autorizado.
 
 ### Arquivos modificados/criados
 
@@ -39,6 +41,7 @@
 - Arquitetura e banco foram documentados a partir de models, routers, migrations e manifests.
 - Escopo e roadmap incorporaram os requisitos complementares.
 - O histórico útil foi resumido no contexto sem restaurar documentos obsoletos removidos.
+- A governança operacional foi alinhada ao catálogo `docs/specs`, à stack real e às instruções locais do Next.js.
 
 ### Bloqueios e dependências
 

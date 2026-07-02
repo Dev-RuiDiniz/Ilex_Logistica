@@ -21,6 +21,8 @@
 - Credenciais de ERP e transportadoras não serão persistidas em documentação ou frontend.
 - `RELATORIO.md` substitui o arquivo histórico `RELATORIO_DIA.md` removido.
 - Toda mudança funcional deve atualizar primeiro a spec do domínio e seus critérios de aceite antes do ciclo TDD.
+- O `AGENTS.md` v3 tornou obrigatório o fluxo inspeção → SDD → TDD → validação → documentação → commit local, com push somente mediante autorização explícita.
+- Instruções locais, como as regras de Next.js em `apps/web/AGENTS.md`, complementam a governança raiz sem reduzir seus gates.
 
 ### Dependências e bloqueios
 

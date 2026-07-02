@@ -27,12 +27,18 @@
    - Ajustadas labels da sidebar para corresponder aos testes de navegação
    - Corrigido texto de loading no teste de auditoria
 
-4. **Deploy na VPS**
-   - Rebuild dos containers `ilex-api` e `ilex-web` em `2.25.168.34` com as correções
-   - Validação: `GET /api/v1/alerts` e `GET /api/v1/alerts/summary` retornam `200` com token válido
+4. **Correção do erro Failed to fetch na página `/reports/daily` na VPS**
+   - Diagnóstico: `daily-report-api.ts` usava `NEXT_PUBLIC_API_BASE` (variável não definida no compose) em vez de `NEXT_PUBLIC_API_URL`, e não enviava o token de autenticação
+   - `daily-report-api.ts` refatorado para usar `buildApiUrl` e enviar `Authorization: Bearer <token>`
+   - `reports/daily/page.tsx` passa a usar `useAuth` e fornecer `session.accessToken` para todas as chamadas
+   - Testes de `daily-report-api` atualizados para validar token e URL base
 
-5. **Commit e push**
-   - Commit `8f7b69e` e `6650eb2` na branch `feature/infra-vps-docker`
+5. **Deploy na VPS**
+   - Rebuild dos containers `ilex-api` e `ilex-web` em `2.25.168.34` com as correções
+   - Validação: `GET /api/v1/alerts`, `GET /api/v1/alerts/summary` e `GET /api/v1/reports/daily` retornam `200` com token válido
+
+6. **Commit e push**
+   - Commit `8f7b69e`, `6650eb2` e `5f56a93` na branch `feature/infra-vps-docker`
    - Push para `https://github.com/Dev-RuiDiniz/Ilex_Logistica.git`
 
 ### Arquivos Modificados/Criados
@@ -49,6 +55,10 @@
 - `apps/web/src/lib/alerts-api.ts` — token e URL base em todas as requisições de alertas
 - `apps/web/src/lib/alerts-api.test.ts` — testes atualizados para nova assinatura
 - `apps/web/src/lib/alerts-page.test.tsx` — testes da página de alertas (novo local)
+- `apps/web/src/lib/daily-report-api.ts` — token e URL base em relatórios diários
+- `apps/web/src/lib/daily-report-api.test.ts` — testes atualizados para nova assinatura
+- `apps/web/src/lib/daily-report-api.error-handler.test.ts` — testes atualizados para nova assinatura
+- `apps/web/src/app/(private)/reports/daily/page.tsx` — autenticação e chamadas de API de relatórios diários
 - `apps/web/src/app/(private)/audit/page.test.tsx` — texto de loading
 - `apps/web/src/components/app-shell.tsx` — labels da sidebar
 
@@ -56,10 +66,11 @@
 - Backend: `test_shipment_create_manual.py` → 3/3 passando
 - Frontend (shipments): 93/93 testes passando (inclui filtros e modal de criação)
 - Frontend (alerts): `alerts-api.test.ts` → 9/9 passando; `alerts-page.test.tsx` → 3/3 passando
+- Frontend (reports/daily): `daily-report-api.test.ts` → 23/23 passando; `daily-report-api.error-handler.test.ts` → 2/2 passando
 - Frontend build: `npm run build` → sucesso
 - Frontend geral: 373/399 passando (26 falhas preexistentes em `dashboard-page.test.tsx` — UI redesenhada sem testes atualizados)
 - Backend geral: 563/662 passando (99 falhas preexistentes relacionadas a RBAC/autenticação em testes antigos)
-- VPS: `GET /api/v1/alerts` e `GET /api/v1/alerts/summary` → 200
+- VPS: `GET /api/v1/alerts`, `GET /api/v1/alerts/summary` e `GET /api/v1/reports/daily` → 200
 
 ### Documentação Atualizada
 - `RELATORIO_DIA.md` — este registro

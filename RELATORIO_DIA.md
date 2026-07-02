@@ -60,7 +60,12 @@
    - Badge de severidade, título em negrito, grid de detalhes e botões de contato
    - Link "Ver envio" para a página de detalhes do envio
 
-9. **Commit e push**
+9. **Correção da classificação de severidade**
+   - Ajustado `getSeverity` no dashboard para usar `sla_status` ao invés da prioridade numérica
+   - Evita que todos os itens apareçam como críticos devido à escala de prioridade do backend
+   - `critical` para `sla_status=critical`, `warning` para `late`/`warning`, `info` para outros
+
+10. **Commit e push**
    - Commit `8f7b69e`, `6650eb2`, `5f56a93`, `865faa4` e novo commit na branch `feature/infra-vps-docker`
    - Push para `https://github.com/Dev-RuiDiniz/Ilex_Logistica.git`
 

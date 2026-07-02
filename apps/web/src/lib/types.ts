@@ -160,6 +160,28 @@ export interface CreateShipmentTreatmentRequest {
   comment: string;
 }
 
+export interface CreateShipmentRequest {
+  tracking_code: string;
+  carrier_id: number;
+  estimated_delivery: string;
+  recipient_name: string;
+  recipient_phone: string;
+  origin_address: string;
+  destination_address: string;
+  status?: string;
+  invoice_number?: string;
+  invoice_key?: string;
+  fiscal_document?: string;
+  amount?: number;
+  due_date?: string;
+  freight_value?: number;
+  invoice_value?: number;
+  collection_departure_date?: string;
+  customer_name?: string;
+  destination_uf?: string;
+  criticality?: string;
+}
+
 export interface DailyReportResponse {
   report_date: string;
   total_shipments: number;

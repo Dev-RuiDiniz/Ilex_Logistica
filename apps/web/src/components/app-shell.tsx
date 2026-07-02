@@ -63,7 +63,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           {canWriteImports(role) && (
             <SidebarLink href="/shipments/import" active={pathname === "/shipments/import"}>
               <IconImport />
-              Importar
+              Importar Envios
             </SidebarLink>
           )}
           {canReadCarriers(role) && (
@@ -79,7 +79,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           {canReadReports(role) && (
             <SidebarLink href="/reports/daily" active={pathname.startsWith("/reports")}>
               <IconReport />
-              Relatórios
+              Relatório Diário
             </SidebarLink>
           )}
 

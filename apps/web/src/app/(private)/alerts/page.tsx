@@ -157,8 +157,9 @@ export default function AlertsPage() {
         <p className="mb-3 text-[11px] font-semibold uppercase tracking-wide text-zinc-500">Filtros</p>
         <div className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-6">
           <div>
-            <label className="block text-[11px] font-semibold text-zinc-500">Status</label>
+            <label htmlFor="alert-status-filter" className="block text-[11px] font-semibold text-zinc-500">Status</label>
             <select
+              id="alert-status-filter"
               className={selectClass}
               value={filters.status || ""}
               onChange={(e) => handleFilterChange("status", e.target.value || undefined)}
@@ -170,8 +171,9 @@ export default function AlertsPage() {
             </select>
           </div>
           <div>
-            <label className="block text-[11px] font-semibold text-zinc-500">Severidade</label>
+            <label htmlFor="alert-severity-filter" className="block text-[11px] font-semibold text-zinc-500">Severidade</label>
             <select
+              id="alert-severity-filter"
               className={selectClass}
               value={filters.severity || ""}
               onChange={(e) => handleFilterChange("severity", e.target.value || undefined)}
@@ -183,8 +185,9 @@ export default function AlertsPage() {
             </select>
           </div>
           <div>
-            <label className="block text-[11px] font-semibold text-zinc-500">Tipo</label>
+            <label htmlFor="alert-type-filter" className="block text-[11px] font-semibold text-zinc-500">Tipo</label>
             <select
+              id="alert-type-filter"
               className={selectClass}
               value={filters.alert_type || ""}
               onChange={(e) => handleFilterChange("alert_type", e.target.value || undefined)}

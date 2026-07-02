@@ -3,13 +3,13 @@
 import { ChangeEvent, useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 
-import { listShipments } from "@/lib/api";
-import { canViewShipments } from "@/lib/permissions";
+import { createShipment, listCarriers, listShipments } from "@/lib/api";
+import { canViewShipments, canWriteShipments } from "@/lib/permissions";
 import { buildGlobalSearchParams, monthYearToDateRange } from "@/lib/shipment-utils";
 import { useAuth } from "@/features/auth/auth-provider";
 import { useApiErrorHandler } from "@/lib/useApiErrorHandler";
 import { AccessDenied } from "@/components/AccessDenied";
-import type { Shipment, ShipmentListParams } from "@/lib/types";
+import type { Carrier, CreateShipmentRequest, Shipment, ShipmentListParams } from "@/lib/types";
 
 const STATUS_OPTIONS = [
   { value: "pending", label: "Pendente" },
@@ -50,7 +50,7 @@ export default function ShipmentsPage() {
   const [pageSize] = useState(20);
   const [total, setTotal] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
-  const [showFilters, setShowFilters] = useState(false);
+  const [showFilters, setShowFilters] = useState(true);
   const [search, setSearch] = useState("");
 
   const [statusFilter, setStatusFilter] = useState("");
@@ -79,6 +79,20 @@ export default function ShipmentsPage() {
   const [slaStatusFilter, setSlaStatusFilter] = useState("");
   const [isLateFilter, setIsLateFilter] = useState("");
 
+  const [showCreateModal, setShowCreateModal] = useState(false);
+  const [carriers, setCarriers] = useState<Carrier[]>([]);
+  const [createLoading, setCreateLoading] = useState(false);
+  const [createError, setCreateError] = useState("");
+  const [form, setForm] = useState<CreateShipmentRequest>({
+    tracking_code: "",
+    carrier_id: 0,
+    estimated_delivery: "",
+    recipient_name: "",
+    recipient_phone: "",
+    origin_address: "",
+    destination_address: "",
+  });
+
   const [useMonthYearFilter, setUseMonthYearFilter] = useState(false);
   const [monthYearTarget, setMonthYearTarget] = useState<"estimated_delivery" | "due_date">("estimated_delivery");
   const [selectedMonth, setSelectedMonth] = useState("");
@@ -88,7 +102,69 @@ export default function ShipmentsPage() {
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
 
   const canView = canViewShipments(session?.role ?? "auditoria");
+  const canCreate = canWriteShipments(session?.role ?? "auditoria");
   const { handleApiError } = useApiErrorHandler();
+
+  const loadCarriers = useCallback(async () => {
+    if (!session) return;
+    try {
+      const response = await listCarriers(session.accessToken);
+      setCarriers(response);
+    } catch (err) {
+      handleApiError(err instanceof Error ? err : new Error("Erro ao carregar transportadoras"));
+    }
+  }, [session, handleApiError]);
+
+  const resetForm = () => {
+    setForm({
+      tracking_code: "",
+      carrier_id: 0,
+      estimated_delivery: "",
+      recipient_name: "",
+      recipient_phone: "",
+      origin_address: "",
+      destination_address: "",
+    });
+    setCreateError("");
+  };
+
+  const openCreateModal = () => {
+    void loadCarriers();
+    resetForm();
+    setShowCreateModal(true);
+  };
+
+  const closeCreateModal = () => {
+    setShowCreateModal(false);
+    resetForm();
+  };
+
+  const updateForm = <K extends keyof CreateShipmentRequest>(field: K, value: CreateShipmentRequest[K]) => {
+    setForm((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const onSubmitCreate = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!session) return;
+    setCreateLoading(true);
+    setCreateError("");
+    try {
+      const payload = {
+        ...form,
+        carrier_id: Number(form.carrier_id),
+      };
+      await createShipment(session.accessToken, payload);
+      setShowCreateModal(false);
+      resetForm();
+      setPage(1);
+      void load();
+    } catch (err) {
+      setCreateError(err instanceof Error ? err.message : "Erro ao criar envio");
+      handleApiError(err instanceof Error ? err : new Error("Erro ao criar envio"));
+    } finally {
+      setCreateLoading(false);
+    }
+  };
 
   const activeFiltersCount = [
     statusFilter, carrierIdFilter, criticalityFilter, estimatedDeliveryFrom, estimatedDeliveryTo,
@@ -287,7 +363,14 @@ export default function ShipmentsPage() {
 
   return (
     <div className="space-y-5">
-      <Header total={total} />
+      <Header total={total}>
+        {canCreate && (
+          <button onClick={openCreateModal} className="btn-primary flex items-center gap-2">
+            <IconPlus className="h-4 w-4" />
+            Novo envio
+          </button>
+        )}
+      </Header>
 
       {/* Search bar */}
       <div className="rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm">
@@ -525,21 +608,36 @@ export default function ShipmentsPage() {
           </div>
         </div>
       )}
+
+      {showCreateModal && (
+        <CreateShipmentModal
+          carriers={carriers}
+          form={form}
+          onChange={updateForm}
+          onSubmit={onSubmitCreate}
+          onClose={closeCreateModal}
+          loading={createLoading}
+          error={createError}
+        />
+      )}
     </div>
   );
 }
 
-function Header({ total }: { total: number }) {
+function Header({ total, children }: { total: number; children?: React.ReactNode }) {
   return (
     <header className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
       <div>
         <h1 className="text-2xl font-extrabold tracking-tight text-zinc-900">Envios</h1>
         <p className="mt-1 text-sm font-medium text-zinc-500">Gestão e acompanhamento de todos os envios</p>
       </div>
-      <div className="flex items-center gap-3 rounded-xl border border-zinc-200 bg-white px-4 py-2.5 shadow-sm">
-        <span className="inline-flex h-2.5 w-2.5 rounded-full bg-emerald-500" />
-        <span className="text-sm font-semibold text-zinc-900">{total}</span>
-        <span className="text-xs text-zinc-500">{total === 1 ? "registro" : "registros"}</span>
+      <div className="flex flex-col items-start gap-3 sm:flex-row sm:items-center">
+        <div className="flex items-center gap-3 rounded-xl border border-zinc-200 bg-white px-4 py-2.5 shadow-sm">
+          <span className="inline-flex h-2.5 w-2.5 rounded-full bg-emerald-500" />
+          <span className="text-sm font-semibold text-zinc-900">{total}</span>
+          <span className="text-xs text-zinc-500">{total === 1 ? "registro" : "registros"}</span>
+        </div>
+        {children}
       </div>
     </header>
   );
@@ -661,6 +759,220 @@ function DateGroup({
         <input type="date" value={to} onChange={(e) => onToChange(e.target.value)} className="input" disabled={disabled} />
       </div>
     </div>
+  );
+}
+
+function NumberGroup({
+  label,
+  value,
+  onChange,
+  placeholder,
+}: {
+  label: string;
+  value: string;
+  onChange: (value: string) => void;
+  placeholder?: string;
+}) {
+  return (
+    <div>
+      <label className="text-[11px] font-semibold uppercase tracking-wide text-zinc-500">{label}</label>
+      <input
+        type="number"
+        step="0.01"
+        min="0"
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        placeholder={placeholder}
+        className="input"
+      />
+    </div>
+  );
+}
+
+function CreateShipmentModal({
+  carriers,
+  form,
+  onChange,
+  onSubmit,
+  onClose,
+  loading,
+  error,
+}: {
+  carriers: Carrier[];
+  form: CreateShipmentRequest;
+  onChange: <K extends keyof CreateShipmentRequest>(field: K, value: CreateShipmentRequest[K]) => void;
+  onSubmit: (e: React.FormEvent) => void;
+  onClose: () => void;
+  loading: boolean;
+  error: string;
+}) {
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm">
+      <div className="w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-2xl border border-zinc-200 bg-white shadow-2xl">
+        <div className="flex items-center justify-between border-b border-zinc-100 px-6 py-4">
+          <div>
+            <h2 className="text-lg font-bold text-zinc-900">Novo envio</h2>
+            <p className="text-xs text-zinc-500">Preencha os dados obrigatórios para cadastrar um novo envio</p>
+          </div>
+          <button onClick={onClose} className="rounded-lg p-2 text-zinc-400 hover:bg-zinc-100 hover:text-zinc-600">
+            <IconX className="h-5 w-5" />
+          </button>
+        </div>
+
+        <form onSubmit={onSubmit} className="space-y-5 p-6">
+          {error && (
+            <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-600">
+              {error}
+            </div>
+          )}
+
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+            <InputGroup
+              label="Código de rastreio *"
+              value={form.tracking_code}
+              onChange={(v) => onChange("tracking_code", v)}
+              placeholder="Ex: BR123456789"
+              maxLength={100}
+            />
+            <div>
+              <label className="text-[11px] font-semibold uppercase tracking-wide text-zinc-500">Transportadora *</label>
+              <select
+                value={form.carrier_id}
+                onChange={(e) => onChange("carrier_id", Number(e.target.value))}
+                className="input"
+                required
+              >
+                <option value={0}>Selecione...</option>
+                {carriers.map((carrier) => (
+                  <option key={carrier.id} value={carrier.id}>{carrier.name}</option>
+                ))}
+              </select>
+            </div>
+            <InputGroup
+              label="Entrega estimada *"
+              value={form.estimated_delivery}
+              onChange={(v) => onChange("estimated_delivery", v)}
+              type="datetime-local"
+            />
+            <InputGroup
+              label="Cliente"
+              value={form.customer_name ?? ""}
+              onChange={(v) => onChange("customer_name", v || undefined)}
+              placeholder="Nome do cliente"
+            />
+            <InputGroup
+              label="Destinatário *"
+              value={form.recipient_name}
+              onChange={(v) => onChange("recipient_name", v)}
+              placeholder="Nome do destinatário"
+            />
+            <InputGroup
+              label="Telefone destinatário *"
+              value={form.recipient_phone}
+              onChange={(v) => onChange("recipient_phone", v)}
+              placeholder="(00) 00000-0000"
+            />
+            <InputGroup
+              label="Endereço origem *"
+              value={form.origin_address}
+              onChange={(v) => onChange("origin_address", v)}
+              placeholder="Endereço completo de origem"
+            />
+            <InputGroup
+              label="Endereço destino *"
+              value={form.destination_address}
+              onChange={(v) => onChange("destination_address", v)}
+              placeholder="Endereço completo de destino"
+            />
+            <InputGroup
+              label="Número NF"
+              value={form.invoice_number ?? ""}
+              onChange={(v) => onChange("invoice_number", v || undefined)}
+              placeholder="123456"
+              maxLength={50}
+            />
+            <InputGroup
+              label="Chave NF-e"
+              value={form.invoice_key ?? ""}
+              onChange={(v) => onChange("invoice_key", v || undefined)}
+              placeholder="Chave de acesso da NF-e"
+              maxLength={100}
+            />
+            <InputGroup
+              label="Documento fiscal"
+              value={form.fiscal_document ?? ""}
+              onChange={(v) => onChange("fiscal_document", v || undefined)}
+              placeholder="Documento fiscal"
+              maxLength={50}
+            />
+            <InputGroup
+              label="UF destino"
+              value={form.destination_uf ?? ""}
+              onChange={(v) => onChange("destination_uf", v.toUpperCase() || undefined)}
+              placeholder="SP"
+              maxLength={2}
+              upper
+            />
+            <NumberGroup
+              label="Valor total (R$)"
+              value={form.amount?.toString() ?? ""}
+              onChange={(v) => onChange("amount", v ? Number(v) : undefined)}
+              placeholder="0,00"
+            />
+            <InputGroup
+              label="Vencimento"
+              value={form.due_date ?? ""}
+              onChange={(v) => onChange("due_date", v || undefined)}
+              type="datetime-local"
+            />
+            <NumberGroup
+              label="Valor frete (R$)"
+              value={form.freight_value?.toString() ?? ""}
+              onChange={(v) => onChange("freight_value", v ? Number(v) : undefined)}
+              placeholder="0,00"
+            />
+            <NumberGroup
+              label="Valor NF (R$)"
+              value={form.invoice_value?.toString() ?? ""}
+              onChange={(v) => onChange("invoice_value", v ? Number(v) : undefined)}
+              placeholder="0,00"
+            />
+            <InputGroup
+              label="Data coleta/saída"
+              value={form.collection_departure_date ?? ""}
+              onChange={(v) => onChange("collection_departure_date", v || undefined)}
+              type="datetime-local"
+            />
+          </div>
+
+          <div className="flex items-center justify-end gap-3 border-t border-zinc-100 pt-5">
+            <button type="button" onClick={onClose} className="btn-secondary" disabled={loading}>
+              Cancelar
+            </button>
+            <button type="submit" className="btn-primary flex items-center gap-2" disabled={loading}>
+              {loading && <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-red-600" />}
+              Salvar envio
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+}
+
+function IconPlus({ className }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+    </svg>
+  );
+}
+
+function IconX({ className }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+    </svg>
   );
 }
 

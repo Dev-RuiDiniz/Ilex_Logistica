@@ -123,7 +123,7 @@ describe("AuditPage", () => {
   it("renderiza loading state", () => {
     (auditApi.getAuditLogs as jest.Mock).mockImplementation(() => new Promise(() => {}));
     render(<AuditPage />);
-    expect(screen.getByText("Carregando...")).toBeInTheDocument();
+    expect(screen.getByText("Carregando logs...")).toBeInTheDocument();
   });
 
   it("renderiza empty state", async () => {

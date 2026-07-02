@@ -1,5 +1,6 @@
 ﻿import type {
   Carrier,
+  CreateShipmentRequest,
   CreateShipmentTreatmentRequest,
   DailyReportResponse,
   DeliveryDetail,
@@ -10,6 +11,7 @@
   ImportPreviewV2Response,
   PromoteDeliveryRequest,
   PromoteDeliveryResponse,
+  Shipment,
   ShipmentDetail,
   ShipmentListParams,
   ShipmentListResponse,
@@ -170,6 +172,14 @@ export async function confirmShipmentsImport(token: string, importId: number): P
     method: "POST",
     headers: { Authorization: `Bearer ${token}` },
     body: JSON.stringify({ import_id: importId, confirm: true }),
+  });
+}
+
+export async function createShipment(token: string, payload: CreateShipmentRequest): Promise<Shipment> {
+  return request<Shipment>("/shipments", {
+    method: "POST",
+    headers: { Authorization: `Bearer ${token}` },
+    body: JSON.stringify(payload),
   });
 }
 

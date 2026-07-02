@@ -4,6 +4,7 @@ import json
 from datetime import UTC, datetime
 from typing import Any
 
+from fastapi import HTTPException
 from sqlalchemy import extract
 from sqlalchemy.orm import Session
 
@@ -16,6 +17,10 @@ def calculate_delay_days(due_date: datetime | None, reference_date: datetime | N
     if not due_date:
         return 0
     ref_date = reference_date or datetime.now(UTC)
+    if ref_date.tzinfo is not None and due_date.tzinfo is None:
+        due_date = due_date.replace(tzinfo=UTC)
+    elif ref_date.tzinfo is None and due_date.tzinfo is not None:
+        ref_date = ref_date.replace(tzinfo=UTC)
     delta = ref_date - due_date
     return max(0, delta.days)
 
@@ -781,6 +786,88 @@ def process_import(
         "imported_count": imported_count,
         "rejected_count": rejected_count,
         "errors": errors,
+    }
+
+
+def create_shipment(db: Session, payload: dict[str, Any]) -> dict[str, Any]:
+    """Create a single shipment from a validated ShipmentCreate payload."""
+    carrier = db.get(Carrier, payload["carrier_id"])
+    if carrier is None:
+        raise HTTPException(status_code=404, detail="transportadora nao encontrada")
+
+    estimated_delivery = datetime.fromisoformat(payload["estimated_delivery"].replace("Z", "+00:00"))
+
+    due_date = None
+    if payload.get("due_date"):
+        due_date = datetime.fromisoformat(payload["due_date"].replace("Z", "+00:00"))
+
+    collection_departure_date = None
+    if payload.get("collection_departure_date"):
+        collection_departure_date = datetime.fromisoformat(payload["collection_departure_date"].replace("Z", "+00:00"))
+
+    delay_days = calculate_delay_days(due_date)
+    criticality = payload.get("criticality") or classify_criticality(delay_days, payload.get("amount"))
+    freight_value = payload.get("freight_value")
+    invoice_value = payload.get("invoice_value")
+    freight_percentage = calculate_freight_percentage(freight_value, invoice_value)
+
+    shipment = Shipment(
+        tracking_code=payload["tracking_code"],
+        carrier_id=payload["carrier_id"],
+        status=payload.get("status", "pending"),
+        estimated_delivery=estimated_delivery,
+        recipient_name=payload["recipient_name"],
+        recipient_phone=payload["recipient_phone"],
+        origin_address=payload["origin_address"],
+        destination_address=payload["destination_address"],
+        meta_data=json.dumps({}),
+        is_active=True,
+        invoice_number=payload.get("invoice_number"),
+        invoice_key=payload.get("invoice_key"),
+        fiscal_document=payload.get("fiscal_document"),
+        amount=payload.get("amount"),
+        due_date=due_date,
+        delay_days=delay_days,
+        criticality=criticality,
+        freight_value=freight_value,
+        invoice_value=invoice_value,
+        freight_percentage=freight_percentage,
+        collection_departure_date=collection_departure_date,
+        customer_name=payload.get("customer_name"),
+        destination_uf=payload.get("destination_uf"),
+    )
+    db.add(shipment)
+    db.commit()
+    db.refresh(shipment)
+
+    return {
+        "id": shipment.id,
+        "tracking_code": shipment.tracking_code,
+        "carrier_id": shipment.carrier_id,
+        "status": shipment.status,
+        "estimated_delivery": shipment.estimated_delivery,
+        "actual_delivery": shipment.actual_delivery,
+        "recipient_name": shipment.recipient_name,
+        "recipient_phone": shipment.recipient_phone,
+        "origin_address": shipment.origin_address,
+        "destination_address": shipment.destination_address,
+        "meta_data": {},
+        "is_active": shipment.is_active,
+        "created_at": shipment.created_at,
+        "updated_at": shipment.updated_at,
+        "invoice_number": shipment.invoice_number,
+        "invoice_key": shipment.invoice_key,
+        "fiscal_document": shipment.fiscal_document,
+        "amount": float(shipment.amount) if shipment.amount else None,
+        "due_date": shipment.due_date,
+        "delay_days": shipment.delay_days,
+        "criticality": shipment.criticality,
+        "freight_value": float(shipment.freight_value) if shipment.freight_value else None,
+        "invoice_value": float(shipment.invoice_value) if shipment.invoice_value else None,
+        "freight_percentage": float(shipment.freight_percentage) if shipment.freight_percentage else None,
+        "collection_departure_date": shipment.collection_departure_date,
+        "customer_name": shipment.customer_name,
+        "destination_uf": shipment.destination_uf,
     }
 
 

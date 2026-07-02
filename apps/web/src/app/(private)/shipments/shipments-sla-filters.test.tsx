@@ -28,7 +28,7 @@ describe("Shipments SLA filters", () => {
 
     render(<ShipmentsPage />);
 
-    expect(screen.getByText("Carregando...")).toBeInTheDocument();
+    expect(screen.getByText("Carregando envios...")).toBeInTheDocument();
   });
 
   it("Deve renderizar erro de API", async () => {
@@ -69,10 +69,10 @@ describe("Shipments SLA filters", () => {
     render(<ShipmentsPage />);
 
     await waitFor(() => {
-      expect(screen.getByText("SLA Status")).toBeInTheDocument();
+      expect(screen.getByText("SLA")).toBeInTheDocument();
     });
 
-    const slaSelect = screen.getByText("SLA Status").closest("div")?.querySelector("select") as HTMLSelectElement;
+    const slaSelect = screen.getByText("SLA").closest("div")?.querySelector("select") as HTMLSelectElement;
     fireEvent.change(slaSelect, { target: { value: "critical" } });
     fireEvent.click(screen.getByText("Aplicar Filtros"));
 
@@ -84,7 +84,7 @@ describe("Shipments SLA filters", () => {
     });
   });
 
-  it("Deve renderizar dropdown de SLA Status com todas as opções", async () => {
+  it("Deve renderizar dropdown de SLA com todas as opções", async () => {
     vi.mocked(listShipments).mockResolvedValueOnce({
       items: [],
       total: 0,
@@ -96,16 +96,17 @@ describe("Shipments SLA filters", () => {
     render(<ShipmentsPage />);
 
     await waitFor(() => {
-      expect(screen.getByText("SLA Status")).toBeInTheDocument();
+      expect(screen.getByText("SLA")).toBeInTheDocument();
     });
 
-    const slaSelect = screen.getByText("SLA Status").closest("div")?.querySelector("select") as HTMLSelectElement;
+    const slaSelect = screen.getByText("SLA").closest("div")?.querySelector("select") as HTMLSelectElement;
     expect(slaSelect).toBeTruthy();
     const options = Array.from(slaSelect.options).map((o) => o.value);
     expect(options).toContain("");
-    expect(options).toContain("critical");
+    expect(options).toContain("on_time");
     expect(options).toContain("warning");
-    expect(options).toContain("normal");
+    expect(options).toContain("late");
+    expect(options).toContain("critical");
     expect(options).toContain("unknown");
   });
 
@@ -121,10 +122,10 @@ describe("Shipments SLA filters", () => {
     render(<ShipmentsPage />);
 
     await waitFor(() => {
-      expect(screen.getByText("SLA Status")).toBeInTheDocument();
+      expect(screen.getByText("SLA")).toBeInTheDocument();
     });
 
-    const slaSelect = screen.getByText("SLA Status").closest("div")?.querySelector("select") as HTMLSelectElement;
+    const slaSelect = screen.getByText("SLA").closest("div")?.querySelector("select") as HTMLSelectElement;
     fireEvent.change(slaSelect, { target: { value: "critical" } });
     fireEvent.click(screen.getByText("Aplicar Filtros"));
 
@@ -202,10 +203,10 @@ describe("Shipments SLA filters", () => {
     render(<ShipmentsPage />);
 
     await waitFor(() => {
-      expect(screen.getByText("SLA Status")).toBeInTheDocument();
+      expect(screen.getByText("SLA")).toBeInTheDocument();
     });
 
-    const slaSelect = screen.getByText("SLA Status").closest("div")?.querySelector("select") as HTMLSelectElement;
+    const slaSelect = screen.getByText("SLA").closest("div")?.querySelector("select") as HTMLSelectElement;
     fireEvent.change(slaSelect, { target: { value: "warning" } });
 
     const isLateSelect = screen.getByText("Atrasado?").closest("div")?.querySelector("select") as HTMLSelectElement;
@@ -221,7 +222,7 @@ describe("Shipments SLA filters", () => {
     });
   });
 
-  it("Deve limpar filtros SLA ao clicar em Limpar Filtros", async () => {
+  it("Deve limpar filtros SLA ao clicar em Limpar", async () => {
     vi.mocked(listShipments).mockResolvedValueOnce({
       items: [],
       total: 0,
@@ -233,10 +234,10 @@ describe("Shipments SLA filters", () => {
     render(<ShipmentsPage />);
 
     await waitFor(() => {
-      expect(screen.getByText("SLA Status")).toBeInTheDocument();
+      expect(screen.getByText("SLA")).toBeInTheDocument();
     });
 
-    const slaSelect = screen.getByText("SLA Status").closest("div")?.querySelector("select") as HTMLSelectElement;
+    const slaSelect = screen.getByText("SLA").closest("div")?.querySelector("select") as HTMLSelectElement;
     fireEvent.change(slaSelect, { target: { value: "critical" } });
 
     const isLateSelect = screen.getByText("Atrasado?").closest("div")?.querySelector("select") as HTMLSelectElement;
@@ -259,7 +260,7 @@ describe("Shipments SLA filters", () => {
       page_size: 20,
     });
 
-    fireEvent.click(screen.getByText("Limpar Filtros"));
+    fireEvent.click(screen.getByText("Limpar"));
 
     await waitFor(() => {
       expect(vi.mocked(listShipments)).toHaveBeenCalledWith(
@@ -277,7 +278,7 @@ describe("Shipments SLA filters", () => {
 
     render(<ShipmentsPage />);
 
-    expect(screen.getByText("Carregando...")).toBeInTheDocument();
+    expect(screen.getByText("Carregando envios...")).toBeInTheDocument();
   });
 
   it("Deve exibir empty state com filtros SLA", async () => {
@@ -361,10 +362,10 @@ describe("Shipments SLA filters", () => {
     render(<ShipmentsPage />);
 
     await waitFor(() => {
-      expect(screen.getByPlaceholderText("UF (ex: SP)")).toBeInTheDocument();
+      expect(screen.getByPlaceholderText("UF")).toBeInTheDocument();
     });
 
-    const ufInput = screen.getByPlaceholderText("UF (ex: SP)");
+    const ufInput = screen.getByPlaceholderText("UF");
     fireEvent.change(ufInput, { target: { value: "SP" } });
     fireEvent.click(screen.getByText("Aplicar Filtros"));
 
@@ -388,10 +389,10 @@ describe("Shipments SLA filters", () => {
     render(<ShipmentsPage />);
 
     await waitFor(() => {
-      expect(screen.getByText("Limpar Filtros")).toBeInTheDocument();
+      expect(screen.getByText("Limpar")).toBeInTheDocument();
     });
 
-    fireEvent.click(screen.getByText("Limpar Filtros"));
+    fireEvent.click(screen.getByText("Limpar"));
 
     await waitFor(() => {
       expect(vi.mocked(listShipments)).toHaveBeenCalledWith(
@@ -446,10 +447,10 @@ describe("Shipments SLA filters", () => {
     render(<ShipmentsPage />);
 
     await waitFor(() => {
-      expect(screen.getByPlaceholderText("Número da NF")).toBeInTheDocument();
+      expect(screen.getByPlaceholderText("NF")).toBeInTheDocument();
     });
 
-    const input = screen.getByPlaceholderText("Número da NF");
+    const input = screen.getByPlaceholderText("NF");
     fireEvent.change(input, { target: { value: "NF12345" } });
     fireEvent.click(screen.getByText("Aplicar Filtros"));
 
@@ -473,10 +474,10 @@ describe("Shipments SLA filters", () => {
     render(<ShipmentsPage />);
 
     await waitFor(() => {
-      expect(screen.getByPlaceholderText("Chave de acesso NF-e")).toBeInTheDocument();
+      expect(screen.getByPlaceholderText("Chave NF-e")).toBeInTheDocument();
     });
 
-    const input = screen.getByPlaceholderText("Chave de acesso NF-e");
+    const input = screen.getByPlaceholderText("Chave NF-e");
     fireEvent.change(input, { target: { value: "35250101234567890123550010001234561000123456" } });
     fireEvent.click(screen.getByText("Aplicar Filtros"));
 
@@ -527,10 +528,10 @@ describe("Shipments SLA filters", () => {
     render(<ShipmentsPage />);
 
     await waitFor(() => {
-      expect(screen.getByText("Coleta/Saída (de)")).toBeInTheDocument();
+      expect(screen.getByText("Coleta/Saída")).toBeInTheDocument();
     });
 
-    const input = screen.getByText("Coleta/Saída (de)").closest("div")?.querySelector("input") as HTMLInputElement;
+    const input = screen.getByText("Coleta/Saída").closest("div")?.querySelector("input") as HTMLInputElement;
     fireEvent.change(input, { target: { value: "2025-01-15" } });
     fireEvent.click(screen.getByText("Aplicar Filtros"));
 
@@ -554,10 +555,11 @@ describe("Shipments SLA filters", () => {
     render(<ShipmentsPage />);
 
     await waitFor(() => {
-      expect(screen.getByText("Coleta/Saída (até)")).toBeInTheDocument();
+      expect(screen.getByText("Coleta/Saída")).toBeInTheDocument();
     });
 
-    const input = screen.getByText("Coleta/Saída (até)").closest("div")?.querySelector("input") as HTMLInputElement;
+    const inputs = screen.getByText("Coleta/Saída").closest("div")?.querySelectorAll("input");
+    const input = inputs?.[1] as HTMLInputElement;
     fireEvent.change(input, { target: { value: "2025-01-31" } });
     fireEvent.click(screen.getByText("Aplicar Filtros"));
 
@@ -581,10 +583,10 @@ describe("Shipments SLA filters", () => {
     render(<ShipmentsPage />);
 
     await waitFor(() => {
-      expect(screen.getByText("Valor Frete Mín.")).toBeInTheDocument();
+      expect(screen.getByText("Valor Frete")).toBeInTheDocument();
     });
 
-    const input = screen.getByText("Valor Frete Mín.").closest("div")?.querySelector("input") as HTMLInputElement;
+    const input = screen.getByText("Valor Frete").closest("div")?.querySelector("input") as HTMLInputElement;
     fireEvent.change(input, { target: { value: "50.00" } });
     fireEvent.click(screen.getByText("Aplicar Filtros"));
 
@@ -608,10 +610,11 @@ describe("Shipments SLA filters", () => {
     render(<ShipmentsPage />);
 
     await waitFor(() => {
-      expect(screen.getByText("Valor Frete Máx.")).toBeInTheDocument();
+      expect(screen.getByText("Valor Frete")).toBeInTheDocument();
     });
 
-    const input = screen.getByText("Valor Frete Máx.").closest("div")?.querySelector("input") as HTMLInputElement;
+    const inputs = screen.getByText("Valor Frete").closest("div")?.querySelectorAll("input");
+    const input = inputs?.[1] as HTMLInputElement;
     fireEvent.change(input, { target: { value: "200.00" } });
     fireEvent.click(screen.getByText("Aplicar Filtros"));
 
@@ -635,10 +638,10 @@ describe("Shipments SLA filters", () => {
     render(<ShipmentsPage />);
 
     await waitFor(() => {
-      expect(screen.getByText("Valor NF Mín.")).toBeInTheDocument();
+      expect(screen.getAllByText("Valor NF")[0]).toBeInTheDocument();
     });
 
-    const input = screen.getByText("Valor NF Mín.").closest("div")?.querySelector("input") as HTMLInputElement;
+    const input = screen.getAllByText("Valor NF")[0].closest("div")?.querySelector("input") as HTMLInputElement;
     fireEvent.change(input, { target: { value: "1000.00" } });
     fireEvent.click(screen.getByText("Aplicar Filtros"));
 
@@ -662,10 +665,11 @@ describe("Shipments SLA filters", () => {
     render(<ShipmentsPage />);
 
     await waitFor(() => {
-      expect(screen.getByText("Valor NF Máx.")).toBeInTheDocument();
+      expect(screen.getAllByText("Valor NF")[0]).toBeInTheDocument();
     });
 
-    const input = screen.getByText("Valor NF Máx.").closest("div")?.querySelector("input") as HTMLInputElement;
+    const inputs = screen.getAllByText("Valor NF")[0].closest("div")?.querySelectorAll("input");
+    const input = inputs?.[1] as HTMLInputElement;
     fireEvent.change(input, { target: { value: "5000.00" } });
     fireEvent.click(screen.getByText("Aplicar Filtros"));
 
@@ -689,10 +693,10 @@ describe("Shipments SLA filters", () => {
     render(<ShipmentsPage />);
 
     await waitFor(() => {
-      expect(screen.getByText("% Frete Mín.")).toBeInTheDocument();
+      expect(screen.getByText("% Frete")).toBeInTheDocument();
     });
 
-    const input = screen.getByText("% Frete Mín.").closest("div")?.querySelector("input") as HTMLInputElement;
+    const input = screen.getByText("% Frete").closest("div")?.querySelector("input") as HTMLInputElement;
     fireEvent.change(input, { target: { value: "5.00" } });
     fireEvent.click(screen.getByText("Aplicar Filtros"));
 
@@ -716,10 +720,11 @@ describe("Shipments SLA filters", () => {
     render(<ShipmentsPage />);
 
     await waitFor(() => {
-      expect(screen.getByText("% Frete Máx.")).toBeInTheDocument();
+      expect(screen.getByText("% Frete")).toBeInTheDocument();
     });
 
-    const input = screen.getByText("% Frete Máx.").closest("div")?.querySelector("input") as HTMLInputElement;
+    const inputs = screen.getByText("% Frete").closest("div")?.querySelectorAll("input");
+    const input = inputs?.[1] as HTMLInputElement;
     fireEvent.change(input, { target: { value: "15.00" } });
     fireEvent.click(screen.getByText("Aplicar Filtros"));
 
@@ -743,10 +748,10 @@ describe("Shipments SLA filters", () => {
     render(<ShipmentsPage />);
 
     await waitFor(() => {
-      expect(screen.getByText("Valor Total Mín.")).toBeInTheDocument();
+      expect(screen.getByText("Valor Total")).toBeInTheDocument();
     });
 
-    const input = screen.getByText("Valor Total Mín.").closest("div")?.querySelector("input") as HTMLInputElement;
+    const input = screen.getByText("Valor Total").closest("div")?.querySelector("input") as HTMLInputElement;
     fireEvent.change(input, { target: { value: "100.00" } });
     fireEvent.click(screen.getByText("Aplicar Filtros"));
 
@@ -770,10 +775,11 @@ describe("Shipments SLA filters", () => {
     render(<ShipmentsPage />);
 
     await waitFor(() => {
-      expect(screen.getByText("Valor Total Máx.")).toBeInTheDocument();
+      expect(screen.getByText("Valor Total")).toBeInTheDocument();
     });
 
-    const input = screen.getByText("Valor Total Máx.").closest("div")?.querySelector("input") as HTMLInputElement;
+    const inputs = screen.getByText("Valor Total").closest("div")?.querySelectorAll("input");
+    const input = inputs?.[1] as HTMLInputElement;
     fireEvent.change(input, { target: { value: "10000.00" } });
     fireEvent.click(screen.getByText("Aplicar Filtros"));
 
@@ -797,10 +803,10 @@ describe("Shipments SLA filters", () => {
     render(<ShipmentsPage />);
 
     await waitFor(() => {
-      expect(screen.getByText("Limpar Filtros")).toBeInTheDocument();
+      expect(screen.getByText("Limpar")).toBeInTheDocument();
     });
 
-    fireEvent.click(screen.getByText("Limpar Filtros"));
+    fireEvent.click(screen.getByText("Limpar"));
 
     await waitFor(() => {
       expect(vi.mocked(listShipments)).toHaveBeenCalledWith(

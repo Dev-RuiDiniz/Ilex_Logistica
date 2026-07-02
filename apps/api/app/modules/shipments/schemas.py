@@ -112,6 +112,39 @@ class ShipmentDetailResponse(ShipmentListItem):
     pass
 
 
+class ShipmentCreate(BaseModel):
+    tracking_code: str = Field(min_length=1, max_length=100)
+    carrier_id: int = Field(gt=0)
+    estimated_delivery: str
+    recipient_name: str = Field(min_length=1, max_length=255)
+    recipient_phone: str = Field(min_length=1, max_length=50)
+    origin_address: str = Field(min_length=1)
+    destination_address: str = Field(min_length=1)
+    status: str = Field(default="pending", max_length=50)
+    invoice_number: str | None = Field(default=None, max_length=50)
+    invoice_key: str | None = Field(default=None, max_length=100)
+    fiscal_document: str | None = Field(default=None, max_length=50)
+    amount: float | None = Field(default=None, ge=0)
+    due_date: str | None = Field(default=None)
+    freight_value: float | None = Field(default=None, ge=0)
+    invoice_value: float | None = Field(default=None, ge=0)
+    collection_departure_date: str | None = Field(default=None)
+    customer_name: str | None = Field(default=None, max_length=255)
+    destination_uf: str | None = Field(default=None, max_length=2)
+    criticality: str | None = Field(default=None, max_length=20)
+
+    @field_validator("estimated_delivery", "due_date", "collection_departure_date")
+    @classmethod
+    def validate_date_format(cls, v: str | None) -> str | None:
+        if not v or not v.strip():
+            return None
+        try:
+            datetime.fromisoformat(v.replace("Z", "+00:00"))
+        except (ValueError, AttributeError):
+            raise ValueError("formato de data invalido, use ISO 8601 (YYYY-MM-DD ou YYYY-MM-DD HH:MM:SS)")
+        return v
+
+
 class ShipmentTreatmentCreate(BaseModel):
     status: str = Field(min_length=1, max_length=50)
     comment: str = Field(min_length=1)

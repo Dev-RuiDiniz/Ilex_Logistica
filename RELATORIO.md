@@ -18,6 +18,7 @@
 - Consolidação das branches de governança e VPS na `main`, seguida da remoção segura das branches paralelas.
 - Restauração do dashboard filtrável e estabilização de seus testes como parte do P0.
 - Estabilização do Web: 393 testes aprovados, build Next.js aprovado e erros ESLint eliminados.
+- Consolidação do histórico Alembic e alinhamento do schema de entrega de alertas; migration roundtrip aprovado.
 
 ### Arquivos modificados/criados
 

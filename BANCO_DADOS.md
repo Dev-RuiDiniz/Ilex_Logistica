@@ -83,7 +83,7 @@ Não editar migrations antigas já aplicadas; criar uma nova revisão. A coexist
 
 ### Estado auditado do encadeamento
 
-Em 2026-07-02, `alembic heads` retornou dois heads: `20260620_02` e `20260627_01`. Essa bifurcação bloqueia a prontidão de deploy. A correção deve usar uma nova migration de merge ou estratégia equivalente, após confirmar a intenção dos dois ramos e testar banco novo, upgrade existente e downgrade seguro. Não editar migrations históricas.
+Em 2026-07-02, a bifurcação foi consolidada antes de qualquer uso compartilhado. A criação duplicada incompatível foi removida, o schema de `alert_delivery_logs` foi alinhado ao contrato de entrega de notificações e o histórico passou a possuir uma única head. Banco novo e roundtrip foram validados.
 
 ## 6. Operação
 

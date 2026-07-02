@@ -30,6 +30,7 @@ Executar P0 na ordem: build/runtime Web, suíte/lint, migration única, API dete
 - O build Web voltou a passar após a consolidação.
 - O dashboard foi restaurado ao contrato real com filtros e seus 26 testes voltaram ao baseline esperado.
 - A suíte Web completa passou com 393 testes e o build Next.js foi aprovado; os erros ESLint foram eliminados, restando limpeza de avisos não bloqueantes.
+- Alembic foi consolidado em uma única head; `alert_delivery_logs` agora possui schema coerente entre migration, model, service, rotas e testes.
 
 ## 2026-07-02 — Consolidação de governança
 

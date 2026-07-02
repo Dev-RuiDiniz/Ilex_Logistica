@@ -10,7 +10,7 @@
 - Alembic possui uma única head e os testes de upgrade, downgrade e preservação de dados estão verdes.
 - Testes de infraestrutura são importáveis pela raiz; workflows separados de API, Web e governança foram adicionados.
 - A imagem da API não inclui mais o seed de demonstração e o template VPS não fixa endereço local como destino público.
-- Gates locais do P0 estão verdes; resta confirmar os workflows e a proteção da `main` no GitHub.
+- Gates locais e remotos do P0 estão verdes; a `main` exige os checks estritos `api`, `web` e `governance`, bloqueia force-push/exclusão e preserva bypass administrativo.
 
 ## 2026-07-02 — Auditoria completa e redefinição do encerramento
 

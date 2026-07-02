@@ -6,7 +6,7 @@
 - API: 664/664 testes aprovados em 72,52s; Ruff aprovado e execução concorrente ao roundtrip Alembic sem colisão.
 - Banco: histórico Alembic com uma head; upgrade, downgrade, roundtrip e preservação de dados aprovados.
 - Infraestrutura: 5 testes aprovados; imports/caminhos corrigidos; seed de demonstração removido da imagem da API.
-- CI: workflows de API, Web e governança criados; execução remota e proteção da `main` ainda precisam ser confirmadas.
+- CI: workflows de API, Web e governança aprovados no GitHub e configurados como checks estritos obrigatórios da `main`.
 
 Os achados históricos abaixo registram o baseline anterior ao P0 e devem ser lidos em conjunto com esta atualização.
 

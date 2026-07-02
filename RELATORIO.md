@@ -41,6 +41,7 @@
 - Migrations: uma head; upgrade, downgrade, roundtrip e preservação aprovados.
 - Infra: 5 testes aprovados.
 - Web: 393 testes, ESLint sem erros e build Next.js aprovados.
+- CI remoto: workflows `API`, `Web` e `Governança` aprovados; proteção estrita da `main` aplicada aos três checks.
 
 - Não houve alteração de código funcional; não foram criados testes de produto.
 - `python scripts/check_secrets.py --repo-root . --self-test`: aprovado.

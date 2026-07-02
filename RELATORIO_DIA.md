@@ -72,7 +72,12 @@
    - `layout.tsx` simplificado removendo importação do Google Fonts (Geist)
    - Fonte aplicada globalmente ao `body` do projeto
 
-11. **Commit e push**
+11. **Correção do carregamento infinito na página de detalhes do envio (`/shipments/[id]`)**
+   - Diagnóstico: `NEXT_PUBLIC_API_URL` no `docker-compose.yml` estava configurado como `http://localhost:8000/api/v1`, fazendo com que o browser do usuário tentasse chamar a API no próprio `localhost`, resultando em 404 e loading eterno
+   - Corrigido `infra/docker-compose.yml` para usar o IP público da VPS (`http://2.25.168.34:8000/api/v1`) como padrão
+   - A mesma correção beneficia todas as páginas que usam chamadas de API no client-side
+
+12. **Commit e push**
    - Commit `8f7b69e`, `6650eb2`, `5f56a93`, `865faa4` e novos commits na branch `feature/infra-vps-docker`
    - Push para `https://github.com/Dev-RuiDiniz/Ilex_Logistica.git`
 
@@ -106,6 +111,7 @@
 - `apps/web/src/app/globals.css` — configuração global da fonte Margesta
 - `apps/web/src/app/layout.tsx` — remoção do Google Fonts Geist
 - `apps/web/src/app/(private)/dashboard/page.tsx` — botões de WhatsApp e email nas exceções, detalhes de NF/data de entrega/frete
+- `infra/docker-compose.yml` — correção do `NEXT_PUBLIC_API_URL` para IP público da VPS
 - `apps/api/tests/test_carriers.py` — testes de CRUD com contato
 - `apps/web/src/app/(private)/audit/page.test.tsx` — texto de loading
 - `apps/web/src/components/app-shell.tsx` — labels da sidebar

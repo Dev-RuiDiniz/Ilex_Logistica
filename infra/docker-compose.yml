@@ -62,10 +62,10 @@ services:
       context: ..
       dockerfile: infra/docker/web/Dockerfile
       args:
-        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:8000/api/v1}
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://2.25.168.34:8000/api/v1}
     container_name: ilex-web
     environment:
-      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:8000/api/v1}
+      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://2.25.168.34:8000/api/v1}
       PORT: ${WEB_PORT:-3000}
     ports:
       - "${WEB_PORT:-3000}:3000"

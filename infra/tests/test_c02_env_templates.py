@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from infra_checks import env_template_keys
+from infra.infra_checks import env_template_keys
 
 
 def test_c02_env_templates_have_required_keys():

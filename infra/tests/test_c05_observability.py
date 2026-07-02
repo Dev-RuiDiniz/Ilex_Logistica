@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from infra_checks import observability_has_minimum_sections
+from infra.infra_checks import observability_has_minimum_sections
 
 
 def test_c05_observability_doc_has_health_logs_and_failure_playbook():

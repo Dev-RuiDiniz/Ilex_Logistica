@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from infra_checks import compose_services_summary
+from infra.infra_checks import compose_services_summary
 
 
 def test_c01_compose_has_db_api_and_healthchecks():

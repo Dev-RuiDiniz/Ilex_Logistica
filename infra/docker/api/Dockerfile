@@ -13,7 +13,6 @@ COPY apps/api/pyproject.toml ./
 COPY apps/api/app ./app
 COPY apps/api/migrations ./migrations
 COPY apps/api/alembic.ini ./
-COPY apps/api/seed_demo.py ./
 COPY infra/docker/api/api-entrypoint.sh /usr/local/bin/api-entrypoint.sh
 
 RUN python -m pip install --no-cache-dir --upgrade pip \

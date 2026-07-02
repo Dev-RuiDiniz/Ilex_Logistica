@@ -66,7 +66,7 @@ export default function CarriersPage() {
   };
 
   useEffect(() => {
-    void load();
+    queueMicrotask(() => void load());
   }, [session?.accessToken]);
 
   const filtered = useMemo(() => filterCarriersByQuery(items, query), [items, query]);

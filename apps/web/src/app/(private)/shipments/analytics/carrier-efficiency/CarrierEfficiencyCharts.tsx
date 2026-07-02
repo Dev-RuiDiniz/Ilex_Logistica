@@ -16,7 +16,7 @@ import {
 import type { CarrierEfficiencyItem } from "@/lib/types";
 
 interface CarrierEfficiencyChartsProps {
-  data: CarrierEfficiencyItem[];
+  data: CarrierEfficiencyItem[] | null;
 }
 
 const COLORS = {

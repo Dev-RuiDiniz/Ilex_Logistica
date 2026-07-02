@@ -13,8 +13,11 @@ describe("useApiErrorHandler", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     // Mock window.location
-    delete (window as any).location;
-    (window as any).location = { href: "" };
+    Reflect.deleteProperty(window, "location");
+    Object.defineProperty(window, "location", {
+      configurable: true,
+      value: { href: "" },
+    });
   });
 
   it("deve redirecionar para login ao receber erro 401", () => {

@@ -62,7 +62,7 @@ export default function DailyReportPage() {
   useEffect(() => {
     if (!session) return;
     const controller = new AbortController();
-    loadReports(controller.signal);
+    queueMicrotask(() => void loadReports(controller.signal));
     return () => controller.abort();
   }, [dateFrom, dateTo, status, session]);
 

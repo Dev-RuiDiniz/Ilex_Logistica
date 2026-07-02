@@ -409,7 +409,7 @@ describe("Shipments SLA filters", () => {
 
   it("Deve atualizar resultados sem refresh manual", async () => {
     vi.mocked(listShipments).mockResolvedValueOnce({
-      items: [{ id: 1, tracking_code: "TEST001", status: "in_transit", estimated_delivery: "2025-01-15", delay_days: 0, criticality: "normal", customer_name: "Cliente A", destination_uf: "SP", invoice_number: "NF001", invoice_key: null, fiscal_document: null, amount: 100, due_date: null, freight_value: 10, invoice_value: 100, freight_percentage: 10, collection_departure_date: null } as any],
+      items: [{ id: 1, tracking_code: "TEST001", carrier_id: 1, status: "in_transit", estimated_delivery: "2025-01-15", actual_delivery: null, recipient_name: "Destinatário", recipient_phone: "", origin_address: "Origem", destination_address: "Destino", meta_data: {}, is_active: true, created_at: "2025-01-01T00:00:00Z", updated_at: "2025-01-01T00:00:00Z", delay_days: 0, criticality: "normal", customer_name: "Cliente A", destination_uf: "SP", invoice_number: "NF001", invoice_key: null, fiscal_document: null, amount: 100, due_date: null, freight_value: 10, invoice_value: 100, freight_percentage: 10, collection_departure_date: null }],
       total: 1,
       total_pages: 1,
       page: 1,

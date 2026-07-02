@@ -1,17 +1,17 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useSyncExternalStore } from "react";
 
 import { AppShell } from "@/components/app-shell";
 import { useAuth } from "@/features/auth/auth-provider";
 
 export default function PrivateLayout({ children }: { children: React.ReactNode }) {
   const { session } = useAuth();
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  const mounted = useSyncExternalStore(
+    () => () => undefined,
+    () => true,
+    () => false,
+  );
 
   if (!mounted || !session) {
     return (

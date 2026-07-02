@@ -29,6 +29,7 @@ Executar P0 na ordem: build/runtime Web, suíte/lint, migration única, API dete
 - Branches de governança e VPS foram consolidadas na `main`; branches paralelas locais e remotas foram removidas após confirmação de ancestralidade.
 - O build Web voltou a passar após a consolidação.
 - O dashboard foi restaurado ao contrato real com filtros e seus 26 testes voltaram ao baseline esperado.
+- A suíte Web completa passou com 393 testes e o build Next.js foi aprovado; os erros ESLint foram eliminados, restando limpeza de avisos não bloqueantes.
 
 ## 2026-07-02 — Consolidação de governança
 

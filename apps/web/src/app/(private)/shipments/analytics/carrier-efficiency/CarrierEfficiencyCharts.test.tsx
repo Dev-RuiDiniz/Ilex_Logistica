@@ -67,7 +67,7 @@ describe("CarrierEfficiencyCharts", () => {
   });
 
   it("Deve exibir mensagem quando data é null", () => {
-    render(<CarrierEfficiencyCharts data={null as any} />);
+    render(<CarrierEfficiencyCharts data={null} />);
 
     expect(screen.getByText("Sem dados para exibir gráficos")).toBeInTheDocument();
   });

@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getDashboardSummary, type DashboardFilters, type DashboardSummaryResponse } from "@/lib/dashboard-api";
+import { getDashboardSummary } from "@/lib/dashboard-api";
+import type { DashboardFilters, DashboardSummaryResponse } from "@/lib/types";
 
 export default function DashboardPage() {
   const [data, setData] = useState<DashboardSummaryResponse | null>(null);

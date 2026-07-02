@@ -88,7 +88,7 @@ export default function AlertsPage() {
   };
 
   useEffect(() => {
-    fetchAlerts();
+    queueMicrotask(() => void fetchAlerts());
   }, [filters, session]);
 
   const getSeverityBadge = (severity: string) => {

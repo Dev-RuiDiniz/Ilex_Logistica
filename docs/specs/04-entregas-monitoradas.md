@@ -1,6 +1,6 @@
 # SPEC-04 — Entregas Monitoradas e Dados Fiscais
 
-**Estado:** Bloqueado no Web; API e dados parcialmente implementados
+**Estado:** Baseline Web estabilizado; API e dados parcialmente homologados
 **Rastreabilidade:** LOG-027, LOG-028, LOG-029, LOG-030, LOG-031, LOG-032, LOG-033
 
 ## Objetivo e contexto
@@ -11,7 +11,7 @@ Oferecer visão operacional pesquisável de cada entrega, com dados logísticos,
 
 Models, migrations, schemas, rotas, páginas e testes confirmam shipment, delivery, detalhe, filtros, promoção e campos fiscais/financeiros. A aderência integral de ordenação, busca global e filtros combinados do apêndice requer homologação.
 
-Na auditoria de 2026-07-02, a página Web referenciou `invoiceNumberFilter` sem definição e seus testes de filtros falharam. LOG-027–033 permanecem abertos até baseline verde e UAT.
+Na execução P0 de 2026-07-02, a página Web e os filtros voltaram a compilar e a suíte Web ficou verde. LOG-027–033 permanecem abertos até reconciliação funcional e UAT.
 
 ## Entradas, saídas e fluxo
 

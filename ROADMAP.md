@@ -1,73 +1,171 @@
-# ROADMAP.md — Evolução do Ilex Logística
+# ROADMAP.md — Conclusão do Ilex Logística por SDD
 
 **Atualizado em:** 2026-07-02
-**Método:** SDD + TDD; status baseado em evidência do repositório
+**Marco de conclusão:** MVP assistido completo, homologado e preparado para produção
+**Método:** spec antes do código; TDD RED/GREEN/REFACTOR; evidência antes de status
 
-## 1. Legenda
+## 1. Regras de execução
 
-- **Confirmado:** model/rota/tela e testes relevantes identificados.
-- **Parcial:** existe implementação, mas o aceite completo requer lacunas ou homologação.
-- **Planejado:** requisito sem implementação identificada.
+- Executar fases na ordem; P0 bloqueia todo trabalho funcional novo.
+- Cada item começa pela atualização da spec e termina com documentação/evidência.
+- **Confirmado** exige código, testes e gate aplicável; **homologado** exige aceite operacional.
+- Um commit por tarefa, em pt-BR, conforme `AGENTS.md`.
+- Integrações automáticas externas ficam pós-MVP até existirem contratos homologados.
 
-## 2. Estado consolidado
+## 2. Visão das fases
 
-| Épico | Status | Evidência principal |
+| Fase | Objetivo | Saída obrigatória |
 |---|---|---|
-| Fundação API/Web/DB | Confirmado | apps, migrations e infra |
-| Imports CSV/XLSX e Braspress | Confirmado | módulo imports, mapper e testes |
-| Shipments, SLA e tratativas | Confirmado | módulos shipments/sla e testes |
-| Eficiência, exceções e dashboard | Confirmado | analytics/dashboard e telas |
-| Alertas e relatórios | Confirmado | módulos e páginas correspondentes |
-| Segurança, RBAC e auditoria | Confirmado | auth/users/audit e testes |
-| Cotação por pedido | Planejado | ausência de domínio/rotas/telas |
+| P0 | recuperar baseline verde | testes, lint, build, migrations, infra e CI verdes |
+| P1 | homologar monitoramento | LOG-027–035 aceitos com dados controlados |
+| P2 | endurecer operação | alertas, relatórios, auditoria, RBAC e Braspress confiáveis |
+| P3 | entregar cotação assistida | LOG-036–040 completos via CSV/XLSX |
+| P4 | preparar produção | segurança, desempenho, E2E, backup e deploy validados |
+| P5 | encerrar e homologar | aceite, release e go-live documentados |
 
-## 3. Backlog do Apêndice 1
+## 3. P0 — Recuperar baseline verde
 
-| ID | Entrega | Status | Próxima evidência/ação |
-|---|---|---|---|
-| LOG-027 | Campos fiscais/financeiros | Confirmado no backend; Web parcial a validar | homologar listagem/detalhe/exportação |
-| LOG-028 | NF na tabela e filtro | Parcial | validar ordenação e busca ponta a ponta |
-| LOG-029 | Data de saída/coleta | Parcial | validar importação, tela e relatórios |
-| LOG-030 | Valor do frete | Parcial | validar listagem, detalhe e exportação |
-| LOG-031 | Percentual do frete | Confirmado por código/testes | validar casos nulos e zero em UI |
-| LOG-032 | Filtros expandidos | Parcial | cobrir combinações transportadora/cliente/UF/período |
-| LOG-033 | Busca global logística | Parcial | confirmar todos os campos do apêndice |
-| LOG-034 | Eficiência por transportadora | Confirmado | homologar dados reais |
-| LOG-035 | Indicadores por período | Parcial | validar mês/ano/todo período em KPIs e quadro |
-| LOG-036 | Subaba de cotação | Planejado | especificar UX e contrato |
-| LOG-037 | Importador de pedidos ERP | Planejado | definir layout CSV/XLSX mínimo |
-| LOG-038 | Contrato ERP | Planejado | obter documentação e ambiente |
-| LOG-039 | Motor comparativo | Planejado | definir domínio, status e idempotência |
-| LOG-040 | Ranking de melhor frete | Planejado | homologar regra e desempate |
-| LOG-041 | Fluxo Braspress | Parcial/confirmado em testes | recriar guia vigente sem credenciais |
+### P0.1 Web build e runtime — SPEC-03/SPEC-04
 
-## 4. Fases propostas
+- **Evidência:** import ausente e filtro de NF indefinido.
+- **RED:** testes reproduzem import/execução e estado dos filtros.
+- **GREEN:** corrigir imports e inicialização mínima sem alterar contrato.
+- **Aceite:** página abre; `npm test`, lint e build avançam sem esses erros.
 
-### Fase A — Homologação do monitoramento (prioridade alta)
+### P0.2 Suíte Web e lint
 
-Especificar e testar os aceites LOG-027 a LOG-035 com dados controlados. Fechar lacunas de busca, filtros, campos financeiros e recálculo dos indicadores. Cada item segue RED, GREEN e REFACTOR, com teste API e Web; fluxo crítico recebe Playwright.
+- Agrupar as 74 falhas por causa raiz: navegação/rótulos, dashboard, filtros e mocks.
+- Corrigir implementação quando divergir da spec; atualizar teste somente quando o comportamento aprovado mudou.
+- Remover `any`, dependências de hooks incorretas, imports/estados mortos e análise de artefatos de coverage.
+- **Gate:** zero falhas, zero erros ESLint e build aprovado.
 
-### Fase B — Contratos de cotação (prioridade alta)
+### P0.3 Histórico Alembic único — SPEC-09/BANCO_DADOS
 
-Concluir LOG-038 e a especificação de LOG-036/037/039/040: layout do pedido, statuses de cotação, regra inicial de menor preço, auditoria, permissões e falhas. Produzir ADR para as novas entidades e integração assistida.
+- Especificar a relação entre as duas migrations de alert delivery logs.
+- Criar teste que falha com múltiplos heads.
+- Implementar merge/correção sem editar migration aplicada.
+- Validar banco novo, upgrade existente e downgrade seguro.
+- **Gate:** `validate_migrations.py` e testes de roundtrip aprovados com um head.
 
-### Fase C — MVP assistido de cotação (prioridade média/alta)
+### P0.4 API determinística
 
-Criar migrations, models, importação de pedidos, API comparativa e subaba Web. O MVP usa CSV/XLSX e não automatiza portais. Aceite: pedido importado, uma cotação por transportadora habilitada, melhor opção destacada e histórico consultável.
+- Medir duração por teste e localizar travamento/lentidão.
+- Corrigir isolamento de SQLite, locks/journals e teardown de recursos.
+- Substituir testes-placeholder por casos RED reais ou removê-los com justificativa de cobertura.
+- Migrar configurações Pydantic depreciadas.
+- **Gate:** 659+ testes executados, sem timeout e sem warnings deprecados conhecidos.
 
-### Fase D — Integrações automáticas (dependente)
+### P0.5 Infra e CI
 
-Somente após contratos e homologação: conectar ERP e APIs de transportadoras, com retries, idempotência, observabilidade e gestão segura de credenciais.
+- Tornar `infra_checks` importável e corrigir testes para caminhos `apps/api` e `apps/web`.
+- Criar workflows para API, Web, migrations, docs, secrets e infra com cache apropriado.
+- Proteger branch contra merge com gate vermelho.
+- **Gate:** testes infra locais e CI de PR aprovados.
 
-## 5. Definition of Done
+## 4. P1 — Homologar monitoramento LOG-027–035
 
-- Especificação e aceite aprovados antes do código.
-- Testes RED/GREEN registrados e suítes afetadas verdes.
-- Migration reversível e validada quando houver schema.
-- Autorização/RBAC e erros operacionais cobertos.
-- Documentação raiz, contexto e relatório atualizados.
-- Secret scan, build e validadores aplicáveis aprovados.
+### P1.1 Dados fiscais/financeiros — SPEC-04
 
-## 6. Especificações de execução
+- LOG-027–031: validar NF, data de coleta, valor da NF, frete e percentual em import, API, lista, detalhe e exportação.
+- Cobrir nulos, zero, decimais, datas inválidas e compatibilidade com registros antigos.
+- **Aceite:** valores reconciliam com fixtures homologadas e nenhuma divisão inválida ocorre.
 
-O catálogo normativo está em `docs/specs/README.md`. A Fase A usa principalmente SPEC-04, SPEC-07 e SPEC-08; as Fases B e C usam SPEC-12 e suas dependências. Nenhum item planejado muda para confirmado sem evidência no código, migration e testes aplicáveis.
+### P1.2 Busca e filtros — SPEC-04
+
+- LOG-028/032/033: busca por NF, cliente, rastreio, UF e transportadora; filtros por status, cliente, transportadora, UF, mês, ano e todo período.
+- Cobrir combinações, paginação, ordenação, limpeza, URL/estado e erro.
+- **Aceite:** API e Web retornam o mesmo universo e Playwright cobre o fluxo crítico.
+
+### P1.3 Eficiência e indicadores — SPEC-07/SPEC-08
+
+- LOG-034/035: reconciliar total, prazo, atraso, extravio, frete total e percentual médio.
+- Aplicar a mesma janela de filtros a listagem, KPIs e ranking.
+- Homologar fórmula de SLA/eficiência com o cliente.
+- **Aceite:** resultados batem com dataset de homologação e ranking é determinístico.
+
+## 5. P2 — Endurecer a operação existente
+
+### P2.1 Segurança e RBAC — SPEC-01
+
+- Cobrir todas as rotas/páginas com sucesso, `401` e `403`.
+- Integrar tratamento de sessão/acesso negado sem código morto.
+- Definir política de senha, expiração, revogação/rotação e auditoria.
+
+### P2.2 Imports e Braspress — SPEC-03
+
+- Implementar fixture XLSX Web e E2E de preview/confirm.
+- Homologar layout Braspress com amostra sanitizada e versionar mapper.
+- Validar tamanho, tipo, encoding, duplicidade, atomicidade e fórmulas perigosas.
+
+### P2.3 Exceções e tratativas — SPEC-05/SPEC-06
+
+- Substituir placeholders por testes de SLA/exceções reais.
+- Homologar taxonomia, autoria, ordenação e histórico.
+- Cobrir painel → detalhe → tratativa em E2E.
+
+### P2.4 Alertas, relatórios e auditoria — SPEC-09/10/11
+
+- Reconciliar UI e APIs, estados vazios/erro e permissões.
+- Definir canais, retries, destinatários, agendamento e retenção ou marcar explicitamente fora do MVP.
+- Garantir sanitização e correlação de logs.
+- **Gate P2:** suítes unitárias/integradas/E2E verdes e UAT operacional aprovado.
+
+## 6. P3 — MVP assistido de cotação LOG-036–040
+
+### P3.1 Contrato e dados — SPEC-12
+
+- LOG-038: homologar layout mínimo do pedido ERP por CSV/XLSX.
+- Definir `orders`, rodadas e `freight_quotes`, constraints, índices, status e auditoria.
+- Criar migration reversível e contratos API antes da implementação.
+
+### P3.2 Importação de pedidos — LOG-037
+
+- RED para arquivo válido, erro por linha, duplicidade e reimportação.
+- GREEN com preview/confirm transacional e idempotente, reutilizando padrões da SPEC-03.
+
+### P3.3 Motor comparativo — LOG-039/040
+
+- Registrar valor/status por transportadora sem perder falhas individuais.
+- Regra inicial: menor valor válido; aplicar desempate definido na SPEC-12.
+- Preservar rodadas, validade e explicação da melhor opção.
+
+### P3.4 Experiência Web — LOG-036
+
+- Criar subaba/tela de pedidos, tabela comparativa, filtros, estados e histórico.
+- Aplicar RBAC, acessibilidade, responsividade e E2E completo.
+- **Gate P3:** pedido importado, comparação auditável e melhor opção determinística com UAT aprovado.
+
+## 7. P4 — Prontidão de produção
+
+- Rejeitar JWT default fora de desenvolvimento; parametrizar CORS e validar secrets.
+- Definir rate limiting, headers, política de sessão e dependências.
+- Testar PostgreSQL real, backup, restore, migration e rollback.
+- Estabelecer metas e testes de desempenho para imports, listagens e analytics.
+- Validar acessibilidade e principais navegadores/resoluções.
+- Instrumentar health, logs, métricas, alertas e runbooks sem dados sensíveis.
+- Executar E2E autenticado completo em ambiente semelhante à produção.
+- **Gate:** checklist de segurança, operação, continuidade e deploy aprovado.
+
+## 8. P5 — Homologação e encerramento
+
+- Executar UAT por perfil com evidências e aceite formal.
+- Fechar todas as specs do MVP como confirmadas/homologadas ou registrar exclusão aprovada.
+- Atualizar escopo, arquitetura, banco, contexto, relatório e README comercial.
+- Produzir release notes, plano de implantação, treinamento, suporte e rollback.
+- Fazer release candidata, smoke pós-deploy e decisão de go-live.
+
+## 9. Pós-MVP dependente de terceiros
+
+- Integração automática com ERP.
+- APIs de cotação/rastreio de transportadoras.
+- Regras avançadas por prazo, eficiência, restrição e múltiplas moedas.
+- Automação externa somente com contrato, sandbox, credenciais seguras e SLA do fornecedor.
+
+## 10. Definition of Done do projeto
+
+- [ ] P0 a P5 concluídas e evidenciadas.
+- [ ] Todas as specs do MVP homologadas.
+- [ ] API, Web, E2E, migrations, infra, docs e secrets verdes na CI.
+- [ ] Um único head Alembic e restore/rollback testados.
+- [ ] Nenhum erro crítico/alto aberto sem aceite formal de risco.
+- [ ] UAT, segurança, operação e go-live aprovados.

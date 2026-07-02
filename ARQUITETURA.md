@@ -2,7 +2,7 @@
 
 **Projeto:** Ilex Logística
 **Atualizado em:** 2026-07-02
-**Status:** Beta operacional em evolução
+**Status:** MVP avançado em estabilização; não pronto para produção
 
 ## 1. Visão geral
 
@@ -115,3 +115,6 @@ docker compose up -d
 - Regras de eficiência dependem da definição homologada de SLA/status.
 - Cotações exigirão novas fronteiras de domínio, migrations, API e telas.
 - Documentação histórica removida continua consultável pelo Git, mas não deve ser tomada como estado atual sem inspeção do código.
+- O Web não fecha build, testes ou lint na auditoria de 2026-07-02; detalhes e prioridades estão em `AUDITORIA.md`.
+- Não há workflow ativo em `.github/workflows`; os gates ainda dependem de execução local.
+- A suíte completa da API precisa de diagnóstico de duração/isolamento antes de ser considerada verde.

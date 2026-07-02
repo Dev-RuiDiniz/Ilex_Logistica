@@ -2,6 +2,28 @@
 
 **Atualizado em:** 2026-07-02
 
+## 2026-07-02 — Auditoria completa e redefinição do encerramento
+
+### Estado auditado
+
+- Projeto classificado como MVP avançado em estabilização, não pronto para produção.
+- Web: testes, lint e build vermelhos, incluindo erro de runtime na tela de envios.
+- Banco: dois heads Alembic bloqueiam um caminho único de deploy.
+- API: 659 testes coletados; execução completa requer diagnóstico de duração/isolamento.
+- Infra/CI: testes não coletam pelo comando raiz e não há workflow ativo.
+- Documentação e secret scan foram aprovados.
+
+### Decisões
+
+- O README raiz passa a ser exclusivamente comercial/executivo; achados técnicos ficam em `AUDITORIA.md`.
+- O marco de conclusão é o MVP assistido com cotação por CSV/XLSX, UAT e prontidão de produção.
+- P0 do roadmap bloqueia novas funcionalidades até o baseline ficar verde.
+- Integrações automáticas de ERP/transportadoras permanecem pós-MVP e dependentes de contratos.
+
+### Próximos passos
+
+Executar P0 na ordem: build/runtime Web, suíte/lint, migration única, API determinística, infra e CI.
+
 ## 2026-07-02 — Consolidação de governança
 
 ### Estado atual

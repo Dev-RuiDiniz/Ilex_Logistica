@@ -1,137 +1,101 @@
 # Ilex Logística
 
-> Plataforma inteligente para rastreio de entregas, identificação de atrasos e gestão de exceções operacionais.
+## Inteligência operacional para uma logística mais previsível
 
-**Versão Beta concluída | Pronto para produção**
+O **Ilex Logística** é uma plataforma desenvolvida para centralizar o acompanhamento de entregas, transformar dados dispersos em informação útil e ajudar equipes a agir antes que atrasos e exceções prejudiquem clientes e operações.
 
----
+Em uma única experiência, a solução reúne importação de dados, monitoramento de envios, análise de prazos, alertas, indicadores e relatórios gerenciais. O resultado é mais visibilidade, melhor priorização e menos dependência de controles manuais.
 
-## O que é o Ilex Logística?
+## O problema que resolvemos
 
-O **Ilex Logística** é uma plataforma web completa que centraliza o monitoramento de envios, automatiza a identificação de atrasos e criticidade, e oferece ferramentas avançadas de importação, relatórios e gestão operacional para empresas de logística e transporte.
+Operações logísticas costumam depender de planilhas, consultas em diferentes portais e conferências repetitivas. Esse cenário dificulta a identificação antecipada de riscos, consome tempo da equipe e limita a visão gerencial.
 
-### Problemas que resolvemos
+O Ilex Logística foi concebido para:
 
-- **Rastreio fragmentado** — centralize todos os envios em um único painel
-- **Atrasos descobertos tarde demais** — alertas automáticos baseados em regras de SLA configuráveis
-- **Importação manual de planilhas** — upload de CSV/XLSX com validação automática, detecção de duplicidade e mapeamento inteligente de colunas (incluindo layout Braspress)
-- **Falta de visibilidade operacional** — dashboards com KPIs, relatórios diários automáticos e análise de eficiência por transportadora
-- **Controle de acesso inexistente** — autenticação JWT com RBAC (4 perfis: admin, logística, gestor, auditoria)
+- concentrar informações de diferentes transportadoras;
+- reduzir consultas e consolidações manuais;
+- destacar entregas atrasadas, críticas ou sem atualização;
+- organizar tratativas e preservar o histórico operacional;
+- comparar desempenho, volume e custo logístico;
+- apoiar decisões com indicadores e relatórios consistentes.
 
----
+## Para quem é a plataforma
 
-## Funcionalidades Principais
+### Equipe de logística
 
-| Módulo | O que faz | Status |
-|--------|-----------|--------|
-| **Envios (Shipments)** | Cadastro, rastreio, filtros avançados, campos fiscais/financeiros e cálculo de SLA | Implementado |
-| **Importação** | Upload CSV/XLSX com preview, validação linha a linha, confirmação e layout Braspress assistido | Implementado |
-| **Transportadoras** | CRUD completo com análise de eficiência e ranking | Implementado |
-| **SLA & Criticidade** | Regras de prazo configuráveis, cálculo automático de atraso e alertas | Implementado |
-| **Alertas** | Notificações operacionais por status e criticidade | Implementado |
-| **Relatórios** | Relatório diário automático com resumo, KPIs, exceções e falhas de importação | Implementado |
-| **Dashboard** | Visão consolidada com indicadores operacionais | Implementado |
-| **Usuários & Permissões** | Autenticação JWT, 4 perfis de acesso e controle granular | Implementado |
-| **Auditoria** | Logs de coleta e histórico de importações versionado | Parcial |
+Uma visão prática das entregas que precisam de atenção, com filtros, alertas e registro de tratativas.
 
----
+### Gestores
 
-## Arquitetura do Monorepo
+Indicadores consolidados para acompanhar prazos, exceções, transportadoras e evolução da operação.
+
+### Administração
+
+Controle de usuários, permissões, transportadoras e parâmetros operacionais.
+
+### Auditoria e backoffice
+
+Consulta segura de históricos e registros relevantes para conferência e rastreabilidade.
+
+## Capacidades da solução
+
+- **Entregas monitoradas:** consulta centralizada de rastreio, cliente, destino, transportadora, status e dados fiscais e financeiros.
+- **Importação assistida:** entrada de dados por CSV e Excel, com pré-visualização, validação e identificação de inconsistências.
+- **Gestão de SLA:** análise de prazo, atraso e criticidade para priorização operacional.
+- **Painel de exceções:** visão direcionada aos casos que exigem intervenção.
+- **Eficiência por transportadora:** comparação de volume, cumprimento de prazo, ocorrências e custos disponíveis.
+- **Dashboard executivo:** indicadores e tendências para acompanhamento gerencial.
+- **Alertas e relatórios:** consolidação das ocorrências relevantes e geração de relatórios diários.
+- **Segurança por perfil:** acesso às funcionalidades conforme a responsabilidade de cada usuário.
+- **Auditoria operacional:** histórico para apoiar controle, análise e melhoria contínua.
+
+## Como funciona a jornada operacional
 
 ```text
-.
-├── .github/         # Workflows CI/CD, templates e automação
-├── apps/
-│   ├── api/         # Backend Python (FastAPI) — 489 testes automatizados
-│   └── web/         # Frontend Next.js (TypeScript) — build otimizado
-├── infra/           # Docker Compose, PostgreSQL, observabilidade
-├── integrations/    # Guias de integração com transportadoras
-└── docs/            # 50+ documentos: arquitetura, roadmaps, QA
+Importar dados
+      ↓
+Validar e organizar entregas
+      ↓
+Calcular prazos e criticidade
+      ↓
+Destacar atrasos e exceções
+      ↓
+Registrar tratativas
+      ↓
+Acompanhar indicadores e relatórios
 ```
 
-## Stack Tecnológica
+## Evolução prevista
 
-| Camada | Tecnologia |
-|--------|------------|
-| **Backend** | Python 3.12+, FastAPI, SQLAlchemy 2.0, Alembic, Pydantic |
-| **Frontend** | Next.js 16, React 19, TypeScript 5, Tailwind CSS 4 |
-| **Banco de Dados** | PostgreSQL 16 (produção) / SQLite (dev) |
-| **Autenticação** | JWT com refresh token, bcrypt, RBAC com 4 perfis |
-| **Infraestrutura** | Docker, Docker Compose, GitHub Actions |
-| **Testes** | pytest 8.3+ (API), Vitest 4+ (Web), Playwright (E2E) |
-| **Governança** | Secret scan, validação de migrations, checklist beta |
+Além do monitoramento pós-expedição, a visão do produto contempla um **MVP assistido de cotação de frete por pedido**. Essa evolução permitirá importar pedidos do ERP, comparar valores entre transportadoras, destacar a melhor opção disponível e preservar o histórico da decisão.
 
----
+Integrações automáticas com ERPs e transportadoras poderão ser incorporadas progressivamente, conforme contratos, disponibilidade técnica e homologação dos parceiros.
 
-## Comece em Minutos
+## Diferenciais
 
-```bash
-# 1. Clone
-git clone https://github.com/Dev-RuiDiniz/Ilex_Logistica.git
-cd Ilex_Logistica
+- visão operacional e gerencial no mesmo ambiente;
+- implantação gradual, começando por arquivos já disponíveis na operação;
+- arquitetura preparada para novas transportadoras e integrações;
+- regras de acesso adequadas a diferentes responsabilidades;
+- rastreabilidade das ações e decisões relevantes;
+- evolução orientada por especificações, critérios de aceite e validação contínua.
 
-# 2. Backend
-cd apps/api && pip install -e ".[dev]" && pytest -q
+## Segurança e confiabilidade
 
-# 3. Frontend
-cd apps/web && npm install && npm run build
+O produto foi desenhado com separação de perfis, proteção de acesso, validação de dados e preservação de histórico. A preparação para uso produtivo inclui uma etapa formal de homologação, segurança, desempenho, continuidade e aceite do cliente.
 
-# 4. Infraestrutura
-cd infra && docker compose up -d
-```
+## Situação do projeto
 
-Para detalhes completos de setup, consulte [`infra/LOCAL_SETUP.md`](infra/LOCAL_SETUP.md).
+O Ilex Logística está em fase de consolidação e homologação do MVP avançado. Os módulos centrais estão estruturados e o trabalho de conclusão está organizado por etapas, priorizando estabilidade, aderência operacional e preparação segura para implantação.
+
+## Próximos passos comerciais
+
+1. Validar regras de SLA, eficiência e dados obrigatórios com a operação.
+2. Homologar o fluxo de importação com amostras representativas.
+3. Definir o layout de pedidos para o MVP assistido de cotações.
+4. Executar a homologação final com os perfis de usuário envolvidos.
+5. Planejar implantação, treinamento e acompanhamento inicial.
 
 ---
 
-## Qualidade e Testes
-
-- **489 testes automatizados** no backend (pytest)
-- **Build do frontend validado** com TypeScript strict
-- **Secret scan automatizado** para segurança
-- **Migrations versionadas** com testes de roundtrip (upgrade/downgrade)
-- **CI/CD** com GitHub Actions para validação contínua
-
-```bash
-# Rodar validações localmente
-python scripts/check_secrets.py --repo-root .
-python scripts/validate_migrations.py
-python scripts/beta_validate.py
-```
-
----
-
-## Fluxo de Contribuição
-
-Branches por tipo de mudança:
-- `feature/<tema>` — novas funcionalidades
-- `fix/<tema>` — correções
-- `chore/<tema>` — infraestrutura e configuração
-
-Commits em português com escopo:
-- `feat(api): adiciona endpoint de eficiência por transportadora`
-- `fix(web): corrige validação de SLA no formulário`
-
----
-
-## Status e Roadmap
-
-| Fase | Status | Descrição |
-|------|--------|-----------|
-| **Fase 1** | Concluída | Consolidação do monorepo, 36 PRs mergeados, base técnica sólida |
-| **Fase 2** | Em andamento | CI/CD completo, testes E2E, conectores de transportadoras |
-| **Fase 3** | Planejada | Otimização de pipelines, versionamento e automações de release |
-
-**Próximos passos priorizados:**
-1. Conectores de transportadoras (LOG-021/022)
-2. Tela de tratativas operacionais (W11)
-3. Envio de relatório diário por e-mail (LOG-019)
-4. Cobertura de testes E2E com Playwright
-
----
-
-## Licença e Contato
-
-Desenvolvido por [Dev-RuiDiniz](https://github.com/Dev-RuiDiniz).
-
-Para dúvidas, sugestões ou parcerias, abra uma issue ou entre em contato pelo GitHub.
+**Ilex Logística — mais visibilidade para agir, comparar e melhorar a operação.**

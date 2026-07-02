@@ -2,6 +2,8 @@
 
 **Atualizado em:** 2026-07-02
 
+> Auditoria de 2026-07-02: “Confirmado” indica evidência estrutural no repositório, mas os módulos permanecem sujeitos ao baseline P0 e à homologação. Consulte `../../AUDITORIA.md` e `../../ROADMAP.md`.
+
 ## Uso
 
 Estas specs definem o comportamento esperado antes da implementação. Para cada mudança: localizar a spec, atualizar regras e aceite, escrever teste RED, implementar GREEN, refatorar e registrar evidências. “Confirmado” significa evidência no repositório; não significa homologação de produção.
@@ -17,17 +19,17 @@ Estas specs definem o comportamento esperado antes da implementação. Para cada
 
 | ID | Especificação | Estado |
 |---|---|---|
-| SPEC-01 | [Autenticação, usuários e RBAC](01-autenticacao-usuarios-rbac.md) | Confirmado |
-| SPEC-02 | [Transportadoras](02-transportadoras.md) | Confirmado |
-| SPEC-03 | [Importações e Braspress](03-importacoes-braspress.md) | Confirmado |
-| SPEC-04 | [Entregas monitoradas](04-entregas-monitoradas.md) | Parcial |
+| SPEC-01 | [Autenticação, usuários e RBAC](01-autenticacao-usuarios-rbac.md) | Parcialmente validado |
+| SPEC-02 | [Transportadoras](02-transportadoras.md) | Implementado; UAT pendente |
+| SPEC-03 | [Importações e Braspress](03-importacoes-braspress.md) | Implementado; UAT pendente |
+| SPEC-04 | [Entregas monitoradas](04-entregas-monitoradas.md) | Bloqueado no Web |
 | SPEC-05 | [SLA e criticidade](05-sla-atrasos-criticidade.md) | Confirmado/A confirmar |
-| SPEC-06 | [Tratativas e exceções](06-tratativas-excecoes.md) | Confirmado |
-| SPEC-07 | [Eficiência](07-eficiencia-transportadoras.md) | Parcial |
-| SPEC-08 | [Dashboard](08-dashboard-indicadores.md) | Confirmado |
+| SPEC-06 | [Tratativas e exceções](06-tratativas-excecoes.md) | Implementado; testes incompletos |
+| SPEC-07 | [Eficiência](07-eficiencia-transportadoras.md) | Parcial/UAT pendente |
+| SPEC-08 | [Dashboard](08-dashboard-indicadores.md) | Bloqueado por testes Web |
 | SPEC-09 | [Alertas](09-alertas-notificacoes.md) | Confirmado/Parcial |
-| SPEC-10 | [Relatórios](10-relatorios-exportacoes.md) | Confirmado |
-| SPEC-11 | [Auditoria](11-auditoria-historico.md) | Confirmado |
+| SPEC-10 | [Relatórios](10-relatorios-exportacoes.md) | Implementado; UAT pendente |
+| SPEC-11 | [Auditoria](11-auditoria-historico.md) | Implementado; UAT pendente |
 | SPEC-12 | [Pedidos e cotações](12-pedidos-cotacao-frete.md) | Planejado |
 
 ## Rastreabilidade LOG-027 a LOG-041

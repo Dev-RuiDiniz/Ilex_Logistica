@@ -81,6 +81,10 @@ O model e as migrations incluem campos fiscais/financeiros associados ao Apêndi
 
 Não editar migrations antigas já aplicadas; criar uma nova revisão. A coexistência de duas migrations relacionadas a `alert_delivery_logs` deve ser preservada e validada pelo encadeamento Alembic.
 
+### Estado auditado do encadeamento
+
+Em 2026-07-02, `alembic heads` retornou dois heads: `20260620_02` e `20260627_01`. Essa bifurcação bloqueia a prontidão de deploy. A correção deve usar uma nova migration de merge ou estratégia equivalente, após confirmar a intenção dos dois ramos e testar banco novo, upgrade existente e downgrade seguro. Não editar migrations históricas.
+
 ## 6. Operação
 
 ```powershell

@@ -2,7 +2,7 @@
 
 **Versão:** 2.0
 **Atualizado em:** 2026-07-02
-**Status:** beta operacional em evolução
+**Status:** MVP avançado em estabilização e homologação
 **Fonte complementar:** `ESCOPO_PROJETO_ILEX_LOGISTICA_APENDICE_1.md`
 
 ## 1. Sumário executivo
@@ -136,6 +136,7 @@ Entidades confirmadas incluem usuários, papéis, permissões, transportadoras, 
 - Alterações críticas deixam trilha auditável.
 - Novos schemas usam migration testada em upgrade/downgrade.
 - Suítes afetadas, build, validação documental e secret scan passam antes da entrega.
+- O projeto somente será considerado concluído quando os gates P0–P5 do `ROADMAP.md` e o UAT do MVP assistido estiverem aprovados.
 
 ## 13. Matriz do Apêndice 1
 

@@ -12,6 +12,9 @@
 - Criação de índice e matriz de rastreabilidade entre requisitos, módulos, LOG-IDs e testes esperados.
 - Reestruturação do `AGENTS.md` como manual operacional completo para SDD, TDD, arquitetura, segurança, documentação, validação e Git.
 - Formalização da política de commit local por tarefa em pt-BR e push somente autorizado.
+- Auditoria completa de API, Web, banco, infraestrutura, CI, segurança, testes e documentação com evidências executadas.
+- Reestruturação do roadmap em P0–P5 para concluir o MVP assistido por SDD.
+- Reformulação do README raiz como apresentação comercial/executiva para clientes.
 
 ### Arquivos modificados/criados
 
@@ -29,6 +32,10 @@
 - `python scripts/validate_docs.py`: aprovado com 21 documentos obrigatórios e rastreabilidade LOG-027 a LOG-041.
 - `python scripts/check_secrets.py --repo-root . --self-test`: aprovado após a criação das specs.
 - `python -m py_compile scripts/validate_docs.py`: aprovado.
+- Auditoria funcional: Web com 74 falhas observadas, lint com 7 erros, build bloqueado e migrations com dois heads.
+- API: 659 testes coletados; execução completa não concluiu na janela observada.
+- Infra: quatro erros de coleta pelo comando a partir da raiz.
+- Esses resultados são achados do estado preexistente e foram convertidos em P0 no roadmap; nenhuma correção funcional integrou esta tarefa documental.
 - A estrutura dos sete documentos e o escopo do diff foram conferidos; somente Markdown de governança está modificado ou não rastreado.
 
 ### Bugs e correções
@@ -42,6 +49,7 @@
 - Escopo e roadmap incorporaram os requisitos complementares.
 - O histórico útil foi resumido no contexto sem restaurar documentos obsoletos removidos.
 - A governança operacional foi alinhada ao catálogo `docs/specs`, à stack real e às instruções locais do Next.js.
+- `AUDITORIA.md`, `ROADMAP.md`, README comercial e documentos técnicos foram alinhados ao estado comprovado.
 
 ### Bloqueios e dependências
 

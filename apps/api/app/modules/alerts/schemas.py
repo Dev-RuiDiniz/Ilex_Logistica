@@ -2,7 +2,7 @@
 
 from datetime import datetime
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class AlertBase(BaseModel):
@@ -37,8 +37,7 @@ class AlertResponse(AlertBase):
     created_at: datetime
     updated_at: datetime
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class AlertListResponse(BaseModel):
@@ -113,8 +112,7 @@ class AlertDeliveryLogResponse(AlertDeliveryLogBase):
     created_at: datetime
     updated_at: datetime
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class AlertDeliveryLogListResponse(BaseModel):

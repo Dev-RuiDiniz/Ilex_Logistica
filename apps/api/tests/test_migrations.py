@@ -115,7 +115,7 @@ def test_migrations_upgrade_head():
         # Limpar banco temporario
         try:
             Path(db_path).unlink(missing_ok=True)
-        except:
+        except OSError:
             pass
 
 
@@ -184,7 +184,7 @@ def test_migrations_roundtrip():
         # Limpar banco temporario
         try:
             Path(db_path).unlink(missing_ok=True)
-        except:
+        except OSError:
             pass
 
 
@@ -248,5 +248,5 @@ def test_data_preservation():
         # Limpar banco temporario
         try:
             Path(db_path).unlink(missing_ok=True)
-        except:
+        except OSError:
             pass

@@ -2,7 +2,6 @@
 
 from datetime import UTC, datetime, timedelta
 
-import pytest
 from sqlalchemy.orm import Session
 
 from app.modules.alerts.models import Alert, AlertDeliveryLog
@@ -154,7 +153,7 @@ def test_gera_alerta_para_sla_warning(db_session: Session):
     assert result["success"] is True
 
 
-def test_nao_duplica_alerta_ativo_para_mesma_origem(db_session: Session):
+def test_regeracao_contabiliza_alerta_ativo_como_ignorado(db_session: Session):
     """Testa que não duplica alerta ativo para a mesma origem."""
     # Setup
     carrier = Carrier(name="Transportadora Teste")
@@ -188,11 +187,11 @@ def test_nao_duplica_alerta_ativo_para_mesma_origem(db_session: Session):
 
     # Gerar alertas primeira vez
     result1 = generate_alerts(db_session)
-    first_count = result1["created_count"]
+    result1["created_count"]
 
     # Gerar alertas segunda vez
     result2 = generate_alerts(db_session)
-    second_count = result2["created_count"]
+    result2["created_count"]
 
     # Assert: segunda vez deve criar menos (skipped)
     assert result2["success"] is True

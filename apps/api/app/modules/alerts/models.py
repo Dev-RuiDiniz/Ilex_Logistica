@@ -37,7 +37,7 @@ class AlertDeliveryLog(Base):
     __tablename__ = "alert_delivery_logs"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
-    alert_id: Mapped[int] = mapped_column(Integer, ForeignKey("alerts.id"), nullable=False, index=True)
+    alert_id: Mapped[int | None] = mapped_column(Integer, ForeignKey("alerts.id"), nullable=True, index=True)
     channel: Mapped[str] = mapped_column(String(20), nullable=False, index=True)
     recipient: Mapped[str] = mapped_column(String(255), nullable=False)
     subject: Mapped[str | None] = mapped_column(String(255), nullable=True)
@@ -49,3 +49,10 @@ class AlertDeliveryLog(Base):
     sent_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(UTC), nullable=False, index=True)
     updated_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(UTC), onupdate=lambda: datetime.now(UTC), nullable=False)
+    event_type: Mapped[str | None] = mapped_column(String(50), nullable=True, index=True)
+    delivery_channel: Mapped[str | None] = mapped_column(String(50), nullable=True, index=True)
+    delivery_status: Mapped[str | None] = mapped_column(String(20), nullable=True, index=True)
+    source_type: Mapped[str | None] = mapped_column(String(50), nullable=True, index=True)
+    source_id: Mapped[int | None] = mapped_column(Integer, nullable=True, index=True)
+    alert_type: Mapped[str | None] = mapped_column(String(50), nullable=True, index=True)
+    metadata_json: Mapped[str | None] = mapped_column(Text, nullable=True)

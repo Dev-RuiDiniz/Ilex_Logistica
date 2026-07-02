@@ -1,6 +1,6 @@
 """Alerts router for BETA-017A."""
 
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 
 from app.database.session import get_db
@@ -10,14 +10,22 @@ from app.modules.alerts.schemas import (
     AlertListResponse,
     AlertMarkReadResponse,
     AlertMarkResolvedResponse,
-    AlertResponse,
     AlertSummaryResponse,
     AlertDeliveryLogCreate,
     AlertDeliveryLogListResponse,
     AlertDeliveryLogResponse,
 )
-from app.modules.alerts.service import generate_alerts, get_active_alerts_count, mark_alert_as_read as mark_alert_as_read_service, mark_alert_as_resolved as mark_alert_as_resolved_service
-from app.modules.alerts.models import Alert
+from app.modules.alerts.service import (
+    create_delivery_log,
+    generate_alerts,
+    generate_import_failure_alerts,
+    generate_no_update_alerts,
+    get_pending_delivery_logs,
+    mark_alert_as_read as mark_alert_as_read_service,
+    mark_alert_as_resolved as mark_alert_as_resolved_service,
+    update_delivery_log_status,
+)
+from app.modules.alerts.models import Alert, AlertDeliveryLog
 
 router = APIRouter(prefix="/alerts", tags=["alerts"])
 

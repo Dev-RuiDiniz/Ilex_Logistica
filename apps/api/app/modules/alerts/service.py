@@ -121,6 +121,10 @@ def _create_delivery_log(
 ) -> AlertDeliveryLog:
     log_entry = AlertDeliveryLog(
         alert_id=alert.id if alert else None,
+        channel="in_app",
+        recipient="internal",
+        subject=event_type,
+        status="sent" if delivery_status not in {"pending", "failed"} else delivery_status,
         event_type=event_type,
         delivery_channel="in_app",
         delivery_status=delivery_status,
@@ -132,6 +136,62 @@ def _create_delivery_log(
     )
     db.add(log_entry)
     return log_entry
+
+
+def create_delivery_log(
+    db: Session,
+    alert_id: int,
+    channel: str,
+    recipient: str,
+    message: str,
+    subject: str | None = None,
+    max_attempts: int = 3,
+) -> AlertDeliveryLog:
+    log_entry = AlertDeliveryLog(
+        alert_id=alert_id,
+        channel=channel,
+        recipient=recipient,
+        subject=subject,
+        message=message,
+        status="pending",
+        max_attempts=max_attempts,
+    )
+    db.add(log_entry)
+    db.commit()
+    db.refresh(log_entry)
+    return log_entry
+
+
+def get_pending_delivery_logs(db: Session) -> list[AlertDeliveryLog]:
+    return db.query(AlertDeliveryLog).filter(AlertDeliveryLog.status == "pending").all()
+
+
+def update_delivery_log_status(
+    db: Session,
+    log_id: int,
+    status: str,
+    error_message: str | None = None,
+    sent: bool = False,
+) -> AlertDeliveryLog | None:
+    log_entry = db.get(AlertDeliveryLog, log_id)
+    if log_entry is None:
+        return None
+    log_entry.status = status
+    log_entry.error_message = error_message
+    log_entry.attempts += 1
+    if sent:
+        log_entry.sent_at = datetime.now(UTC)
+    db.commit()
+    db.refresh(log_entry)
+    return log_entry
+
+
+def generate_no_update_alerts(db: Session) -> dict[str, int]:
+    return generate_alerts(db)
+
+
+def generate_import_failure_alerts(db: Session) -> dict[str, int]:
+    return generate_alerts(db)
 
 
 def _resolve_alerts(

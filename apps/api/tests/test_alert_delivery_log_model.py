@@ -1,12 +1,9 @@
 """Tests for AlertDeliveryLog model (BETA-027)."""
 
 from datetime import UTC, datetime
-import pytest
 from sqlalchemy.orm import Session
 
 from app.modules.alerts.models import AlertDeliveryLog, Alert
-from app.modules.carriers.models import Carrier
-from app.modules.shipments.models import Shipment
 
 
 def test_cria_delivery_log_valido(db_session: Session):
@@ -135,7 +132,6 @@ def test_defaults(db_session: Session):
 
 def test_foreign_key_constraint(db_session: Session):
     """Testa constraint de foreign key - alerta inexistente."""
-    from sqlalchemy.exc import IntegrityError
 
     # Tenta criar log com alert_id inexistente
     log = AlertDeliveryLog(

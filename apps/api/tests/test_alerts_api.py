@@ -1,6 +1,5 @@
 """Tests for alerts API (BETA-017A)."""
 
-import pytest
 from sqlalchemy.orm import Session
 
 

@@ -65,8 +65,15 @@
    - Evita que todos os itens apareçam como críticos devido à escala de prioridade do backend
    - `critical` para `sla_status=critical`, `warning` para `late`/`warning`, `info` para outros
 
-10. **Commit e push**
-   - Commit `8f7b69e`, `6650eb2`, `5f56a93`, `865faa4` e novo commit na branch `feature/infra-vps-docker`
+10. **Aplicação da fonte Margesta em todo o projeto**
+   - Arquivos da fonte (`Margesta.woff2`, `Margesta.woff`, `Margesta.ttf`) adicionados em `apps/web/public/fonts/`
+   - `@font-face` configurado em `apps/web/src/app/globals.css` com fallback para system fonts
+   - Variável CSS `--font-margesta` e configuração `--font-sans` no Tailwind atualizadas
+   - `layout.tsx` simplificado removendo importação do Google Fonts (Geist)
+   - Fonte aplicada globalmente ao `body` do projeto
+
+11. **Commit e push**
+   - Commit `8f7b69e`, `6650eb2`, `5f56a93`, `865faa4` e novos commits na branch `feature/infra-vps-docker`
    - Push para `https://github.com/Dev-RuiDiniz/Ilex_Logistica.git`
 
 ### Arquivos Modificados/Criados
@@ -95,6 +102,9 @@
 - `apps/web/src/lib/types.ts` — tipos `Carrier` e `DashboardExceptionItem` atualizados
 - `apps/web/src/lib/api.ts` — `createCarrier`/`updateCarrier` com contato
 - `apps/web/src/app/(private)/carriers/page.tsx` — cadastro/edição e tabela com contato
+- `apps/web/public/fonts/Margesta.*` — arquivos da fonte Margesta (novos)
+- `apps/web/src/app/globals.css` — configuração global da fonte Margesta
+- `apps/web/src/app/layout.tsx` — remoção do Google Fonts Geist
 - `apps/web/src/app/(private)/dashboard/page.tsx` — botões de WhatsApp e email nas exceções, detalhes de NF/data de entrega/frete
 - `apps/api/tests/test_carriers.py` — testes de CRUD com contato
 - `apps/web/src/app/(private)/audit/page.test.tsx` — texto de loading

@@ -558,9 +558,14 @@ export interface DashboardExceptionItem {
   shipment_id: number;
   tracking_code: string;
   invoice_number: string | null;
+  invoice_value: number | null;
+  freight_value: number | null;
+  estimated_delivery: string | null;
+  actual_delivery: string | null;
   carrier_id: number;
   carrier_name: string | null;
   customer_name: string | null;
+  recipient_name: string | null;
   destination_uf: string | null;
   status: string;
   sla_status: string;

@@ -84,6 +84,16 @@ export default function DashboardPage() {
     return "info";
   };
 
+  const formatCurrency = (value: number | null | undefined) => {
+    if (value == null) return "—";
+    return value.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+  };
+
+  const formatDate = (value: string | null | undefined) => {
+    if (!value) return "—";
+    return new Date(value).toLocaleDateString("pt-BR");
+  };
+
   const recentActivity = (data.top_exceptions ?? []).slice(0, 7).map((exc) => {
     const severity = getSeverity(exc.sla_status, exc.priority);
     const typeLabel = translateExceptionType(exc.exception_type, exc.sla_status);
@@ -95,6 +105,7 @@ export default function DashboardPage() {
       id: exc.shipment_id,
       event,
       tracking: `${exc.tracking_code ?? "—"} • ${carrier}${destination}`,
+      details: `NF ${exc.invoice_number ?? "—"} • Entrega ${formatDate(exc.estimated_delivery)} • Frete ${formatCurrency(exc.freight_value)}`,
       time: exc.last_update_at
         ? new Date(exc.last_update_at).toLocaleString("pt-BR", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" })
         : "",
@@ -277,6 +288,7 @@ export default function DashboardPage() {
                 <div className="min-w-0 flex-1">
                   <p className="text-sm font-semibold text-zinc-900">{item.event}</p>
                   <p className="truncate text-xs text-zinc-500">{item.tracking}</p>
+                  <p className="truncate text-[11px] text-zinc-400">{item.details}</p>
                 </div>
                 <div className="flex flex-shrink-0 items-center gap-1.5">
                   {item.whatsapp && (

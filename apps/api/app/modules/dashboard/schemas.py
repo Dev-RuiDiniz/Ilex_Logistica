@@ -42,9 +42,16 @@ class DashboardExceptionItem(BaseModel):
     shipment_id: int
     tracking_code: str
     invoice_number: str | None
+    invoice_value: float | None
+    freight_value: float | None
+    estimated_delivery: datetime | None
+    actual_delivery: datetime | None
     carrier_id: int
     carrier_name: str | None
+    carrier_whatsapp: str | None
+    carrier_email: str | None
     customer_name: str | None
+    recipient_name: str | None
     destination_uf: str | None
     status: str
     sla_status: str
@@ -55,8 +62,6 @@ class DashboardExceptionItem(BaseModel):
     exception_reason: str | None
     priority: int
     last_update_at: datetime
-    carrier_whatsapp: str | None
-    carrier_email: str | None
 
 
 class DashboardFiltersApplied(BaseModel):

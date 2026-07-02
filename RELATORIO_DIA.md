@@ -46,8 +46,14 @@
    - Frontend: seção "Exceções em Destaque" do dashboard exibe ícones de WhatsApp e email com links diretos (`wa.me` e `mailto:`)
    - Testes de `tests/test_carriers.py` atualizados e novo teste para CRUD de contato
 
-7. **Commit e push**
-   - Commit `8f7b69e`, `6650eb2`, `5f56a93` e `865faa4` na branch `feature/infra-vps-docker`
+7. **Mais detalhes na seção Exceções em Destaque**
+   - Backend: `DashboardExceptionItem` agora inclui `invoice_value`, `freight_value`, `estimated_delivery`, `actual_delivery` e `recipient_name`
+   - Backend: service do dashboard popula os novos campos a partir do modelo `Shipment`
+   - Frontend: tipo `DashboardExceptionItem` atualizado
+   - Frontend: cada item da seção "Exceções em Destaque" exibe uma linha extra com: NF, data de entrega estimada e valor do frete
+
+8. **Commit e push**
+   - Commit `8f7b69e`, `6650eb2`, `5f56a93`, `865faa4` e novo commit na branch `feature/infra-vps-docker`
    - Push para `https://github.com/Dev-RuiDiniz/Ilex_Logistica.git`
 
 ### Arquivos Modificados/Criados
@@ -76,7 +82,7 @@
 - `apps/web/src/lib/types.ts` — tipos `Carrier` e `DashboardExceptionItem` atualizados
 - `apps/web/src/lib/api.ts` — `createCarrier`/`updateCarrier` com contato
 - `apps/web/src/app/(private)/carriers/page.tsx` — cadastro/edição e tabela com contato
-- `apps/web/src/app/(private)/dashboard/page.tsx` — botões de WhatsApp e email nas exceções
+- `apps/web/src/app/(private)/dashboard/page.tsx` — botões de WhatsApp e email nas exceções, detalhes de NF/data de entrega/frete
 - `apps/api/tests/test_carriers.py` — testes de CRUD com contato
 - `apps/web/src/app/(private)/audit/page.test.tsx` — texto de loading
 - `apps/web/src/components/app-shell.tsx` — labels da sidebar

@@ -1,207 +1,109 @@
-# AGENTS.md — Regras de Execucao para Agentes no Projeto Ilex Logistica
+# AGENTS.md — Governança de Execução do Ilex Logística
 
-**Versao:** 1.0  
-**Data:** 2026-06-10  
-**Projeto:** Ilex Logistica Monorepo  
-**Aplicavel a:** Todos os agentes/automacaoes que executam tarefas no repositorio
+**Versão:** 2.0
+**Atualizado em:** 2026-07-02
+**Aplicação:** agentes de IA, automações e colaboradores técnicos
 
----
+## 1. Objetivo
 
-## 1. COMMIT POR TAREFA (PT/BR)
+Este arquivo define como investigar, especificar, implementar, testar, documentar e entregar mudanças no monorepo. As fontes de verdade são, nesta ordem: código e migrations; testes; documentação raiz; documentação específica ainda vigente; requisitos aprovados. Nunca transformar uma intenção em fato implementado sem evidência.
 
-- **Um commit por tarefa concluida.** Nao acumular multiplas mudancas nao relacionadas no mesmo commit.
-- **Mensagens em portugues (pt-BR)** seguindo as convencoes do projeto (convencional commits adaptado):
-  - `feat:` nova funcionalidade
-  - `fix:` correcao de bug
-  - `docs:` documentacao
-  - `test:` testes
-  - `refactor:` refatoracao
-  - `chore:` tarefas de infra, config, scripts
-  - `ci:` mudancas em CI/CD
-  - `style:` formatacao, sem mudanca logica
-- **Formato obrigatorio:**
-  ```
-  <tipo>(<escopo>): <descricao curta em pt-BR>
+## 2. Princípios obrigatórios
 
-  <corpo opcional com detalhes>
-  ```
-  Exemplo: `feat(api): adiciona endpoint de eficiencia por transportadora`
-- **Escopos validos:** `api`, `web`, `infra`, `docs`, `scripts`, `ci`, `migrations`, `tests`
+- Inspecionar o repositório, o histórico e o estado do Git antes de alterar.
+- Fazer mudanças pequenas, focadas e rastreáveis; não misturar tarefas.
+- Preservar alterações preexistentes do usuário e não restaurar arquivos sem autorização.
+- Atualizar documentação junto com código e registrar decisões no `CONTEXTO.md`.
+- Não inventar endpoints, schemas, regras, integrações, métricas ou dados.
+- Marcar incertezas como `A CONFIRMAR`, `PENDENTE DE VALIDAÇÃO` ou `NÃO IDENTIFICADO NO REPOSITÓRIO`.
+- Não mascarar falhas com mocks, stubs ou fallbacks falsos.
+- Nunca expor `.env`, tokens, senhas, chaves ou credenciais.
+- Não deixar API, Web, migrations ou testes em estado quebrado.
+- Não fazer commit ou push sem autorização explícita do usuário.
 
----
+## 3. SDD — Specification-Driven Development
 
-## 2. SDD + TDD EM TODAS AS TAREFAS
+Antes de codificar:
 
-### SDD — Specification-Driven Development
+1. Ler `ESCOPO.md`, `ROADMAP.md`, `CONTEXTO.md`, arquitetura, banco e documentação relacionada.
+2. Confirmar problema, entradas, saídas, regras de negócio e limites.
+3. Criar ou atualizar a especificação antes do código.
+4. Definir critérios de aceite verificáveis.
+5. Mapear impactos em arquitetura, banco, API, Web, testes, segurança e infraestrutura.
+6. Registrar decisões relevantes no contexto e vincular a tarefa ao roadmap.
 
-1. **Antes de codificar**, o agente deve:
-   - Compreender o requisito a partir da documentacao existente (`docs/`, ADRs, roadmaps)
-   - Se o requisito nao estiver documentado, criar/escrever a especificacao primeiro
-   - Definir criterios de aceite claros
-   - Documentar decisoes arquiteturais se aplicavel (novo ADR ou atualizacao)
+Uma especificação deve conter objetivo, contexto, regras, fluxo, critérios de aceite, impacto técnico, testes, riscos e dependências.
 
-2. **A especificacao vive antes do codigo.** Nenhuma implementacao sem:
-   - Descricao do problema/solucao
-   - Entradas, saidas e comportamentos esperados
-   - Regras de negocio aplicaveis
+## 4. TDD — Test-Driven Development
 
-### TDD — Test-Driven Development
+Fluxo obrigatório para feature ou correção:
 
-1. **Para toda nova funcionalidade ou correcao:**
-   - Escrever o teste que falha primeiro (RED)
-   - Implementar o codigo minimo para passar (GREEN)
-   - Refatorar se necessario (REFACTOR)
-2. **Backend (Python/FastAPI):**
-   - Testes unitarios com `pytest`
-   - Testes de integracao para endpoints
-   - Testes de migration quando houver mudanca de schema
-3. **Frontend (Next.js/TypeScript):**
-   - Testes unitarios com `vitest` + `@testing-library/react`
-   - Testes E2E com Playwright para fluxos criticos
-4. **Metrica minima:** nao reduzir cobertura de testes sem justificativa documentada.
+1. **RED:** criar teste que demonstra o comportamento ausente ou o bug.
+2. **GREEN:** implementar o mínimo para passar.
+3. **REFACTOR:** melhorar sem quebrar a suíte.
 
----
+Toda regra crítica, endpoint e bug corrigido requer teste. Mudanças de schema requerem migration e validação. Não reduzir cobertura sem justificativa em `RELATORIO.md`.
 
-## 3. INTEGRIDADE TECNICA E VERACIDADE DE DADOS
+Comandos reais:
 
-- **Nunca gerar dados falsos** ou inventar informacoes em documentacao, testes ou codigo.
-- **Nunca criar stubs ou mocks** que mascarem comportamentos reais sem indicar claramente que sao provisorios.
-- **Verificar antes de afirmar:** se nao tiver certeza sobre uma funcao, parametro ou comportamento, usar ferramentas de busca/inspecao para confirmar.
-- **Nao deixar o codigo quebrado:** toda mudanca deve manter a API funcional, o build do Web passando e os testes existentes verdes.
-- **Validar localmente antes de commitar:**
-  - Backend: `cd apps/api && python -m pytest -q`
-  - Frontend: `cd apps/web && npm test`
-  - Migrations: `python scripts/validate_migrations.py`
-  - Secret scan: `python scripts/check_secrets.py --repo-root . --self-test`
+```powershell
+cd apps/api
+python -m pytest -q
 
----
+cd ../web
+npm test
+npm run lint
+npm run build
 
-## 4. CONTEXTO DO PROJETO (CONTEXTO.md)
+cd ../..
+python scripts/validate_migrations.py
+python scripts/validate_docs.py
+python scripts/check_secrets.py --repo-root . --self-test
+```
 
-### Objetivo
-Manter um registro vivo do estado do projeto, decisoes tomadas, arquitetura atual e pendencias.
+Fluxos críticos do Web também devem usar `npm run test:e2e` quando o ambiente E2E estiver disponível.
 
-### Regras de atualizacao
-- **Atualizar a cada sessao de trabalho** ou quando houver mudanca significativa (nova feature, refactor, decisao arquitetural)
-- **Nunca apagar informacao historica** — adicionar novas secoes no topo ou anexar, mantendo a linha do tempo
-- **Conteudo obrigatorio:**
-  - Estado atual do projeto (o que esta pronto, o que esta em andamento)
-  - Decisoes arquiteturais recentes
-  - Dependencias e bloqueios
-  - Proximos passos pendentes
-  - Notas tecnicas importantes
+## 5. Commits em pt-BR
 
-### Local
-`c:\Users\RUI FRANCISCO\Documents\GitHub\Ilex_Logistica\CONTEXTO.md`
+Formato:
 
----
+```text
+<tipo>(<escopo>): <descrição curta em pt-BR>
 
-## 5. RELATORIO DO DIA (RELATORIO_DIA.md)
+<corpo opcional com motivo e impacto>
+```
 
-### Objetivo
-Registrar diariamente o que foi feito, problemas encontrados e proximos passos.
+Tipos: `feat`, `fix`, `docs`, `test`, `refactor`, `style`, `chore`, `ci`, `perf`, `build`, `revert`. Escopos usuais: `api`, `web`, `auth`, `banco`, `docs`, `infra`, `scripts`, `ci`, `migrations`, `tests`, `dashboard`.
 
-### Regras de atualizacao
-- **Atualizar no final de cada dia de trabalho** ou ao terminar uma sessao significativa
-- **Criar nova secao por dia** com data no formato `YYYY-MM-DD`
-- **Conteudo obrigatorio:**
-  - Tarefas executadas (lista)
-  - Arquivos modificados/criados
-  - Testes adicionados ou atualizados
-  - Bugs encontrados e correcoes aplicadas
-  - Documentacao atualizada
-  - Bloqueios ou dependencias
-  - Proximos passos para o dia seguinte
+- Um commit por tarefa concluída.
+- Usar branch `feature/<descricao>`, `fix/<descricao>` ou `chore/<descricao>`; `main` exige autorização explícita.
+- Validar testes, build, migrations, documentação e secrets antes do commit.
+- Commit e push dependem de autorização explícita.
 
-### Local
-`c:\Users\RUI FRANCISCO\Documents\GitHub\Ilex_Logistica\RELATORIO_DIA.md`
+## 6. Documentação obrigatória
 
----
+- `ARQUITETURA.md`: módulos, fluxos, integrações ou estrutura.
+- `BANCO_DADOS.md`: models, tabelas, migrations, índices ou constraints.
+- `ESCOPO.md`: requisitos, regras e limites.
+- `ROADMAP.md`: fase, épico, prioridade, tarefa e aceite.
+- `CONTEXTO.md`: estado, decisão, risco, bloqueio e próximo passo.
+- `RELATORIO.md`: trabalho executado na sessão.
 
-## 6. ATUALIZACAO DE DOCUMENTACAO
+Checklist por tarefa:
 
-**Toda tarefa gera ou atualiza documentacao.** Nenhuma excecao.
+- [ ] Requisito e evidências compreendidos
+- [ ] Especificação e critérios de aceite atualizados
+- [ ] Teste criado/ajustado em RED
+- [ ] Implementação validada em GREEN
+- [ ] Refatoração segura concluída
+- [ ] Documentação de impacto atualizada
+- [ ] Contexto e relatório atualizados
+- [ ] Migrations, build e secrets validados quando aplicável
 
-### O que documentar:
-- **Novas features:** criar documento em `docs/` descrevendo o que foi implementado, como usar e como testar
-- **Mudancas de API:** atualizar documentacao de endpoints, contratos de request/response
-- **Mudancas de schema:** atualizar documentacao de modelo de dados e migrations
-- **Novas telas:** descrever a tela, fluxo de usuario e integracao com API
-- **Correcoes de bug:** documentar causa raiz e solucao aplicada
-- **Mudancas arquiteturais:** atualizar ADRs existentes ou criar novos
+## 7. Segurança e integridade
 
-### Checklist de documentacao por tarefa:
-- [ ] README atualizado se necessario
-- [ ] Documentacao de feature criada/atualizada em `docs/`
-- [ ] ADR atualizado se houver decisao arquitetural
-- [ ] Comentarios de codigo adicionados apenas quando necessario (autoexplicativo e preferido)
-- [ ] Changelog ou release notes atualizado se aplicavel
+Validar entradas, respeitar autenticação JWT e RBAC, não criar bypasses e não registrar dados sensíveis. Exemplos devem usar valores inequivocamente fictícios. Riscos críticos devem entrar no `CONTEXTO.md`. Alterações em permissões precisam de testes de acesso autorizado, `401` e `403`.
 
----
+## 8. Conduta operacional
 
-## 7. COMMIT E PUSH AO FINAL DE CADA TAREFA
-
-- **Ao final de cada tarefa concluida**, fazer commit e push das alteracoes para o remoto
-- **Branch de trabalho:** usar branches feature (`feature/<descricao>`) para novas tarefas; nunca commitar direto em `main` sem autorizacao explicita
-- **Antes do commit/push:**
-  - [ ] Commit com mensagem em pt-BR conforme secao 1
-  - [ ] Testes passando localmente
-  - [ ] Secret scan limpo
-  - [ ] Documentacao atualizada
-  - [ ] `CONTEXTO.md` e `RELATORIO_DIA.md` atualizados
-- **Fluxo:**
-  1. `git add <arquivos da tarefa>`
-  2. `git commit -m "<tipo>(<escopo>): <descricao>"`
-  3. `git push origin <branch>`
-  4. Se houver conflitos, resolver localmente e revalidar antes de finalizar
-
----
-
-## 8. REGRAS GERAIS DE CONDUTA
-
-- **Minimalismo:** preferir edicoes minimas e focadas. Evitar criar arquivos desnecessarios.
-- **Buscar contexto:** sempre usar ferramentas de busca/inspecao para entender o codigo existente antes de modificar.
-- **Nao assumir:** se algo nao esta claro, perguntar ao usuario ou investigar com ferramentas.
-- **Seguranca:** nunca expor secrets, tokens ou credenciais. Validar com `check_secrets.py`.
-- **Consistencia:** seguir padroes de codigo e estilo existentes no projeto (PEP 8, ruff, ESLint, Tailwind).
-- **Nao deixar deveres pendentes:** se uma tarefa for grande demais para uma sessao, deixar a continuacao clara no `RELATORIO_DIA.md` e `CONTEXTO.md`.
-
----
-
-**Assinatura:** Regras estabelecidas para execucao de agentes no projeto Ilex Logistica  
-**Ultima atualizacao:** 2026-06-10
-
----
-
-## 9. NOTAS DE IMPLEMENTACAO RECENTES
-
-### BETA-020C: Frontend de Segurança e RBAC (Concluido)
-
-**Status:** Completado em 2026-06-24
-
-**Implementacoes Realizadas:**
-- API client com tratamento de 401/403 (`ApiError`)
-- Helpers de permissoes (`hasPermission`, `canReadAudit`, etc.)
-- Sidebar condicional por permissao
-- Componente `AccessDenied` para estados 403
-- Página de users adaptada para RBAC
-- 30 novos testes (permissions.test.ts, api-auth.test.ts)
-
-**Resultados:**
-- Frontend: 296/296 testes passando, lint 0 errors, build OK
-- Backend: 76/76 RBAC tests, 54/54 audit tests, 7/7 W10/W15 tests
-- Gates: check_secrets, validate_migrations, validate_docs, beta_validate OK
-
-**Documentacao:** `docs/BETA_020C_SECURITY_RBAC_FRONTEND.md`
-
-**Limitacoes Conhecidas:**
-- Tratamento de 401/403 não integrado em todas as páginas (requer mudança individual)
-- Componente AccessDenied sem testes (prioridade menor)
-- Testes de páginas afetadas não implementados (páginas já funcionam com RBAC backend)
-
-**Proximos Passos (BETA-020D/E):**
-- Integrar tratamento de 401/403 em todas as páginas
-- Implementar redirecionamento automático para 401
-- Exibir AccessDenied automaticamente para 403
-- Adicionar testes de navegação por permissão
-- Implementar SSO/OAuth externo (se necessário)
+Preferir padrões existentes, não reescrever módulos sem necessidade, não substituir bibliotecas centrais sem decisão documentada e não remover testes. Investigar antes de perguntar; se a evidência continuar insuficiente, registrar a dúvida. Ao encontrar worktree sujo, separar alterações da tarefa e nunca sobrescrever trabalho alheio.

@@ -1,401 +1,155 @@
-# ESCOPO DO PROJETO ILEX LOGÍSTICA
+# ESCOPO.md — Escopo Completo do Ilex Logística
 
-**Versão:** 1.0  
-**Data:** 2026-06-11  
-**Status:** Referência Absoluta do Projeto
+**Versão:** 2.0
+**Atualizado em:** 2026-07-02
+**Status:** beta operacional em evolução
+**Fonte complementar:** `ESCOPO_PROJETO_ILEX_LOGISTICA_APENDICE_1.md`
 
----
+## 1. Sumário executivo
 
-## Visão Geral
+O Ilex Logística é uma plataforma web operacional que centraliza entregas de múltiplas transportadoras, importa dados logísticos, calcula SLA e criticidade, evidencia exceções, registra tratativas, produz alertas e relatórios e controla acesso por perfil. A evolução prevista amplia o monitoramento pós-expedição com comparação de cotações antes da expedição.
 
-O projeto Ilex Logística é um sistema de gestão logística para rastreamento de entregas, gestão de transportadoras, alertas operacionais e relatórios diários. Este documento define o escopo absoluto do projeto para fase beta.
+O sistema atende administração, equipe de logística, gestão logística e auditoria/backoffice. Código, migrations e testes são a evidência do estado implementado; requisitos sem evidência são classificados como parciais, planejados ou a confirmar.
 
----
+## 2. Objetivos e resultados esperados
 
-## Objetivos do Projeto
+- Reduzir consultas manuais e consolidar o acompanhamento de entregas.
+- Detectar atrasos, extravios, falta de atualização e criticidade operacional.
+- Priorizar tratativas com indicadores e relatórios auditáveis.
+- Comparar desempenho, volume e custo por transportadora.
+- Preservar histórico de importação, alterações e eventos relevantes.
+- Evoluir para cotação de frete por pedido com entrada assistida do ERP.
 
-1. **Rastreamento de Entregas:** Monitorar status de shipments em tempo real
-2. **Gestão de Transportadoras:** Avaliar eficiência e performance por transportadora
-3. **Alertas Operacionais:** Notificar sobre atrasos, exceções e problemas críticos
-4. **Relatórios Diários:** Gerar relatórios operacionais automáticos
-5. **Importação de Dados:** Importar dados de Excel/CSV de forma robusta
-6. **Segurança e Permissões:** Controle de acesso baseado em roles (RBAC)
-7. **Auditoria:** Logs operacionais completos de todas as ações
+## 3. Perfis e responsabilidades
 
----
+| Perfil | Responsabilidade | Estado |
+|---|---|---|
+| Administrador | usuários, transportadoras, regras, parâmetros e auditoria | Confirmado por RBAC |
+| Logística/Operador | importar, consultar entregas e registrar tratativas | Confirmado |
+| Gestor | acompanhar KPIs, eficiência, exceções e relatórios | Confirmado |
+| Auditoria/Viewer | consulta controlada de histórico e logs | Confirmado |
 
-## Arquitetura
+Permissões exatas são definidas pelo backend e devem ser verificadas em cada endpoint; nomes históricos de papéis não substituem a matriz implementada.
 
-### Backend (Python/FastAPI)
-- **Framework:** FastAPI
-- **Banco de Dados:** PostgreSQL
-- **Migrations:** Alembic
-- **Autenticação:** JWT
-- **Testes:** pytest
+## 4. Escopo funcional
 
-### Frontend (Next.js/TypeScript)
-- **Framework:** Next.js 14 (App Router)
-- **UI:** TailwindCSS + shadcn/ui
-- **Testes:** Vitest + Playwright
-- **Estado:** React Hooks
+| Domínio | Capacidades | Estado |
+|---|---|---|
+| Autenticação e RBAC | login, refresh JWT, usuários, papéis, permissões e proteção de rotas | Confirmado |
+| Transportadoras | cadastro, edição, listagem e inativação | Confirmado |
+| Importações | CSV/XLSX, preview, validação, confirmação, duplicidades, histórico e Braspress | Confirmado |
+| Entregas monitoradas | listagem, detalhe, filtros, campos fiscais/financeiros e promoção de delivery | Parcialmente homologado |
+| SLA e criticidade | regras, recálculo, atraso e criticidade | Confirmado; regra operacional final a homologar |
+| Tratativas e exceções | registro de ações e painel priorizado | Confirmado |
+| Eficiência | agregação e comparação por transportadora | Confirmado; métricas complementares parciais |
+| Dashboard | KPIs, resumo, filtros e tendência | Confirmado |
+| Alertas | geração, leitura, resolução e logs de entrega | Confirmado |
+| Relatórios | geração, consulta e exportação de relatório diário | Confirmado |
+| Auditoria | eventos operacionais, consulta e resumo | Confirmado |
+| Pedidos e cotações | importação de pedidos, comparação e melhor opção | Planejado |
 
-### CI/CD
-- **Plataforma:** GitHub Actions
-- **Validações:** Secret scan, migrations, testes automatizados
-- **Scripts:** Python oficial para máxima portabilidade
+As especificações normativas de cada domínio estão em `docs/specs/`.
 
----
+## 5. Entregas monitoradas — Apêndice 1
 
-## 12 Épicos do Roadmap Beta
-
-### Épico 1 — SLA, Atraso e Criticidade
+### 5.1 Dados
 
-**Objetivo:** Implementar cálculo de SLA, detecção de atrasos e classificação de criticidade.
+Cada entrega deve suportar rastreio, cliente, destino, transportadora, status, datas previstas/realizadas, número e valor da nota fiscal, data de saída/coleta, valor do frete e percentual do frete.
 
-**Funcionalidades:**
-- Model/tabela de regras SLA
-- Endpoint CRUD para regras SLA
-- Cálculo de atraso em dias/horas
-- Classificação de criticidade (crítico, warning, normal)
-- Recálculo automático de SLA para shipments
-- Filtros por criticidade no frontend
-- Badges visuais de SLA
-- Tela de gestão de regras SLA
+```text
+percentual_frete = (valor_frete / valor_nota_fiscal) * 100
+```
 
-**Status Atual:** PARCIAL (70% implementado)
+O percentual fica indisponível se um valor estiver ausente ou se o valor da NF for menor ou igual a zero. Valores monetários não podem usar ponto flutuante binário na persistência.
 
----
+### 5.2 Busca, filtros e apresentação
 
-### Épico 2 — Importação Excel/CSV Robusta e Importação Assistida
-
-**Objetivo:** Importar dados de Excel/CSV de forma robusta com validação linha a linha e layout assistido.
+- Busca por NF, cliente, rastreio, UF e transportadora.
+- Filtros combináveis por status, transportadora, cliente, UF, mês, ano e todo o período.
+- Ordenação e paginação coerentes com o conjunto filtrado.
+- KPIs e quadro de eficiência recalculados com os mesmos filtros.
+- Estados vazios, carregamento e erro sem inventar dados.
 
-**Funcionalidades:**
-- Parser CSV robusto
-- Parser XLSX robusto
-- Validação linha a linha
-- Detecção de duplicidade
-- Preview antes de confirmação
-- Confirmação de importação
-- Erros por linha detalhados
-- Layout mapper preparado para Braspress
-- Layout Braspress assistido beta
-- Mapper específico Braspress
-- Seletor de layout no frontend
-- Tela upload frontend
-- Preview UI
-- Erros por linha UI
-- Confirmação UI
+## 6. Eficiência por transportadora
 
-**Status Atual:** IMPLEMENTADO (100%)
-
----
+O sistema deve apresentar, por transportadora e período filtrado: total de NFs/entregas, quantidade e percentual no prazo, atrasadas e extraviadas, frete total e percentual médio de frete. Ranking pode considerar eficiência, custo e volume, desde que a fórmula e o desempate sejam explícitos. A definição de “no prazo” depende da regra de SLA homologada.
 
-### Épico 3 — Campos Fiscais, Financeiros e Filtros do Apêndice 1
+## 7. Cotação de frete por pedido
 
-**Objetivo:** Adicionar campos fiscais e financeiros conforme Apêndice 1 com filtros avançados.
+### 7.1 MVP assistido
 
-**Funcionalidades:**
-- Migration com campos fiscais/financeiros
-- Schemas Pydantic atualizados
-- Filtros backend por campos fiscais
-- Busca global
-- Tabela/detalhe frontend
-- Testes backend
-- Testes frontend
-- Documentação
-
-**Status Atual:** IMPLEMENTADO (93%)
-
----
-
-### Épico 4 — Eficiência por Transportadora
-
-**Objetivo:** Calcular e exibir métricas de eficiência por transportadora.
-
-**Funcionalidades:**
-- Endpoint de agregação de eficiência
-- Contagem de entregas no prazo
-- Contagem de entregas atrasadas
-- Contagem de entregas extraviadas
-- Ranking de transportadoras
-- Percentuais de performance
-- Componente frontend com gráficos
-- Filtros por período
-- Testes de agregação
-- Documentação
-
-**Status Atual:** PARCIAL (50%)
-
----
-
-### Épico 5 — Alertas e Notificações
-
-**Objetivo:** Gerar alertas automáticos para eventos críticos e exibir painel de notificações.
-
-**Funcionalidades:**
-- Model Alert
-- Model AlertDeliveryLog
-- Geração de alertas para crítico
-- Geração de alertas para sem atualização
-- Geração de alertas para falha
-- Deduplicação de alertas
-- Painel/badge frontend
-- Marcação como lido
-- Marcação como resolvido
-- Integração com e-mail (pós-beta)
-- Integração com SMS (pós-beta)
-- Testes de geração
-- Testes de deduplicação
-
-**Status Atual:** PARCIAL (40%)
-
----
-
-### Épico 6 — Relatório Diário Automático
-
-**Objetivo:** Gerar relatórios diários automáticos com KPIs operacionais.
-
-**Funcionalidades:**
-- Model DailyReport
-- Model DailyReportDelivery
-- Geração manual de relatório
-- Geração agendada (pós-beta)
-- Tela frontend
-- Export CSV/JSON (pós-beta)
-- Filtros por período
-- KPIs: total shipments, entregas no prazo, atrasos, etc.
-- Testes de geração
-- Testes de exportação
-
-**Status Atual:** PARCIAL (50%)
-
----
-
-### Épico 7 — Logs de Coleta, Importação e Auditoria Operacional
-
-**Objetivo:** Implementar logs estruturados para rastreamento de ações operacionais.
-
-**Funcionalidades:**
-- Model OperationalAuditLog
-- Service de auditoria centralizado
-- Endpoints de consulta de logs
-- Filtros por event_type, entity_type, action
-- Filtros por período
-- Resumo estatístico
-- Integração com ações críticas (reports, alerts, sla, imports)
-- RBAC para endpoints de auditoria
-- Frontend de visualização de logs
-- Timeline por entrega/entidade
-- Exportação de logs (pós-beta)
-- Sanitização avançada de secrets (pós-beta)
-
-**Status Atual:** CONCLUÍDO (100%)
-
----
-
-### Épico 8 — Integrações Assistidas e Conectores Preparados
-
-**Objetivo:** Preparar conectores para integrações assistidas com transportadoras.
-
-**Funcionalidades:**
-- Contrato base de conector
-- Parser Braspress
-- Documentação Braspress
-- Mapper específico Braspress
-- Seletor de layout no frontend
-- Testes de parser
-- Testes de mapper
-- Conectores reais (pós-beta)
-- Integrações complexas (pós-beta)
-
-**Status Atual:** PARCIAL (44%)
-
----
-
-### Épico 9 — Gestão de Usuários, Permissões e Segurança Beta
-
-**Objetivo:** Implementar controle de acesso baseado em roles (RBAC) e segurança.
-
-**Funcionalidades:**
-- Model User (já existente)
-- Model Role (já existente)
-- Model Permission (novo)
-- Tabela role_permissions (nova)
-- Hash de senha com bcrypt
-- Autenticação JWT
-- Refresh tokens (pós-beta)
-- Rate limit (pós-beta)
-- RBAC por endpoint
-- RBAC por tela
-- Helpers de permissão (require_permission)
-- Matriz de roles beta (admin, manager, operator, viewer, logistica, gestor, auditoria)
-- Permissões granulares (shipments:read, imports:write, etc.)
-- Proteção de endpoints críticos (audit, reports, alerts, SLA)
-- Frontend de gestão de usuários
-- Frontend de gestão de roles
-- Frontend de gestão de permissões
-- Tratamento de 401/403 no frontend
-- Componente AccessDenied
-- Testes RBAC backend
-- Testes RBAC frontend
-
-**Status Atual:** IMPLEMENTADO (100%)
-
----
-
-### Épico 10 — Dashboard Beta e UX Operacional
-
-**Objetivo:** Criar dashboard beta com KPIs operacionais e UX otimizada.
-
-**Funcionalidades:**
-- Endpoint dashboard summary
-- KPIs: total shipments, entregas no prazo, atrasos, alertas ativos
-- Tela dashboard/KPIs
-- Gráficos de tendência (pós-beta)
-- Filtros por período
-- Layout responsivo
-- UX otimizada para operações
-- Testes de dashboard
-- Testes de UX
-
-**Status Atual:** PARCIAL (33%)
-
----
-
-### Épico 11 — QA, CI/CD e Validação de Beta
-
-**Objetivo:** Implementar infraestrutura de QA, CI/CD e validação automatizada.
-
-**Funcionalidades:**
-- CI base (GitHub Actions)
-- Secret scan
-- Migrations validation
-- Docs validation
-- Beta validate
-- Coverage reports
-- Rollback documentation
-- E2E tests (Playwright)
-- Smoke UI tests
-- Testes unitários backend
-- Testes unitários frontend
-- Scripts oficiais Python
-- Monitoramento de performance (pós-beta)
-
-**Status Atual:** PARCIAL (80%)
-
----
-
-### Épico 12 — Documentação Beta
-
-**Objetivo:** Documentar completamente o sistema para fase beta.
-
-**Funcionalidades:**
-- README principal
-- README API
-- README Web
-- Documentação beta (BETA_*.md)
-- Checklist beta
-- Comandos oficiais
-- Gates de release
-- Limitações conhecidas
-- Próximas ações
-- Manual do usuário (pós-beta)
-- Documentação de importação (pós-beta)
-- Documentação Braspress (pós-beta)
-- Documentação de permissões (pós-beta)
-- Documentação de alertas/relatório (pós-beta)
-- Documentação de auditoria/logs (pós-beta)
-- Roadmap pós-beta (pós-beta)
-
-**Status Atual:** PARCIAL (71%)
-
----
-
-## Tecnologias
-
-### Backend
-- Python 3.12
-- FastAPI
-- SQLAlchemy 2.0
-- Alembic
-- Pydantic V2
-- Pytest
-- PostgreSQL
-
-### Frontend
-- Node.js 20
-- Next.js 14 (App Router)
-- TypeScript 5
-- TailwindCSS
-- shadcn/ui
-- Vitest
-- Playwright
-- React 18
-
-### DevOps
-- GitHub Actions
-- Git
-- Docker (pós-beta)
-
----
-
-## Limitações Conhecidas
-
-### Cobertura de Testes
-- Web coverage: 20.8% (baixa)
-- lib/api.ts com baixa cobertura
-- login/page.tsx com baixa cobertura
-
-### Migrations
-- Downgrade para base destrói dados por design
-- Não há validação de preservação real de dados
-
-### E2E
-- Testes marcados como skip para UI não implementada
-- Autenticação mockada (localStorage)
-- Dados de teste mockados
-
-### Segurança
-- Rate limit não implementado
-- Refresh tokens não implementados
-- Sanitização avançada de secrets não implementada
-
-### Performance
-- Monitoramento de performance não implementado
-- Profiling não implementado
-
-### Acessibilidade
-- Acessibilidade não implementada
-- Contraste não validado
-- Navegação por teclado não implementada
-
-### Internacionalização
-- i18n não implementado
-- Suporte a múltiplos idiomas não implementado
-
----
-
-## Próximos Passos
-
-### Prioridade Alta
-1. Completar Épico 4 (Eficiência) - ranking/percentuais
-2. Completar Épico 5 (Alertas) - geração de alertas e painel
-3. Completar Épico 6 (Relatório Diário) - geração manual
-4. Completar Épico 10 (Dashboard) - tela dashboard/KPIs
-
-### Prioridade Média
-1. Aumentar cobertura de testes frontend
-2. Implementar monitoramento de performance
-3. Implementar acessibilidade básica
-
-### Prioridade Baixa
-1. Implementar internacionalização
-2. Implementar rate limit
-3. Implementar refresh tokens
-
----
-
-**Assinatura:** Equipe Ilex Logística  
-**Data:** 2026-06-11  
-**Versão:** 1.0
+- Importar pedidos do ERP por CSV/XLSX padronizado.
+- Criar uma comparação por pedido e transportadoras habilitadas.
+- Registrar valor ou status `pendente`, `cotado`, `indisponivel`, `erro` ou `vencido`.
+- Destacar inicialmente o menor valor válido; desempates seguem ordem estável definida na spec.
+- Preservar histórico auditável sem sobrescrever rodadas anteriores.
+
+### 7.2 Evolução automática
+
+Integrações por API com ERP e transportadoras só entram após contrato, credenciais seguras, ambiente de homologação, idempotência, limites de requisição e política de retry aprovados. Automação de portal/captcha não integra o MVP.
+
+## 8. Requisitos não funcionais
+
+- **Segurança:** JWT, RBAC, validação de entrada, secrets fora do repositório e auditoria de ações críticas.
+- **Qualidade:** SDD antes do código; TDD RED/GREEN/REFACTOR; não reduzir cobertura sem justificativa.
+- **Confiabilidade:** importações idempotentes, erros por linha e consistência transacional.
+- **Desempenho:** paginação e filtros server-side; metas numéricas permanecem A CONFIRMAR.
+- **Acessibilidade:** navegação e componentes Web devem manter semântica, teclado e feedback compreensível.
+- **Observabilidade:** logs operacionais sem dados sensíveis; monitoramento externo A CONFIRMAR.
+- **Compatibilidade:** PostgreSQL em produção/Docker e SQLite apenas onde suportado por testes/desenvolvimento.
+- **Privacidade:** retenção, base legal e política de descarte A CONFIRMAR com o cliente.
+
+## 9. Integrações e dados
+
+| Integração | Estratégia | Estado |
+|---|---|---|
+| Braspress | relatório exportado e importação assistida | Confirmado por mapper/testes |
+| Outras transportadoras | CSV/XLSX ou conector futuro | Parcial/A CONFIRMAR |
+| ERP | importação assistida; API futura | Planejado |
+| Notificações externas | logs de entrega presentes; canal real | PENDENTE DE VALIDAÇÃO |
+
+Entidades confirmadas incluem usuários, papéis, permissões, transportadoras, históricos de importação, deliveries, shipments, tratativas, regras SLA, alertas, logs de entrega, relatórios e auditoria. `orders` e `freight_quotes` são planejadas e exigem migration própria.
+
+## 10. Limites e fora de escopo
+
+- Não armazenar credenciais em documentação, frontend ou arquivos importados.
+- Não automatizar captcha ou contornar controles de portais.
+- Pagamentos, faturamento, roteirização de frota e marketplace não estão contemplados.
+- Não prometer APIs de terceiros sem documentação e homologação.
+- Não usar dados sintéticos como evidência de produção.
+
+## 11. Riscos e dependências
+
+- Contrato e ambiente do ERP ainda não fornecidos.
+- Nem toda transportadora possui API ou layout estável.
+- Qualidade dos indicadores depende da qualidade de NF, datas, status e frete importados.
+- Regra única de SLA, extravio e eficiência precisa de homologação operacional.
+- Retenção de auditoria, relatórios e cotações permanece A CONFIRMAR.
+
+## 12. Critérios globais de aceite
+
+- Cada requisito possui spec, status e evidência ou marcação explícita de pendência.
+- Filtros combinados produzem listagens e KPIs consistentes.
+- Cálculos monetários tratam nulos e divisão por zero.
+- Importações reportam erro por linha, duplicidade e resultado persistido.
+- Rotas privadas distinguem autenticação ausente (`401`) de permissão insuficiente (`403`).
+- Alterações críticas deixam trilha auditável.
+- Novos schemas usam migration testada em upgrade/downgrade.
+- Suítes afetadas, build, validação documental e secret scan passam antes da entrega.
+
+## 13. Matriz do Apêndice 1
+
+| IDs | Resultado | Estado atual | Spec |
+|---|---|---|---|
+| LOG-027–031 | campos fiscais e financeiros | Backend confirmado; Web/homologação parcial | `04-entregas-monitoradas.md` |
+| LOG-032–033 | filtros e busca | Parcial | `04-entregas-monitoradas.md` |
+| LOG-034–035 | eficiência e indicadores por período | Implementação presente; aceite complementar parcial | `07-eficiencia-transportadoras.md` |
+| LOG-036–040 | pedidos e cotação | Planejado | `12-pedidos-cotacao-frete.md` |
+| LOG-041 | fluxo Braspress | Implementação/testes presentes; guia consolidado na spec | `03-importacoes-braspress.md` |
+
+## 14. Fontes de verdade
+
+- Apêndice: `ESCOPO_PROJETO_ILEX_LOGISTICA_APENDICE_1.md`.
+- Índice SDD: `docs/specs/README.md`.
+- Implementação: `apps/api/app/modules/`, `apps/web/src/` e migrations.
+- Estado e prioridade: `CONTEXTO.md` e `ROADMAP.md`.

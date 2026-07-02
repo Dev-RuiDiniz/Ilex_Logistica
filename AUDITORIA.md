@@ -1,5 +1,15 @@
 # AUDITORIA.md — Estado Técnico do Ilex Logística
 
+## Atualização P0 — 2026-07-02
+
+- Web: 393 testes, ESLint sem erros e build aprovados localmente.
+- API: 664 testes coletados; execução integral intermediária em 6m34s com 660 aprovações e quatro falhas de duas causas, corrigidas antes da validação final.
+- Banco: histórico Alembic com uma head; upgrade, downgrade, roundtrip e preservação de dados aprovados.
+- Infraestrutura: 5 testes aprovados; imports/caminhos corrigidos; seed de demonstração removido da imagem da API.
+- CI: workflows de API, Web e governança criados; execução remota e proteção da `main` ainda precisam ser confirmadas.
+
+Os achados históricos abaixo registram o baseline anterior ao P0 e devem ser lidos em conjunto com esta atualização.
+
 **Data da auditoria:** 2026-07-02
 **Branch auditada:** `chore/governanca-agentes`
 **Objetivo:** estabelecer o estado comprovado do repositório e orientar sua conclusão por SDD.

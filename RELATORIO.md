@@ -4,6 +4,12 @@
 
 ### Tarefas executadas
 
+- Estabilização da autenticação dos testes de importação e correção semântica de `401/403`.
+- Unificação do contrato de logs de entrega de alertas e correção do downgrade Alembic.
+- Atualização dos schemas Pydantic e limpeza estática da API com Ruff.
+- Correção dos imports/caminhos dos testes de infraestrutura e criação dos workflows de API, Web e governança.
+- Remoção do seed de demonstração da imagem da API e endurecimento do template de ambiente VPS.
+
 - Inspeção da stack, módulos, rotas, models, migrations, testes e infraestrutura.
 - Registro, commit e push das exclusões preexistentes autorizadas pelo usuário, sem incluir o apêndice não rastreado.
 - Consolidação da governança raiz com base no Apêndice 1 e em evidências atuais.
@@ -29,6 +35,11 @@
 - `RELATORIO_DIA.md` não foi restaurado; seu papel passa a ser cumprido por este arquivo.
 
 ### Testes e validações
+
+- API: 664 testes coletados; execução intermediária com 660 aprovados e quatro falhas corrigidas antes do gate final.
+- Ruff: `python -m ruff check app tests` aprovado.
+- Migrations: uma head; upgrade, downgrade, roundtrip e preservação aprovados.
+- Infra: 5 testes aprovados.
 
 - Não houve alteração de código funcional; não foram criados testes de produto.
 - `python scripts/check_secrets.py --repo-root . --self-test`: aprovado.

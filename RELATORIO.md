@@ -15,6 +15,8 @@
 - Auditoria completa de API, Web, banco, infraestrutura, CI, segurança, testes e documentação com evidências executadas.
 - Reestruturação do roadmap em P0–P5 para concluir o MVP assistido por SDD.
 - Reformulação do README raiz como apresentação comercial/executiva para clientes.
+- Consolidação das branches de governança e VPS na `main`, seguida da remoção segura das branches paralelas.
+- Restauração do dashboard filtrável e estabilização de seus testes como parte do P0.
 
 ### Arquivos modificados/criados
 

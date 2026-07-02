@@ -1,6 +1,6 @@
 # SPEC-08 — Dashboard e Indicadores
 
-**Estado:** Implementado; bloqueado por testes Web e homologação de LOG-035
+**Estado:** Implementado; baseline Web restaurado, homologação de LOG-035 pendente
 **Rastreabilidade:** LOG-035
 
 ## Objetivo e contexto
@@ -11,7 +11,7 @@ Fornecer panorama executivo e operacional com KPIs, tendência, eficiência e ex
 
 API oferece summary e trend com schemas/filtros; Web possui dashboard e testes, integrado a alertas e eficiência.
 
-Na auditoria de 2026-07-02, testes do dashboard falharam; nenhum indicador deve ser considerado homologado até reconciliação com a mesma janela de filtros das entregas.
+Na consolidação P0 de 2026-07-02, o dashboard voltou ao contrato filtrável coberto pelos testes. Os indicadores ainda dependem de reconciliação e homologação com a mesma janela das entregas.
 
 ## Entradas, saídas e fluxo
 

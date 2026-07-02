@@ -24,6 +24,12 @@
 
 Executar P0 na ordem: build/runtime Web, suíte/lint, migration única, API determinística, infra e CI.
 
+### Execução P0
+
+- Branches de governança e VPS foram consolidadas na `main`; branches paralelas locais e remotas foram removidas após confirmação de ancestralidade.
+- O build Web voltou a passar após a consolidação.
+- O dashboard foi restaurado ao contrato real com filtros e seus 26 testes voltaram ao baseline esperado.
+
 ## 2026-07-02 — Consolidação de governança
 
 ### Estado atual

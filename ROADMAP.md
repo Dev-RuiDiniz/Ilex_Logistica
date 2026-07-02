@@ -25,7 +25,7 @@
 
 ## 3. P0 — Recuperar baseline verde
 
-**Estado em 2026-07-02:** implementação local concluída para Web, Alembic e infraestrutura; API e checks remotos em validação final. O P0 só muda para concluído quando todos os gates abaixo estiverem verdes na mesma revisão da `main`.
+**Estado em 2026-07-02:** gates locais concluídos para Web, API, Alembic, infraestrutura e governança. Pendente apenas confirmar os workflows e aplicar os checks obrigatórios na `main` remota.
 
 ### P0.1 Web build e runtime — SPEC-03/SPEC-04
 

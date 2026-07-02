@@ -5,12 +5,12 @@
 ## 2026-07-02 — Estabilização técnica do P0
 
 - Web confirmado com 393 testes, ESLint sem erros e build aprovado.
-- API passou a coletar 664 testes; a primeira execução integral concluiu em 6m34s com 660 aprovações e quatro regressões isoladas, já corrigidas por causa raiz.
+- API confirmou 664/664 testes em 72,52s, com SQLite em memória isolado e execução concorrente ao roundtrip Alembic.
 - Contratos de entrega de alertas foram unificados entre model, migration, serviço e API; ausência de credencial agora responde `401` e falta de permissão responde `403`.
 - Alembic possui uma única head e os testes de upgrade, downgrade e preservação de dados estão verdes.
 - Testes de infraestrutura são importáveis pela raiz; workflows separados de API, Web e governança foram adicionados.
 - A imagem da API não inclui mais o seed de demonstração e o template VPS não fixa endereço local como destino público.
-- P0 permanece em validação até a repetição dos gates integrais e confirmação dos checks remotos.
+- Gates locais do P0 estão verdes; resta confirmar os workflows e a proteção da `main` no GitHub.
 
 ## 2026-07-02 — Auditoria completa e redefinição do encerramento
 

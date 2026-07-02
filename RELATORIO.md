@@ -36,10 +36,11 @@
 
 ### Testes e validações
 
-- API: 664 testes coletados; execução intermediária com 660 aprovados e quatro falhas corrigidas antes do gate final.
+- API: 664/664 testes aprovados em 72,52s, simultaneamente à validação Alembic.
 - Ruff: `python -m ruff check app tests` aprovado.
 - Migrations: uma head; upgrade, downgrade, roundtrip e preservação aprovados.
 - Infra: 5 testes aprovados.
+- Web: 393 testes, ESLint sem erros e build Next.js aprovados.
 
 - Não houve alteração de código funcional; não foram criados testes de produto.
 - `python scripts/check_secrets.py --repo-root . --self-test`: aprovado.

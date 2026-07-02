@@ -72,13 +72,13 @@
 
 ## 4. P1 — Homologar monitoramento LOG-027–035
 
-### P1.1 Dados fiscais/financeiros — SPEC-04  `[~]`
+### P1.1 Dados fiscais/financeiros — SPEC-04  `[x]`
 
-- [~] LOG-027–031: validar NF, data de coleta, valor da NF, frete e percentual em import, API, lista, detalhe e exportação.
-- [ ] Cobrir nulos, zero, decimais, datas inválidas e compatibilidade com registros antigos.
-- [ ] **Aceite:** valores reconciliam com fixtures homologadas e nenhuma divisão inválida ocorre.
+- [x] LOG-027–031: validar NF, data de coleta, valor da NF, frete e percentual em import, API, lista, detalhe e exportação.
+- [x] Cobrir nulos, zero, decimais, datas inválidas e compatibilidade com registros antigos.
+- [x] **Aceite:** valores reconciliam com fixtures homologadas e nenhuma divisão inválida ocorre.
 
-> **Evidência atual:** backend confirmado com campos fiscais/financeiros; Web e homologação parcial (ESCOPO.md §13, SPEC-04 "Bloqueado no Web" pré-P0).
+> **Evidência:** 17 testes API (decimal, datas inválidas, compat API, reconciliação com dataset), 15 testes Web (null/zero/undefined), bug corrigido em `get_shipment_detail` (campos fiscais ausentes). Dataset em `tests/fixtures/homologation_fiscal_financial.csv`.
 
 ### P1.2 Busca e filtros — SPEC-04  `[~]`
 

@@ -338,3 +338,169 @@ def test_backward_compatibility_with_old_shipments(db_session: Session):
     assert old_shipment.collection_departure_date is None
     assert old_shipment.customer_name is None
     assert old_shipment.destination_uf is None
+
+
+# =============================================================================
+# P1.1 — Edge cases fiscais/financeiros (LOG-027 a LOG-031)
+# =============================================================================
+
+
+def test_decimal_precision_max(db_session: Session):
+    """Deve persistir frete e NF com precisao maxima (10,2)."""
+    shipment = Shipment(
+        tracking_code="TEST-DEC-001",
+        carrier_id=1,
+        status="pending",
+        estimated_delivery=datetime.now(UTC),
+        recipient_name="Test Customer",
+        recipient_phone="11999999999",
+        origin_address="Rua Teste, 1",
+        destination_address="Rua Destino, 1",
+        invoice_number="NF-DEC-001",
+        freight_value=99999.99,
+        invoice_value=99999.99,
+        collection_departure_date=datetime.now(UTC),
+        customer_name="Test Customer",
+        destination_uf="SP",
+    )
+
+    db_session.add(shipment)
+    db_session.commit()
+    db_session.refresh(shipment)
+
+    assert float(shipment.freight_value) == 99999.99
+    assert float(shipment.invoice_value) == 99999.99
+    # 99999.99 / 99999.99 * 100 = 100.0
+    assert float(shipment.freight_percentage) == 100.0
+
+
+def test_freight_percentage_with_very_small_invoice(db_session: Session):
+    """Percentual com NF muito pequena: 100.00 / 0.01 = 10000% sem erro."""
+    shipment = Shipment(
+        tracking_code="TEST-DEC-002",
+        carrier_id=1,
+        status="pending",
+        estimated_delivery=datetime.now(UTC),
+        recipient_name="Test Customer",
+        recipient_phone="11999999999",
+        origin_address="Rua Teste, 1",
+        destination_address="Rua Destino, 1",
+        invoice_number="NF-DEC-002",
+        freight_value=100.00,
+        invoice_value=0.01,
+        collection_departure_date=datetime.now(UTC),
+        customer_name="Test Customer",
+        destination_uf="SP",
+    )
+
+    db_session.add(shipment)
+    db_session.commit()
+    db_session.refresh(shipment)
+
+    # 100.00 / 0.01 * 100 = 1000000.0
+    assert shipment.freight_percentage is not None
+    assert float(shipment.freight_percentage) == 1000000.0
+
+
+def test_decimal_more_than_two_places_rounds_correctly(db_session: Session):
+    """Decimal com mais de 2 casas deve arredondar para 2 casas (Numeric(10,2))."""
+    shipment = Shipment(
+        tracking_code="TEST-DEC-003",
+        carrier_id=1,
+        status="pending",
+        estimated_delivery=datetime.now(UTC),
+        recipient_name="Test Customer",
+        recipient_phone="11999999999",
+        origin_address="Rua Teste, 1",
+        destination_address="Rua Destino, 1",
+        invoice_number="NF-DEC-003",
+        freight_value=10.999,
+        invoice_value=100.001,
+        collection_departure_date=datetime.now(UTC),
+        customer_name="Test Customer",
+        destination_uf="SP",
+    )
+
+    db_session.add(shipment)
+    db_session.commit()
+    db_session.refresh(shipment)
+
+    # Numeric(10,2) arredonda para 2 casas
+    assert shipment.freight_value is not None
+    assert float(shipment.freight_value) == 11.00
+    assert shipment.invoice_value is not None
+    assert float(shipment.invoice_value) == 100.00
+
+
+def test_old_shipment_via_api_returns_null_fiscal_fields(client, db_session: Session, auth_headers):
+    """GET /shipments/{id} em registro antigo retorna null nos campos fiscais."""
+    from app.modules.shipments.models import Shipment
+
+    old_shipment = Shipment(
+        tracking_code="OLD-API-001",
+        carrier_id=1,
+        status="pending",
+        estimated_delivery=datetime.now(UTC),
+        recipient_name="Old Customer",
+        recipient_phone="11999999999",
+        origin_address="Rua Antiga, 1",
+        destination_address="Rua Antiga Destino, 1",
+    )
+
+    db_session.add(old_shipment)
+    db_session.commit()
+    db_session.refresh(old_shipment)
+
+    response = client.get(
+        f"/api/v1/shipments/{old_shipment.id}",
+        headers=auth_headers,
+    )
+
+    assert response.status_code == 200
+    data = response.json()
+    assert data["freight_value"] is None
+    assert data["invoice_value"] is None
+    assert data["freight_percentage"] is None
+    assert data["collection_departure_date"] is None
+    assert data["customer_name"] is None
+    assert data["destination_uf"] is None
+
+
+def test_shipment_with_fiscal_fields_via_api_returns_values(client, db_session: Session, auth_headers):
+    """GET /shipments/{id} em registro com campos fiscais retorna os valores corretos."""
+    from app.modules.shipments.models import Shipment
+
+    shipment = Shipment(
+        tracking_code="FISC-API-001",
+        carrier_id=1,
+        status="pending",
+        estimated_delivery=datetime.now(UTC),
+        recipient_name="Fiscal Customer",
+        recipient_phone="11999999999",
+        origin_address="Rua Fiscal, 1",
+        destination_address="Rua Destino Fiscal, 1",
+        invoice_number="NF-FISC-001",
+        freight_value=150.00,
+        invoice_value=1500.00,
+        collection_departure_date=datetime.now(UTC),
+        customer_name="Fiscal Customer",
+        destination_uf="RJ",
+    )
+
+    db_session.add(shipment)
+    db_session.commit()
+    db_session.refresh(shipment)
+
+    response = client.get(
+        f"/api/v1/shipments/{shipment.id}",
+        headers=auth_headers,
+    )
+
+    assert response.status_code == 200
+    data = response.json()
+    assert data["invoice_number"] == "NF-FISC-001"
+    assert data["freight_value"] == 150.0
+    assert data["invoice_value"] == 1500.0
+    assert data["freight_percentage"] == 10.0
+    assert data["customer_name"] == "Fiscal Customer"
+    assert data["destination_uf"] == "RJ"

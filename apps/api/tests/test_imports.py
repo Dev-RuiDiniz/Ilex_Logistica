@@ -1077,3 +1077,75 @@ def test_get_delivery_detail_resposta_nao_expoe_stack_trace(client) -> None:
     body = response.json()
     assert "Traceback" not in str(body)
     assert 'File "' not in str(body)
+
+
+# =============================================================================
+# P1.1 - Edge cases de import (LOG-027 a LOG-031)
+# =============================================================================
+
+
+def test_upload_csv_data_coleta_fevereiro_30_retorna_400(client) -> None:
+    """CSV com data_coleta 2026-02-30 (dia invalido) deve retornar 400."""
+    csv_bytes = b"nf,transportadora,data_coleta,valor_frete,percentual_frete\n999,XPTO,2026-02-30,10.50,5.00\n"
+    response = client.post(
+        "/api/v1/imports/upload",
+        files={"file": ("entregas.csv", csv_bytes, "text/csv")},
+    )
+    assert response.status_code == 400
+    detail = response.json()["detail"].lower()
+    assert "data_coleta" in detail
+
+
+def test_upload_csv_data_coleta_mes_13_retorna_400(client) -> None:
+    """CSV com data_coleta 2026-13-01 (mes invalido) deve retornar 400."""
+    csv_bytes = b"nf,transportadora,data_coleta,valor_frete,percentual_frete\n999,XPTO,2026-13-01,10.50,5.00\n"
+    response = client.post(
+        "/api/v1/imports/upload",
+        files={"file": ("entregas.csv", csv_bytes, "text/csv")},
+    )
+    assert response.status_code == 400
+    detail = response.json()["detail"].lower()
+    assert "data_coleta" in detail
+
+
+def test_upload_csv_data_coleta_ano_bissexto_valido_retorna_200(client, seed_carrier) -> None:
+    """CSV com data_coleta 2024-02-29 (ano bissexto valido) deve ser aceito."""
+    csv_bytes = b"nf,transportadora,data_coleta,valor_frete,percentual_frete\n999,XPTO,2024-02-29,10.50,5.00\n"
+    response = client.post(
+        "/api/v1/imports/upload",
+        files={"file": ("entregas.csv", csv_bytes, "text/csv")},
+    )
+    assert response.status_code == 200
+
+
+def test_upload_csv_valor_frete_decimal_alta_precisao_retorna_200(client, seed_carrier) -> None:
+    """CSV com valor_frete 10.999 deve ser aceito (arredondamento pelo Numeric(10,2))."""
+    csv_bytes = b"nf,transportadora,data_coleta,valor_frete,percentual_frete\n999,XPTO,2026-05-14,10.999,5.00\n"
+    response = client.post(
+        "/api/v1/imports/upload",
+        files={"file": ("entregas.csv", csv_bytes, "text/csv")},
+    )
+    assert response.status_code == 200
+
+
+def test_upload_csv_nf_numerica_grande_retorna_200(client, seed_carrier) -> None:
+    """CSV com NF de 20 digitos deve ser aceito."""
+    nf_grande = "1" * 20
+    csv_bytes = f"nf,transportadora,data_coleta,valor_frete,percentual_frete\n{nf_grande},XPTO,2026-05-14,10.50,5.00\n".encode("utf-8")
+    response = client.post(
+        "/api/v1/imports/upload",
+        files={"file": ("entregas.csv", csv_bytes, "text/csv")},
+    )
+    assert response.status_code == 200
+    data = response.json()
+    assert data["preview"][0]["nf"] == nf_grande
+
+
+def test_upload_csv_valor_frete_vazio_retorna_200(client, seed_carrier) -> None:
+    """CSV com valor_frete vazio deve ser aceito (campo opcional)."""
+    csv_bytes = b"nf,transportadora,data_coleta,valor_frete,percentual_frete\n999,XPTO,2026-05-14,,\n"
+    response = client.post(
+        "/api/v1/imports/upload",
+        files={"file": ("entregas.csv", csv_bytes, "text/csv")},
+    )
+    assert response.status_code == 200

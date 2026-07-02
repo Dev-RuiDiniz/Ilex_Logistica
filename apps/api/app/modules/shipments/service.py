@@ -892,6 +892,12 @@ def get_shipment_detail(db: Session, shipment_id: int) -> dict[str, Any] | None:
         "due_date": item.due_date,
         "delay_days": item.delay_days,
         "criticality": item.criticality,
+        "freight_value": float(item.freight_value) if item.freight_value is not None else None,
+        "invoice_value": float(item.invoice_value) if item.invoice_value is not None else None,
+        "freight_percentage": float(item.freight_percentage) if item.freight_percentage is not None else None,
+        "collection_departure_date": item.collection_departure_date,
+        "customer_name": item.customer_name,
+        "destination_uf": item.destination_uf,
         "created_at": item.created_at,
         "updated_at": item.updated_at,
     }

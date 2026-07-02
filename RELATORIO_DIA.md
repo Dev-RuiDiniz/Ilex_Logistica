@@ -12,7 +12,14 @@
    - Validação de campos obrigatórios (rastreio, transportadora, origem, destino, destinatário, telefone)
    - Carregamento de transportadoras ativas para o select do formulário
 
-2. **Correções de compatibilidade de testes**
+2. **Correção do erro 404 na página `/alerts` na VPS**
+   - Diagnóstico: `alerts-api.ts` usava `fetch` relativo sem token e sem a URL base da API, causando requisições para `http://2.25.168.34:3000/api/v1/alerts` (Next.js retornava 404)
+   - `alerts-api.ts` refatorado para usar `buildApiUrl` e enviar `Authorization: Bearer <token>` em todas as chamadas
+   - `alerts/page.tsx` passa a usar `useAuth` e fornecer `session.accessToken` para `getAlerts`, `getAlertsSummary`, `generateAlerts`, `markAlertAsRead` e `resolveAlert`
+   - Testes de `alerts-api.test.ts` atualizados para validar token e URL base
+   - Testes de `alerts-page` recriados em `src/lib/alerts-page.test.tsx` (arquivo original em `src/app/(private)/alerts/` causava crash silencioso do Vitest)
+
+3. **Correções de compatibilidade de testes**
    - Ajustado `calculate_delay_days` para lidar com datas offset-naive/offset-aware
    - Atualizados testes de `shipments-sla-filters.test.tsx` para refletir a nova UI (labels, ranges, filtros expandidos)
    - Adicionados testes para o modal de criação (`shipments-create-modal.test.tsx`)
@@ -20,8 +27,12 @@
    - Ajustadas labels da sidebar para corresponder aos testes de navegação
    - Corrigido texto de loading no teste de auditoria
 
-3. **Commit e push**
-   - Commit `8f7b69e` na branch `feature/infra-vps-docker`
+4. **Deploy na VPS**
+   - Rebuild dos containers `ilex-api` e `ilex-web` em `2.25.168.34` com as correções
+   - Validação: `GET /api/v1/alerts` e `GET /api/v1/alerts/summary` retornam `200` com token válido
+
+5. **Commit e push**
+   - Commit `8f7b69e` e `6650eb2` na branch `feature/infra-vps-docker`
    - Push para `https://github.com/Dev-RuiDiniz/Ilex_Logistica.git`
 
 ### Arquivos Modificados/Criados
@@ -34,16 +45,21 @@
 - `apps/web/src/app/(private)/shipments/page.tsx` — modal/form de cadastro
 - `apps/web/src/app/(private)/shipments/shipments-sla-filters.test.tsx` — testes atualizados
 - `apps/web/src/app/(private)/shipments/shipments-create-modal.test.tsx` — testes do modal (novo)
-- `apps/web/src/app/(private)/alerts/page.tsx` — acessibilidade dos filtros
+- `apps/web/src/app/(private)/alerts/page.tsx` — autenticação e chamadas de API de alertas
+- `apps/web/src/lib/alerts-api.ts` — token e URL base em todas as requisições de alertas
+- `apps/web/src/lib/alerts-api.test.ts` — testes atualizados para nova assinatura
+- `apps/web/src/lib/alerts-page.test.tsx` — testes da página de alertas (novo local)
 - `apps/web/src/app/(private)/audit/page.test.tsx` — texto de loading
 - `apps/web/src/components/app-shell.tsx` — labels da sidebar
 
 ### Testes
 - Backend: `test_shipment_create_manual.py` → 3/3 passando
 - Frontend (shipments): 93/93 testes passando (inclui filtros e modal de criação)
+- Frontend (alerts): `alerts-api.test.ts` → 9/9 passando; `alerts-page.test.tsx` → 3/3 passando
 - Frontend build: `npm run build` → sucesso
 - Frontend geral: 373/399 passando (26 falhas preexistentes em `dashboard-page.test.tsx` — UI redesenhada sem testes atualizados)
 - Backend geral: 563/662 passando (99 falhas preexistentes relacionadas a RBAC/autenticação em testes antigos)
+- VPS: `GET /api/v1/alerts` e `GET /api/v1/alerts/summary` → 200
 
 ### Documentação Atualizada
 - `RELATORIO_DIA.md` — este registro

@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useMemo, useState } from "react";
 
-import { clearSession, saveSession } from "@/lib/session";
+import { clearSession, getSession, saveSession } from "@/lib/session";
 import type { SessionData } from "@/lib/types";
 
 interface AuthContextValue {
@@ -13,22 +13,20 @@ interface AuthContextValue {
 
 const AuthContext = createContext<AuthContextValue | null>(null);
 
-const DEV_SESSION: SessionData = {
-  email: "dev@ilex.com",
-  accessToken: "dev-token-bypass",
-  refreshToken: "dev-refresh-bypass",
-  role: "admin",
-};
-
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [session] = useState<SessionData>(DEV_SESSION);
+  const [session, setSessionState] = useState<SessionData | null>(() => {
+    if (typeof window === "undefined") return null;
+    return getSession();
+  });
 
   const setSession = (value: SessionData) => {
     saveSession(value);
+    setSessionState(value);
   };
 
   const logout = () => {
     clearSession();
+    setSessionState(null);
   };
 
   const value = useMemo(() => ({ session, setSession, logout }), [session]);

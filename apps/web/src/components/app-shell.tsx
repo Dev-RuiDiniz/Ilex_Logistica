@@ -63,7 +63,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           {canWriteImports(role) && (
             <SidebarLink href="/shipments/import" active={pathname === "/shipments/import"}>
               <IconImport />
-              Importar
+              Importar Envios
             </SidebarLink>
           )}
           {canReadCarriers(role) && (
@@ -79,7 +79,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           {canReadReports(role) && (
             <SidebarLink href="/reports/daily" active={pathname.startsWith("/reports")}>
               <IconReport />
-              Relatórios
+              Relatório Diário
             </SidebarLink>
           )}
 
@@ -106,7 +106,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             <div className="flex h-8 w-8 items-center justify-center rounded-full bg-red-600/15 text-xs font-bold text-red-400">
               {session?.email?.[0]?.toUpperCase() ?? "D"}
             </div>
-            <div className="min-w-0 flex-1">
+            <div className="min-w-0 flex-1" suppressHydrationWarning>
               <p className="truncate text-sm font-medium text-zinc-300">{session?.email}</p>
               <p className="text-[11px] text-zinc-500">{session?.role} {getRoleUiLabel(session?.role ?? "auditoria")}</p>
             </div>

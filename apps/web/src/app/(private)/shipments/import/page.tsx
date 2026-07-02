@@ -4,7 +4,6 @@ import { ChangeEvent, useState } from "react";
 
 import { confirmShipmentsImport, previewShipmentImport } from "@/lib/api";
 import { canEditShipments } from "@/lib/permissions";
-import { handleApiError } from "@/lib/error-handler";
 import { useAuth } from "@/features/auth/auth-provider";
 import { useApiErrorHandler } from "@/lib/useApiErrorHandler";
 import { AccessDenied } from "@/components/AccessDenied";
@@ -38,6 +37,7 @@ type ImportState =
 
 export default function ShipmentsImportPage() {
   const { session } = useAuth();
+  const { handleApiError, accessDenied, accessDeniedMessage } = useApiErrorHandler();
   const [state, setState] = useState<ImportState>("idle");
   const [error, setError] = useState("");
   const [file, setFile] = useState<File | null>(null);
@@ -135,6 +135,10 @@ export default function ShipmentsImportPage() {
   const selectClass = "mt-1.5 w-full rounded-lg border border-zinc-200 bg-white px-3 py-2.5 text-sm text-black transition-colors focus:border-red-500 focus:outline-none focus:ring-2 focus:ring-red-500/20 disabled:opacity-50";
   const btnPrimary = "rounded-lg bg-zinc-900 px-4 py-2.5 text-sm font-semibold text-white transition-all hover:bg-zinc-800 disabled:opacity-50";
   const btnSecondary = "rounded-lg border border-zinc-200 bg-white px-4 py-2.5 text-sm font-semibold text-zinc-700 transition-all hover:border-zinc-300 hover:bg-zinc-50 disabled:opacity-50";
+
+  if (accessDenied) {
+    return <AccessDenied message={accessDeniedMessage} />;
+  }
 
   return (
     <section className="space-y-5">

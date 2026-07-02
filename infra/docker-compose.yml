@@ -27,7 +27,7 @@ services:
   api:
     build:
       context: ..
-      dockerfile: Infra/docker/api/Dockerfile
+      dockerfile: infra/docker/api/Dockerfile
     container_name: ilex-api
     environment:
       ILEX_APP_NAME: ${ILEX_APP_NAME:-Ilex API}
@@ -37,6 +37,7 @@ services:
       ILEX_JWT_ALGORITHM: ${ILEX_JWT_ALGORITHM:-HS256}
       ILEX_JWT_ACCESS_MINUTES: ${ILEX_JWT_ACCESS_MINUTES:-30}
       ILEX_JWT_REFRESH_MINUTES: ${ILEX_JWT_REFRESH_MINUTES:-1440}
+      CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS:-http://localhost:3000,http://127.0.0.1:3000}
     ports:
       - "${API_PORT:-8000}:8000"
     depends_on:
@@ -50,6 +51,34 @@ services:
       timeout: 5s
       retries: 5
       start_period: 20s
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  web:
+    build:
+      context: ..
+      dockerfile: infra/docker/web/Dockerfile
+      args:
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-/api/v1}
+    container_name: ilex-web
+    environment:
+      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-/api/v1}
+      PORT: ${WEB_PORT:-3000}
+    ports:
+      - "${WEB_PORT:-3000}:3000"
+    depends_on:
+      - api
+    networks:
+      - ilex-network
+    healthcheck:
+      test: ["CMD-SHELL", "node -e \"require('http').get('http://127.0.0.1:3000', r => process.exit(r.statusCode === 200 ? 0 : 1))\""]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
     logging:
       driver: json-file
       options:

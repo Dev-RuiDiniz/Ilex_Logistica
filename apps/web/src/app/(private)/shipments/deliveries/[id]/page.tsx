@@ -1,16 +1,17 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 
 import { getDeliveryDetail, listCarriers, promoteDelivery } from "@/lib/api";
 import { useAuth } from "@/features/auth/auth-provider";
 import type { Carrier, DeliveryDetail, PromoteDeliveryRequest } from "@/lib/types";
 
-export default function DeliveryDetailPage({ params }: { params: { id: string } }) {
+export default function DeliveryDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { session } = useAuth();
   const [item, setItem] = useState<DeliveryDetail | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const { id } = use(params);
   
   // Estados do formulário de promoção
   const [showPromoteForm, setShowPromoteForm] = useState(false);
@@ -39,7 +40,7 @@ export default function DeliveryDetailPage({ params }: { params: { id: string } 
       setLoading(true);
       setError("");
       try {
-        const response = await getDeliveryDetail(session.accessToken, parseInt(params.id, 10));
+        const response = await getDeliveryDetail(session.accessToken, parseInt(id, 10));
         if (!cancelled) {
           setItem(response);
         }
@@ -51,7 +52,7 @@ export default function DeliveryDetailPage({ params }: { params: { id: string } 
     };
     void run();
     return () => { cancelled = true; };
-  }, [session, params.id]);
+  }, [session, id]);
 
   // Carregar carriers quando o formulário é aberto
   useEffect(() => {

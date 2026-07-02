@@ -1,3 +1,4 @@
+import { buildApiUrl } from "@/lib/api";
 import type {
   DailyReport,
   DailyReportAlertItem,
@@ -13,12 +14,23 @@ import type {
   DailyReportExportResponse,
 } from "./types";
 
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE || "http://localhost:8000/api/v1";
+function authHeaders(token: string) {
+  return {
+    "Content-Type": "application/json",
+    Authorization: `Bearer ${token}`,
+  };
+}
+
+function buildReportsDailyUrl(path: string, query?: string): string {
+  const normalizedPath = path.startsWith("/") ? path : path ? `/${path}` : "";
+  return buildApiUrl(`/reports/daily${normalizedPath}${query ? `?${query}` : ""}`);
+}
 
 /**
  * Get daily reports with optional filters
  */
 export async function getDailyReports(
+  token: string,
   filters?: DailyReportFilters
 ): Promise<DailyReportListResponse> {
   const params = new URLSearchParams();
@@ -30,13 +42,11 @@ export async function getDailyReports(
   if (filters?.offset) params.append("offset", filters.offset.toString());
 
   const queryString = params.toString();
-  const url = `${API_BASE}/reports/daily${queryString ? `?${queryString}` : ""}`;
+  const url = buildReportsDailyUrl("", queryString);
 
   const response = await fetch(url, {
     method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
+    headers: authHeaders(token),
   });
 
   if (!response.ok) {
@@ -50,13 +60,12 @@ export async function getDailyReports(
  * Get daily report by ID
  */
 export async function getDailyReportById(
+  token: string,
   reportId: number
 ): Promise<DailyReport> {
-  const response = await fetch(`${API_BASE}/reports/daily/${reportId}`, {
+  const response = await fetch(buildReportsDailyUrl(`/${reportId}`), {
     method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
+    headers: authHeaders(token),
   });
 
   if (!response.ok) {
@@ -70,15 +79,14 @@ export async function getDailyReportById(
  * Get daily report by date
  */
 export async function getDailyReportByDate(
+  token: string,
   reportDate: string
 ): Promise<DailyReport> {
   const response = await fetch(
-    `${API_BASE}/reports/daily/by-date/${reportDate}`,
+    buildReportsDailyUrl(`/by-date/${reportDate}`),
     {
       method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: authHeaders(token),
     }
   );
 
@@ -93,13 +101,12 @@ export async function getDailyReportByDate(
  * Generate a daily report
  */
 export async function generateDailyReport(
+  token: string,
   payload: DailyReportGenerateRequest
 ): Promise<DailyReport> {
-  const response = await fetch(`${API_BASE}/reports/daily/generate`, {
+  const response = await fetch(buildReportsDailyUrl("/generate"), {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
+    headers: authHeaders(token),
     body: JSON.stringify(payload),
   });
 
@@ -207,13 +214,12 @@ export function parseImportFailures(
  * Export daily reports to CSV or JSON
  */
 export async function exportDailyReports(
+  token: string,
   payload: DailyReportExportRequest
 ): Promise<DailyReportExportResponse> {
-  const response = await fetch(`${API_BASE}/reports/daily/export`, {
+  const response = await fetch(buildReportsDailyUrl("/export"), {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
+    headers: authHeaders(token),
     body: JSON.stringify(payload),
   });
 

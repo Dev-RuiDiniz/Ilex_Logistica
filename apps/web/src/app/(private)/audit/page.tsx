@@ -49,10 +49,10 @@ export default function AuditPage() {
       const data = await getAuditSummary(token);
       setSummary(data);
     } catch (err) {
-      handleApiError(err instanceof Error ? err : new Error("Erro ao carregar resumo"));
+      const error = err instanceof Error ? err : new Error("Erro ao carregar resumo");
+      handleApiError(error);
       console.error("Erro ao carregar summary:", err);
-      const errorMessage = handleApiError(err);
-      if (errorMessage.includes("Sessão expirada")) return;
+      if (error.message.includes("Sessão expirada")) return;
     }
   }, [token, handleApiError]);
 

@@ -1,5 +1,6 @@
 ﻿import type {
   Carrier,
+  CreateShipmentRequest,
   CreateShipmentTreatmentRequest,
   DailyReportResponse,
   DeliveryDetail,
@@ -10,6 +11,7 @@
   ImportPreviewV2Response,
   PromoteDeliveryRequest,
   PromoteDeliveryResponse,
+  Shipment,
   ShipmentDetail,
   ShipmentListParams,
   ShipmentListResponse,
@@ -23,6 +25,8 @@
   SlaRecalculateResponse,
   CarrierEfficiencyResponse,
   CarrierEfficiencyFilters,
+  DashboardSummaryResponse,
+  DashboardTrendResponse,
 } from "@/lib/types";
 
 export function getApiBaseUrl(envValue = process.env.NEXT_PUBLIC_API_URL): string {
@@ -104,9 +108,21 @@ export async function listCarriers(token: string, includeInactive = false): Prom
   });
 }
 
+export async function getDashboardSummary(token: string): Promise<DashboardSummaryResponse> {
+  return request<DashboardSummaryResponse>("/dashboard/summary", {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+}
+
+export async function getDashboardTrend(token: string, days = 30): Promise<DashboardTrendResponse> {
+  return request<DashboardTrendResponse>(`/dashboard/trend?days=${days}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+}
+
 export async function createCarrier(
   token: string,
-  payload: { name: string; external_code?: string; integration_metadata: Record<string, unknown> },
+  payload: { name: string; external_code?: string; whatsapp?: string | null; email?: string | null; integration_metadata: Record<string, unknown> },
 ): Promise<Carrier> {
   return request<Carrier>("/carriers", {
     method: "POST",
@@ -118,7 +134,7 @@ export async function createCarrier(
 export async function updateCarrier(
   token: string,
   id: number,
-  payload: { name?: string; external_code?: string; integration_metadata?: Record<string, unknown> },
+  payload: { name?: string; external_code?: string; whatsapp?: string | null; email?: string | null; integration_metadata?: Record<string, unknown> },
 ): Promise<Carrier> {
   return request<Carrier>(`/carriers/${id}`, {
     method: "PUT",
@@ -156,6 +172,14 @@ export async function confirmShipmentsImport(token: string, importId: number): P
     method: "POST",
     headers: { Authorization: `Bearer ${token}` },
     body: JSON.stringify({ import_id: importId, confirm: true }),
+  });
+}
+
+export async function createShipment(token: string, payload: CreateShipmentRequest): Promise<Shipment> {
+  return request<Shipment>("/shipments", {
+    method: "POST",
+    headers: { Authorization: `Bearer ${token}` },
+    body: JSON.stringify(payload),
   });
 }
 

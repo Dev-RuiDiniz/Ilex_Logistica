@@ -9,6 +9,7 @@ from app.modules.users.models import User
 from app.modules.shipments.schemas import (
     ImportConfirmRequest,
     ImportConfirmResponse,
+    ShipmentCreate,
     ShipmentDetailResponse,
     ShipmentListResponse,
     ShipmentTreatmentCreate,
@@ -17,6 +18,7 @@ from app.modules.shipments.schemas import (
 )
 from app.modules.shipments.analytics_schemas import CarrierEfficiencyResponse, ExceptionsPanelResponse
 from app.modules.shipments.service import (
+    create_shipment,
     create_treatment,
     get_shipment_detail,
     list_exception_shipments,
@@ -260,6 +262,16 @@ def get_exceptions_analytics(
     )
     return ExceptionsPanelResponse(**result)
 
+
+
+@router.post("", response_model=ShipmentDetailResponse, status_code=status.HTTP_201_CREATED)
+def create_shipment_endpoint(
+    payload: ShipmentCreate,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_permission("shipments:write")),
+) -> ShipmentDetailResponse:
+    created = create_shipment(db, payload.model_dump())
+    return ShipmentDetailResponse(**created)
 
 
 @router.get("/{shipment_id}", response_model=ShipmentDetailResponse)

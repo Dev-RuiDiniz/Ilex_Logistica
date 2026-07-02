@@ -11,7 +11,8 @@ import {
   type AlertItem,
   type AlertsSummary,
 } from "@/lib/alerts-api";
-import { handleApiError } from "@/lib/error-handler";
+import { useAuth } from "@/features/auth/auth-provider";
+import { useApiErrorHandler } from "@/lib/useApiErrorHandler";
 
 export default function AlertsPage() {
   const [alerts, setAlerts] = useState<AlertItem[]>([]);
@@ -19,49 +20,62 @@ export default function AlertsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [filters, setFilters] = useState<AlertsFilters>({});
+  const { session } = useAuth();
   const { accessDenied, accessDeniedMessage, handleApiError } = useApiErrorHandler();
 
   const fetchAlerts = async () => {
+    if (!session) return;
     try {
       setLoading(true);
       setError(null);
       const [alertsData, summaryData] = await Promise.all([
-        getAlerts(filters),
-        getAlertsSummary(),
+        getAlerts(session.accessToken, filters),
+        getAlertsSummary(session.accessToken),
       ]);
       setAlerts(alertsData.alerts);
       setSummary(summaryData);
     } catch (err) {
-      setError(handleApiError(err));
+      const error = err instanceof Error ? err : new Error(String(err));
+      handleApiError(error);
+      setError(error.message);
     } finally {
       setLoading(false);
     }
   };
 
   const handleGenerateAlerts = async () => {
+    if (!session) return;
     try {
-      await generateAlerts();
+      await generateAlerts(session.accessToken);
       await fetchAlerts();
     } catch (err) {
-      setError(handleApiError(err));
+      const error = err instanceof Error ? err : new Error(String(err));
+      handleApiError(error);
+      setError(error.message);
     }
   };
 
   const handleMarkAsRead = async (alertId: number) => {
+    if (!session) return;
     try {
-      await markAlertAsRead(alertId);
+      await markAlertAsRead(session.accessToken, alertId);
       await fetchAlerts();
     } catch (err) {
-      setError(handleApiError(err));
+      const error = err instanceof Error ? err : new Error(String(err));
+      handleApiError(error);
+      setError(error.message);
     }
   };
 
   const handleResolve = async (alertId: number) => {
+    if (!session) return;
     try {
-      await resolveAlert(alertId);
+      await resolveAlert(session.accessToken, alertId);
       await fetchAlerts();
     } catch (err) {
-      setError(handleApiError(err));
+      const error = err instanceof Error ? err : new Error(String(err));
+      handleApiError(error);
+      setError(error.message);
     }
   };
 
@@ -75,7 +89,7 @@ export default function AlertsPage() {
 
   useEffect(() => {
     fetchAlerts();
-  }, [filters]);
+  }, [filters, session]);
 
   const getSeverityBadge = (severity: string) => {
     const map: Record<string, string> = {
@@ -149,8 +163,9 @@ export default function AlertsPage() {
         <p className="mb-3 text-[11px] font-semibold uppercase tracking-wide text-zinc-500">Filtros</p>
         <div className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-6">
           <div>
-            <label className="block text-[11px] font-semibold text-zinc-500">Status</label>
+            <label htmlFor="alert-status-filter" className="block text-[11px] font-semibold text-zinc-500">Status</label>
             <select
+              id="alert-status-filter"
               className={selectClass}
               value={filters.status || ""}
               onChange={(e) => handleFilterChange("status", e.target.value || undefined)}
@@ -162,8 +177,9 @@ export default function AlertsPage() {
             </select>
           </div>
           <div>
-            <label className="block text-[11px] font-semibold text-zinc-500">Severidade</label>
+            <label htmlFor="alert-severity-filter" className="block text-[11px] font-semibold text-zinc-500">Severidade</label>
             <select
+              id="alert-severity-filter"
               className={selectClass}
               value={filters.severity || ""}
               onChange={(e) => handleFilterChange("severity", e.target.value || undefined)}
@@ -175,8 +191,9 @@ export default function AlertsPage() {
             </select>
           </div>
           <div>
-            <label className="block text-[11px] font-semibold text-zinc-500">Tipo</label>
+            <label htmlFor="alert-type-filter" className="block text-[11px] font-semibold text-zinc-500">Tipo</label>
             <select
+              id="alert-type-filter"
               className={selectClass}
               value={filters.alert_type || ""}
               onChange={(e) => handleFilterChange("alert_type", e.target.value || undefined)}

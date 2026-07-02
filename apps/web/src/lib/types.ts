@@ -29,6 +29,8 @@ export interface Carrier {
   id: number;
   name: string;
   external_code?: string | null;
+  whatsapp?: string | null;
+  email?: string | null;
   integration_metadata: Record<string, unknown>;
   is_active: boolean;
 }
@@ -158,6 +160,28 @@ export interface ShipmentTreatment {
 export interface CreateShipmentTreatmentRequest {
   status: string;
   comment: string;
+}
+
+export interface CreateShipmentRequest {
+  tracking_code: string;
+  carrier_id: number;
+  estimated_delivery: string;
+  recipient_name: string;
+  recipient_phone: string;
+  origin_address: string;
+  destination_address: string;
+  status?: string;
+  invoice_number?: string;
+  invoice_key?: string;
+  fiscal_document?: string;
+  amount?: number;
+  due_date?: string;
+  freight_value?: number;
+  invoice_value?: number;
+  collection_departure_date?: string;
+  customer_name?: string;
+  destination_uf?: string;
+  criticality?: string;
 }
 
 export interface DailyReportResponse {
@@ -534,9 +558,14 @@ export interface DashboardExceptionItem {
   shipment_id: number;
   tracking_code: string;
   invoice_number: string | null;
+  invoice_value: number | null;
+  freight_value: number | null;
+  estimated_delivery: string | null;
+  actual_delivery: string | null;
   carrier_id: number;
   carrier_name: string | null;
   customer_name: string | null;
+  recipient_name: string | null;
   destination_uf: string | null;
   status: string;
   sla_status: string;
@@ -547,6 +576,8 @@ export interface DashboardExceptionItem {
   exception_reason: string | null;
   priority: number;
   last_update_at: string;
+  carrier_whatsapp?: string | null;
+  carrier_email?: string | null;
 }
 
 export interface DashboardSummaryResponse {

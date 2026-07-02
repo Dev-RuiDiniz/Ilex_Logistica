@@ -21,9 +21,17 @@ from app.modules.alerts.router import router as alerts_router
 def create_app() -> FastAPI:
     app = FastAPI(title="Ilex API", version="1.0.0")
 
+    cors_origins = ["http://localhost:3000", "http://127.0.0.1:3000"]
+    extra_origins = os.getenv("CORS_ALLOWED_ORIGINS", "")
+    if extra_origins:
+        for origin in extra_origins.split(","):
+            origin = origin.strip()
+            if origin and origin not in cors_origins:
+                cors_origins.append(origin)
+
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=["http://localhost:3000", "http://127.0.0.1:3000"],
+        allow_origins=cors_origins,
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],

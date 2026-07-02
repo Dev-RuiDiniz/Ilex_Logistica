@@ -11,9 +11,9 @@ describe('Carriers Page Helpers', () => {
   describe('filterCarriersByQuery', () => {
     it('deve filtrar transportadoras por nome (case insensitive)', () => {
       const carriers: Carrier[] = [
-        { id: 1, name: 'Braspress', external_code: 'BRAS', integration_metadata: {}, is_active: true },
-        { id: 2, name: 'Jadlog', external_code: 'JADL', integration_metadata: {}, is_active: true },
-        { id: 3, name: 'Transit', external_code: 'TRAN', integration_metadata: {}, is_active: true },
+        { id: 1, name: 'Braspress', external_code: 'BRAS', whatsapp: '+5511999990001', email: 'braspress@example.com', integration_metadata: {}, is_active: true },
+        { id: 2, name: 'Jadlog', external_code: 'JADL', whatsapp: null, email: null, integration_metadata: {}, is_active: true },
+        { id: 3, name: 'Transit', external_code: 'TRAN', whatsapp: null, email: null, integration_metadata: {}, is_active: true },
       ];
 
       const result = filterCarriersByQuery(carriers, 'bras');
@@ -90,9 +90,9 @@ describe('Carriers Page Helpers', () => {
   describe('removeCarrierById', () => {
     it('deve remover transportadora por ID', () => {
       const carriers: Carrier[] = [
-        { id: 1, name: 'Braspress', external_code: 'BRAS', integration_metadata: {}, is_active: true },
-        { id: 2, name: 'Jadlog', external_code: 'JADL', integration_metadata: {}, is_active: true },
-        { id: 3, name: 'Transit', external_code: 'TRAN', integration_metadata: {}, is_active: true },
+        { id: 1, name: 'Braspress', external_code: 'BRAS', whatsapp: '+5511999990001', email: 'braspress@example.com', integration_metadata: {}, is_active: true },
+        { id: 2, name: 'Jadlog', external_code: 'JADL', whatsapp: null, email: null, integration_metadata: {}, is_active: true },
+        { id: 3, name: 'Transit', external_code: 'TRAN', whatsapp: null, email: null, integration_metadata: {}, is_active: true },
       ];
 
       const result = removeCarrierById(carriers, 2);

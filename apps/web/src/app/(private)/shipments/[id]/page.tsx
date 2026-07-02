@@ -1,13 +1,13 @@
 "use client";
 
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, use, useEffect, useState } from "react";
 
 import { createShipmentTreatment, getShipmentDetail, listShipmentTreatments } from "@/lib/api";
 import { canEditShipments } from "@/lib/permissions";
 import { useAuth } from "@/features/auth/auth-provider";
 import type { ShipmentDetail, ShipmentTreatment } from "@/lib/types";
 
-export default function ShipmentDetailPage({ params }: { params: { id: string } }) {
+export default function ShipmentDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { session } = useAuth();
   const [detail, setDetail] = useState<ShipmentDetail | null>(null);
   const [treatments, setTreatments] = useState<ShipmentTreatment[]>([]);
@@ -15,7 +15,8 @@ export default function ShipmentDetailPage({ params }: { params: { id: string } 
   const [comment, setComment] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
-  const shipmentId = Number(params.id);
+  const { id } = use(params);
+  const shipmentId = Number(id);
   const editable = canEditShipments(session?.role ?? "auditoria");
 
   // Formatting helpers

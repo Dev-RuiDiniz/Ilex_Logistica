@@ -28,7 +28,7 @@ describe("Daily Report API — Tratamento 401/403", () => {
     });
     global.fetch = mockFetch;
 
-    await expect(getDailyReports({})).rejects.toThrow();
+    await expect(getDailyReports("test-token", {})).rejects.toThrow();
   });
 
   it("trata 403 no generateDailyReport", async () => {
@@ -40,6 +40,6 @@ describe("Daily Report API — Tratamento 401/403", () => {
     });
     global.fetch = mockFetch;
 
-    await expect(generateDailyReport({})).rejects.toThrow();
+    await expect(generateDailyReport("test-token", {})).rejects.toThrow();
   });
 });

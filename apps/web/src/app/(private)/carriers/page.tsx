@@ -13,10 +13,12 @@ type FormState = {
   id?: number;
   name: string;
   external_code: string;
+  whatsapp: string;
+  email: string;
   metadata_json: string;
 };
 
-const initialForm: FormState = { name: "", external_code: "", metadata_json: "{}" };
+const initialForm: FormState = { name: "", external_code: "", whatsapp: "", email: "", metadata_json: "{}" };
 
 export function filterCarriersByQuery(items: Carrier[], query: string): Carrier[] {
   return items.filter((item) => item.name.toLowerCase().includes(query.toLowerCase()));
@@ -84,12 +86,16 @@ export default function CarriersPage() {
         await updateCarrier(session.accessToken, form.id, {
           name: form.name,
           external_code: form.external_code,
+          whatsapp: form.whatsapp || null,
+          email: form.email || null,
           integration_metadata: parsed,
         });
       } else {
         await createCarrier(session.accessToken, {
           name: form.name,
           external_code: form.external_code,
+          whatsapp: form.whatsapp || null,
+          email: form.email || null,
           integration_metadata: parsed,
         });
       }
@@ -108,6 +114,8 @@ export default function CarriersPage() {
       id: item.id,
       name: item.name,
       external_code: item.external_code ?? "",
+      whatsapp: item.whatsapp ?? "",
+      email: item.email ?? "",
       metadata_json: JSON.stringify(item.integration_metadata ?? {}, null, 0),
     });
   };
@@ -179,6 +187,8 @@ export default function CarriersPage() {
               <tr className="border-b border-zinc-100 bg-zinc-50/80">
                 <th className="px-6 py-3 text-left text-[11px] font-semibold uppercase tracking-wide text-zinc-500">Nome</th>
                 <th className="px-6 py-3 text-left text-[11px] font-semibold uppercase tracking-wide text-zinc-500">Código</th>
+                <th className="px-6 py-3 text-left text-[11px] font-semibold uppercase tracking-wide text-zinc-500">WhatsApp</th>
+                <th className="px-6 py-3 text-left text-[11px] font-semibold uppercase tracking-wide text-zinc-500">Email</th>
                 <th className="px-6 py-3 text-left text-[11px] font-semibold uppercase tracking-wide text-zinc-500">Status</th>
                 {editable && <th className="px-6 py-3 text-right text-[11px] font-semibold uppercase tracking-wide text-zinc-500">Ações</th>}
               </tr>
@@ -186,7 +196,7 @@ export default function CarriersPage() {
             <tbody>
               {loading ? (
                 <tr>
-                  <td colSpan={editable ? 4 : 3} className="px-6 py-8 text-center text-sm text-zinc-400">
+                  <td colSpan={editable ? 6 : 5} className="px-6 py-8 text-center text-sm text-zinc-400">
                     <div className="flex items-center justify-center gap-2">
                       <div className="h-4 w-4 animate-spin rounded-full border-2 border-zinc-200 border-t-red-500" />
                       Carregando...
@@ -195,7 +205,7 @@ export default function CarriersPage() {
                 </tr>
               ) : filtered.length === 0 ? (
                 <tr>
-                  <td colSpan={editable ? 4 : 3} className="px-6 py-8 text-center text-sm text-zinc-400">
+                  <td colSpan={editable ? 6 : 5} className="px-6 py-8 text-center text-sm text-zinc-400">
                     Nenhuma transportadora encontrada.
                   </td>
                 </tr>
@@ -204,6 +214,8 @@ export default function CarriersPage() {
                   <tr key={item.id} className="border-b border-zinc-50 transition-colors hover:bg-zinc-50/50">
                     <td className="px-6 py-3.5 font-semibold text-zinc-900">{item.name}</td>
                     <td className="px-6 py-3.5 font-mono text-xs text-zinc-600">{item.external_code ?? "-"}</td>
+                    <td className="px-6 py-3.5 text-xs text-zinc-600">{item.whatsapp ?? "-"}</td>
+                    <td className="px-6 py-3.5 text-xs text-zinc-600">{item.email ?? "-"}</td>
                     <td className="px-6 py-3.5">
                       <span className={`inline-flex rounded-full px-2.5 py-0.5 text-[11px] font-semibold ${
                         item.is_active
@@ -264,6 +276,25 @@ export default function CarriersPage() {
                 value={form.external_code}
                 onChange={(e) => setForm((f) => ({ ...f, external_code: e.target.value }))}
                 placeholder="Código (opcional)"
+                className={inputClass}
+              />
+            </div>
+            <div>
+              <label className="block text-[11px] font-semibold uppercase tracking-wide text-zinc-500">WhatsApp</label>
+              <input
+                value={form.whatsapp}
+                onChange={(e) => setForm((f) => ({ ...f, whatsapp: e.target.value }))}
+                placeholder="+55 11 99999-9999"
+                className={inputClass}
+              />
+            </div>
+            <div>
+              <label className="block text-[11px] font-semibold uppercase tracking-wide text-zinc-500">Email</label>
+              <input
+                type="email"
+                value={form.email}
+                onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
+                placeholder="contato@transportadora.com"
                 className={inputClass}
               />
             </div>

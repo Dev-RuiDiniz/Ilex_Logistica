@@ -122,7 +122,7 @@ export async function getDashboardTrend(token: string, days = 30): Promise<Dashb
 
 export async function createCarrier(
   token: string,
-  payload: { name: string; external_code?: string; integration_metadata: Record<string, unknown> },
+  payload: { name: string; external_code?: string; whatsapp?: string | null; email?: string | null; integration_metadata: Record<string, unknown> },
 ): Promise<Carrier> {
   return request<Carrier>("/carriers", {
     method: "POST",
@@ -134,7 +134,7 @@ export async function createCarrier(
 export async function updateCarrier(
   token: string,
   id: number,
-  payload: { name?: string; external_code?: string; integration_metadata?: Record<string, unknown> },
+  payload: { name?: string; external_code?: string; whatsapp?: string | null; email?: string | null; integration_metadata?: Record<string, unknown> },
 ): Promise<Carrier> {
   return request<Carrier>(`/carriers/${id}`, {
     method: "PUT",

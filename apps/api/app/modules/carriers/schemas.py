@@ -4,6 +4,8 @@ from pydantic import BaseModel, ConfigDict, Field
 class CarrierBase(BaseModel):
     name: str = Field(min_length=2, max_length=150)
     external_code: str | None = Field(default=None, max_length=80)
+    whatsapp: str | None = Field(default=None, max_length=30)
+    email: str | None = Field(default=None, max_length=120)
     integration_metadata: dict = Field(default_factory=dict)
 
 
@@ -14,6 +16,8 @@ class CarrierCreate(CarrierBase):
 class CarrierUpdate(BaseModel):
     name: str | None = Field(default=None, min_length=2, max_length=150)
     external_code: str | None = Field(default=None, max_length=80)
+    whatsapp: str | None = Field(default=None, max_length=30)
+    email: str | None = Field(default=None, max_length=120)
     integration_metadata: dict | None = None
 
 

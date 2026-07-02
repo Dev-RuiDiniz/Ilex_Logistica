@@ -55,6 +55,8 @@ class DashboardExceptionItem(BaseModel):
     exception_reason: str | None
     priority: int
     last_update_at: datetime
+    carrier_whatsapp: str | None
+    carrier_email: str | None
 
 
 class DashboardFiltersApplied(BaseModel):

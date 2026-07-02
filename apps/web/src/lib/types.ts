@@ -29,6 +29,8 @@ export interface Carrier {
   id: number;
   name: string;
   external_code?: string | null;
+  whatsapp?: string | null;
+  email?: string | null;
   integration_metadata: Record<string, unknown>;
   is_active: boolean;
 }
@@ -569,6 +571,8 @@ export interface DashboardExceptionItem {
   exception_reason: string | null;
   priority: number;
   last_update_at: string;
+  carrier_whatsapp?: string | null;
+  carrier_email?: string | null;
 }
 
 export interface DashboardSummaryResponse {

@@ -37,8 +37,17 @@
    - Rebuild dos containers `ilex-api` e `ilex-web` em `2.25.168.34` com as correções
    - Validação: `GET /api/v1/alerts`, `GET /api/v1/alerts/summary` e `GET /api/v1/reports/daily` retornam `200` com token válido
 
-6. **Commit e push**
-   - Commit `8f7b69e`, `6650eb2` e `5f56a93` na branch `feature/infra-vps-docker`
+6. **Adição de contato (WhatsApp/Email) nas transportadoras e dashboard**
+   - Backend: campos `whatsapp` e `email` adicionados ao modelo `Carrier` e migration `20260702_01_add_carrier_contact_fields`
+   - Backend: schemas `CarrierCreate`, `CarrierUpdate` e `CarrierResponse` atualizados
+   - Backend: endpoint `/dashboard/summary` retorna `carrier_whatsapp` e `carrier_email` em cada exceção
+   - Frontend: tipo `Carrier` e `DashboardExceptionItem` atualizados
+   - Frontend: página `/carriers` permite cadastrar/editar WhatsApp e email, e exibe esses dados na tabela
+   - Frontend: seção "Exceções em Destaque" do dashboard exibe ícones de WhatsApp e email com links diretos (`wa.me` e `mailto:`)
+   - Testes de `tests/test_carriers.py` atualizados e novo teste para CRUD de contato
+
+7. **Commit e push**
+   - Commit `8f7b69e`, `6650eb2`, `5f56a93` e `865faa4` na branch `feature/infra-vps-docker`
    - Push para `https://github.com/Dev-RuiDiniz/Ilex_Logistica.git`
 
 ### Arquivos Modificados/Criados
@@ -59,6 +68,16 @@
 - `apps/web/src/lib/daily-report-api.test.ts` — testes atualizados para nova assinatura
 - `apps/web/src/lib/daily-report-api.error-handler.test.ts` — testes atualizados para nova assinatura
 - `apps/web/src/app/(private)/reports/daily/page.tsx` — autenticação e chamadas de API de relatórios diários
+- `apps/api/app/modules/carriers/models.py` — campos `whatsapp` e `email`
+- `apps/api/app/modules/carriers/schemas.py` — schemas com `whatsapp` e `email`
+- `apps/api/migrations/versions/20260702_01_add_carrier_contact_fields.py` — migration (novo)
+- `apps/api/app/modules/dashboard/service.py` — retorna contato da transportadora nas exceções
+- `apps/api/app/modules/dashboard/schemas.py` — `carrier_whatsapp` e `carrier_email`
+- `apps/web/src/lib/types.ts` — tipos `Carrier` e `DashboardExceptionItem` atualizados
+- `apps/web/src/lib/api.ts` — `createCarrier`/`updateCarrier` com contato
+- `apps/web/src/app/(private)/carriers/page.tsx` — cadastro/edição e tabela com contato
+- `apps/web/src/app/(private)/dashboard/page.tsx` — botões de WhatsApp e email nas exceções
+- `apps/api/tests/test_carriers.py` — testes de CRUD com contato
 - `apps/web/src/app/(private)/audit/page.test.tsx` — texto de loading
 - `apps/web/src/components/app-shell.tsx` — labels da sidebar
 
@@ -67,10 +86,11 @@
 - Frontend (shipments): 93/93 testes passando (inclui filtros e modal de criação)
 - Frontend (alerts): `alerts-api.test.ts` → 9/9 passando; `alerts-page.test.tsx` → 3/3 passando
 - Frontend (reports/daily): `daily-report-api.test.ts` → 23/23 passando; `daily-report-api.error-handler.test.ts` → 2/2 passando
+- Backend (carriers): `tests/test_carriers.py` → 5/5 passando
 - Frontend build: `npm run build` → sucesso
 - Frontend geral: 373/399 passando (26 falhas preexistentes em `dashboard-page.test.tsx` — UI redesenhada sem testes atualizados)
 - Backend geral: 563/662 passando (99 falhas preexistentes relacionadas a RBAC/autenticação em testes antigos)
-- VPS: `GET /api/v1/alerts`, `GET /api/v1/alerts/summary` e `GET /api/v1/reports/daily` → 200
+- VPS: `GET /api/v1/alerts`, `GET /api/v1/alerts/summary`, `GET /api/v1/reports/daily` e `GET /api/v1/dashboard/summary` → 200
 
 ### Documentação Atualizada
 - `RELATORIO_DIA.md` — este registro

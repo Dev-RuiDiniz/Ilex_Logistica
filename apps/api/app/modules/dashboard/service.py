@@ -208,6 +208,8 @@ def calculate_dashboard_summary(
                 "invoice_number": shipment.invoice_number,
                 "carrier_id": shipment.carrier_id,
                 "carrier_name": carrier_name,
+                "carrier_whatsapp": carrier.whatsapp if carrier else None,
+                "carrier_email": carrier.email if carrier else None,
                 "customer_name": shipment.customer_name,
                 "destination_uf": shipment.destination_uf,
                 "status": shipment.status,

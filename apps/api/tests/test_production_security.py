@@ -24,6 +24,7 @@ def production_settings(**overrides) -> Settings:
     [
         {"jwt_secret": "short"},
         {"jwt_secret": "ilex-dev-secret-key-with-at-least-32-bytes"},
+        {"jwt_secret": "change-me-with-a-long-placeholder-secret"},
         {"database_url": "sqlite:///production.db"},
         {"database_url": "postgresql://ilex:change-me@db/ilex"},
         {"cors_allowed_origins": ""},

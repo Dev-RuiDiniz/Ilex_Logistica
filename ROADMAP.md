@@ -174,7 +174,7 @@
 
   - [x] Rejeitar JWT default fora de desenvolvimento; parametrizar CORS e validar secrets.
   - [x] Definir rate limiting, headers, política de sessão e dependências.
-- [ ] Testar PostgreSQL real, backup, restore, migration e rollback.
+- [~] Compose e scripts de PostgreSQL/backup/restore/migration/rollback implementados; execução real bloqueada nesta sessão porque o Docker Desktop não estava ativo.
 - [ ] Estabelecer metas e testes de desempenho para imports, listagens e analytics.
 - [ ] Validar acessibilidade e principais navegadores/resoluções.
 - [ ] Instrumentar health, logs, métricas, alertas e runbooks sem dados sensíveis.

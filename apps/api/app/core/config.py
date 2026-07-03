@@ -34,7 +34,11 @@ class Settings(BaseSettings):
         if self.environment.lower() != "production":
             return self
         errors: list[str] = []
-        if self.jwt_secret == DEV_JWT_SECRET or len(self.jwt_secret.encode()) < 32:
+        if (
+            self.jwt_secret == DEV_JWT_SECRET
+            or len(self.jwt_secret.encode()) < 32
+            or any(marker in self.jwt_secret.lower() for marker in ("change-me", "placeholder"))
+        ):
             errors.append("ILEX_JWT_SECRET deve ter ao menos 32 bytes e nao usar o default")
         database = self.database_url.lower()
         if database.startswith("sqlite"):

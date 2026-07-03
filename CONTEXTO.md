@@ -111,6 +111,8 @@ Executar P0 na ordem: build/runtime Web, suíte/lint, migration única, API dete
 - P4 rejeita configuração produtiva insegura e removeu o bypass de login Web que existia para desenvolvimento.
 - Redis 7 suporta limites por IP/usuário; em produção sua indisponibilidade falha de forma segura. CORS usa exclusivamente `ILEX_CORS_ALLOWED_ORIGINS`.
 - Tokens mantêm access de 15 minutos, refresh de sete dias e rotação por versão. O armazenamento Web continua sendo risco residual documentado para migração futura a cookie `HttpOnly`/BFF.
+- O Compose produtivo fixa PostgreSQL 16.4, Redis 7.2 e Caddy 2.8; dados ficam em rede interna e somente o proxy publica portas.
+- Scripts de backup/checksum/retenção, restore temporário, deploy e rollback foram implementados. A validação real foi tentada, mas o Docker Desktop não expunha o engine; PostgreSQL real e restore continuam bloqueios explícitos do gate P4.
 
 ### 2026-06-24 — Segurança e RBAC frontend
 

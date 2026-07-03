@@ -147,3 +147,10 @@
 - Headers CSP, frame protection, MIME sniffing, referrer e permissions policy foram ativados; HSTS é condicionado a produção/TLS.
 - O bypass de login Web por credencial fixa de desenvolvimento foi removido.
 - O risco residual de tokens no armazenamento do navegador foi preservado explicitamente; não foi apresentado como resolvido.
+
+### Continuidade
+
+- Compose produtivo usa imagens versionadas, volumes nomeados, rede de dados interna e Caddy como única borda pública.
+- Backup gera dump custom comprimido, checksum e aplica retenção de 30 dias; restore valida checksum e restaura em banco temporário.
+- Deploy e rollback exigem tags imutáveis, backup prévio, migration explícita e readiness.
+- Testes estáticos de infraestrutura e `docker compose config` passaram. A execução contra PostgreSQL 16 real foi bloqueada porque o engine Docker local não estava ativo; nenhum resultado de restore foi inventado.

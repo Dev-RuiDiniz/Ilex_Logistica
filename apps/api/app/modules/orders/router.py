@@ -11,6 +11,8 @@ from app.modules.orders.schemas import (
     OrderListResponse,
 )
 from app.modules.orders.service import confirm_order_import, list_orders, preview_order_import
+from app.modules.orders.quote_schemas import QuoteRoundResponse
+from app.modules.orders.quote_service import create_quote_round, list_quote_rounds, round_payload
 from app.modules.users.models import User
 
 router = APIRouter(prefix="/orders", tags=["orders"])
@@ -59,3 +61,22 @@ def get_orders(
     current_user: User = Depends(require_permission("orders:read")),
 ) -> OrderListResponse:
     return OrderListResponse(**list_orders(db, page, page_size, status, source, external_number))
+
+
+@router.post("/{order_id}/quote-rounds", response_model=QuoteRoundResponse, status_code=201)
+def start_quote_round(
+    order_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_permission("quotes:write")),
+) -> QuoteRoundResponse:
+    quote_round = create_quote_round(db, order_id, current_user.id, current_user.email)
+    return QuoteRoundResponse(**round_payload(db, quote_round))
+
+
+@router.get("/{order_id}/quote-rounds", response_model=list[QuoteRoundResponse])
+def get_order_quote_rounds(
+    order_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_permission("quotes:read")),
+) -> list[QuoteRoundResponse]:
+    return [QuoteRoundResponse(**round_payload(db, item)) for item in list_quote_rounds(db, order_id)]

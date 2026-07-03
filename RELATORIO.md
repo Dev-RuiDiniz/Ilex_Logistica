@@ -119,3 +119,10 @@
 
 - Homologação humana do layout ERP com amostra real sanitizada.
 - Rodadas, motor comparativo, Web, prontidão produtiva, UAT e release permanecem nas etapas seguintes do plano.
+
+### Motor de cotações
+
+- Rodadas versionadas criam um resultado pendente por transportadora ativa e validade de 24 horas.
+- Registro Web e importação CSV preservam falhas individuais e atualizam a recomendação determinística.
+- Override manual exige justificativa, mantém a recomendação automática e registra autoria/auditoria.
+- Testes controlados exercitam todos os desempates, expiração, falha individual, CSV e histórico auditável.

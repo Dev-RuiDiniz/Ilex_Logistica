@@ -101,6 +101,9 @@ Executar P0 na ordem: build/runtime Web, suíte/lint, migration única, API dete
 - `orders`, `quote_rounds` e `freight_quotes` foram criados por migration reversível, com valores monetários decimais e constraints de identidade.
 - A importação de pedidos aceita CSV/XLSX, valida erros por linha, não persiste domínio no preview e confirma por transação com idempotência por hash.
 - O layout técnico está confirmado por fixtures sanitizadas; a homologação humana contra amostra do ERP continua pendente e não foi convertida em aceite.
+- Rodadas incluem todas as transportadoras ativas e isolam resultados `pending`, `quoted`, `unavailable`, `error` e `expired`.
+- A recomendação usa menor valor, menor prazo, maior eficiência observada em entregas concluídas e menor `carrier_id`; override exige justificativa e preserva a recomendação.
+- Criação, registro/importação, conclusão e override geram auditoria operacional na mesma transação de domínio.
 
 ### 2026-06-24 — Segurança e RBAC frontend
 

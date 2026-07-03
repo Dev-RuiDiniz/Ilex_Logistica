@@ -154,9 +154,12 @@
   - [ ] Homologação humana do layout com amostra real sanitizada.
 - [ ] GREEN com preview/confirm transacional e idempotente, reutilizando padrões da SPEC-03.
 
-### P3.3 Motor comparativo — LOG-039/040  `[ ]`
+### P3.3 Motor comparativo — LOG-039/040  `[x]`
 
-- [ ] Registrar valor/status por transportadora sem perder falhas individuais.
+  - [x] Registrar valor/status por transportadora sem perder falhas individuais.
+  - [x] Comparar por valor, prazo, eficiência confirmada e ID estável.
+  - [x] Preservar recomendação automática em override justificado e auditado.
+  - [x] Importar cotações por CSV com preview/confirm transacional.
 - [ ] Regra inicial: menor valor válido; aplicar desempate definido na SPEC-12.
 - [ ] Preservar rodadas, validade e explicação da melhor opção.
 

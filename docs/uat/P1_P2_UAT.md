@@ -1,7 +1,7 @@
 # UAT técnico — P1 e P2
 
 **Data:** 2026-07-03  
-**Estado:** evidência técnica aprovada; aceite humano e E2E com backend preparado pendentes
+**Estado:** evidência técnica e fluxos críticos Chromium aprovados; aceite humano pendente
 
 ## Regras aprovadas
 
@@ -23,10 +23,11 @@
 
 ## E2E
 
-As specs de XLSX e tratativas são coletadas pelo Playwright e a autenticação fictícia usa o contrato atual de sessão. A execução contra a Web local alcançou as páginas privadas, mas não concluiu porque o Playwright inicia apenas o Next.js e não provisiona API/seed em `localhost:8000`. Portanto, E2E operacional e aceite humano não são declarados como aprovados.
+As specs usam sessão fictícia e respostas HTTP controladas somente nos limites externos. No Chromium passaram 1 cenário XLSX e 7 cenários de tratativas, cobrindo upload, preview, confirmação, detalhe, formulário, criação, atualização do histórico, validação e bloqueio por perfil. A matriz completa Chromium/Firefox/WebKit/Mobile excedeu a janela de cinco minutos e permanece para P4 cross-browser.
 
 ## Aceite humano pendente
 
 - validar amostra real sanitizada Braspress;
 - validar transportadoras, alertas, relatórios e auditoria com representantes dos perfis;
-- executar Playwright em ambiente integrado com API, banco migrado e seed E2E descartável.
+- executar UAT em ambiente integrado com API, banco migrado e seed descartável;
+- concluir a matriz cross-browser de P4.

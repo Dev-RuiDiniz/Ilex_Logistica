@@ -1,6 +1,5 @@
 import { test, expect } from '@playwright/test';
 import { AuthHelper } from './helpers/auth.helper';
-import { NavigationHelper } from './helpers/navigation.helper';
 import { testShipments } from './fixtures/test-data';
 import { testUsers } from './fixtures/users';
 
@@ -16,11 +15,22 @@ import { testUsers } from './fixtures/users';
 
 test.describe('Tratativas', () => {
   let authHelper: AuthHelper;
-  let navHelper: NavigationHelper;
 
   test.beforeEach(async ({ page }) => {
     authHelper = new AuthHelper(page);
-    navHelper = new NavigationHelper(page);
+    const shipment = { ...testShipments[0], actual_delivery: null, invoice_number: 'NF-E2E-001', invoice_value: 1000, freight_value: 100, customer_name: 'Cliente E2E', destination_uf: 'SP', is_active: true, created_at: '2026-07-03T10:00:00Z', updated_at: '2026-07-03T10:00:00Z' };
+    const treatments: Array<Record<string, unknown>> = [];
+    await page.route('**/api/v1/shipments?**', async (route) => route.fulfill({ json: { items: [shipment], total: 1, page: 1, page_size: 20, total_pages: 1 } }));
+    await page.route('**/api/v1/shipments/1', async (route) => route.fulfill({ json: shipment }));
+    await page.route('**/api/v1/shipments/1/treatments', async (route) => {
+      if (route.request().method() === 'POST') {
+        const treatment = { id: treatments.length + 1, shipment_id: 1, status: 'em_analise', comment: 'Tratativa de teste E2E', created_by: 1, created_at: new Date().toISOString() };
+        treatments.push(treatment);
+        await route.fulfill({ status: 201, json: treatment });
+        return;
+      }
+      await route.fulfill({ json: treatments });
+    });
     
     // Login como admin
     await authHelper.loginAs(testUsers.admin);
@@ -28,10 +38,7 @@ test.describe('Tratativas', () => {
 
   test('deve abrir detalhe de entrega', async ({ page }) => {
     // Navegar para listagem
-    await navHelper.goToShipments();
-    
-    // Clicar em um shipment
-    await page.getByText(testShipments[0].tracking_code).click();
+    await page.goto('/shipments/1');
     
     // Verificar redirecionamento para detalhe
     await expect(page).toHaveURL(/\/shipments\/\d+/);
@@ -43,8 +50,7 @@ test.describe('Tratativas', () => {
 
   test('deve exibir timeline de tratativas', async ({ page }) => {
     // Navegar para detalhe
-    await navHelper.goToShipments();
-    await page.getByText(testShipments[0].tracking_code).click();
+    await page.goto('/shipments/1');
     
     // Verificar seção de tratativas/timeline
     await expect(page.getByRole('heading', { name: /tratativas|timeline|histórico/i })).toBeVisible();
@@ -52,8 +58,7 @@ test.describe('Tratativas', () => {
 
   test('deve exibir formulário para nova tratativa', async ({ page }) => {
     // Navegar para detalhe
-    await navHelper.goToShipments();
-    await page.getByText(testShipments[0].tracking_code).click();
+    await page.goto('/shipments/1');
     
     // Verificar formulário de tratativa
     await expect(page.getByLabel(/comentário|observação/i)).toBeVisible();
@@ -63,13 +68,11 @@ test.describe('Tratativas', () => {
 
   test('deve registrar nova tratativa', async ({ page }) => {
     // Navegar para detalhe
-    await navHelper.goToShipments();
-    await page.getByText(testShipments[0].tracking_code).click();
+    await page.goto('/shipments/1');
     
     // Preencher formulário
     await page.getByLabel(/comentário|observação/i).fill('Tratativa de teste E2E');
-    await page.getByLabel(/status/i).click();
-    await page.getByText(/em análise/i).click();
+    await page.getByLabel(/status/i).selectOption('em_tratativa');
     
     // Submeter
     await page.getByRole('button', { name: /adicionar|registrar/i }).click();
@@ -83,16 +86,14 @@ test.describe('Tratativas', () => {
 
   test('deve atualizar timeline sem refresh manual', async ({ page }) => {
     // Navegar para detalhe
-    await navHelper.goToShipments();
-    await page.getByText(testShipments[0].tracking_code).click();
+    await page.goto('/shipments/1');
     
     // Contar tratativas antes
     const treatmentsBefore = await page.getByTestId('treatment-item').count();
     
     // Adicionar tratativa
     await page.getByLabel(/comentário|observação/i).fill('Tratativa de teste E2E');
-    await page.getByLabel(/status/i).click();
-    await page.getByText(/em análise/i).click();
+    await page.getByLabel(/status/i).selectOption('em_tratativa');
     await page.getByRole('button', { name: /adicionar|registrar/i }).click();
     await page.waitForTimeout(1000);
     
@@ -105,8 +106,7 @@ test.describe('Tratativas', () => {
 
   test('deve validar campos obrigatórios', async ({ page }) => {
     // Navegar para detalhe
-    await navHelper.goToShipments();
-    await page.getByText(testShipments[0].tracking_code).click();
+    await page.goto('/shipments/1');
     
     // Tentar submeter sem preencher
     await page.getByRole('button', { name: /adicionar|registrar/i }).click();
@@ -120,8 +120,7 @@ test.describe('Tratativas', () => {
     await authHelper.loginAs(testUsers.auditoria);
     
     // Navegar para detalhe
-    await navHelper.goToShipments();
-    await page.getByText(testShipments[0].tracking_code).click();
+    await page.goto('/shipments/1');
     
     // Verificar que formulário não está visível
     const formButton = page.getByRole('button', { name: /adicionar|registrar/i });

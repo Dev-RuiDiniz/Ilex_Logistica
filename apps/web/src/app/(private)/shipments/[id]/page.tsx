@@ -14,6 +14,7 @@ export default function ShipmentDetailPage({ params }: { params: Promise<{ id: s
   const [status, setStatus] = useState("em_tratativa");
   const [comment, setComment] = useState("");
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(true);
   const { id } = use(params);
   const shipmentId = Number(id);
@@ -70,8 +71,14 @@ export default function ShipmentDetailPage({ params }: { params: Promise<{ id: s
 
   const onSubmit = async (event: FormEvent) => {
     event.preventDefault();
-    if (!session || !editable || !comment.trim()) return;
+    if (!session || !editable) return;
+    if (!comment.trim()) {
+      setError("Comentário obrigatório.");
+      return;
+    }
     try {
+      setError("");
+      setSuccess("");
       await createShipmentTreatment(session.accessToken, shipmentId, { status, comment });
       setComment("");
       // Reload data after creating treatment
@@ -82,6 +89,7 @@ export default function ShipmentDetailPage({ params }: { params: Promise<{ id: s
         ]);
         setDetail(shipment);
         setTreatments(timeline);
+        setSuccess("Tratativa registrada com sucesso.");
       }
     } catch {
       setError("Falha ao registrar tratativa.");
@@ -98,6 +106,7 @@ export default function ShipmentDetailPage({ params }: { params: Promise<{ id: s
         <p className="text-sm text-slate-600">{detail.tracking_code}</p>
       </header>
       {error && <p className="rounded bg-red-50 px-3 py-2 text-sm text-red-700">{error}</p>}
+      {success && <p className="rounded bg-emerald-50 px-3 py-2 text-sm text-emerald-700">{success}</p>}
       
       {/* Informações Básicas */}
       <div className="grid gap-3 rounded border p-4 md:grid-cols-2">
@@ -114,6 +123,7 @@ export default function ShipmentDetailPage({ params }: { params: Promise<{ id: s
         <div><strong>NF:</strong> {formatUnavailable(detail.invoice_number)}</div>
         <div><strong>Documento Fiscal:</strong> {formatUnavailable(detail.fiscal_document)}</div>
         <div><strong>Cliente:</strong> {formatUnavailable(detail.customer_name)}</div>
+        <div><strong>Destinatário:</strong> {formatUnavailable(detail.recipient_name)}</div>
         <div><strong>UF Destino:</strong> {formatUnavailable(detail.destination_uf)}</div>
         <div><strong>Data Coleta/Saída:</strong> {formatDateBR(detail.collection_departure_date)}</div>
         <div><strong>Valor NF:</strong> {formatCurrencyBRL(detail.invoice_value)}</div>
@@ -129,12 +139,14 @@ export default function ShipmentDetailPage({ params }: { params: Promise<{ id: s
         <h3 className="text-base font-semibold">Tratativas</h3>
         {editable && (
           <form onSubmit={onSubmit} className="grid gap-2 md:grid-cols-[180px_1fr_auto]">
-            <select value={status} onChange={(e) => setStatus(e.target.value)} className="rounded border px-3 py-2 text-sm">
+            <label htmlFor="treatment-status" className="sr-only">Status</label>
+            <select id="treatment-status" value={status} onChange={(e) => setStatus(e.target.value)} className="rounded border px-3 py-2 text-sm">
               <option value="em_tratativa">Em tratativa</option>
               <option value="resolvido">Resolvido</option>
               <option value="escalado">Escalado</option>
             </select>
-            <input
+            <label htmlFor="treatment-comment" className="sr-only">Comentário</label>
+            <input id="treatment-comment"
               value={comment}
               onChange={(e) => setComment(e.target.value)}
               placeholder="Descreva a ação realizada"
@@ -146,7 +158,7 @@ export default function ShipmentDetailPage({ params }: { params: Promise<{ id: s
         <ul className="space-y-2">
           {treatments.length === 0 && <li className="text-sm text-slate-500">Sem tratativas registradas.</li>}
           {treatments.map((item) => (
-            <li key={item.id} className="rounded border px-3 py-2 text-sm">
+            <li key={item.id} data-testid="treatment-item" className="rounded border px-3 py-2 text-sm">
               <div className="font-medium">{item.status}</div>
               <div>{item.comment}</div>
             </li>

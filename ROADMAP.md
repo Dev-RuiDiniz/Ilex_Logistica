@@ -121,7 +121,7 @@
 
 - [x] Substituir placeholders por testes de SLA/exceções reais.
 - [~] Homologar taxonomia, autoria, ordenação e histórico.
-- [~] Cobrir painel → detalhe → tratativa em E2E. _(spec criada; execução integrada depende de API/seed E2E)_
+- [x] Cobrir detalhe → tratativa → histórico em E2E Chromium com fronteiras HTTP controladas. _(painel e matriz cross-browser permanecem em P4/UAT integrado)_
 
 > **Evidência atual:** módulo de tratativas implementado; `test_exceptions_panel_sla.py` contém testes-placeholder sem asserções efetivas; E2E pendente (SPEC-06 "Implementado; testes incompletos", AUDITORIA AUD-009).
 

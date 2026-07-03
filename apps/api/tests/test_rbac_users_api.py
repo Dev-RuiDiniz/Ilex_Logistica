@@ -103,7 +103,7 @@ def test_users_admin_can_access_all(client: TestClient, db_session: Session, see
     response = client.get("/api/v1/users", headers={"Authorization": f"Bearer {token}"})
     assert response.status_code == 200
 
-    response = client.post("/api/v1/users", json={"email": "new@example.com", "password": "123456", "full_name": "New User", "roles": ["viewer"]}, headers={"Authorization": f"Bearer {token}"})
+    response = client.post("/api/v1/users", json={"email": "new@example.com", "password": "SenhaForte123!", "full_name": "New User", "roles": ["viewer"]}, headers={"Authorization": f"Bearer {token}"})
     # 400 is acceptable (validation error), but 403 would indicate RBAC blocking
     assert response.status_code in [201, 400]
     assert response.status_code != 403

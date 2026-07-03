@@ -20,7 +20,8 @@ FastAPI possui login/refresh, dependências de autenticação e CRUD/inativaçã
 ## Regras, dados e permissões
 
 - Senhas são armazenadas somente como hash seguro.
-- Tokens têm expiração configurável; refresh inválido/expirado é rejeitado.
+- Access tokens expiram em 15 minutos e refresh tokens em 7 dias, com valores configuráveis por ambiente.
+- Novas senhas têm no mínimo 12 caracteres e incluem maiúscula, minúscula, número e símbolo; hashes legados continuam válidos para login até troca controlada.
 - Administrador gerencia usuários; demais acessos dependem da permissão real do endpoint.
 - Inativação impede novo acesso sem apagar histórico.
 - Secrets e tokens não entram em logs, respostas de erro ou documentação.

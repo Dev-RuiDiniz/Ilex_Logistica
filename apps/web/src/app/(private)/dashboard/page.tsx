@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { getDashboardSummary } from "@/lib/dashboard-api";
 import type { DashboardExceptionItem, DashboardFilters, DashboardSummaryResponse } from "@/lib/types";
 
@@ -366,12 +367,12 @@ export default function DashboardPage() {
       <div className="mb-6 p-4 bg-white rounded-lg shadow" data-testid="top-exceptions">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-lg font-semibold">Top Exceções Priorizadas</h2>
-          <a
+          <Link
             href="/shipments/analytics/exceptions"
             className="text-sm font-medium text-red-600 hover:text-red-700 transition-colors"
           >
             Ver painel completo →
-          </a>
+          </Link>
         </div>
         {data.top_exceptions.length === 0 ? (
           <div className="text-gray-500">Nenhuma exceção encontrada</div>

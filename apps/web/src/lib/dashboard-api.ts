@@ -1,12 +1,6 @@
 import type {
   DashboardFilters,
-  DashboardFiltersApplied,
-  DashboardCarrierEfficiencyItem,
-  DashboardExceptionItem,
-  DashboardKpis,
   DashboardSummaryResponse,
-  DashboardTrendDataPoint,
-  DashboardTrendPeriod,
   DashboardTrendResponse,
   DashboardTrendFilters,
 } from "./types";

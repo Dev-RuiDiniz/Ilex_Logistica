@@ -1,5 +1,5 @@
 import { describe, expect, it, vi, beforeEach } from "vitest";
-import { listSlaRules, createSlaRule, updateSlaRule, recalculateSla, recalculateShipmentSla } from "./api";
+import { listSlaRules, createSlaRule, updateSlaRule, recalculateSla } from "./api";
 
 // Mock global fetch
 global.fetch = vi.fn();

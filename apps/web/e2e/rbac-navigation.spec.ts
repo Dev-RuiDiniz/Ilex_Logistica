@@ -115,7 +115,7 @@ test.describe('Navegação por Permissão (RBAC)', () => {
     }
   });
 
-  test('menu deve respeitar perfil do usuário', async ({ page }) => {
+  test('menu deve respeitar perfil do usuário', async () => {
     const logisticaUser = testUsers.logistica;
     
     // Login como logística

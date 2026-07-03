@@ -6,7 +6,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from app.database.base import Base
 from app.database.session import engine, SessionLocal
 from app.core.security import hash_password
-from app.modules.users.models import Role, User, Permission
+from app.modules.users.models import Role, User
 from app.modules.users.seed_permissions import seed_role_permissions
 from app.modules.carriers.models import Carrier
 from app.modules.sla.models import SlaRule

@@ -1,6 +1,6 @@
 ﻿"use client";
 
-import { FormEvent, useEffect, useMemo, useState } from "react";
+import { FormEvent, useCallback, useEffect, useMemo, useState } from "react";
 
 import { createCarrier, inactivateCarrier, listCarriers, updateCarrier } from "@/lib/api";
 import { canEditCarriers } from "@/lib/permissions";
@@ -50,7 +50,7 @@ export default function CarriersPage() {
 
   const editable = canEditCarriers(session?.role ?? "auditoria");
 
-  const load = async () => {
+  const load = useCallback(async () => {
     if (!session) return;
     setLoading(true);
     setError("");
@@ -63,11 +63,11 @@ export default function CarriersPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [handleApiError, session]);
 
   useEffect(() => {
     queueMicrotask(() => void load());
-  }, [session?.accessToken]);
+  }, [load]);
 
   const filtered = useMemo(() => filterCarriersByQuery(items, query), [items, query]);
 
@@ -138,6 +138,10 @@ export default function CarriersPage() {
   const inputClass = "w-full rounded-lg border border-zinc-200 bg-white px-3 py-2.5 text-sm text-black placeholder:text-zinc-400 transition-colors focus:border-red-500 focus:outline-none focus:ring-2 focus:ring-red-500/20 disabled:opacity-50";
   const btnPrimary = "rounded-lg bg-zinc-900 px-4 py-2.5 text-sm font-semibold text-white transition-all hover:bg-zinc-800 disabled:opacity-50";
   const btnSecondary = "rounded-lg border border-zinc-200 bg-white px-4 py-2.5 text-sm font-semibold text-zinc-700 transition-all hover:border-zinc-300 hover:bg-zinc-50 disabled:opacity-50";
+
+  if (accessDenied) {
+    return <AccessDenied message={accessDeniedMessage} />;
+  }
 
   return (
     <section className="space-y-5">

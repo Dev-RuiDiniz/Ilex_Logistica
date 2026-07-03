@@ -1,7 +1,5 @@
 "use client";
 
-import { useState } from "react";
-
 interface SlaFiltersProps {
   slaStatus: string;
   isLate: "" | "true" | "false";

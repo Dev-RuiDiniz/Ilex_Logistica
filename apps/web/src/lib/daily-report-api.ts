@@ -123,7 +123,7 @@ export async function generateDailyReport(
 export function parseSummary(summaryJson: string): DailyReportSummary {
   try {
     return JSON.parse(summaryJson);
-  } catch (error) {
+  } catch {
     // Silent error handling for production
     return {
       total_shipments: 0,
@@ -145,7 +145,7 @@ export function parseSummary(summaryJson: string): DailyReportSummary {
 export function parseKpis(kpisJson: string): DailyReportKpis {
   try {
     return JSON.parse(kpisJson);
-  } catch (error) {
+  } catch {
     // Silent error handling for production
     return {
       active_alerts_count: 0,
@@ -162,7 +162,7 @@ export function parseExceptions(
 ): DailyReportExceptionItem[] {
   try {
     return JSON.parse(exceptionsJson);
-  } catch (error) {
+  } catch {
     // Silent error handling for production
     return [];
   }
@@ -174,7 +174,7 @@ export function parseExceptions(
 export function parseAlerts(alertsJson: string): DailyReportAlertItem[] {
   try {
     return JSON.parse(alertsJson);
-  } catch (error) {
+  } catch {
     // Silent error handling for production
     return [];
   }
@@ -188,7 +188,7 @@ export function parseCarrierEfficiency(
 ): DailyReportCarrierEfficiencyItem[] {
   try {
     return JSON.parse(carrierEfficiencyJson);
-  } catch (error) {
+  } catch {
     // Silent error handling for production
     return [];
   }
@@ -202,7 +202,7 @@ export function parseImportFailures(
 ): DailyReportImportFailures {
   try {
     return JSON.parse(importFailuresJson);
-  } catch (error) {
+  } catch {
     // Silent error handling for production
     return {
       rejected_count: 0,

@@ -1,5 +1,12 @@
 # RELATORIO.md — Registro de Trabalho
 
+## 2026-07-03 — Recuperação do baseline verde
+
+- Corrigidos cinco erros Ruff em ambiente Alembic, migrations e seed de demonstração.
+- Eliminados os warnings ESLint do Web, com ajuste de dependências de hooks, renderização de `AccessDenied` e remoção de imports, funções e variáveis sem uso.
+- Sincronizados `docs/specs/README.md`, `ROADMAP.md`, `ESCOPO.md` e `CONTEXTO.md` com o estado comprovado.
+- Validações e resultados finais constam no commit desta tarefa.
+
 ## 2026-07-02
 
 ### Tarefas executadas

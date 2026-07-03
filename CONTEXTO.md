@@ -1,6 +1,13 @@
 # CONTEXTO.md — Estado Vivo do Ilex Logística
 
-**Atualizado em:** 2026-07-02
+**Atualizado em:** 2026-07-03
+
+## 2026-07-03 — Baseline técnico revalidado
+
+- Ruff foi corrigido em migrations e seed de demonstração, incluindo a separação de imports corrompida em `migrations/env.py`.
+- Os warnings do Web foram eliminados: callbacks possuem dependências explícitas, páginas privadas renderizam acesso negado e código morto foi removido.
+- SPEC-04 e SPEC-08 deixaram de constar como bloqueadas no índice; filtros/busca estão confirmados e a homologação complementar de entregas/dashboard permanece pendente.
+- Evidências frescas desta sessão foram registradas em `RELATORIO.md`.
 
 ## 2026-07-02 — Estabilização técnica do P0
 

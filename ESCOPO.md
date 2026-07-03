@@ -1,7 +1,7 @@
 # ESCOPO.md — Escopo Completo do Ilex Logística
 
 **Versão:** 2.0
-**Atualizado em:** 2026-07-02
+**Atualizado em:** 2026-07-03
 **Status:** MVP avançado em estabilização e homologação
 **Fonte complementar:** `ESCOPO_PROJETO_ILEX_LOGISTICA_APENDICE_1.md`
 
@@ -142,8 +142,8 @@ Entidades confirmadas incluem usuários, papéis, permissões, transportadoras, 
 
 | IDs | Resultado | Estado atual | Spec |
 |---|---|---|---|
-| LOG-027–031 | campos fiscais e financeiros | Backend confirmado; Web/homologação parcial | `04-entregas-monitoradas.md` |
-| LOG-032–033 | filtros e busca | Parcial | `04-entregas-monitoradas.md` |
+| LOG-027–031 | campos fiscais e financeiros | API e Web confirmados; UAT complementar pendente | `04-entregas-monitoradas.md` |
+| LOG-032–033 | filtros e busca | API, Web e E2E confirmados | `04-entregas-monitoradas.md` |
 | LOG-034–035 | eficiência e indicadores por período | Implementação presente; aceite complementar parcial | `07-eficiencia-transportadoras.md` |
 | LOG-036–040 | pedidos e cotação | Planejado | `12-pedidos-cotacao-frete.md` |
 | LOG-041 | fluxo Braspress | Implementação/testes presentes; guia consolidado na spec | `03-importacoes-braspress.md` |

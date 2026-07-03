@@ -1,5 +1,4 @@
 import { describe, expect, it } from "vitest";
-import { render, screen } from "@testing-library/react";
 import { formatSlaStatusLabel, getSlaStatusBadgeColor, formatDelayDays, formatDateBR } from "@/lib/sla-helpers";
 
 describe("Shipments SLA badges", () => {

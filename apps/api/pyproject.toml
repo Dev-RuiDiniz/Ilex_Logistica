@@ -27,6 +27,7 @@ dev = [
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+markers = ["performance: deterministic local performance gates"]
 
 [tool.ruff]
 line-length = 100

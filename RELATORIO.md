@@ -154,3 +154,9 @@
 - Backup gera dump custom comprimido, checksum e aplica retenção de 30 dias; restore valida checksum e restaura em banco temporário.
 - Deploy e rollback exigem tags imutáveis, backup prévio, migration explícita e readiness.
 - Testes estáticos de infraestrutura e `docker compose config` passaram. A execução contra PostgreSQL 16 real foi bloqueada porque o engine Docker local não estava ativo; nenhum resultado de restore foi inventado.
+
+### Desempenho
+
+- Runner HTTP concorrente mede pedidos, dashboard e envios com p50/p95/p99, throughput e erros para 50 usuários.
+- Preview e confirmação de 10 mil pedidos passaram em 5,07 s no baseline local SQLite em memória.
+- A evidência local não foi usada para aprovar PostgreSQL/VPS; carga concorrente e planos de consulta continuam pendentes do ambiente de homologação.

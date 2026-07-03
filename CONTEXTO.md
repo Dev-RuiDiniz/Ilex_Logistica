@@ -119,6 +119,7 @@ Executar P0 na ordem: build/runtime Web, suíte/lint, migration única, API dete
 - Axe não encontrou violações sérias/críticas nas telas P3 após corrigir contraste do shell; o fluxo passou em Chrome, Firefox, WebKit e viewport móvel.
 - Smoke read-only e E2E autenticado com escrita estão preparados e protegidos por variáveis explícitas. Sem VPS, DNS, TLS e credenciais descartáveis, a execução produtiva segue bloqueada.
 - `npm audit fix` eliminou achados altos; restam dois moderados do PostCSS embarcado pelo Next.js, sem correção compatível indicada pelo npm.
+- Roteiros UAT formais foram preparados para administrador, logística, gestor e auditoria. Todos permanecem `PENDENTE`; nenhuma assinatura ou aprovação foi simulada.
 
 ### 2026-06-24 — Segurança e RBAC frontend
 

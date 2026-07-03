@@ -176,3 +176,10 @@
 - Smoke read-only e cenário autenticado de importação/cotação foram preparados com guardas contra escrita acidental.
 - Execução externa, deploy e rollback permanecem sem evidência por ausência de VPS/domínio/TLS/credenciais.
 - Dependências altas apontadas pelo npm foram atualizadas; dois achados moderados do Next/PostCSS permanecem documentados, pois a correção sugerida causaria downgrade incompatível.
+
+## 2026-07-03 — P5 UAT
+
+- Roteiros separados cobrem autenticação/RBAC, transportadoras, imports, shipments, SLA, dashboard, alertas, relatórios, auditoria, pedidos e cotações.
+- Cada roteiro exige ambiente, tag, usuário sanitizado, esperado/real, evidência e assinatura.
+- Resultado consolidado, defeitos e aceites de risco possuem matriz própria.
+- Estado real: preparado, não executado e sem assinaturas; go-live continua bloqueado.

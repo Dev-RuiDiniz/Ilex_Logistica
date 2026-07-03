@@ -183,7 +183,7 @@
 
 ## 8. P5 — Homologação e encerramento  `[ ]`
 
-- [ ] Executar UAT por perfil com evidências e aceite formal.
+  - [~] Roteiros UAT por perfil preparados; execução, evidências e assinaturas pendentes.
 - [ ] Fechar todas as specs do MVP como confirmadas/homologadas ou registrar exclusão aprovada.
 - [ ] Atualizar escopo, arquitetura, banco, contexto, relatório e README comercial.
 - [ ] Produzir release notes, plano de implantação, treinamento, suporte e rollback.

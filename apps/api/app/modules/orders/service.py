@@ -15,6 +15,7 @@ from fastapi import HTTPException, UploadFile, status
 from sqlalchemy.orm import Session
 
 from app.modules.imports.models import ImportHistory
+from app.core.observability import metrics
 from app.modules.orders.models import Order
 
 REQUIRED_COLUMNS = [
@@ -155,6 +156,7 @@ def confirm_order_import(db: Session, import_id: int, user_id: int) -> ImportHis
         history.imported_by = user_id
         db.commit()
         db.refresh(history)
+        metrics.increment("order_imports", status="confirmed")
         return history
     except Exception:
         db.rollback()

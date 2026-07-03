@@ -14,6 +14,7 @@ from sqlalchemy import func
 from sqlalchemy.orm import Session
 
 from app.modules.audit.models import OperationalAuditLog
+from app.core.observability import metrics
 from app.modules.carriers.models import Carrier
 from app.modules.imports.models import ImportHistory
 from app.modules.orders.models import FreightQuote, Order, QuoteRound
@@ -70,6 +71,7 @@ def create_quote_round(db: Session, order_id: int, user_id: int, actor_email: st
     _add_audit(db, "quote_round_created", "quote_round", quote_round.id, "create", user_id, actor_email)
     db.commit()
     db.refresh(quote_round)
+    metrics.increment("quote_rounds", status="created")
     return quote_round
 
 
@@ -110,6 +112,7 @@ def register_quote(
         _add_audit(db, "quote_round_completed", "quote_round", round_id, "update", user_id, actor_email)
     db.commit()
     db.refresh(quote_round)
+    metrics.increment("freight_quotes", status=quote_status, carrier_id=str(carrier_id))
     return quote_round
 
 

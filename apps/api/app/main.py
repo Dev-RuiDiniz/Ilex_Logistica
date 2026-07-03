@@ -1,11 +1,14 @@
 ﻿import logging
 
-from fastapi import FastAPI, Request
-from fastapi.responses import JSONResponse
+from time import perf_counter
+
+from fastapi import Depends, FastAPI, Request
+from fastapi.responses import JSONResponse, PlainTextResponse
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.core.config import Settings, settings
 from app.core.rate_limit import RateLimiter, RedisRateLimiter, rate_limit_rule
+from app.core.observability import configure_json_logging, metrics, request_id_from_header
 from app.core.errors import register_exception_handlers
 from app.modules.auth.router import router as auth_router
 from app.modules.audit.router import router as audit_router
@@ -20,6 +23,9 @@ from app.modules.sla.router import router as sla_router
 from app.modules.alerts.router import router as alerts_router
 from app.modules.orders.router import router as orders_router
 from app.modules.orders.quotes_router import router as quotes_router
+from app.database.session import get_db
+from app.modules.orders.models import FreightQuote
+from sqlalchemy.orm import Session
 
 
 def create_app(app_settings: Settings = settings, rate_limiter: RateLimiter | None = None) -> FastAPI:
@@ -52,9 +58,11 @@ def create_app(app_settings: Settings = settings, rate_limiter: RateLimiter | No
             decision = await limiter.check(key, limit)
         except Exception:
             if production:
+                metrics.increment("rate_limit_failures", reason="redis_unavailable")
                 return JSONResponse(status_code=503, content={"detail": "controle de trafego indisponivel"})
             return await call_next(request)
         if not decision.allowed:
+            metrics.increment("rate_limit_rejections", key=key.split(":", 1)[0])
             return JSONResponse(
                 status_code=429,
                 content={"detail": "limite de requisicoes excedido"},
@@ -62,10 +70,7 @@ def create_app(app_settings: Settings = settings, rate_limiter: RateLimiter | No
             )
         return await call_next(request)
 
-    logging.basicConfig(
-        level=logging.INFO,
-        format="%(asctime)s %(levelname)s %(name)s %(message)s",
-    )
+    configure_json_logging()
 
     # Enable logging middleware unless explicitly disabled for testing
     enable_logging = True
@@ -74,13 +79,22 @@ def create_app(app_settings: Settings = settings, rate_limiter: RateLimiter | No
         @app.middleware("http")
         async def log_requests(request: Request, call_next):
             logger = logging.getLogger("ilex.api.requests")
-            logger.info("request_started method=%s path=%s", request.method, request.url.path)
+            request_id = request_id_from_header(request.headers.get("x-request-id"))
+            started = perf_counter()
             response = await call_next(request)
+            duration = perf_counter() - started
+            route = getattr(request.scope.get("route"), "path", request.url.path)
+            metrics.observe_request(request.method, route, response.status_code, duration)
+            response.headers["X-Request-ID"] = request_id
             logger.info(
-                "request_finished method=%s path=%s status_code=%s",
-                request.method,
-                request.url.path,
-                response.status_code,
+                "request_finished",
+                extra={
+                    "request_id": request_id,
+                    "method": request.method,
+                    "route": route,
+                    "status_code": response.status_code,
+                    "duration_ms": round(duration * 1000, 2),
+                },
             )
             return response
 
@@ -97,6 +111,12 @@ def create_app(app_settings: Settings = settings, rate_limiter: RateLimiter | No
         return response
 
     register_exception_handlers(app)
+
+    @app.get("/metrics", include_in_schema=False, response_class=PlainTextResponse)
+    def prometheus_metrics(db: Session = Depends(get_db)) -> str:
+        pending = db.query(FreightQuote).filter(FreightQuote.status == "pending").count()
+        metrics.set_gauge("pending_freight_quotes", pending)
+        return metrics.render()
     app.include_router(health_router, prefix="/api/v1")
     app.include_router(auth_router, prefix="/api/v1")
     app.include_router(carriers_router, prefix="/api/v1")

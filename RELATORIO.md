@@ -160,3 +160,11 @@
 - Runner HTTP concorrente mede pedidos, dashboard e envios com p50/p95/p99, throughput e erros para 50 usuários.
 - Preview e confirmação de 10 mil pedidos passaram em 5,07 s no baseline local SQLite em memória.
 - A evidência local não foi usada para aprovar PostgreSQL/VPS; carga concorrente e planos de consulta continuam pendentes do ambiente de homologação.
+
+### Observabilidade
+
+- Middleware emite logs JSON com request ID, rota normalizada, status e latência, sem conteúdo de arquivo/token.
+- `/metrics` interno publica métricas HTTP, rate limit, imports, rodadas, cotações e backlog pendente.
+- Readiness verifica PostgreSQL/Redis separadamente da liveness.
+- Prometheus e exporters não publicam portas; regras e runbooks cobrem indisponibilidade, 5xx, backlog e backup.
+- Configuração e testes estáticos passaram; disparo real dos alertas depende da VPS e continua pendente.

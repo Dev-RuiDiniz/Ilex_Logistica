@@ -74,13 +74,53 @@ services:
     depends_on: [web, api]
     networks: [app]
 
+  postgres-exporter:
+    image: prometheuscommunity/postgres-exporter:v0.15.0
+    restart: unless-stopped
+    environment:
+      DATA_SOURCE_NAME: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}?sslmode=disable
+    networks: [data, monitoring]
+    depends_on:
+      db: { condition: service_healthy }
+
+  redis-exporter:
+    image: oliver006/redis_exporter:v1.62.0
+    restart: unless-stopped
+    environment:
+      REDIS_ADDR: redis://redis:6379
+    networks: [data, monitoring]
+    depends_on:
+      redis: { condition: service_healthy }
+
+  node-exporter:
+    image: prom/node-exporter:v1.8.2
+    restart: unless-stopped
+    command: ["--collector.textfile.directory=/textfile"]
+    volumes:
+      - ./monitoring:/textfile:ro
+    networks: [monitoring]
+
+  prometheus:
+    image: prom/prometheus:v2.54.1
+    restart: unless-stopped
+    command: ["--config.file=/etc/prometheus/prometheus.yml", "--storage.tsdb.retention.time=30d"]
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./prometheus-rules.yml:/etc/prometheus/rules.yml:ro
+      - ilex-prometheus-data:/prometheus
+    networks: [app, monitoring]
+    depends_on: [api, postgres-exporter, redis-exporter, node-exporter]
+
 volumes:
   ilex-postgres-data:
   ilex-redis-data:
   ilex-caddy-data:
   ilex-caddy-config:
+  ilex-prometheus-data:
 
 networks:
   data:
     internal: true
   app:
+  monitoring:
+    internal: true

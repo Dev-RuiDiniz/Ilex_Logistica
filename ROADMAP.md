@@ -177,7 +177,7 @@
 - [~] Compose e scripts de PostgreSQL/backup/restore/migration/rollback implementados; execução real bloqueada nesta sessão porque o Docker Desktop não estava ativo.
   - [~] Metas, carga HTTP e gate local de 10 mil pedidos implementados; medição concorrente em VPS/PostgreSQL permanece pendente.
 - [ ] Validar acessibilidade e principais navegadores/resoluções.
-- [ ] Instrumentar health, logs, métricas, alertas e runbooks sem dados sensíveis.
+  - [~] Health, logs JSON, métricas internas, alertas e runbooks implementados; ativação/validação no VPS permanece pendente.
 - [ ] Executar E2E autenticado completo em ambiente semelhante à produção.
 - [ ] **Gate:** checklist de segurança, operação, continuidade e deploy aprovado.
 

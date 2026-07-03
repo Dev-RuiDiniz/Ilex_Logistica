@@ -288,6 +288,45 @@ def test_retornar_zero_extraviadas_quando_status_nao_existir(db_session: Session
     assert result["carriers"][0]["lost_count"] == 0
 
 
+def test_contabiliza_apenas_status_lost_como_extravio(db_session: Session):
+    carrier = Carrier(name="Transportadora Lost", external_code="LOST-1", integration_metadata={})
+    db_session.add(carrier)
+    db_session.flush()
+    for index, status in enumerate(("lost", "failed")):
+        db_session.add(Shipment(
+            tracking_code=f"LOST-{index}", carrier_id=carrier.id, status=status,
+            estimated_delivery=datetime(2025, 1, 10, tzinfo=UTC), recipient_name="Cliente",
+            recipient_phone="11999999999", origin_address="Origem", destination_address="Destino",
+            meta_data="{}", is_active=True,
+        ))
+    db_session.commit()
+
+    metrics = calculate_carrier_efficiency(db_session)["carriers"][0]
+
+    assert metrics["lost_count"] == 1
+    assert metrics["lost_percentage"] == 50.0
+
+
+def test_percentual_medio_usa_apenas_linhas_financeiras_validas(db_session: Session):
+    carrier = Carrier(name="Transportadora Financeira", external_code="FIN-1", integration_metadata={})
+    db_session.add(carrier)
+    db_session.flush()
+    values = ((100, 1000), (40, 200), (50, 0), (None, 500))
+    for index, (freight, invoice) in enumerate(values):
+        db_session.add(Shipment(
+            tracking_code=f"FIN-{index}", carrier_id=carrier.id, status="delivered",
+            estimated_delivery=datetime(2025, 1, 10, tzinfo=UTC), recipient_name="Cliente",
+            recipient_phone="11999999999", origin_address="Origem", destination_address="Destino",
+            meta_data="{}", is_active=True, freight_value=freight, invoice_value=invoice,
+        ))
+    db_session.commit()
+
+    metrics = calculate_carrier_efficiency(db_session)["carriers"][0]
+
+    assert metrics["financial_valid_count"] == 2
+    assert metrics["average_freight_percentage"] == 15.0
+
+
 def test_calcular_percentuais_com_base_no_total_da_transportadora(db_session: Session):
     """Deve calcular percentuais com base no total da transportadora."""
     carrier = Carrier(name="Transportadora A", external_code="TPA-1", integration_metadata={})

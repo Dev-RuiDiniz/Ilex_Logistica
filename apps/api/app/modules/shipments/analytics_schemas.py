@@ -19,6 +19,7 @@ class CarrierEfficiencyMetrics(BaseModel):
     total_freight_value: float
     total_invoice_value: float
     average_freight_percentage: float
+    financial_valid_count: int
     average_freight_value: float
     ranking_by_efficiency: int
     ranking_by_cost: int

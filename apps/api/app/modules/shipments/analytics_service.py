@@ -92,6 +92,8 @@ def calculate_carrier_efficiency(
                 "lost_count": 0,
                 "total_freight_value": Decimal("0"),
                 "total_invoice_value": Decimal("0"),
+                "freight_percentage_sum": Decimal("0"),
+                "financial_valid_count": 0,
             }
 
         carrier_metrics[carrier_id]["total_shipments"] += 1
@@ -107,12 +109,19 @@ def calculate_carrier_efficiency(
             carrier_metrics[carrier_id]["critical_count"] += 1
 
         # Extraviadas: status não existe no domínio, sempre 0
-        carrier_metrics[carrier_id]["lost_count"] = 0
+        if shipment.status == "lost":
+            carrier_metrics[carrier_id]["lost_count"] += 1
 
         if shipment.freight_value:
             carrier_metrics[carrier_id]["total_freight_value"] += Decimal(str(shipment.freight_value))
         if shipment.invoice_value:
             carrier_metrics[carrier_id]["total_invoice_value"] += Decimal(str(shipment.invoice_value))
+        if shipment.freight_value is not None and shipment.invoice_value is not None:
+            invoice_value = Decimal(str(shipment.invoice_value))
+            if invoice_value > 0:
+                freight_value = Decimal(str(shipment.freight_value))
+                carrier_metrics[carrier_id]["freight_percentage_sum"] += freight_value / invoice_value * 100
+                carrier_metrics[carrier_id]["financial_valid_count"] += 1
 
     # Calculate percentages and averages
     results = []
@@ -131,10 +140,8 @@ def calculate_carrier_efficiency(
             metrics["late_percentage"] = 0
             metrics["lost_percentage"] = 0
 
-        if metrics["total_invoice_value"] > 0:
-            metrics["average_freight_percentage"] = (
-                (metrics["total_freight_value"] / metrics["total_invoice_value"]) * 100
-            )
+        if metrics["financial_valid_count"] > 0:
+            metrics["average_freight_percentage"] = metrics["freight_percentage_sum"] / metrics["financial_valid_count"]
         else:
             metrics["average_freight_percentage"] = 0
 
@@ -143,10 +150,11 @@ def calculate_carrier_efficiency(
         else:
             metrics["average_freight_value"] = 0
 
+        metrics.pop("freight_percentage_sum")
         results.append(metrics)
 
     # Calculate rankings
-    results.sort(key=lambda x: x["on_time_percentage"], reverse=True)
+    results.sort(key=lambda x: (-x["on_time_percentage"], x["lost_percentage"], x["average_freight_percentage"], x["carrier_name"] or ""))
     for i, result in enumerate(results):
         result["ranking_by_efficiency"] = i + 1
 

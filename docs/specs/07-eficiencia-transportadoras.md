@@ -1,6 +1,6 @@
 # SPEC-07 — Eficiência por Transportadora
 
-**Estado:** Parcialmente homologado
+**Estado:** Confirmado por dataset controlado; aceite humano pendente
 **Rastreabilidade:** LOG-034, LOG-035
 
 ## Objetivo e contexto
@@ -20,7 +20,9 @@ Filtros de período, transportadora, cliente e UF delimitam o conjunto. O servi�
 - Percentuais usam o total válido da própria transportadora; total zero resulta em zero/indisponível conforme contrato, nunca divisão por zero.
 - Frete total soma valores disponíveis; percentual médio considera apenas linhas com base calculável e informa a população válida.
 - LOG-035 exige que mês, ano e todo período afetem quadro e KPIs igualmente.
-- Ranking padrão: maior percentual no prazo; desempate por menor percentual de extravio, menor custo médio e nome estável. Alteração futura deve ser configurável e documentada.
+- Ranking padrão: maior percentual no prazo; desempate por menor percentual de extravio, menor percentual médio de frete e nome estável.
+- Extravio exige status explícito `lost`; atraso não infere extravio.
+- O teste `test_p1_metrics_reconciliation.py` compara listagem, dashboard e eficiência sobre o mesmo universo filtrado.
 
 ## Falhas esperadas
 

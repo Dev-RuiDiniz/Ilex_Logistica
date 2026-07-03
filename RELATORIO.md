@@ -189,3 +189,9 @@
 - README, escopo, arquitetura, banco, roadmap, contexto, relatório e auditoria foram reconciliados com o estado técnico atual.
 - Release notes da RC, checklist de implantação, treinamento e suporte/escalonamento foram preparados.
 - Specs permanecem com estados baseados em evidência: “confirmado tecnicamente”, “parcial” ou “a confirmar”; nenhuma foi promovida a homologada sem assinatura.
+
+### Release e go-live
+
+- Manifesto da RC e templates de evidência/decisão foram criados com estado bloqueado/pendente.
+- Gate automatizado exige simultaneamente P4 aprovado, UAT aprovada e decisão GO.
+- Nenhuma tag, GitHub Release, imagem, implantação, piloto ou decisão formal foi criada sem evidência externa.

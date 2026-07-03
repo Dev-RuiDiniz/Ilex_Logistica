@@ -187,7 +187,7 @@
 - [ ] Fechar todas as specs do MVP como confirmadas/homologadas ou registrar exclusão aprovada.
   - [x] Atualizar escopo, arquitetura, banco, contexto, relatório e README comercial conforme evidência atual.
   - [x] Produzir release notes, plano de implantação, treinamento, suporte e rollback.
-- [ ] Fazer release candidata, smoke pós-deploy e decisão de go-live.
+  - [~] RC, smoke e decisão possuem artefatos/guardas; tag, piloto, smoke pós-deploy e decisão formal bloqueados pelos gates externos.
 
 ## 9. Pós-MVP dependente de terceiros
 

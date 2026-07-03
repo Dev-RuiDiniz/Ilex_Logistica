@@ -1,0 +1,12 @@
+{
+  "candidate": "v1.0.0-rc.1",
+  "status": "blocked",
+  "published": false,
+  "deployed": false,
+  "pilot_hours": 0,
+  "blockers": [
+    "P4 external evidence",
+    "signed UAT",
+    "formal go-live decision"
+  ]
+}

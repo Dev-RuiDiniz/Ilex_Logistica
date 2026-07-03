@@ -121,6 +121,7 @@ Executar P0 na ordem: build/runtime Web, suíte/lint, migration única, API dete
 - `npm audit fix` eliminou achados altos; restam dois moderados do PostCSS embarcado pelo Next.js, sem correção compatível indicada pelo npm.
 - Roteiros UAT formais foram preparados para administrador, logística, gestor e auditoria. Todos permanecem `PENDENTE`; nenhuma assinatura ou aprovação foi simulada.
 - Documentação de release candidata, implantação, treinamento, suporte e escalonamento foi preparada. A RC não foi tagueada/publicada porque P4 externo e UAT não passaram.
+- `release_gate.py` falha fechado enquanto P4, UAT e decisão GO não possuem marcadores explícitos. O manifesto de `v1.0.0-rc.1` permanece `blocked`, sem tag/publicação/deploy.
 
 ### 2026-06-24 — Segurança e RBAC frontend
 

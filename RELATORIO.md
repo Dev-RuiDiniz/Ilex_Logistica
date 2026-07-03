@@ -133,3 +133,9 @@
 - Listagens, filtros, paginação, importação, histórico, registro de cotações e override tratam feedback operacional e acesso negado.
 - Layout usa tabela em desktop e cartões em telas pequenas, com labels, foco e `aria-live` nos feedbacks.
 - Matriz de papéis foi alinhada entre API e Web e persistida na migration `20260703_03`.
+
+### Gate P3
+
+- Fluxo Playwright de pedido → preview → confirmação → rodada → cotações Web/CSV → recomendação → override → histórico passou nos quatro projetos configurados.
+- Middleware protege também `/orders` e `/quote-rounds`.
+- A suíte E2E legada completa (304 cenários) excedeu 10 minutos em duas tentativas locais; o resultado não foi convertido em sucesso e será retomado no gate de ambiente produtivo do P4.

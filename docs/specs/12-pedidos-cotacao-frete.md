@@ -1,6 +1,6 @@
 # SPEC-12 — Pedidos ERP e Cotação de Frete
 
-**Estado:** Parcial — persistência e importação ERP confirmadas tecnicamente
+**Estado:** Confirmado tecnicamente; UAT humano pendente
 **Rastreabilidade:** LOG-036, LOG-037, LOG-038, LOG-039, LOG-040
 
 ## Objetivo e contexto

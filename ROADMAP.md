@@ -163,11 +163,11 @@
 - [ ] Regra inicial: menor valor válido; aplicar desempate definido na SPEC-12.
 - [ ] Preservar rodadas, validade e explicação da melhor opção.
 
-### P3.4 Experiência Web — LOG-036  `[~]`
+### P3.4 Experiência Web — LOG-036  `[x]`
 
 - [x] Criar subaba/tela de pedidos, tabela comparativa, filtros, estados e histórico.
   - [x] Aplicar RBAC, acessibilidade e responsividade.
-  - [ ] Validar o fluxo completo nos quatro projetos Playwright.
+  - [x] Validar o fluxo completo nos quatro projetos Playwright.
 - [ ] **Gate P3:** pedido importado, comparação auditável e melhor opção determinística com UAT aprovado.
 
 ## 7. P4 — Prontidão de produção  `[ ]`

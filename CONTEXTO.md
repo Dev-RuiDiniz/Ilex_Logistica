@@ -106,6 +106,8 @@ Executar P0 na ordem: build/runtime Web, suíte/lint, migration única, API dete
 - Criação, registro/importação, conclusão e override geram auditoria operacional na mesma transação de domínio.
 - A Web oferece listagem/importação de pedidos, detalhe com histórico e comparação de cotações em desktop/mobile, com estados de loading, vazio, erro e acesso negado.
 - A matriz RBAC foi persistida por migration e testada em todas as rotas novas para respostas `401` e `403`.
+- O fluxo P3 completo passou em Chromium, Firefox, WebKit e Mobile Chrome com API determinística interceptada; regras e contratos da API foram validados separadamente contra o banco de testes.
+- A suíte Playwright histórica completa possui 304 cenários e excedeu dez minutos no ambiente local; ela permanece gate de P4 em ambiente semelhante à produção, sem ser tratada como aprovada.
 
 ### 2026-06-24 — Segurança e RBAC frontend
 

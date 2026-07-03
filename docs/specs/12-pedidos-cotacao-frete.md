@@ -1,6 +1,6 @@
 # SPEC-12 — Pedidos ERP e Cotação de Frete
 
-**Estado:** Especificado; implementação pendente
+**Estado:** Parcial — persistência e importação ERP confirmadas tecnicamente
 **Rastreabilidade:** LOG-036, LOG-037, LOG-038, LOG-039, LOG-040
 
 ## Objetivo e contexto
@@ -9,7 +9,7 @@ Comparar cotações de transportadoras antes da expedição e manter histórico 
 
 ## Estado atual e evidências
 
-Não existem ainda models, migrations, endpoints ou telas. Os contratos abaixo foram aprovados para o MVP assistido; integrações automáticas continuam pós-MVP.
+Os models, a migration reversível e o fluxo assistido de preview/confirm de pedidos existem e possuem testes de contrato, idempotência, atualização, erro por linha, CSV/XLSX e RBAC. Rodadas, motor comparativo e telas permanecem planejados; integrações automáticas continuam pós-MVP.
 
 ## Entradas, saídas e fluxo
 

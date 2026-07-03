@@ -30,7 +30,7 @@ Estas specs definem o comportamento esperado antes da implementação. Para cada
 | SPEC-09 | [Alertas](09-alertas-notificacoes.md) | Confirmado/Parcial |
 | SPEC-10 | [Relatórios](10-relatorios-exportacoes.md) | Implementado; UAT pendente |
 | SPEC-11 | [Auditoria](11-auditoria-historico.md) | Implementado; UAT pendente |
-| SPEC-12 | [Pedidos e cotações](12-pedidos-cotacao-frete.md) | Especificado; implementação pendente |
+| SPEC-12 | [Pedidos e cotações](12-pedidos-cotacao-frete.md) | Parcial — persistência e importação ERP confirmadas |
 
 ## Rastreabilidade LOG-027 a LOG-041
 

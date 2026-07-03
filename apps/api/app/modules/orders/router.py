@@ -1,0 +1,61 @@
+from fastapi import APIRouter, Depends, File, HTTPException, Query, UploadFile
+from sqlalchemy.orm import Session
+
+from app.database.session import get_db
+from app.modules.auth.dependencies import require_permission
+from app.modules.imports.models import ImportHistory
+from app.modules.orders.schemas import (
+    OrderImportConfirmRequest,
+    OrderImportPreviewResponse,
+    OrderImportResultResponse,
+    OrderListResponse,
+)
+from app.modules.orders.service import confirm_order_import, list_orders, preview_order_import
+from app.modules.users.models import User
+
+router = APIRouter(prefix="/orders", tags=["orders"])
+
+
+@router.post("/imports/preview", response_model=OrderImportPreviewResponse)
+def preview_orders(
+    file: UploadFile = File(...),
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_permission("orders:write")),
+) -> OrderImportPreviewResponse:
+    return OrderImportPreviewResponse(**preview_order_import(db, file, current_user.id))
+
+
+@router.post("/imports/confirm", response_model=OrderImportResultResponse)
+def confirm_orders(
+    request: OrderImportConfirmRequest,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_permission("orders:write")),
+) -> OrderImportResultResponse:
+    return OrderImportResultResponse.model_validate(
+        confirm_order_import(db, request.import_id, current_user.id), from_attributes=True
+    )
+
+
+@router.get("/imports/{import_id}", response_model=OrderImportResultResponse)
+def get_order_import(
+    import_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_permission("orders:read")),
+) -> OrderImportResultResponse:
+    history = db.get(ImportHistory, import_id)
+    if history is None or history.source != "orders_erp":
+        raise HTTPException(status_code=404, detail="importacao nao encontrada")
+    return OrderImportResultResponse.model_validate(history, from_attributes=True)
+
+
+@router.get("", response_model=OrderListResponse)
+def get_orders(
+    page: int = Query(1, ge=1),
+    page_size: int = Query(20, ge=1, le=100),
+    status: str | None = Query(None),
+    source: str | None = Query(None),
+    external_number: str | None = Query(None),
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_permission("orders:read")),
+) -> OrderListResponse:
+    return OrderListResponse(**list_orders(db, page, page_size, status, source, external_number))

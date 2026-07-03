@@ -25,6 +25,8 @@ def seed_role_permissions(db: Session) -> None:
         ("users:write", "Write users", "users", "write"),
         ("carriers:read", "Read carriers", "carriers", "read"),
         ("carriers:write", "Write carriers", "carriers", "write"),
+        ("orders:read", "Read ERP orders", "orders", "read"),
+        ("orders:write", "Import and update ERP orders", "orders", "write"),
     ]
     
     for name, description, resource, action in permission_names:
@@ -52,6 +54,7 @@ def seed_role_permissions(db: Session) -> None:
             perm_map["reports:write"],
             perm_map["audit:read"],
             perm_map["carriers:read"],
+            perm_map["orders:read"],
         ],
         "operator": [
             perm_map["shipments:read"],
@@ -60,6 +63,8 @@ def seed_role_permissions(db: Session) -> None:
             perm_map["imports:write"],
             perm_map["alerts:read"],
             perm_map["alerts:write"],
+            perm_map["orders:read"],
+            perm_map["orders:write"],
         ],
         "viewer": [
             perm_map["shipments:read"],
@@ -68,6 +73,7 @@ def seed_role_permissions(db: Session) -> None:
             perm_map["alerts:read"],
             perm_map["reports:read"],
             perm_map["carriers:read"],
+            perm_map["orders:read"],
         ],
         "logistica": [
             perm_map["shipments:read"],
@@ -76,6 +82,8 @@ def seed_role_permissions(db: Session) -> None:
             perm_map["imports:write"],
             perm_map["carriers:read"],
             perm_map["carriers:write"],
+            perm_map["orders:read"],
+            perm_map["orders:write"],
         ],
         "gestor": [
             perm_map["shipments:read"],
@@ -84,12 +92,14 @@ def seed_role_permissions(db: Session) -> None:
             perm_map["alerts:read"],
             perm_map["reports:read"],
             perm_map["carriers:read"],
+            perm_map["orders:read"],
         ],
         "auditoria": [
             perm_map["audit:read"],
             perm_map["shipments:read"],
             perm_map["imports:read"],
             perm_map["carriers:read"],
+            perm_map["orders:read"],
         ],
     }
     

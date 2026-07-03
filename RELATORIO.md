@@ -99,3 +99,23 @@
 
 - Commit prévio das exclusões: `abc6d4e chore(docs): remove documentacao obsoleta`.
 - A consolidação de governança e specs será incluída no commit final autorizado desta sessão.
+
+## 2026-07-03 — Implementação P3 (pedidos ERP)
+
+### Entregas
+
+- Contratos da SPEC-12 consolidados.
+- Persistência de pedidos, rodadas e cotações criada com migration reversível.
+- Preview/confirm de pedidos ERP implementado para CSV/XLSX, com idempotência, atualização segura, erros por linha e RBAC.
+- Fixtures determinísticas e sanitizadas de 10, 1.000 e 10.000 linhas incluídas nos dois formatos.
+
+### Evidências
+
+- API completa após persistência: 704 testes aprovados e Ruff aprovado.
+- Migration: head única, upgrade, downgrade, roundtrip e preservação aprovados.
+- Testes focados da importação cobrem sucesso, autenticação, acesso negado, idempotência, atualização e XLSX.
+
+### Pendências preservadas
+
+- Homologação humana do layout ERP com amostra real sanitizada.
+- Rodadas, motor comparativo, Web, prontidão produtiva, UAT e release permanecem nas etapas seguintes do plano.

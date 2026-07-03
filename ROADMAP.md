@@ -136,19 +136,22 @@
 
 ## 6. P3 — MVP assistido de cotação LOG-036–040
 
-### P3.1 Contrato e dados — SPEC-12  `[ ]`
+### P3.1 Contrato e dados — SPEC-12  `[x]`
 
-- [ ] LOG-038: homologar layout mínimo do pedido ERP por CSV/XLSX.
-- [ ] Definir `orders`, rodadas e `freight_quotes`, constraints, índices, status e auditoria.
-- [ ] Criar migration reversível e contratos API antes da implementação.
+- [x] LOG-038: fixar layout mínimo do pedido ERP por CSV/XLSX para o MVP assistido.
+  - [x] Definir `orders`, rodadas e `freight_quotes`, constraints, índices, status e auditoria.
+  - [x] Criar migration reversível e contratos API antes da implementação.
 
 > **Contrato aprovado em 2026-07-03:** layout logístico completo, cotações por Web/CSV, validade de 24 horas, desempate determinístico e override justificado/auditado.
 
-> **Evidência atual:** SPEC-12 criada; nenhuma migration, model ou rota de pedidos/cotações existe (SPEC-12 "Planejado", ARQUITETURA "Planejado").
+> **Evidência atual:** models, migration `20260703_02` e importação assistida possuem testes automatizados; homologação humana do layout permanece pendente.
 
-### P3.2 Importação de pedidos — LOG-037  `[ ]`
+### P3.2 Importação de pedidos — LOG-037  `[~]`
 
-- [ ] RED para arquivo válido, erro por linha, duplicidade e reimportação.
+  - [x] RED para arquivo válido, erro por linha, RBAC e reimportação.
+  - [x] Preview sem persistência de pedido e confirmação transacional/idempotente.
+  - [x] Fixtures sanitizadas CSV/XLSX de 10, 1.000 e 10.000 linhas.
+  - [ ] Homologação humana do layout com amostra real sanitizada.
 - [ ] GREEN com preview/confirm transacional e idempotente, reutilizando padrões da SPEC-03.
 
 ### P3.3 Motor comparativo — LOG-039/040  `[ ]`

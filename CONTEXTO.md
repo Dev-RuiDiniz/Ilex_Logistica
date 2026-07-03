@@ -95,6 +95,13 @@ Executar P0 na ordem: build/runtime Web, suíte/lint, migration única, API dete
 
 ## Histórico preservado
 
+## 2026-07-03 — P3 pedidos ERP
+
+- SPEC-12 foi fixada com os contratos aprovados e permanece parcial.
+- `orders`, `quote_rounds` e `freight_quotes` foram criados por migration reversível, com valores monetários decimais e constraints de identidade.
+- A importação de pedidos aceita CSV/XLSX, valida erros por linha, não persiste domínio no preview e confirma por transação com idempotência por hash.
+- O layout técnico está confirmado por fixtures sanitizadas; a homologação humana contra amostra do ERP continua pendente e não foi convertida em aceite.
+
 ### 2026-06-24 — Segurança e RBAC frontend
 
 Foi registrado tratamento de `401/403`, helpers de permissões, navegação condicional, componente `AccessDenied` e adaptação de páginas. O repositório atual contém testes de permissões, middleware, navegação e páginas privadas.

@@ -16,6 +16,7 @@ from app.modules.reports.router import router as reports_router
 from app.modules.users.router import router as users_router
 from app.modules.sla.router import router as sla_router
 from app.modules.alerts.router import router as alerts_router
+from app.modules.orders.router import router as orders_router
 
 
 def create_app() -> FastAPI:
@@ -71,6 +72,7 @@ def create_app() -> FastAPI:
     app.include_router(alerts_router, prefix="/api/v1")
     app.include_router(audit_router, prefix="/api/v1")
     app.include_router(dashboard_router, prefix="/api/v1")
+    app.include_router(orders_router, prefix="/api/v1")
     app.include_router(health_router)
     return app
 

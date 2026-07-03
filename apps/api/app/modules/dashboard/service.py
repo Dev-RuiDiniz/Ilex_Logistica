@@ -12,6 +12,7 @@ from app.modules.imports.models import ImportHistory
 from app.modules.shipments.analytics_service import calculate_carrier_efficiency
 from app.modules.alerts.service import get_active_alerts_count, get_no_update_alert_count
 from app.modules.shipments.exceptions_service import (
+    _get_exception_reason,
     calculate_exception_priority,
     classify_exception_type,
 )
@@ -223,7 +224,7 @@ def calculate_dashboard_summary(
                 "delay_days": sla.get("delay_days", 0),
                 "sla_due_date": sla.get("sla_due_date"),
                 "exception_type": exc_type,
-                "exception_reason": f"{exc_type} - {sla.get('sla_status')}",
+                "exception_reason": _get_exception_reason(exc_type, sla.get("delay_days", 0), sla.get("sla_status")),
                 "priority": priority,
                 "last_update_at": shipment.updated_at,
             })

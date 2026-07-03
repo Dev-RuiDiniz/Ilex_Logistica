@@ -108,4 +108,4 @@ NF-E2E-003,Transportadora E2E Test,2026-06-06,180.25,10.5`;
 export const invalidCSVContent = `nf,transportadora,data_coleta
 NF-E2E-INVALID,Transportadora E2E Test`;
 
-export const validXLSXContent = ''; // TODO: Implementar se necessário
+export const validXLSXFixtureName = 'import-valid.xlsx';

@@ -48,4 +48,4 @@ Fixtures para arquivo válido, coluna ausente, tipos inválidos, duplicidade int
 
 ## Riscos, dependências e rastreabilidade
 
-Layouts podem mudar; versionar mappers. Limites de tamanho e retenção do arquivo original estão A CONFIRMAR. Evidências: `modules/imports`, fixtures e testes de importação/Braspress.
+O layout assistido homologável usa os cabeçalhos versionados em `BRASPRESS_IMPORTACAO_ASSISTIDA.md`; mudanças externas exigem nova versão do mapper. A fixture XLSX sanitizada e os testes API/E2E comprovam upload, preview e confirmação. Retenção do arquivo original permanece dependente da política de privacidade do cliente.

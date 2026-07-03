@@ -2,7 +2,8 @@ import { test, expect } from '@playwright/test';
 import { join } from 'path';
 import { AuthHelper } from './helpers/auth.helper';
 import { NavigationHelper } from './helpers/navigation.helper';
-import { testUsers, validXLSXFixtureName } from './fixtures/test-data';
+import { validXLSXFixtureName } from './fixtures/test-data';
+import { testUsers } from './fixtures/users';
 
 test('XLSX percorre upload, preview, confirmação e resultado', async ({ page }) => {
   await new AuthHelper(page).loginAs(testUsers.admin);

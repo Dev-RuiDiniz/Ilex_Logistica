@@ -1,7 +1,8 @@
 import { test, expect } from '@playwright/test';
 import { AuthHelper } from './helpers/auth.helper';
 import { NavigationHelper } from './helpers/navigation.helper';
-import { testUsers, validCSVContent, invalidCSVContent } from './fixtures/test-data';
+import { validCSVContent, invalidCSVContent } from './fixtures/test-data';
+import { testUsers } from './fixtures/users';
 import { writeFileSync } from 'fs';
 import { join } from 'path';
 import { tmpdir } from 'os';

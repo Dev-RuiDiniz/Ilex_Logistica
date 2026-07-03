@@ -25,7 +25,7 @@ export class AuthHelper {
    * Preenche o formulário de login
    */
   async fillLoginForm(email: string, password: string) {
-    await this.page.getByLabel(/email/i).fill(email);
+    await this.page.getByLabel(/e-?mail/i).fill(email);
     await this.page.getByLabel(/senha/i).fill(password);
   }
 
@@ -43,16 +43,7 @@ export class AuthHelper {
    * para não depender de backend real em testes E2E.
    */
   async loginAs(user: TestUser) {
-    // Navegar para login
-    await this.goToLogin();
-
-    // Preencher formulário
-    await this.fillLoginForm(user.email, user.password);
-
-    // Submeter
-    await this.submitLogin();
-
-    // Aguardar redirecionamento para dashboard
+    await this.simulateAuthenticatedSession(user);
     await expect(this.page).toHaveURL('/');
   }
 
@@ -63,21 +54,17 @@ export class AuthHelper {
    * (por exemplo, quando o backend não está disponível).
    */
   async simulateAuthenticatedSession(user: TestUser) {
-    await this.page.goto('/');
-    
-    // Simular token JWT fake no localStorage
+    await this.page.goto('/login');
     await this.page.evaluate((userData) => {
-      localStorage.setItem('access_token', 'fake-jwt-token-for-e2e-tests');
-      localStorage.setItem('user', JSON.stringify({
-        id: 999,
+      localStorage.setItem('ilex.session', JSON.stringify({
+        accessToken: 'fake-jwt-token-for-e2e-tests',
+        refreshToken: 'fake-refresh-token-for-e2e-tests',
+        role: userData.roles[0],
         email: userData.email,
-        full_name: userData.fullName,
-        roles: userData.roles,
       }));
+      document.cookie = 'ilex_token=fake-jwt-token-for-e2e-tests; path=/';
     }, user);
-
-    // Recarregar página para aplicar sessão
-    await this.page.reload();
+    await this.page.goto('/');
   }
 
   /**
@@ -85,7 +72,7 @@ export class AuthHelper {
    */
   async isAuthenticated(): Promise<boolean> {
     const accessToken = await this.page.evaluate(() => {
-      return localStorage.getItem('access_token');
+      return localStorage.getItem('ilex.session');
     });
     return accessToken !== null;
   }
@@ -95,8 +82,8 @@ export class AuthHelper {
    */
   async logout() {
     await this.page.evaluate(() => {
-      localStorage.removeItem('access_token');
-      localStorage.removeItem('user');
+      localStorage.removeItem('ilex.session');
+      document.cookie = 'ilex_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
     });
     await this.page.goto('/login');
   }

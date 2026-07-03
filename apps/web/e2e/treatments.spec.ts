@@ -1,7 +1,8 @@
 import { test, expect } from '@playwright/test';
 import { AuthHelper } from './helpers/auth.helper';
 import { NavigationHelper } from './helpers/navigation.helper';
-import { testUsers, testShipments } from './fixtures/test-data';
+import { testShipments } from './fixtures/test-data';
+import { testUsers } from './fixtures/users';
 
 /**
  * Testes E2E: Tratativas

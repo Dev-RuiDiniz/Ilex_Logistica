@@ -67,6 +67,10 @@ export default function CarrierEfficiencyPage() {
   return (
     <div>
       <h1>Eficiência por Transportadora</h1>
+      <p className="mt-1 text-sm text-zinc-600">
+        Ranking: maior percentual no prazo; desempate por menor extravio, menor percentual médio de frete e nome.
+        O percentual médio usa somente notas fiscais positivas com frete informado.
+      </p>
       
       <div className="mb-4 p-4 bg-white rounded-lg shadow">
         <h2 className="text-lg font-semibold mb-3">Filtros</h2>

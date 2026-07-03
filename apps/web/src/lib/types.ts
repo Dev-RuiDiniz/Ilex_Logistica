@@ -477,6 +477,9 @@ export interface CarrierEfficiencyItem {
   late_percentage: number;
   total_freight_value: number;
   average_freight_percentage: number;
+  financial_valid_count: number;
+  lost_count: number;
+  lost_percentage: number;
   ranking_by_efficiency: number;
   ranking_by_cost: number;
   ranking_by_volume: number;
@@ -548,6 +551,7 @@ export interface DashboardCarrierEfficiencyItem {
   late_percentage: number;
   lost_percentage: number;
   average_freight_percentage: number;
+  financial_valid_count: number;
   average_freight_value: number;
   ranking_by_efficiency: number;
   ranking_by_cost: number;

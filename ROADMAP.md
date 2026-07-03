@@ -97,6 +97,8 @@
 
 > **Evidência atual:** módulos de analytics e dashboard implementados; métricas complementares e homologação operacional pendentes (ESCOPO.md §13, SPEC-07 "Parcial/UAT pendente").
 
+> **Atualização 2026-07-03:** fórmula, desempate, extravio explícito e população financeira foram aprovados e reconciliados por dataset controlado. Aceite humano permanece pendente.
+
 ## 5. P2 — Endurecer a operação existente
 
 ### P2.1 Segurança e RBAC — SPEC-01  `[~]`
@@ -109,7 +111,7 @@
 
 ### P2.2 Imports e Braspress — SPEC-03  `[~]`
 
-- [ ] Implementar fixture XLSX Web e E2E de preview/confirm.
+- [x] Implementar fixture XLSX Web e E2E de preview/confirm.
 - [~] Homologar layout Braspress com amostra sanitizada e versionar mapper.
 - [~] Validar tamanho, tipo, encoding, duplicidade, atomicidade e fórmulas perigosas.
 
@@ -117,9 +119,9 @@
 
 ### P2.3 Exceções e tratativas — SPEC-05/SPEC-06  `[~]`
 
-- [ ] Substituir placeholders por testes de SLA/exceções reais.
+- [x] Substituir placeholders por testes de SLA/exceções reais.
 - [~] Homologar taxonomia, autoria, ordenação e histórico.
-- [ ] Cobrir painel → detalhe → tratativa em E2E.
+- [~] Cobrir painel → detalhe → tratativa em E2E. _(spec criada; execução integrada depende de API/seed E2E)_
 
 > **Evidência atual:** módulo de tratativas implementado; `test_exceptions_panel_sla.py` contém testes-placeholder sem asserções efetivas; E2E pendente (SPEC-06 "Implementado; testes incompletos", AUDITORIA AUD-009).
 

@@ -1,5 +1,13 @@
 # RELATORIO.md — Registro de Trabalho
 
+## 2026-07-03 — P1/P2 técnico
+
+- Reconciliados KPIs e eficiência com filtros comuns e dataset controlado.
+- Implementados extravio explícito, ranking determinístico, política de senha, expiração e rotação de tokens.
+- Eliminados testes vazios; adicionadas fixture XLSX, documentação Braspress e specs E2E.
+- Formalizadas políticas de alertas, relatórios e auditoria.
+- O E2E integrado permanece bloqueado pela ausência de API/seed no `webServer` do Playwright; não foi declarado como aprovado.
+
 ## 2026-07-03 — Recuperação do baseline verde
 
 - Corrigidos cinco erros Ruff em ambiente Alembic, migrations e seed de demonstração.

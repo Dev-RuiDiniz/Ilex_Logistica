@@ -2,6 +2,14 @@
 
 **Atualizado em:** 2026-07-03
 
+## 2026-07-03 — Conclusão técnica de P1/P2
+
+- Indicadores de listagem, dashboard e eficiência foram reconciliados por dataset controlado.
+- Extravio explícito, população financeira válida e ranking determinístico foram formalizados.
+- Testes vazios de exceções foram substituídos; fixture XLSX e specs E2E foram adicionadas.
+- Senhas, expiração e rotação/revogação por versão foram endurecidas; políticas operacionais foram centralizadas.
+- UAT técnico está em `docs/uat/P1_P2_UAT.md`; E2E integrado e aceite humano permanecem pendentes por ausência de API/seed no ambiente Playwright local.
+
 ## 2026-07-03 — Baseline técnico revalidado
 
 - Ruff foi corrigido em migrations e seed de demonstração, incluindo a separação de imports corrompida em `migrations/env.py`.

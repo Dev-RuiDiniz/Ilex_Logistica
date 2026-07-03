@@ -25,14 +25,14 @@ def classify_exception_type(
     Returns:
         Tipo de exceção ou None se não for exceção
     """
+    if sla_status is None or sla_status == "unknown":
+        return "unknown_sla"
     if sla_status == "critical":
         return "critical"
     elif sla_status == "late":
         return "late"
     elif sla_status == "warning":
         return "warning"
-    elif sla_status == "unknown":
-        return "unknown_sla"
     elif sla_status == "on_time" and criticality == "normal":
         return None
     elif criticality in ("media", "alta"):

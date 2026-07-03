@@ -246,6 +246,7 @@ function ShipmentsPageContent() {
     freightValueMin, freightValueMax, invoiceValueMin, invoiceValueMax,
     freightPercentageMin, freightPercentageMax, amountMin, amountMax,
     slaStatusFilter, isLateFilter, collectionDepartureFrom, collectionDepartureTo,
+    handleApiError,
   ]);
 
   useEffect(() => {
@@ -269,7 +270,7 @@ function ShipmentsPageContent() {
 
     // eslint-disable-next-line react-hooks/set-state-in-effect
     if (urlSearch) setSearch(urlSearch);
-    // eslint-disable-next-line react-hooks/set-state-in-effect
+
     if (urlStatus) setStatusFilter(urlStatus);
     if (urlCarrierId) setCarrierIdFilter(urlCarrierId);
     if (urlCriticality) setCriticalityFilter(urlCriticality);
@@ -384,10 +385,6 @@ function ShipmentsPageContent() {
     if (value === null || value === undefined) return "—";
     return new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(value);
   };
-  const formatPercentage = (value: number | null) => {
-    if (value === null || value === undefined) return "—";
-    return `${value.toFixed(2)}%`;
-  };
   const formatDateBR = (dateString: string | null) => {
     if (!dateString) return "—";
     return new Date(dateString).toLocaleDateString("pt-BR");
@@ -420,22 +417,6 @@ function ShipmentsPageContent() {
       alta: { color: "bg-red-50 text-red-700 ring-1 ring-red-600/20", label: "Alta" },
     };
     const badge = badges[criticality] || { color: "bg-zinc-100 text-zinc-600 ring-1 ring-zinc-500/20", label: criticality };
-    return (
-      <span className={`inline-flex rounded-full px-2.5 py-1 text-[11px] font-semibold ${badge.color}`}>
-        {badge.label}
-      </span>
-    );
-  };
-
-  const getSlaBadge = (slaStatus?: string) => {
-    const map: Record<string, { color: string; label: string }> = {
-      on_time: { color: "bg-emerald-50 text-emerald-700 ring-1 ring-emerald-600/20", label: "No prazo" },
-      warning: { color: "bg-yellow-50 text-yellow-700 ring-1 ring-yellow-600/20", label: "Atenção" },
-      late: { color: "bg-orange-50 text-orange-700 ring-1 ring-orange-600/20", label: "Atrasado" },
-      critical: { color: "bg-red-50 text-red-700 ring-1 ring-red-600/20", label: "Crítico" },
-      unknown: { color: "bg-zinc-100 text-zinc-600 ring-1 ring-zinc-500/20", label: "Indefinido" },
-    };
-    const badge = map[slaStatus || "unknown"] || map.unknown;
     return (
       <span className={`inline-flex rounded-full px-2.5 py-1 text-[11px] font-semibold ${badge.color}`}>
         {badge.label}

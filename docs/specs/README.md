@@ -1,6 +1,6 @@
 # Especificações SDD — Ilex Logística
 
-**Atualizado em:** 2026-07-02
+**Atualizado em:** 2026-07-03
 
 > Auditoria de 2026-07-02: “Confirmado” indica evidência estrutural no repositório, mas os módulos permanecem sujeitos ao baseline P0 e à homologação. Consulte `../../AUDITORIA.md` e `../../ROADMAP.md`.
 
@@ -22,11 +22,11 @@ Estas specs definem o comportamento esperado antes da implementação. Para cada
 | SPEC-01 | [Autenticação, usuários e RBAC](01-autenticacao-usuarios-rbac.md) | Parcialmente validado |
 | SPEC-02 | [Transportadoras](02-transportadoras.md) | Implementado; UAT pendente |
 | SPEC-03 | [Importações e Braspress](03-importacoes-braspress.md) | Implementado; UAT pendente |
-| SPEC-04 | [Entregas monitoradas](04-entregas-monitoradas.md) | Bloqueado no Web |
+| SPEC-04 | [Entregas monitoradas](04-entregas-monitoradas.md) | Implementado; UAT complementar pendente |
 | SPEC-05 | [SLA e criticidade](05-sla-atrasos-criticidade.md) | Confirmado/A confirmar |
 | SPEC-06 | [Tratativas e exceções](06-tratativas-excecoes.md) | Implementado; testes incompletos |
 | SPEC-07 | [Eficiência](07-eficiencia-transportadoras.md) | Parcial/UAT pendente |
-| SPEC-08 | [Dashboard](08-dashboard-indicadores.md) | Bloqueado por testes Web |
+| SPEC-08 | [Dashboard](08-dashboard-indicadores.md) | Implementado; UAT pendente |
 | SPEC-09 | [Alertas](09-alertas-notificacoes.md) | Confirmado/Parcial |
 | SPEC-10 | [Relatórios](10-relatorios-exportacoes.md) | Implementado; UAT pendente |
 | SPEC-11 | [Auditoria](11-auditoria-historico.md) | Implementado; UAT pendente |

@@ -62,7 +62,7 @@ export default function AuditPage() {
       await fetchSummary();
     };
     init();
-  }, [token]);
+  }, [fetchLogs, fetchSummary]);
 
   const handleFilterChange = (key: keyof AuditLogFilters, value: string | number | undefined) => {
     setFilters((prev) => ({ ...prev, [key]: value, page: 1 }));
@@ -80,6 +80,10 @@ export default function AuditPage() {
   const inputClass = "w-full rounded-lg border border-zinc-200 bg-white px-3 py-2.5 text-sm text-black placeholder:text-zinc-400 transition-colors focus:border-red-500 focus:outline-none focus:ring-2 focus:ring-red-500/20";
   const btnPrimary = "rounded-lg bg-zinc-900 px-4 py-2.5 text-sm font-semibold text-white transition-all hover:bg-zinc-800";
   const btnSecondary = "rounded-lg border border-zinc-200 bg-white px-4 py-2.5 text-sm font-semibold text-zinc-700 transition-all hover:border-zinc-300 hover:bg-zinc-50";
+
+  if (accessDenied) {
+    return <AccessDenied message={accessDeniedMessage} />;
+  }
 
   return (
     <section className="space-y-6">

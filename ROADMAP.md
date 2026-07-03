@@ -1,6 +1,6 @@
 # ROADMAP.md — Conclusão do Ilex Logística por SDD
 
-**Atualizado em:** 2026-07-02
+**Atualizado em:** 2026-07-03
 **Marco de conclusão:** MVP assistido completo, homologado e preparado para produção
 **Método:** spec antes do código; TDD RED/GREEN/REFACTOR; evidência antes de status
 
@@ -31,7 +31,7 @@
 
 ## 3. P0 — Recuperar baseline verde
 
-**Estado em 2026-07-02:** P0 concluído. Gates locais e workflows remotos de Web, API e governança estão verdes; a `main` exige os três checks estritos e bloqueia force-push/exclusão, com bypass administrativo para manutenção explícita.
+**Estado em 2026-07-03:** P0 concluído e revalidado. API, Web, migrations, infraestrutura e governança estão verdes; Ruff e ESLint não apresentam erros nem warnings. A `main` exige os três checks estritos e bloqueia force-push/exclusão, com bypass administrativo para manutenção explícita.
 
 ### P0.1 Web build e runtime — SPEC-03/SPEC-04  `[x]`
 

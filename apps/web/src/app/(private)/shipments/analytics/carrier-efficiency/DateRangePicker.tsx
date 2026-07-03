@@ -1,8 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { format, parseISO, isValid } from "date-fns";
-import { ptBR } from "date-fns/locale";
+import { parseISO, isValid } from "date-fns";
 
 interface DateRangePickerProps {
   label: string;
@@ -22,38 +21,6 @@ export function DateRangePicker({
   const [showFrom, setShowFrom] = useState(false);
   const [showTo, setShowTo] = useState(false);
   const [currentValue, setCurrentValue] = useState(value);
-
-  const handleFromChange = (date: Date | undefined) => {
-    if (date) {
-      const formatted = format(date, "yyyy-MM-dd");
-      setFromInput(formatted);
-      const newValue = { ...currentValue, from: formatted };
-      setCurrentValue(newValue);
-      onChange(newValue);
-    } else {
-      setFromInput("");
-      const newValue = { ...currentValue, from: undefined };
-      setCurrentValue(newValue);
-      onChange(newValue);
-    }
-    setShowFrom(false);
-  };
-
-  const handleToChange = (date: Date | undefined) => {
-    if (date) {
-      const formatted = format(date, "yyyy-MM-dd");
-      setToInput(formatted);
-      const newValue = { ...currentValue, to: formatted };
-      setCurrentValue(newValue);
-      onChange(newValue);
-    } else {
-      setToInput("");
-      const newValue = { ...currentValue, to: undefined };
-      setCurrentValue(newValue);
-      onChange(newValue);
-    }
-    setShowTo(false);
-  };
 
   const handleFromInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value;

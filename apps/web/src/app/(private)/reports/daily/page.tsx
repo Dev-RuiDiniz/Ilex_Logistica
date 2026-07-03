@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   getDailyReports,
   getDailyReportById,
@@ -17,6 +17,7 @@ import {
 import type { DailyReport, DailyReportFilters, DailyReportStatus } from "@/lib/types";
 import { useAuth } from "@/features/auth/auth-provider";
 import { useApiErrorHandler } from "@/lib/useApiErrorHandler";
+import { AccessDenied } from "@/components/AccessDenied";
 
 export default function DailyReportPage() {
   const [reports, setReports] = useState<DailyReport[]>([]);
@@ -37,7 +38,7 @@ export default function DailyReportPage() {
   const [status, setStatus] = useState<DailyReportStatus | "">("");
   const [searchDate, setSearchDate] = useState("");
 
-  const loadReports = async (signal?: AbortSignal) => {
+  const loadReports = useCallback(async (signal?: AbortSignal) => {
     if (!session) return;
     setLoading(true);
     setError("");
@@ -57,14 +58,14 @@ export default function DailyReportPage() {
     } finally {
       if (!signal?.aborted) setLoading(false);
     }
-  };
+  }, [dateFrom, dateTo, handleApiError, session, status]);
 
   useEffect(() => {
     if (!session) return;
     const controller = new AbortController();
     queueMicrotask(() => void loadReports(controller.signal));
     return () => controller.abort();
-  }, [dateFrom, dateTo, status, session]);
+  }, [loadReports, session]);
 
   const handleGenerateReport = async () => {
     if (!session) return;
@@ -78,7 +79,7 @@ export default function DailyReportPage() {
       const report = await generateDailyReport(session.accessToken, { report_date: searchDate });
       setSelectedReport(report);
       await loadReports();
-    } catch (err) {
+    } catch {
       setGenerateError("Falha ao gerar relatório diário.");
     } finally {
       setGenerating(false);
@@ -131,7 +132,7 @@ export default function DailyReportPage() {
     try {
       const report = await getDailyReportByDate(session.accessToken, searchDate);
       setSelectedReport(report);
-    } catch (err) {
+    } catch {
       setError("Relatório não encontrado para a data informada.");
     } finally {
       setLoading(false);
@@ -145,7 +146,7 @@ export default function DailyReportPage() {
     try {
       const report = await getDailyReportById(session.accessToken, reportId);
       setSelectedReport(report);
-    } catch (err) {
+    } catch {
       setError("Falha ao carregar detalhes do relatório.");
     } finally {
       setLoading(false);
@@ -170,6 +171,10 @@ export default function DailyReportPage() {
   const inputClass = "w-full rounded-lg border border-zinc-200 bg-white px-3 py-2.5 text-sm text-black transition-colors focus:border-red-500 focus:outline-none focus:ring-2 focus:ring-red-500/20";
   const btnPrimary = "rounded-lg bg-zinc-900 px-4 py-2.5 text-sm font-semibold text-white transition-all hover:bg-zinc-800 disabled:opacity-50";
   const btnSecondary = "rounded-lg border border-zinc-200 bg-white px-4 py-2.5 text-sm font-semibold text-zinc-700 transition-all hover:border-zinc-300 hover:bg-zinc-50";
+
+  if (accessDenied) {
+    return <AccessDenied message={accessDeniedMessage} />;
+  }
 
   const getStatusBadge = (reportStatus: string) => {
     const map: Record<string, string> = {

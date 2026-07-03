@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import {
   getAlerts,
   getAlertsSummary,
@@ -13,6 +13,7 @@ import {
 } from "@/lib/alerts-api";
 import { useAuth } from "@/features/auth/auth-provider";
 import { useApiErrorHandler } from "@/lib/useApiErrorHandler";
+import { AccessDenied } from "@/components/AccessDenied";
 
 export default function AlertsPage() {
   const [alerts, setAlerts] = useState<AlertItem[]>([]);
@@ -23,7 +24,7 @@ export default function AlertsPage() {
   const { session } = useAuth();
   const { accessDenied, accessDeniedMessage, handleApiError } = useApiErrorHandler();
 
-  const fetchAlerts = async () => {
+  const fetchAlerts = useCallback(async () => {
     if (!session) return;
     try {
       setLoading(true);
@@ -41,7 +42,7 @@ export default function AlertsPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [filters, handleApiError, session]);
 
   const handleGenerateAlerts = async () => {
     if (!session) return;
@@ -89,7 +90,7 @@ export default function AlertsPage() {
 
   useEffect(() => {
     queueMicrotask(() => void fetchAlerts());
-  }, [filters, session]);
+  }, [fetchAlerts]);
 
   const getSeverityBadge = (severity: string) => {
     const map: Record<string, string> = {
@@ -100,7 +101,7 @@ export default function AlertsPage() {
     return map[severity] || "bg-zinc-100 text-zinc-600 ring-1 ring-zinc-500/20";
   };
 
-  const getStatusBadge = (status: string, isRead: boolean) => {
+  const getStatusBadge = (status: string) => {
     const map: Record<string, string> = {
       active: "bg-emerald-50 text-emerald-700 ring-1 ring-emerald-600/20",
       resolved: "bg-zinc-100 text-zinc-600 ring-1 ring-zinc-500/20",
@@ -110,6 +111,10 @@ export default function AlertsPage() {
   };
 
   const selectClass = "w-full rounded-lg border border-zinc-200 bg-white px-3 py-2.5 text-sm text-black transition-colors focus:border-red-500 focus:outline-none focus:ring-2 focus:ring-red-500/20";
+
+  if (accessDenied) {
+    return <AccessDenied message={accessDeniedMessage} />;
+  }
 
   return (
     <section className="space-y-6">
@@ -302,7 +307,7 @@ export default function AlertsPage() {
                         <td className="px-4 py-3 font-mono text-xs text-zinc-600">{alert.alert_type}</td>
                         <td className="px-4 py-3">
                           <div className="flex items-center gap-1.5">
-                            <span className={`inline-flex rounded-full px-2.5 py-0.5 text-[11px] font-semibold capitalize ${getStatusBadge(alert.status, alert.is_read)}`}>
+                            <span className={`inline-flex rounded-full px-2.5 py-0.5 text-[11px] font-semibold capitalize ${getStatusBadge(alert.status)}`}>
                               {alert.status}
                             </span>
                             {!alert.is_read && (

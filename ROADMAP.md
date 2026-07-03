@@ -25,9 +25,9 @@
 | P0 | recuperar baseline verde | testes, lint, build, migrations, infra e CI verdes | [x] Concluído |
 | P1 | homologar monitoramento | LOG-027–035 aceitos com dados controlados | [~] Parcial |
 | P2 | endurecer operação | alertas, relatórios, auditoria, RBAC e Braspress confiáveis | [~] Parcial |
-| P3 | entregar cotação assistida | LOG-036–040 completos via CSV/XLSX | [ ] Pendente |
-| P4 | preparar produção | segurança, desempenho, E2E, backup e deploy validados | [ ] Pendente |
-| P5 | encerrar e homologar | aceite, release e go-live documentados | [ ] Pendente |
+| P3 | entregar cotação assistida | LOG-036–040 completos via CSV/XLSX | [x] Confirmado tecnicamente; UAT pendente |
+| P4 | preparar produção | segurança, desempenho, E2E, backup e deploy validados | [~] Implementado localmente; ambiente externo pendente |
+| P5 | encerrar e homologar | aceite, release e go-live documentados | [~] Artefatos preparados; aceite/release pendentes |
 
 ## 3. P0 — Recuperar baseline verde
 
@@ -185,8 +185,8 @@
 
   - [~] Roteiros UAT por perfil preparados; execução, evidências e assinaturas pendentes.
 - [ ] Fechar todas as specs do MVP como confirmadas/homologadas ou registrar exclusão aprovada.
-- [ ] Atualizar escopo, arquitetura, banco, contexto, relatório e README comercial.
-- [ ] Produzir release notes, plano de implantação, treinamento, suporte e rollback.
+  - [x] Atualizar escopo, arquitetura, banco, contexto, relatório e README comercial conforme evidência atual.
+  - [x] Produzir release notes, plano de implantação, treinamento, suporte e rollback.
 - [ ] Fazer release candidata, smoke pós-deploy e decisão de go-live.
 
 ## 9. Pós-MVP dependente de terceiros

@@ -183,3 +183,9 @@
 - Cada roteiro exige ambiente, tag, usuário sanitizado, esperado/real, evidência e assinatura.
 - Resultado consolidado, defeitos e aceites de risco possuem matriz própria.
 - Estado real: preparado, não executado e sem assinaturas; go-live continua bloqueado.
+
+### Documentação operacional final
+
+- README, escopo, arquitetura, banco, roadmap, contexto, relatório e auditoria foram reconciliados com o estado técnico atual.
+- Release notes da RC, checklist de implantação, treinamento e suporte/escalonamento foram preparados.
+- Specs permanecem com estados baseados em evidência: “confirmado tecnicamente”, “parcial” ou “a confirmar”; nenhuma foi promovida a homologada sem assinatura.

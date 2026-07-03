@@ -64,4 +64,4 @@ Estas specs definem o comportamento esperado antes da implementação. Para cada
 | `modules/alerts` e alertas Web | SPEC-09 |
 | `modules/reports` e relatório diário Web | SPEC-10 |
 | `modules/audit` e auditoria Web | SPEC-11 |
-| Domínio futuro de pedidos/cotações | SPEC-12 |
+| Domínio de pedidos/cotações assistidas | SPEC-12 |

@@ -60,7 +60,7 @@ flowchart LR
 | Alerts | geração, leitura, resolução e entrega | `modules/alerts` | Funcional |
 | Reports | geração, consulta e exportação diária | `modules/reports` | Funcional |
 | Audit | logs operacionais e resumo | `modules/audit` | Funcional |
-| Freight Quotes | cotação por pedido | nenhuma evidência de domínio | Planejado |
+| Orders / Freight Quotes | pedidos, rodadas e cotação assistida | `modules/orders`, migrations e Web | Confirmado tecnicamente |
 
 ## 6. Fluxos principais
 
@@ -78,7 +78,7 @@ Shipments são filtrados e enriquecidos por SLA. Tratativas registram ações. S
 
 ### Cotação assistida especificada
 
-Pedidos ERP por CSV/XLSX gerarão rodadas imutáveis com uma cotação por transportadora. Entrada de resultados será manual pela Web ou CSV; seleção automática e override auditado pertencem ao domínio da API. Persistência e rotas serão implementadas no módulo `orders`.
+Pedidos ERP por CSV/XLSX geram rodadas históricas com uma cotação por transportadora ativa. Resultados entram pela Web ou CSV; seleção automática e override auditado pertencem ao módulo `orders` da API. A Web consome os contratos sem recalcular a recomendação.
 
 ## 7. Integrações externas
 

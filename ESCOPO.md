@@ -46,7 +46,7 @@ Permissões exatas são definidas pelo backend e devem ser verificadas em cada e
 | Alertas | geração, leitura, resolução e logs de entrega | Confirmado |
 | Relatórios | geração, consulta e exportação de relatório diário | Confirmado |
 | Auditoria | eventos operacionais, consulta e resumo | Confirmado |
-| Pedidos e cotações | importação assistida ERP, rodadas, comparação e melhor opção | Especificado; implementação pendente |
+| Pedidos e cotações | importação assistida ERP, rodadas, comparação, melhor opção e override auditado | Confirmado tecnicamente; UAT pendente |
 
 As especificações normativas de cada domínio estão em `docs/specs/`.
 

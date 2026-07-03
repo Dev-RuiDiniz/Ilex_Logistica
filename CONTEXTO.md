@@ -120,6 +120,7 @@ Executar P0 na ordem: build/runtime Web, suíte/lint, migration única, API dete
 - Smoke read-only e E2E autenticado com escrita estão preparados e protegidos por variáveis explícitas. Sem VPS, DNS, TLS e credenciais descartáveis, a execução produtiva segue bloqueada.
 - `npm audit fix` eliminou achados altos; restam dois moderados do PostCSS embarcado pelo Next.js, sem correção compatível indicada pelo npm.
 - Roteiros UAT formais foram preparados para administrador, logística, gestor e auditoria. Todos permanecem `PENDENTE`; nenhuma assinatura ou aprovação foi simulada.
+- Documentação de release candidata, implantação, treinamento, suporte e escalonamento foi preparada. A RC não foi tagueada/publicada porque P4 externo e UAT não passaram.
 
 ### 2026-06-24 — Segurança e RBAC frontend
 

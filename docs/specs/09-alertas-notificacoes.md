@@ -39,4 +39,4 @@ Geração normal, no-update, import-failure, duplicidade, leitura, resolução, 
 
 ## Riscos, dependências e rastreabilidade
 
-Canais reais, destinatários, cadência, retry e escalonamento estão A CONFIRMAR. Evidência: `modules/alerts`, migrations de alerts/delivery logs e páginas/testes.
+Canais externos ficam desabilitados até configuração explícita de destinatários. Entregas admitem três tentativas; após esgotamento permanecem como falha rastreável para escalonamento interno. Evidência: `modules/alerts`, configuração, migrations e testes.

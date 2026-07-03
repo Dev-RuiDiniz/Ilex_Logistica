@@ -39,4 +39,4 @@ Geração com/sem dados, idempotência, falha intermediária, consulta por data/
 
 ## Riscos, dependências e rastreabilidade
 
-Agendamento, envio por e-mail, formato final e retenção estão A CONFIRMAR. Evidência: `modules/reports`, migration daily_reports e página daily report.
+Política inicial: geração diária às 06:00 em `America/Sao_Paulo` e retenção de 365 dias. Envio externo permanece desabilitado sem destinatários configurados. Evidência: configuração, `modules/reports`, migration e página daily report.

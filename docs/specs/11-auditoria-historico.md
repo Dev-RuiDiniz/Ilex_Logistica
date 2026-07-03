@@ -39,4 +39,4 @@ Criação por serviço, sanitização, filtros, paginação, resumo, `404`, `401
 
 ## Riscos, dependências e rastreabilidade
 
-Retenção, anonimização, exportação e trilha de cotação estão A CONFIRMAR. Evidência: `modules/audit`, migration e página de auditoria.
+Retenção operacional inicial é de cinco anos. A API permanece append-only; descarte futuro exigirá rotina administrativa auditada e autorização específica. Evidência: configuração, `modules/audit`, migration e página de auditoria.

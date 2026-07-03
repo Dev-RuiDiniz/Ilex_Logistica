@@ -137,7 +137,7 @@ def test_w15_users_crud_and_roles(client: TestClient, db_session: Session, seed_
         json={
             "email": "logistica@ilex.com",
             "full_name": "Operador Logistica",
-            "password": "123456",
+            "password": "SenhaForte123!",
             "roles": ["logistica"],
         },
         headers={"Authorization": f"Bearer {token}"},

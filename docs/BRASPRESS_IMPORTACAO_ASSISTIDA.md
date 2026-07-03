@@ -53,7 +53,7 @@ Coluna ausente, data inválida, valor monetário inválido, rastreio vazio e reg
 
 ## Limitações
 
-O layout v1 está validado por amostras sanitizadas CSV/XLSX versionadas no repositório. Uma amostra operacional fornecida pelo cliente ainda é necessária para o aceite humano. Mudanças no relatório exigem nova versão e revisão do mapper.
+O layout v1 está validado por amostras sanitizadas CSV/XLSX versionadas no repositório. A homologação final deve ser validada com amostra real sanitizada fornecida pelo cliente. Mudanças no relatório exigem nova versão e revisão do mapper.
 
 ## Segurança e LGPD
 

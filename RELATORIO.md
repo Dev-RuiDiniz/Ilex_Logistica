@@ -168,3 +168,11 @@
 - Readiness verifica PostgreSQL/Redis separadamente da liveness.
 - Prometheus e exporters não publicam portas; regras e runbooks cobrem indisponibilidade, 5xx, backlog e backup.
 - Configuração e testes estáticos passaram; disparo real dos alertas depende da VPS e continua pendente.
+
+### Ambiente semelhante à produção
+
+- Axe foi integrado ao Playwright e levou à correção de três contrastes sérios no shell privado.
+- Fluxo P3 com auditoria axe passou em Chromium, Firefox, WebKit e Mobile Chrome.
+- Smoke read-only e cenário autenticado de importação/cotação foram preparados com guardas contra escrita acidental.
+- Execução externa, deploy e rollback permanecem sem evidência por ausência de VPS/domínio/TLS/credenciais.
+- Dependências altas apontadas pelo npm foram atualizadas; dois achados moderados do Next/PostCSS permanecem documentados, pois a correção sugerida causaria downgrade incompatível.

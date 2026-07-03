@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import AxeBuilder from "@axe-core/playwright";
 
 import { AuthHelper } from "./helpers/auth.helper";
 import { testUsers } from "./fixtures/users";
@@ -62,6 +63,8 @@ test("pedido CSV → preview → confirmação → rodada → Web/CSV → overri
 
   await new AuthHelper(page).loginAs(testUsers.admin);
   await page.goto("/orders");
+  const ordersA11y = await new AxeBuilder({ page }).analyze();
+  expect(ordersA11y.violations.filter((item) => ["serious", "critical"].includes(item.impact ?? ""))).toEqual([]);
   await page.getByLabel("Arquivo CSV ou XLSX").setInputFiles({ name: "orders.csv", mimeType: "text/csv", buffer: Buffer.from("fixture") });
   await page.getByRole("button", { name: "Gerar preview" }).click();
   await expect(page.getByText("1 válidos · 0 inválidos · 0 duplicados")).toBeVisible();
@@ -71,6 +74,8 @@ test("pedido CSV → preview → confirmação → rodada → Web/CSV → overri
   await orderLink.click();
   await page.getByRole("button", { name: "Nova rodada" }).click();
   await page.getByRole("link", { name: /Rodada 1/ }).click();
+  const quotesA11y = await new AxeBuilder({ page }).analyze();
+  expect(quotesA11y.violations.filter((item) => ["serious", "critical"].includes(item.impact ?? ""))).toEqual([]);
 
   const first = page.getByRole("article").filter({ hasText: "Rápida" });
   await first.getByLabel("Valor").fill("95.00");

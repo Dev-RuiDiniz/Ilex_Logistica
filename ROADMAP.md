@@ -176,9 +176,9 @@
   - [x] Definir rate limiting, headers, política de sessão e dependências.
 - [~] Compose e scripts de PostgreSQL/backup/restore/migration/rollback implementados; execução real bloqueada nesta sessão porque o Docker Desktop não estava ativo.
   - [~] Metas, carga HTTP e gate local de 10 mil pedidos implementados; medição concorrente em VPS/PostgreSQL permanece pendente.
-- [ ] Validar acessibilidade e principais navegadores/resoluções.
+  - [x] Validar acessibilidade séria/crítica e fluxo P3 em Chrome, Firefox, WebKit e viewport móvel.
   - [~] Health, logs JSON, métricas internas, alertas e runbooks implementados; ativação/validação no VPS permanece pendente.
-- [ ] Executar E2E autenticado completo em ambiente semelhante à produção.
+  - [~] Smoke e E2E autenticado preparados; execução bloqueada por ausência de VPS/domínio/TLS/credenciais descartáveis.
 - [ ] **Gate:** checklist de segurança, operação, continuidade e deploy aprovado.
 
 ## 8. P5 — Homologação e encerramento  `[ ]`

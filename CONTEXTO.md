@@ -116,6 +116,9 @@ Executar P0 na ordem: build/runtime Web, suíte/lint, migration única, API dete
 - O gate local de preview + confirmação de 10 mil pedidos concluiu em 5,07 s com SQLite em memória. O runner HTTP reproduz 50 usuários e coleta p50/p95/p99, mas precisa ser executado na VPS/PostgreSQL para aprovar P4.
 - Observabilidade produtiva inclui logs JSON/request ID, métricas HTTP e de pedidos/cotações, liveness/readiness, Prometheus e exporters em rede interna.
 - Alertas cobrem API, 5xx, PostgreSQL, Redis, backlog de cotações e backup; runbooks cobrem os sete incidentes previstos. A ativação no VPS ainda não foi observada.
+- Axe não encontrou violações sérias/críticas nas telas P3 após corrigir contraste do shell; o fluxo passou em Chrome, Firefox, WebKit e viewport móvel.
+- Smoke read-only e E2E autenticado com escrita estão preparados e protegidos por variáveis explícitas. Sem VPS, DNS, TLS e credenciais descartáveis, a execução produtiva segue bloqueada.
+- `npm audit fix` eliminou achados altos; restam dois moderados do PostCSS embarcado pelo Next.js, sem correção compatível indicada pelo npm.
 
 ### 2026-06-24 — Segurança e RBAC frontend
 

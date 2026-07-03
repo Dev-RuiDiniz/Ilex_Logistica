@@ -50,7 +50,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
         {/* Navigation */}
         <nav className="flex-1 space-y-0.5 p-4">
-          <p className="mb-2 px-3 text-[10px] font-bold uppercase tracking-widest text-zinc-600">Menu</p>
+          <p className="mb-2 px-3 text-[10px] font-bold uppercase tracking-widest text-zinc-400">Menu</p>
           <SidebarLink href="/" active={pathname === "/"}>
             <IconDashboard />
             Dashboard
@@ -91,7 +91,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           )}
 
           <div className="my-3 border-t border-white/[0.08]" />
-          <p className="mb-2 px-3 text-[10px] font-bold uppercase tracking-widest text-zinc-600">Sistema</p>
+          <p className="mb-2 px-3 text-[10px] font-bold uppercase tracking-widest text-zinc-400">Sistema</p>
 
           {canReadAudit(role) && (
             <SidebarLink href="/audit" active={pathname.startsWith("/audit")}>
@@ -115,7 +115,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             </div>
             <div className="min-w-0 flex-1" suppressHydrationWarning>
               <p className="truncate text-sm font-medium text-zinc-300">{session?.email}</p>
-              <p className="text-[11px] text-zinc-500">{session?.role} {getRoleUiLabel(session?.role ?? "auditoria")}</p>
+              <p className="text-[11px] text-zinc-400">{session?.role} {getRoleUiLabel(session?.role ?? "auditoria")}</p>
             </div>
           </div>
         </div>

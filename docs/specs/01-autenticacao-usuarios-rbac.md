@@ -21,6 +21,7 @@ FastAPI possui login/refresh, dependências de autenticação e CRUD/inativaçã
 
 - Senhas são armazenadas somente como hash seguro.
 - Access tokens expiram em 15 minutos e refresh tokens em 7 dias, com valores configuráveis por ambiente.
+- Cada refresh rotaciona o par de tokens por `token_version`; tokens anteriores e sessões de usuários inativos são rejeitados.
 - Novas senhas têm no mínimo 12 caracteres e incluem maiúscula, minúscula, número e símbolo; hashes legados continuam válidos para login até troca controlada.
 - Administrador gerencia usuários; demais acessos dependem da permissão real do endpoint.
 - Inativação impede novo acesso sem apagar histórico.
@@ -45,4 +46,4 @@ Credencial inválida, token ausente/malformado/expirado, usuário inativo, confl
 
 ## Riscos, dependências e rastreabilidade
 
-Rotação/revogação central de tokens e política corporativa de senha estão A CONFIRMAR. Evidências: `modules/auth`, `modules/users`, `middleware.ts`, `permissions.ts` e testes RBAC.
+Rotação/revogação por versão e política de senha estão confirmadas por migration e testes. Revogação administrativa dedicada pode incrementar a versão em evolução futura. Evidências: `modules/auth`, `modules/users`, migration, middleware e testes RBAC.

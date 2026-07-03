@@ -19,9 +19,9 @@ def login(payload: LoginRequest, db: Session = Depends(get_db)) -> TokenResponse
 
 
 @router.post("/refresh", response_model=TokenResponse)
-def refresh(payload: RefreshRequest) -> TokenResponse:
+def refresh(payload: RefreshRequest, db: Session = Depends(get_db)) -> TokenResponse:
     try:
-        tokens = refresh_access_token(payload.refresh_token)
+        tokens = refresh_access_token(db, payload.refresh_token)
     except InvalidTokenError as exc:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="refresh token invalido") from exc
     if tokens is None:

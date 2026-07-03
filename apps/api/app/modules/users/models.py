@@ -26,6 +26,7 @@ class User(Base):
     full_name: Mapped[str] = mapped_column(String(255), nullable=False)
     password_hash: Mapped[str] = mapped_column(String(255), nullable=False)
     is_active: Mapped[bool] = mapped_column(default=True, nullable=False)
+    token_version: Mapped[int] = mapped_column(default=0, nullable=False)
     roles: Mapped[list["Role"]] = relationship("Role", secondary=user_roles, back_populates="users")
 
 

@@ -17,24 +17,20 @@ def authenticate_user(db: Session, email: str, password: str) -> User | None:
 def build_tokens(user: User) -> dict:
     roles = [role.name for role in user.roles]
     return {
-        "access_token": create_token(str(user.id), roles, settings.jwt_access_minutes, "access"),
-        "refresh_token": create_token(str(user.id), roles, settings.jwt_refresh_minutes, "refresh"),
+        "access_token": create_token(str(user.id), roles, settings.jwt_access_minutes, "access", user.token_version),
+        "refresh_token": create_token(str(user.id), roles, settings.jwt_refresh_minutes, "refresh", user.token_version),
         "roles": roles,
     }
 
 
-def refresh_access_token(refresh_token: str) -> dict | None:
+def refresh_access_token(db: Session, refresh_token: str) -> dict | None:
     payload = decode_token(refresh_token)
     if payload.get("type") != "refresh":
         return None
-    roles = payload.get("roles", [])
-    return {
-        "access_token": create_token(
-            payload["sub"],
-            roles,
-            settings.jwt_access_minutes,
-            "access",
-        ),
-        "refresh_token": refresh_token,
-        "roles": roles,
-    }
+    user = db.get(User, int(payload["sub"]))
+    if user is None or not user.is_active or payload.get("ver", 0) != user.token_version:
+        return None
+    user.token_version += 1
+    db.commit()
+    db.refresh(user)
+    return build_tokens(user)

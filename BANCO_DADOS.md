@@ -60,6 +60,8 @@ O model e as migrations incluem campos fiscais/financeiros associados ao Apêndi
 
 ## 5. Migrations identificadas
 
+- `20260703_01`: adiciona `users.token_version` para rotação e revogação persistente de JWTs sem armazenar tokens crus.
+
 | Ordem | Migration | Finalidade resumida |
 |---|---|---|
 | 1 | `20260513_01_initial_foundation.py` | fundação |

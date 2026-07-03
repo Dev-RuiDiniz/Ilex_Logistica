@@ -76,9 +76,9 @@ Arquivo CSV/XLSX entra em preview, passa por mapeamento e validação, é confir
 
 Shipments são filtrados e enriquecidos por SLA. Tratativas registram ações. Serviços analíticos agregam exceções e eficiência; dashboard, alertas e relatório diário consomem esses resultados.
 
-### Cotação futura
+### Cotação assistida especificada
 
-Pedidos do ERP deverão gerar comparações por transportadora. Contrato, persistência e APIs ainda não existem e devem ser especificados antes da implementação.
+Pedidos ERP por CSV/XLSX gerarão rodadas imutáveis com uma cotação por transportadora. Entrada de resultados será manual pela Web ou CSV; seleção automática e override auditado pertencem ao domínio da API. Persistência e rotas serão implementadas no módulo `orders`.
 
 ## 7. Integrações externas
 

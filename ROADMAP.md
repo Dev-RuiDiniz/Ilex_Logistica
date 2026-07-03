@@ -142,6 +142,8 @@
 - [ ] Definir `orders`, rodadas e `freight_quotes`, constraints, índices, status e auditoria.
 - [ ] Criar migration reversível e contratos API antes da implementação.
 
+> **Contrato aprovado em 2026-07-03:** layout logístico completo, cotações por Web/CSV, validade de 24 horas, desempate determinístico e override justificado/auditado.
+
 > **Evidência atual:** SPEC-12 criada; nenhuma migration, model ou rota de pedidos/cotações existe (SPEC-12 "Planejado", ARQUITETURA "Planejado").
 
 ### P3.2 Importação de pedidos — LOG-037  `[ ]`

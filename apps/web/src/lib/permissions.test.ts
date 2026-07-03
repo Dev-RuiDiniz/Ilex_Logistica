@@ -5,11 +5,15 @@ import {
   canReadAudit,
   canReadCarriers,
   canReadImports,
+  canReadOrders,
+  canReadQuotes,
   canReadReports,
   canReadShipments,
   canReadUsers,
   canWriteAlerts,
   canWriteImports,
+  canWriteOrders,
+  canOverrideQuotes,
   canWriteReports,
   canWriteShipments,
   canWriteSla,
@@ -61,6 +65,15 @@ describe("RBAC Permissions Helpers", () => {
       expect(permissions).not.toContain("shipments:write");
       expect(permissions).not.toContain("imports:write");
       expect(permissions).not.toContain("reports:write");
+    });
+
+    it("aplica a matriz de pedidos e cotações", () => {
+      expect(canWriteOrders("logistica")).toBe(true);
+      expect(canReadOrders("auditoria")).toBe(true);
+      expect(canReadQuotes("gestor")).toBe(true);
+      expect(canOverrideQuotes("gestor")).toBe(true);
+      expect(canWriteOrders("viewer")).toBe(false);
+      expect(canOverrideQuotes("logistica")).toBe(false);
     });
 
     it("role desconhecida falha seguro", () => {

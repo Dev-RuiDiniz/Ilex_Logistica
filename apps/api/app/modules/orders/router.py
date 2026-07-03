@@ -4,11 +4,13 @@ from sqlalchemy.orm import Session
 from app.database.session import get_db
 from app.modules.auth.dependencies import require_permission
 from app.modules.imports.models import ImportHistory
+from app.modules.orders.models import Order
 from app.modules.orders.schemas import (
     OrderImportConfirmRequest,
     OrderImportPreviewResponse,
     OrderImportResultResponse,
     OrderListResponse,
+    OrderResponse,
 )
 from app.modules.orders.service import confirm_order_import, list_orders, preview_order_import
 from app.modules.orders.quote_schemas import QuoteRoundResponse
@@ -61,6 +63,18 @@ def get_orders(
     current_user: User = Depends(require_permission("orders:read")),
 ) -> OrderListResponse:
     return OrderListResponse(**list_orders(db, page, page_size, status, source, external_number))
+
+
+@router.get("/{order_id}", response_model=OrderResponse)
+def get_order(
+    order_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_permission("orders:read")),
+) -> OrderResponse:
+    order = db.get(Order, order_id)
+    if order is None:
+        raise HTTPException(status_code=404, detail="pedido nao encontrado")
+    return OrderResponse.model_validate(order)
 
 
 @router.post("/{order_id}/quote-rounds", response_model=QuoteRoundResponse, status_code=201)

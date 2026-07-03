@@ -104,6 +104,8 @@ Executar P0 na ordem: build/runtime Web, suíte/lint, migration única, API dete
 - Rodadas incluem todas as transportadoras ativas e isolam resultados `pending`, `quoted`, `unavailable`, `error` e `expired`.
 - A recomendação usa menor valor, menor prazo, maior eficiência observada em entregas concluídas e menor `carrier_id`; override exige justificativa e preserva a recomendação.
 - Criação, registro/importação, conclusão e override geram auditoria operacional na mesma transação de domínio.
+- A Web oferece listagem/importação de pedidos, detalhe com histórico e comparação de cotações em desktop/mobile, com estados de loading, vazio, erro e acesso negado.
+- A matriz RBAC foi persistida por migration e testada em todas as rotas novas para respostas `401` e `403`.
 
 ### 2026-06-24 — Segurança e RBAC frontend
 

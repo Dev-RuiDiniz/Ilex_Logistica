@@ -18,6 +18,11 @@ const ROLE_PERMISSIONS: Record<UserRole, Permission[]> = {
     "carriers:write",
     "users:read",
     "users:write",
+    "orders:read",
+    "orders:write",
+    "quotes:read",
+    "quotes:write",
+    "quotes:override",
   ],
   manager: [
     "audit:read",
@@ -30,6 +35,9 @@ const ROLE_PERMISSIONS: Record<UserRole, Permission[]> = {
     "shipments:read",
     "imports:read",
     "carriers:read",
+    "orders:read",
+    "quotes:read",
+    "quotes:override",
   ],
   operator: [
     "shipments:read",
@@ -38,6 +46,10 @@ const ROLE_PERMISSIONS: Record<UserRole, Permission[]> = {
     "imports:write",
     "alerts:read",
     "alerts:write",
+    "orders:read",
+    "orders:write",
+    "quotes:read",
+    "quotes:write",
   ],
   viewer: [
     "shipments:read",
@@ -46,6 +58,8 @@ const ROLE_PERMISSIONS: Record<UserRole, Permission[]> = {
     "alerts:read",
     "reports:read",
     "carriers:read",
+    "orders:read",
+    "quotes:read",
   ],
   logistica: [
     "shipments:read",
@@ -54,6 +68,10 @@ const ROLE_PERMISSIONS: Record<UserRole, Permission[]> = {
     "imports:write",
     "carriers:read",
     "carriers:write",
+    "orders:read",
+    "orders:write",
+    "quotes:read",
+    "quotes:write",
   ],
   gestor: [
     "shipments:read",
@@ -62,12 +80,17 @@ const ROLE_PERMISSIONS: Record<UserRole, Permission[]> = {
     "alerts:read",
     "reports:read",
     "carriers:read",
+    "orders:read",
+    "quotes:read",
+    "quotes:override",
   ],
   auditoria: [
     "audit:read",
     "shipments:read",
     "imports:read",
     "carriers:read",
+    "orders:read",
+    "quotes:read",
   ],
 };
 
@@ -168,4 +191,24 @@ export function canReadUsers(role: UserRole): boolean {
 
 export function canWriteUsers(role: UserRole): boolean {
   return hasPermission(role, "users:write");
+}
+
+export function canReadOrders(role: UserRole): boolean {
+  return hasPermission(role, "orders:read");
+}
+
+export function canWriteOrders(role: UserRole): boolean {
+  return hasPermission(role, "orders:write");
+}
+
+export function canReadQuotes(role: UserRole): boolean {
+  return hasPermission(role, "quotes:read");
+}
+
+export function canWriteQuotes(role: UserRole): boolean {
+  return hasPermission(role, "quotes:write");
+}
+
+export function canOverrideQuotes(role: UserRole): boolean {
+  return hasPermission(role, "quotes:override");
 }

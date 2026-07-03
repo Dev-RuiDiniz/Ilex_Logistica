@@ -28,6 +28,7 @@ describe("Sidebar Navigation por Permissão", () => {
     expect(screen.getByText("Envios")).toBeInTheDocument();
     expect(screen.getByText("Importar Envios")).toBeInTheDocument();
     expect(screen.getByText("Transportadoras")).toBeInTheDocument();
+    expect(screen.getByText("Pedidos e Cotações")).toBeInTheDocument();
     expect(screen.getByText("Relatório Diário")).toBeInTheDocument();
     expect(screen.getByText("Auditoria")).toBeInTheDocument();
     expect(screen.getByText("Usuários")).toBeInTheDocument();

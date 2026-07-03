@@ -126,3 +126,10 @@
 - Registro Web e importação CSV preservam falhas individuais e atualizam a recomendação determinística.
 - Override manual exige justificativa, mantém a recomendação automática e registra autoria/auditoria.
 - Testes controlados exercitam todos os desempates, expiração, falha individual, CSV e histórico auditável.
+
+### Web e RBAC
+
+- Rotas `/orders`, `/orders/[id]` e `/quote-rounds/[id]` adicionadas à navegação privada.
+- Listagens, filtros, paginação, importação, histórico, registro de cotações e override tratam feedback operacional e acesso negado.
+- Layout usa tabela em desktop e cartões em telas pequenas, com labels, foco e `aria-live` nos feedbacks.
+- Matriz de papéis foi alinhada entre API e Web e persistida na migration `20260703_03`.

@@ -7,6 +7,7 @@ import {
   canReadAudit,
   canReadCarriers,
   canReadReports,
+  canReadOrders,
   canReadShipments,
   canReadUsers,
   canWriteImports,
@@ -70,6 +71,12 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             <SidebarLink href="/carriers" active={pathname.startsWith("/carriers")}>
               <IconCarrier />
               Transportadoras
+            </SidebarLink>
+          )}
+          {canReadOrders(role) && (
+            <SidebarLink href="/orders" active={pathname.startsWith("/orders") || pathname.startsWith("/quote-rounds")}>
+              <IconShipment />
+              Pedidos e Cotações
             </SidebarLink>
           )}
           <SidebarLink href="/alerts" active={pathname.startsWith("/alerts")}>

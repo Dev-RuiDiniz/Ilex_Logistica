@@ -70,6 +70,7 @@ Pedidos são únicos por `(source, external_number)` e preservam o vínculo com 
 
 - `20260703_01`: adiciona `users.token_version` para rotação e revogação persistente de JWTs sem armazenar tokens crus.
 - `20260703_02`: cria `orders`, `quote_rounds` e `freight_quotes`, seus índices, constraints e vínculos de autoria.
+- `20260703_03`: adiciona permissões de pedidos/cotações e a matriz inicial de papéis.
 
 | Ordem | Migration | Finalidade resumida |
 |---|---|---|

@@ -9,7 +9,7 @@ Comparar cotações de transportadoras antes da expedição e manter histórico 
 
 ## Estado atual e evidências
 
-Os models, a migration reversível e o fluxo assistido de preview/confirm de pedidos existem e possuem testes de contrato, idempotência, atualização, erro por linha, CSV/XLSX e RBAC. Rodadas, motor comparativo e telas permanecem planejados; integrações automáticas continuam pós-MVP.
+Os models, migrations, fluxos assistidos de pedidos/cotações, motor comparativo e telas Web existem e possuem testes de contrato, idempotência, atualização, erro por linha, desempate, auditoria e RBAC. O gate Playwright e a homologação humana permanecem pendentes; integrações automáticas continuam pós-MVP.
 
 ## Entradas, saídas e fluxo
 

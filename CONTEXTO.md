@@ -108,6 +108,9 @@ Executar P0 na ordem: build/runtime Web, suíte/lint, migration única, API dete
 - A matriz RBAC foi persistida por migration e testada em todas as rotas novas para respostas `401` e `403`.
 - O fluxo P3 completo passou em Chromium, Firefox, WebKit e Mobile Chrome com API determinística interceptada; regras e contratos da API foram validados separadamente contra o banco de testes.
 - A suíte Playwright histórica completa possui 304 cenários e excedeu dez minutos no ambiente local; ela permanece gate de P4 em ambiente semelhante à produção, sem ser tratada como aprovada.
+- P4 rejeita configuração produtiva insegura e removeu o bypass de login Web que existia para desenvolvimento.
+- Redis 7 suporta limites por IP/usuário; em produção sua indisponibilidade falha de forma segura. CORS usa exclusivamente `ILEX_CORS_ALLOWED_ORIGINS`.
+- Tokens mantêm access de 15 minutos, refresh de sete dias e rotação por versão. O armazenamento Web continua sendo risco residual documentado para migração futura a cookie `HttpOnly`/BFF.
 
 ### 2026-06-24 — Segurança e RBAC frontend
 

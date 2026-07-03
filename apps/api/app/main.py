@@ -1,9 +1,11 @@
 ﻿import logging
-import os
 
 from fastapi import FastAPI, Request
+from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 
+from app.core.config import Settings, settings
+from app.core.rate_limit import RateLimiter, RedisRateLimiter, rate_limit_rule
 from app.core.errors import register_exception_handlers
 from app.modules.auth.router import router as auth_router
 from app.modules.audit.router import router as audit_router
@@ -20,24 +22,45 @@ from app.modules.orders.router import router as orders_router
 from app.modules.orders.quotes_router import router as quotes_router
 
 
-def create_app() -> FastAPI:
-    app = FastAPI(title="Ilex API", version="1.0.0")
-
-    cors_origins = ["http://localhost:3000", "http://127.0.0.1:3000"]
-    extra_origins = os.getenv("CORS_ALLOWED_ORIGINS", "")
-    if extra_origins:
-        for origin in extra_origins.split(","):
-            origin = origin.strip()
-            if origin and origin not in cors_origins:
-                cors_origins.append(origin)
+def create_app(app_settings: Settings = settings, rate_limiter: RateLimiter | None = None) -> FastAPI:
+    production = app_settings.environment.lower() == "production"
+    app = FastAPI(
+        title=app_settings.app_name,
+        version="1.0.0",
+        debug=app_settings.debug,
+        docs_url=None if production else "/docs",
+        redoc_url=None if production else "/redoc",
+        openapi_url=None if production else "/openapi.json",
+    )
 
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=cors_origins,
+        allow_origins=app_settings.cors_origins,
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],
     )
+    limiter = rate_limiter or (RedisRateLimiter(app_settings.redis_url) if app_settings.redis_url else None)
+
+    @app.middleware("http")
+    async def enforce_rate_limit(request: Request, call_next):
+        rule = rate_limit_rule(request)
+        if rule is None or limiter is None:
+            return await call_next(request)
+        key, limit = rule
+        try:
+            decision = await limiter.check(key, limit)
+        except Exception:
+            if production:
+                return JSONResponse(status_code=503, content={"detail": "controle de trafego indisponivel"})
+            return await call_next(request)
+        if not decision.allowed:
+            return JSONResponse(
+                status_code=429,
+                content={"detail": "limite de requisicoes excedido"},
+                headers={"Retry-After": str(decision.retry_after)},
+            )
+        return await call_next(request)
 
     logging.basicConfig(
         level=logging.INFO,
@@ -45,7 +68,7 @@ def create_app() -> FastAPI:
     )
 
     # Enable logging middleware unless explicitly disabled for testing
-    enable_logging = os.getenv("ENABLE_LOGGING_MIDDLEWARE", "true").lower() == "true"
+    enable_logging = True
     
     if enable_logging:
         @app.middleware("http")
@@ -60,6 +83,18 @@ def create_app() -> FastAPI:
                 response.status_code,
             )
             return response
+
+    @app.middleware("http")
+    async def security_headers(request: Request, call_next):
+        response = await call_next(request)
+        response.headers["Content-Security-Policy"] = "default-src 'none'; frame-ancestors 'none'"
+        response.headers["X-Content-Type-Options"] = "nosniff"
+        response.headers["X-Frame-Options"] = "DENY"
+        response.headers["Referrer-Policy"] = "no-referrer"
+        response.headers["Permissions-Policy"] = "camera=(), microphone=(), geolocation=()"
+        if production:
+            response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains"
+        return response
 
     register_exception_handlers(app)
     app.include_router(health_router, prefix="/api/v1")

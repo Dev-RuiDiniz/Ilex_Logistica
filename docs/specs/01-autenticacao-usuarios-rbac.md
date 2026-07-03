@@ -26,6 +26,9 @@ FastAPI possui login/refresh, dependências de autenticação e CRUD/inativaçã
 - Administrador gerencia usuários; demais acessos dependem da permissão real do endpoint.
 - Inativação impede novo acesso sem apagar histórico.
 - Secrets e tokens não entram em logs, respostas de erro ou documentação.
+- Produção exige secret JWT com ao menos 32 bytes, PostgreSQL, Redis e CORS HTTPS explícito; defaults locais são rejeitados.
+- Login é limitado a 5/min/IP, refresh a 10/min/IP, imports/cotações a 30/min/usuário e demais rotas privadas a 120/min/usuário.
+- A política Web atual usa tokens curtos no armazenamento da sessão do navegador; CSP e ausência de HTML inseguro reduzem exposição, mas a migração para sessão `HttpOnly` permanece recomendação de defesa em profundidade pós-MVP.
 
 ## Falhas esperadas
 

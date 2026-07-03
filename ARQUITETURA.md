@@ -91,7 +91,7 @@ Pedidos ERP por CSV/XLSX gerarão rodadas imutáveis com uma cotação por trans
 
 ## 8. Segurança
 
-JWT e RBAC protegem os módulos. Schemas Pydantic validam contratos. Secrets são lidos por configuração e não devem ser documentados. Riscos: segredo local padrão não serve para produção; cobertura de autorização deve acompanhar cada rota nova; arquivos importados exigem validação de tipo, tamanho e conteúdo.
+JWT e RBAC protegem os módulos. Schemas Pydantic validam contratos. Em produção, a configuração rejeita JWT fraco/default, SQLite, debug, CORS inseguro, PostgreSQL placeholder e Redis ausente. Redis aplica limites por IP/usuário; indisponibilidade bloqueia tráfego produtivo com `503`. Headers defensivos são adicionados a todas as respostas e HSTS somente no ambiente produtivo com TLS. O Web não possui login alternativo/bypass.
 
 ## 9. Execução e testes
 

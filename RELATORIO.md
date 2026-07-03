@@ -139,3 +139,11 @@
 - Fluxo Playwright de pedido → preview → confirmação → rodada → cotações Web/CSV → recomendação → override → histórico passou nos quatro projetos configurados.
 - Middleware protege também `/orders` e `/quote-rounds`.
 - A suíte E2E legada completa (304 cenários) excedeu 10 minutos em duas tentativas locais; o resultado não foi convertido em sucesso e será retomado no gate de ambiente produtivo do P4.
+
+## 2026-07-03 — P4 segurança produtiva
+
+- `Settings` agora bloqueia JWT fraco/default, SQLite, senha placeholder, CORS inseguro, debug e ausência de Redis em produção.
+- Rate limiting Redis foi definido para login, refresh, operações pesadas e rotas privadas, com `429/Retry-After` e falha segura `503` em produção.
+- Headers CSP, frame protection, MIME sniffing, referrer e permissions policy foram ativados; HSTS é condicionado a produção/TLS.
+- O bypass de login Web por credencial fixa de desenvolvimento foi removido.
+- O risco residual de tokens no armazenamento do navegador foi preservado explicitamente; não foi apresentado como resolvido.

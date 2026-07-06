@@ -95,6 +95,34 @@ Executar P0 na ordem: build/runtime Web, suíte/lint, migration única, API dete
 
 ## Histórico preservado
 
+## 2026-07-03 — P3 pedidos ERP
+
+- SPEC-12 foi fixada com os contratos aprovados e permanece parcial.
+- `orders`, `quote_rounds` e `freight_quotes` foram criados por migration reversível, com valores monetários decimais e constraints de identidade.
+- A importação de pedidos aceita CSV/XLSX, valida erros por linha, não persiste domínio no preview e confirma por transação com idempotência por hash.
+- O layout técnico está confirmado por fixtures sanitizadas; a homologação humana contra amostra do ERP continua pendente e não foi convertida em aceite.
+- Rodadas incluem todas as transportadoras ativas e isolam resultados `pending`, `quoted`, `unavailable`, `error` e `expired`.
+- A recomendação usa menor valor, menor prazo, maior eficiência observada em entregas concluídas e menor `carrier_id`; override exige justificativa e preserva a recomendação.
+- Criação, registro/importação, conclusão e override geram auditoria operacional na mesma transação de domínio.
+- A Web oferece listagem/importação de pedidos, detalhe com histórico e comparação de cotações em desktop/mobile, com estados de loading, vazio, erro e acesso negado.
+- A matriz RBAC foi persistida por migration e testada em todas as rotas novas para respostas `401` e `403`.
+- O fluxo P3 completo passou em Chromium, Firefox, WebKit e Mobile Chrome com API determinística interceptada; regras e contratos da API foram validados separadamente contra o banco de testes.
+- A suíte Playwright histórica completa possui 304 cenários e excedeu dez minutos no ambiente local; ela permanece gate de P4 em ambiente semelhante à produção, sem ser tratada como aprovada.
+- P4 rejeita configuração produtiva insegura e removeu o bypass de login Web que existia para desenvolvimento.
+- Redis 7 suporta limites por IP/usuário; em produção sua indisponibilidade falha de forma segura. CORS usa exclusivamente `ILEX_CORS_ALLOWED_ORIGINS`.
+- Tokens mantêm access de 15 minutos, refresh de sete dias e rotação por versão. O armazenamento Web continua sendo risco residual documentado para migração futura a cookie `HttpOnly`/BFF.
+- O Compose produtivo fixa PostgreSQL 16.4, Redis 7.2 e Caddy 2.8; dados ficam em rede interna e somente o proxy publica portas.
+- Scripts de backup/checksum/retenção, restore temporário, deploy e rollback foram implementados. A validação real foi tentada, mas o Docker Desktop não expunha o engine; PostgreSQL real e restore continuam bloqueios explícitos do gate P4.
+- O gate local de preview + confirmação de 10 mil pedidos concluiu em 5,07 s com SQLite em memória. O runner HTTP reproduz 50 usuários e coleta p50/p95/p99, mas precisa ser executado na VPS/PostgreSQL para aprovar P4.
+- Observabilidade produtiva inclui logs JSON/request ID, métricas HTTP e de pedidos/cotações, liveness/readiness, Prometheus e exporters em rede interna.
+- Alertas cobrem API, 5xx, PostgreSQL, Redis, backlog de cotações e backup; runbooks cobrem os sete incidentes previstos. A ativação no VPS ainda não foi observada.
+- Axe não encontrou violações sérias/críticas nas telas P3 após corrigir contraste do shell; o fluxo passou em Chrome, Firefox, WebKit e viewport móvel.
+- Smoke read-only e E2E autenticado com escrita estão preparados e protegidos por variáveis explícitas. Sem VPS, DNS, TLS e credenciais descartáveis, a execução produtiva segue bloqueada.
+- `npm audit fix` eliminou achados altos; restam dois moderados do PostCSS embarcado pelo Next.js, sem correção compatível indicada pelo npm.
+- Roteiros UAT formais foram preparados para administrador, logística, gestor e auditoria. Todos permanecem `PENDENTE`; nenhuma assinatura ou aprovação foi simulada.
+- Documentação de release candidata, implantação, treinamento, suporte e escalonamento foi preparada. A RC não foi tagueada/publicada porque P4 externo e UAT não passaram.
+- `release_gate.py` falha fechado enquanto P4, UAT e decisão GO não possuem marcadores explícitos. O manifesto de `v1.0.0-rc.1` permanece `blocked`, sem tag/publicação/deploy.
+
 ### 2026-06-24 — Segurança e RBAC frontend
 
 Foi registrado tratamento de `401/403`, helpers de permissões, navegação condicional, componente `AccessDenied` e adaptação de páginas. O repositório atual contém testes de permissões, middleware, navegação e páginas privadas.

@@ -13,13 +13,11 @@ from app.database.session import get_db
 from app.main import app
 from app.modules.users.models import Role, User
 
-TEST_DB_URL = "sqlite://"
-engine = create_engine(
-    TEST_DB_URL,
-    connect_args={"check_same_thread": False},
-    poolclass=StaticPool,
-    future=True,
-)
+TEST_DB_URL = os.getenv("ILEX_TEST_DATABASE_URL", "sqlite://")
+engine_options: dict = {"future": True}
+if TEST_DB_URL.startswith("sqlite"):
+    engine_options.update(connect_args={"check_same_thread": False}, poolclass=StaticPool)
+engine = create_engine(TEST_DB_URL, **engine_options)
 TestingSessionLocal = sessionmaker(bind=engine, autoflush=False, autocommit=False, future=True)
 
 

@@ -99,3 +99,99 @@
 
 - Commit prévio das exclusões: `abc6d4e chore(docs): remove documentacao obsoleta`.
 - A consolidação de governança e specs será incluída no commit final autorizado desta sessão.
+
+## 2026-07-03 — Implementação P3 (pedidos ERP)
+
+### Entregas
+
+- Contratos da SPEC-12 consolidados.
+- Persistência de pedidos, rodadas e cotações criada com migration reversível.
+- Preview/confirm de pedidos ERP implementado para CSV/XLSX, com idempotência, atualização segura, erros por linha e RBAC.
+- Fixtures determinísticas e sanitizadas de 10, 1.000 e 10.000 linhas incluídas nos dois formatos.
+
+### Evidências
+
+- API completa após persistência: 704 testes aprovados e Ruff aprovado.
+- Migration: head única, upgrade, downgrade, roundtrip e preservação aprovados.
+- Testes focados da importação cobrem sucesso, autenticação, acesso negado, idempotência, atualização e XLSX.
+
+### Pendências preservadas
+
+- Homologação humana do layout ERP com amostra real sanitizada.
+- Rodadas, motor comparativo, Web, prontidão produtiva, UAT e release permanecem nas etapas seguintes do plano.
+
+### Motor de cotações
+
+- Rodadas versionadas criam um resultado pendente por transportadora ativa e validade de 24 horas.
+- Registro Web e importação CSV preservam falhas individuais e atualizam a recomendação determinística.
+- Override manual exige justificativa, mantém a recomendação automática e registra autoria/auditoria.
+- Testes controlados exercitam todos os desempates, expiração, falha individual, CSV e histórico auditável.
+
+### Web e RBAC
+
+- Rotas `/orders`, `/orders/[id]` e `/quote-rounds/[id]` adicionadas à navegação privada.
+- Listagens, filtros, paginação, importação, histórico, registro de cotações e override tratam feedback operacional e acesso negado.
+- Layout usa tabela em desktop e cartões em telas pequenas, com labels, foco e `aria-live` nos feedbacks.
+- Matriz de papéis foi alinhada entre API e Web e persistida na migration `20260703_03`.
+
+### Gate P3
+
+- Fluxo Playwright de pedido → preview → confirmação → rodada → cotações Web/CSV → recomendação → override → histórico passou nos quatro projetos configurados.
+- Middleware protege também `/orders` e `/quote-rounds`.
+- A suíte E2E legada completa (304 cenários) excedeu 10 minutos em duas tentativas locais; o resultado não foi convertido em sucesso e será retomado no gate de ambiente produtivo do P4.
+
+## 2026-07-03 — P4 segurança produtiva
+
+- `Settings` agora bloqueia JWT fraco/default, SQLite, senha placeholder, CORS inseguro, debug e ausência de Redis em produção.
+- Rate limiting Redis foi definido para login, refresh, operações pesadas e rotas privadas, com `429/Retry-After` e falha segura `503` em produção.
+- Headers CSP, frame protection, MIME sniffing, referrer e permissions policy foram ativados; HSTS é condicionado a produção/TLS.
+- O bypass de login Web por credencial fixa de desenvolvimento foi removido.
+- O risco residual de tokens no armazenamento do navegador foi preservado explicitamente; não foi apresentado como resolvido.
+
+### Continuidade
+
+- Compose produtivo usa imagens versionadas, volumes nomeados, rede de dados interna e Caddy como única borda pública.
+- Backup gera dump custom comprimido, checksum e aplica retenção de 30 dias; restore valida checksum e restaura em banco temporário.
+- Deploy e rollback exigem tags imutáveis, backup prévio, migration explícita e readiness.
+- Testes estáticos de infraestrutura e `docker compose config` passaram. A execução contra PostgreSQL 16 real foi bloqueada porque o engine Docker local não estava ativo; nenhum resultado de restore foi inventado.
+
+### Desempenho
+
+- Runner HTTP concorrente mede pedidos, dashboard e envios com p50/p95/p99, throughput e erros para 50 usuários.
+- Preview e confirmação de 10 mil pedidos passaram em 5,07 s no baseline local SQLite em memória.
+- A evidência local não foi usada para aprovar PostgreSQL/VPS; carga concorrente e planos de consulta continuam pendentes do ambiente de homologação.
+
+### Observabilidade
+
+- Middleware emite logs JSON com request ID, rota normalizada, status e latência, sem conteúdo de arquivo/token.
+- `/metrics` interno publica métricas HTTP, rate limit, imports, rodadas, cotações e backlog pendente.
+- Readiness verifica PostgreSQL/Redis separadamente da liveness.
+- Prometheus e exporters não publicam portas; regras e runbooks cobrem indisponibilidade, 5xx, backlog e backup.
+- Configuração e testes estáticos passaram; disparo real dos alertas depende da VPS e continua pendente.
+
+### Ambiente semelhante à produção
+
+- Axe foi integrado ao Playwright e levou à correção de três contrastes sérios no shell privado.
+- Fluxo P3 com auditoria axe passou em Chromium, Firefox, WebKit e Mobile Chrome.
+- Smoke read-only e cenário autenticado de importação/cotação foram preparados com guardas contra escrita acidental.
+- Execução externa, deploy e rollback permanecem sem evidência por ausência de VPS/domínio/TLS/credenciais.
+- Dependências altas apontadas pelo npm foram atualizadas; dois achados moderados do Next/PostCSS permanecem documentados, pois a correção sugerida causaria downgrade incompatível.
+
+## 2026-07-03 — P5 UAT
+
+- Roteiros separados cobrem autenticação/RBAC, transportadoras, imports, shipments, SLA, dashboard, alertas, relatórios, auditoria, pedidos e cotações.
+- Cada roteiro exige ambiente, tag, usuário sanitizado, esperado/real, evidência e assinatura.
+- Resultado consolidado, defeitos e aceites de risco possuem matriz própria.
+- Estado real: preparado, não executado e sem assinaturas; go-live continua bloqueado.
+
+### Documentação operacional final
+
+- README, escopo, arquitetura, banco, roadmap, contexto, relatório e auditoria foram reconciliados com o estado técnico atual.
+- Release notes da RC, checklist de implantação, treinamento e suporte/escalonamento foram preparados.
+- Specs permanecem com estados baseados em evidência: “confirmado tecnicamente”, “parcial” ou “a confirmar”; nenhuma foi promovida a homologada sem assinatura.
+
+### Release e go-live
+
+- Manifesto da RC e templates de evidência/decisão foram criados com estado bloqueado/pendente.
+- Gate automatizado exige simultaneamente P4 aprovado, UAT aprovada e decisão GO.
+- Nenhuma tag, GitHub Release, imagem, implantação, piloto ou decisão formal foi criada sem evidência externa.

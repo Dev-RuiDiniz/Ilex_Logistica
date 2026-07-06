@@ -1,0 +1,21 @@
+groups:
+  - name: ilex-production
+    rules:
+      - alert: IlexApiUnavailable
+        expr: up{job="ilex-api"} == 0
+        for: 2m
+      - alert: IlexHigh5xxRate
+        expr: sum(rate(ilex_http_requests_total{status=~"5.."}[5m])) / clamp_min(sum(rate(ilex_http_requests_total[5m])), 1) > 0.02
+        for: 5m
+      - alert: IlexPostgresUnavailable
+        expr: pg_up == 0
+        for: 2m
+      - alert: IlexRedisUnavailable
+        expr: redis_up == 0
+        for: 2m
+      - alert: IlexPendingQuotesBacklog
+        expr: ilex_pending_freight_quotes > 100
+        for: 15m
+      - alert: IlexBackupStale
+        expr: time() - ilex_backup_last_success_timestamp_seconds > 93600
+        for: 15m

@@ -1,6 +1,6 @@
 # SPEC-12 — Pedidos ERP e Cotação de Frete
 
-**Estado:** Planejado
+**Estado:** Confirmado tecnicamente; UAT humano pendente
 **Rastreabilidade:** LOG-036, LOG-037, LOG-038, LOG-039, LOG-040
 
 ## Objetivo e contexto
@@ -9,13 +9,13 @@ Comparar cotações de transportadoras antes da expedição e manter histórico 
 
 ## Estado atual e evidências
 
-Não foram identificados models, migrations, endpoints ou telas de pedidos/cotações. Esta spec define comportamento-alvo; nomes físicos e URLs só serão fixados na especificação técnica da implementação.
+Os models, migrations, fluxos assistidos de pedidos/cotações, motor comparativo e telas Web existem e possuem testes de contrato, idempotência, atualização, erro por linha, desempate, auditoria e RBAC. O gate Playwright e a homologação humana permanecem pendentes; integrações automáticas continuam pós-MVP.
 
 ## Entradas, saídas e fluxo
 
-1. Importar pedido ERP por CSV/XLSX no MVP, com número externo, data, cliente, UF de destino, valor e demais campos mínimos homologados.
+1. Importar pedido ERP por CSV/XLSX com `source`, `external_number`, `order_date`, `customer_name`, `origin_zip`, `origin_uf`, `destination_zip`, `destination_uf`, `weight_kg`, `volume_count`, `goods_value` e `currency`.
 2. Validar e persistir pedido idempotentemente.
-3. Criar uma rodada de cotação para transportadoras ativas/habilitadas.
+3. Criar uma rodada de cotação com validade padrão de 24 horas para todas as transportadoras ativas.
 4. Registrar por transportadora valor ou status `pendente`, `cotado`, `indisponivel`, `erro` ou `vencido`, com mensagem operacional sanitizada.
 5. Selecionar e destacar melhor opção entre cotações válidas.
 6. Preservar rodadas anteriores para auditoria.
@@ -24,17 +24,30 @@ Saída Web: tabela por pedido, cotações comparáveis, melhor opção, estados 
 
 ## Regras, dados e permissões
 
-- Chave do pedido combina origem ERP e número externo; reimportação atualiza conforme política idempotente sem duplicar.
-- Valores monetários usam decimal e mesma moeda; moeda múltipla está fora do MVP.
-- Regra inicial: menor valor válido. Empate: menor prazo quando disponível, depois melhor eficiência confirmada, depois identificador estável.
+- Chave do pedido combina `source` e `external_number`; reimportação atualiza somente campos importáveis, sem duplicar ou apagar rodadas.
+- CEP contém oito dígitos; UF é válida; peso, volumes e valor são positivos; moeda aceita no MVP é somente `BRL`.
+- Cotações entram por Web ou CSV com `round_id`, `carrier_external_code`, `status`, `amount`, `transit_days` e `message`.
+- `quoted` exige valor positivo; `unavailable` e `error` não aceitam valor; mensagens são sanitizadas e limitadas.
+- Regra automática: menor valor válido; empate por menor prazo, maior eficiência confirmada e menor `carrier_id`.
+- Override é permitido apenas para cotação válida, com justificativa e auditoria, preservando a recomendação automática.
 - Cotação vencida não pode ser escolhida como atual.
 - Falha de uma transportadora não invalida resultados válidos das demais.
 - Somente perfis autorizados importam, executam ou selecionam; leitura gerencial/auditoria é separada.
 - Integração automática exige contrato, autenticação segura, timeout, retry com backoff e idempotência.
 
-## Contrato mínimo planejado
+## Contratos persistidos
 
-Pedido: identificador interno, origem, número externo, data, cliente, UF, valor, status e timestamps. Cotação: pedido, transportadora, rodada, valor opcional, prazo opcional, status, mensagem sanitizada, validade, origem e timestamps. Campos adicionais dependem do ERP/transportadora e ficam A CONFIRMAR.
+- Pedido: campos do layout ERP, estado `active|cancelled`, histórico de importação, autoria e timestamps.
+- Rodada: pedido, sequência, validade, estado `open|completed|no_valid_quotes|expired`, recomendação, seleção final, modo, justificativa e autoria.
+- Cotação: rodada, transportadora, estado `pending|quoted|unavailable|error|expired`, valor/prazo opcionais, mensagem, origem `web|csv`, validade e autoria.
+- Unicidade: `(source, external_number)`, `(order_id, sequence)` e `(round_id, carrier_id)`.
+
+## Contratos HTTP
+
+- `POST /orders/imports/preview`, `POST /orders/imports/confirm`, `GET /orders/imports/{id}`, `GET /orders`.
+- `POST/GET /orders/{id}/quote-rounds`, `GET /quote-rounds/{id}`.
+- `POST /quote-rounds/{id}/quotes`, preview/confirm CSV e seleção manual por `quote_id`.
+- Rotas privadas usam `orders:read|write` e `quotes:read|write|override`, distinguindo `401` e `403`.
 
 ## Falhas esperadas
 
@@ -55,4 +68,4 @@ Importação válida/inválida/duplicada; rodada com todas, algumas ou nenhuma c
 
 ## Riscos, dependências e rastreabilidade
 
-Contrato ERP, APIs, prazo cotado, validade, seleção manual e política de retenção estão A CONFIRMAR. Depende das SPEC-01, SPEC-02, SPEC-03, SPEC-07 e SPEC-11. O MVP não automatiza portal/captcha.
+Depende das SPEC-01, SPEC-02, SPEC-03, SPEC-07 e SPEC-11. Retenção segue auditoria de cinco anos; arquivos de importação seguem política operacional. O MVP não automatiza ERP, transportadoras, portais ou captcha.

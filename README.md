@@ -65,9 +65,9 @@ Registrar tratativas
 Acompanhar indicadores e relatórios
 ```
 
-## Evolução prevista
+## Cotações assistidas
 
-Além do monitoramento pós-expedição, a visão do produto contempla um **MVP assistido de cotação de frete por pedido**. Essa evolução permitirá importar pedidos do ERP, comparar valores entre transportadoras, destacar a melhor opção disponível e preservar o histórico da decisão.
+Além do monitoramento pós-expedição, o produto possui um **MVP assistido de cotação de frete por pedido**. Ele importa pedidos do ERP por CSV/XLSX, recebe cotações por Web/CSV, destaca a melhor opção determinística, permite override justificado e preserva o histórico da decisão.
 
 Integrações automáticas com ERPs e transportadoras poderão ser incorporadas progressivamente, conforme contratos, disponibilidade técnica e homologação dos parceiros.
 
@@ -92,9 +92,9 @@ O Ilex Logística está em fase de consolidação e homologação do MVP avança
 
 1. Validar regras de SLA, eficiência e dados obrigatórios com a operação.
 2. Homologar o fluxo de importação com amostras representativas.
-3. Definir o layout de pedidos para o MVP assistido de cotações.
-4. Executar a homologação final com os perfis de usuário envolvidos.
-5. Planejar implantação, treinamento e acompanhamento inicial.
+3. Homologar pedidos/cotações com amostras sanitizadas e executar UAT por perfil.
+4. Validar PostgreSQL, backup/restore, desempenho e deploy/rollback em VPS.
+5. Publicar release candidata somente após os gates e acompanhar o piloto.
 
 ---
 

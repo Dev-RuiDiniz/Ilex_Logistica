@@ -2,6 +2,7 @@ from app.modules.alerts.models import Alert
 from app.modules.audit.models import OperationalAuditLog
 from app.modules.carriers.models import Carrier
 from app.modules.imports.models import Delivery, ImportHistory
+from app.modules.orders.models import FreightQuote, Order, QuoteRound
 from app.modules.reports.models import DailyReport
 from app.modules.sla.models import SlaRule
 from app.modules.shipments.models import Shipment, ShipmentTreatment
@@ -21,4 +22,7 @@ __all__ = [
     "SlaRule",
     "DailyReport",
     "OperationalAuditLog",
+    "Order",
+    "QuoteRound",
+    "FreightQuote",
 ]

@@ -137,3 +137,9 @@ Não há workflow ativo em `.github/workflows`. Testes, lint, build, migrations,
 ## 9. Recomendação
 
 Interromper novas funcionalidades até concluir a fase P0 do `ROADMAP.md`. Após baseline verde, homologar o monitoramento atual antes de iniciar cotações. O go-live depende dos gates P4/P5, incluindo segurança, migração única, E2E, UAT, backup e rollback.
+
+## 10. Atualização de dependências — 2026-07-03
+
+- `npm audit fix` removeu os achados altos de `vite`/`undici` e atualizou apenas versões compatíveis.
+- Permanecem dois achados moderados relacionados ao PostCSS embarcado pelo Next.js 16.2.6. O único “fix” sugerido pelo npm faria downgrade incompatível para Next 9.3.3 e não foi aplicado.
+- O risco é moderado e permanece aberto para atualização segura do framework; não há risco crítico/alto de dependência identificado pelo audit atual.

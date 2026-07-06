@@ -60,7 +60,7 @@ flowchart LR
 | Alerts | geração, leitura, resolução e entrega | `modules/alerts` | Funcional |
 | Reports | geração, consulta e exportação diária | `modules/reports` | Funcional |
 | Audit | logs operacionais e resumo | `modules/audit` | Funcional |
-| Freight Quotes | cotação por pedido | nenhuma evidência de domínio | Planejado |
+| Orders / Freight Quotes | pedidos, rodadas e cotação assistida | `modules/orders`, migrations e Web | Confirmado tecnicamente |
 
 ## 6. Fluxos principais
 
@@ -76,9 +76,9 @@ Arquivo CSV/XLSX entra em preview, passa por mapeamento e validação, é confir
 
 Shipments são filtrados e enriquecidos por SLA. Tratativas registram ações. Serviços analíticos agregam exceções e eficiência; dashboard, alertas e relatório diário consomem esses resultados.
 
-### Cotação futura
+### Cotação assistida especificada
 
-Pedidos do ERP deverão gerar comparações por transportadora. Contrato, persistência e APIs ainda não existem e devem ser especificados antes da implementação.
+Pedidos ERP por CSV/XLSX geram rodadas históricas com uma cotação por transportadora ativa. Resultados entram pela Web ou CSV; seleção automática e override auditado pertencem ao módulo `orders` da API. A Web consome os contratos sem recalcular a recomendação.
 
 ## 7. Integrações externas
 
@@ -91,7 +91,7 @@ Pedidos do ERP deverão gerar comparações por transportadora. Contrato, persis
 
 ## 8. Segurança
 
-JWT e RBAC protegem os módulos. Schemas Pydantic validam contratos. Secrets são lidos por configuração e não devem ser documentados. Riscos: segredo local padrão não serve para produção; cobertura de autorização deve acompanhar cada rota nova; arquivos importados exigem validação de tipo, tamanho e conteúdo.
+JWT e RBAC protegem os módulos. Schemas Pydantic validam contratos. Em produção, a configuração rejeita JWT fraco/default, SQLite, debug, CORS inseguro, PostgreSQL placeholder e Redis ausente. Redis aplica limites por IP/usuário; indisponibilidade bloqueia tráfego produtivo com `503`. Headers defensivos são adicionados a todas as respostas e HSTS somente no ambiente produtivo com TLS. O Web não possui login alternativo/bypass.
 
 ## 9. Execução e testes
 

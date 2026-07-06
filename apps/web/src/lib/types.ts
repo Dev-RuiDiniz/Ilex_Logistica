@@ -15,7 +15,12 @@ export type Permission =
   | "carriers:read"
   | "carriers:write"
   | "users:read"
-  | "users:write";
+  | "users:write"
+  | "orders:read"
+  | "orders:write"
+  | "quotes:read"
+  | "quotes:write"
+  | "quotes:override";
 
 export interface SessionData {
   accessToken: string;
@@ -33,6 +38,71 @@ export interface Carrier {
   email?: string | null;
   integration_metadata: Record<string, unknown>;
   is_active: boolean;
+}
+
+export interface Order {
+  id: number;
+  source: string;
+  external_number: string;
+  order_date: string;
+  customer_name: string;
+  origin_zip: string;
+  origin_uf: string;
+  destination_zip: string;
+  destination_uf: string;
+  weight_kg: string;
+  volume_count: number;
+  goods_value: string;
+  currency: "BRL";
+  status: "active" | "cancelled";
+  import_history_id: number;
+  created_by: number;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface OrderListResponse {
+  items: Order[];
+  total: number;
+  page: number;
+  page_size: number;
+}
+
+export interface FreightQuote {
+  id: number;
+  carrier_id: number;
+  amount: string | null;
+  transit_days: number | null;
+  status: "pending" | "quoted" | "unavailable" | "error" | "expired";
+  message: string | null;
+  source: "web" | "csv";
+  valid_until: string;
+}
+
+export interface QuoteRound {
+  id: number;
+  order_id: number;
+  sequence: number;
+  status: "open" | "completed" | "no_valid_quotes" | "expired";
+  expires_at: string;
+  recommended_quote_id: number | null;
+  selected_quote_id: number | null;
+  selection_mode: "automatic" | "manual" | null;
+  selection_reason: string | null;
+  quotes: FreightQuote[];
+}
+
+export interface OrderImportPreview {
+  import_id: number;
+  filename: string;
+  file_hash: string;
+  total_rows: number;
+  valid_rows: number;
+  invalid_rows: number;
+  duplicate_rows: number;
+  preview_items: Array<{ row_number: number; data: Record<string, string>; is_valid: boolean }>;
+  errors: Array<{ row_number: number; field: string | null; message: string; value?: unknown }>;
+  warnings: Array<{ row_number: number; field: string | null; message: string; value?: unknown }>;
 }
 
 // Shipment types

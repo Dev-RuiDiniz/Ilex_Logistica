@@ -1,7 +1,7 @@
 # BANCO_DADOS.md — Arquitetura de Banco de Dados
 
 **Projeto:** Ilex Logística
-**Atualizado em:** 2026-07-02
+**Atualizado em:** 2026-07-03
 **Banco:** PostgreSQL 16 no ambiente Docker; SQLite suportado em desenvolvimento/testes
 
 ## 1. Visão geral
@@ -30,6 +30,11 @@ erDiagram
     IMPORT_HISTORIES ||--o{ SHIPMENTS : registra
     SHIPMENTS ||--o{ SHIPMENT_TREATMENTS : recebe
     SHIPMENTS ||--o{ ALERTS : origina
+    IMPORT_HISTORIES ||--o{ ORDERS : registra
+    USERS ||--o{ ORDERS : cria
+    ORDERS ||--o{ QUOTE_ROUNDS : possui
+    QUOTE_ROUNDS ||--o{ FREIGHT_QUOTES : agrega
+    CARRIERS ||--o{ FREIGHT_QUOTES : oferece
 ```
 
 Alguns vínculos podem ser opcionais ou armazenados por identificador textual conforme o model; o diagrama representa o domínio, não garante todas as foreign keys. Relações exatas devem ser confirmadas no model/migration antes de mudar schema.
@@ -49,18 +54,23 @@ Alguns vínculos podem ser opcionais ou armazenados por identificador textual co
 | `alert_delivery_logs` | tentativas/estado de entrega | `modules/alerts/models.py` |
 | `daily_reports` | snapshots de relatório | `modules/reports/models.py` |
 | `operational_audit_logs` | auditoria operacional | `modules/audit/models.py` |
+| `orders` | pedidos logísticos importados do ERP | `modules/orders/models.py` |
+| `quote_rounds` | rodadas versionadas de cotação por pedido | `modules/orders/models.py` |
+| `freight_quotes` | resultado de cada transportadora em uma rodada | `modules/orders/models.py` |
 
 ### Shipments — campos complementares
 
 O model e as migrations incluem campos fiscais/financeiros associados ao Apêndice 1, entre eles número e valor da nota fiscal, valor/percentual do frete e data de coleta. Tipos, nulabilidade, defaults e nomes físicos devem ser obtidos diretamente da migration vigente antes de qualquer alteração.
 
-### Entidades ainda ausentes
+### Pedidos e cotações
 
-`orders` e `freight_quotes` não foram identificadas. O futuro schema deverá, no mínimo, representar pedido externo, transportadora, valor cotado, status, mensagem operacional, validade e histórico, mas o desenho físico depende de especificação/ADR.
+Pedidos são únicos por `(source, external_number)` e preservam o vínculo com o histórico de importação. Rodadas são sequenciais por pedido e cotações são únicas por `(round_id, carrier_id)`. Valores financeiros usam `Numeric`; a rodada mantém a recomendação automática e a escolha final separadamente para preservar override auditável.
 
 ## 5. Migrations identificadas
 
 - `20260703_01`: adiciona `users.token_version` para rotação e revogação persistente de JWTs sem armazenar tokens crus.
+- `20260703_02`: cria `orders`, `quote_rounds` e `freight_quotes`, seus índices, constraints e vínculos de autoria.
+- `20260703_03`: adiciona permissões de pedidos/cotações e a matriz inicial de papéis.
 
 | Ordem | Migration | Finalidade resumida |
 |---|---|---|

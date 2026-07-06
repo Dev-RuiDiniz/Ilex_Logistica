@@ -1,0 +1,126 @@
+services:
+  db:
+    image: postgres:16.4-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - ilex-postgres-data:/var/lib/postgresql/data
+    networks: [data]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7.2-alpine
+    restart: unless-stopped
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - ilex-redis-data:/data
+    networks: [data]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  api:
+    image: ${ILEX_API_IMAGE:-ilex-api:v1.0.0-rc.1}
+    restart: unless-stopped
+    environment:
+      ILEX_ENVIRONMENT: production
+      ILEX_DEBUG: "false"
+      ILEX_DATABASE_URL: postgresql+psycopg2://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
+      ILEX_REDIS_URL: redis://redis:6379/0
+      ILEX_JWT_SECRET: ${ILEX_JWT_SECRET}
+      ILEX_JWT_ACCESS_MINUTES: "15"
+      ILEX_JWT_REFRESH_MINUTES: "10080"
+      ILEX_CORS_ALLOWED_ORIGINS: https://${ILEX_DOMAIN:?configure ILEX_DOMAIN}
+    depends_on:
+      db: { condition: service_healthy }
+      redis: { condition: service_healthy }
+    networks: [data, app]
+    healthcheck:
+      test: ["CMD-SHELL", "python -c \"import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/api/v1/health', timeout=5)\""]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+
+  web:
+    image: ${ILEX_WEB_IMAGE:-ilex-web:v1.0.0-rc.1}
+    restart: unless-stopped
+    environment:
+      NEXT_PUBLIC_API_URL: /api/v1
+    depends_on:
+      api: { condition: service_healthy }
+    networks: [app]
+
+  proxy:
+    image: caddy:2.8-alpine
+    restart: unless-stopped
+    environment:
+      ILEX_DOMAIN: ${ILEX_DOMAIN:?configure ILEX_DOMAIN}
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - ilex-caddy-data:/data
+      - ilex-caddy-config:/config
+    depends_on: [web, api]
+    networks: [app]
+
+  postgres-exporter:
+    image: prometheuscommunity/postgres-exporter:v0.15.0
+    restart: unless-stopped
+    environment:
+      DATA_SOURCE_NAME: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}?sslmode=disable
+    networks: [data, monitoring]
+    depends_on:
+      db: { condition: service_healthy }
+
+  redis-exporter:
+    image: oliver006/redis_exporter:v1.62.0
+    restart: unless-stopped
+    environment:
+      REDIS_ADDR: redis://redis:6379
+    networks: [data, monitoring]
+    depends_on:
+      redis: { condition: service_healthy }
+
+  node-exporter:
+    image: prom/node-exporter:v1.8.2
+    restart: unless-stopped
+    command: ["--collector.textfile.directory=/textfile"]
+    volumes:
+      - ./monitoring:/textfile:ro
+    networks: [monitoring]
+
+  prometheus:
+    image: prom/prometheus:v2.54.1
+    restart: unless-stopped
+    command: ["--config.file=/etc/prometheus/prometheus.yml", "--storage.tsdb.retention.time=30d"]
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./prometheus-rules.yml:/etc/prometheus/rules.yml:ro
+      - ilex-prometheus-data:/prometheus
+    networks: [app, monitoring]
+    depends_on: [api, postgres-exporter, redis-exporter, node-exporter]
+
+volumes:
+  ilex-postgres-data:
+  ilex-redis-data:
+  ilex-caddy-data:
+  ilex-caddy-config:
+  ilex-prometheus-data:
+
+networks:
+  data:
+    internal: true
+  app:
+  monitoring:
+    internal: true

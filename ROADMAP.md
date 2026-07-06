@@ -25,9 +25,9 @@
 | P0 | recuperar baseline verde | testes, lint, build, migrations, infra e CI verdes | [x] Concluído |
 | P1 | homologar monitoramento | LOG-027–035 aceitos com dados controlados | [~] Parcial |
 | P2 | endurecer operação | alertas, relatórios, auditoria, RBAC e Braspress confiáveis | [~] Parcial |
-| P3 | entregar cotação assistida | LOG-036–040 completos via CSV/XLSX | [ ] Pendente |
-| P4 | preparar produção | segurança, desempenho, E2E, backup e deploy validados | [ ] Pendente |
-| P5 | encerrar e homologar | aceite, release e go-live documentados | [ ] Pendente |
+| P3 | entregar cotação assistida | LOG-036–040 completos via CSV/XLSX | [x] Confirmado tecnicamente; UAT pendente |
+| P4 | preparar produção | segurança, desempenho, E2E, backup e deploy validados | [~] Implementado localmente; ambiente externo pendente |
+| P5 | encerrar e homologar | aceite, release e go-live documentados | [~] Artefatos preparados; aceite/release pendentes |
 
 ## 3. P0 — Recuperar baseline verde
 
@@ -136,49 +136,58 @@
 
 ## 6. P3 — MVP assistido de cotação LOG-036–040
 
-### P3.1 Contrato e dados — SPEC-12  `[ ]`
+### P3.1 Contrato e dados — SPEC-12  `[x]`
 
-- [ ] LOG-038: homologar layout mínimo do pedido ERP por CSV/XLSX.
-- [ ] Definir `orders`, rodadas e `freight_quotes`, constraints, índices, status e auditoria.
-- [ ] Criar migration reversível e contratos API antes da implementação.
+- [x] LOG-038: fixar layout mínimo do pedido ERP por CSV/XLSX para o MVP assistido.
+  - [x] Definir `orders`, rodadas e `freight_quotes`, constraints, índices, status e auditoria.
+  - [x] Criar migration reversível e contratos API antes da implementação.
 
-> **Evidência atual:** SPEC-12 criada; nenhuma migration, model ou rota de pedidos/cotações existe (SPEC-12 "Planejado", ARQUITETURA "Planejado").
+> **Contrato aprovado em 2026-07-03:** layout logístico completo, cotações por Web/CSV, validade de 24 horas, desempate determinístico e override justificado/auditado.
 
-### P3.2 Importação de pedidos — LOG-037  `[ ]`
+> **Evidência atual:** models, migration `20260703_02` e importação assistida possuem testes automatizados; homologação humana do layout permanece pendente.
 
-- [ ] RED para arquivo válido, erro por linha, duplicidade e reimportação.
+### P3.2 Importação de pedidos — LOG-037  `[~]`
+
+  - [x] RED para arquivo válido, erro por linha, RBAC e reimportação.
+  - [x] Preview sem persistência de pedido e confirmação transacional/idempotente.
+  - [x] Fixtures sanitizadas CSV/XLSX de 10, 1.000 e 10.000 linhas.
+  - [ ] Homologação humana do layout com amostra real sanitizada.
 - [ ] GREEN com preview/confirm transacional e idempotente, reutilizando padrões da SPEC-03.
 
-### P3.3 Motor comparativo — LOG-039/040  `[ ]`
+### P3.3 Motor comparativo — LOG-039/040  `[x]`
 
-- [ ] Registrar valor/status por transportadora sem perder falhas individuais.
+  - [x] Registrar valor/status por transportadora sem perder falhas individuais.
+  - [x] Comparar por valor, prazo, eficiência confirmada e ID estável.
+  - [x] Preservar recomendação automática em override justificado e auditado.
+  - [x] Importar cotações por CSV com preview/confirm transacional.
 - [ ] Regra inicial: menor valor válido; aplicar desempate definido na SPEC-12.
 - [ ] Preservar rodadas, validade e explicação da melhor opção.
 
-### P3.4 Experiência Web — LOG-036  `[ ]`
+### P3.4 Experiência Web — LOG-036  `[x]`
 
-- [ ] Criar subaba/tela de pedidos, tabela comparativa, filtros, estados e histórico.
-- [ ] Aplicar RBAC, acessibilidade, responsividade e E2E completo.
+- [x] Criar subaba/tela de pedidos, tabela comparativa, filtros, estados e histórico.
+  - [x] Aplicar RBAC, acessibilidade e responsividade.
+  - [x] Validar o fluxo completo nos quatro projetos Playwright.
 - [ ] **Gate P3:** pedido importado, comparação auditável e melhor opção determinística com UAT aprovado.
 
 ## 7. P4 — Prontidão de produção  `[ ]`
 
-- [ ] Rejeitar JWT default fora de desenvolvimento; parametrizar CORS e validar secrets.
-- [ ] Definir rate limiting, headers, política de sessão e dependências.
-- [ ] Testar PostgreSQL real, backup, restore, migration e rollback.
-- [ ] Estabelecer metas e testes de desempenho para imports, listagens e analytics.
-- [ ] Validar acessibilidade e principais navegadores/resoluções.
-- [ ] Instrumentar health, logs, métricas, alertas e runbooks sem dados sensíveis.
-- [ ] Executar E2E autenticado completo em ambiente semelhante à produção.
+  - [x] Rejeitar JWT default fora de desenvolvimento; parametrizar CORS e validar secrets.
+  - [x] Definir rate limiting, headers, política de sessão e dependências.
+- [~] Compose e scripts de PostgreSQL/backup/restore/migration/rollback implementados; execução real bloqueada nesta sessão porque o Docker Desktop não estava ativo.
+  - [~] Metas, carga HTTP e gate local de 10 mil pedidos implementados; medição concorrente em VPS/PostgreSQL permanece pendente.
+  - [x] Validar acessibilidade séria/crítica e fluxo P3 em Chrome, Firefox, WebKit e viewport móvel.
+  - [~] Health, logs JSON, métricas internas, alertas e runbooks implementados; ativação/validação no VPS permanece pendente.
+  - [~] Smoke e E2E autenticado preparados; execução bloqueada por ausência de VPS/domínio/TLS/credenciais descartáveis.
 - [ ] **Gate:** checklist de segurança, operação, continuidade e deploy aprovado.
 
 ## 8. P5 — Homologação e encerramento  `[ ]`
 
-- [ ] Executar UAT por perfil com evidências e aceite formal.
+  - [~] Roteiros UAT por perfil preparados; execução, evidências e assinaturas pendentes.
 - [ ] Fechar todas as specs do MVP como confirmadas/homologadas ou registrar exclusão aprovada.
-- [ ] Atualizar escopo, arquitetura, banco, contexto, relatório e README comercial.
-- [ ] Produzir release notes, plano de implantação, treinamento, suporte e rollback.
-- [ ] Fazer release candidata, smoke pós-deploy e decisão de go-live.
+  - [x] Atualizar escopo, arquitetura, banco, contexto, relatório e README comercial conforme evidência atual.
+  - [x] Produzir release notes, plano de implantação, treinamento, suporte e rollback.
+  - [~] RC, smoke e decisão possuem artefatos/guardas; tag, piloto, smoke pós-deploy e decisão formal bloqueados pelos gates externos.
 
 ## 9. Pós-MVP dependente de terceiros
 

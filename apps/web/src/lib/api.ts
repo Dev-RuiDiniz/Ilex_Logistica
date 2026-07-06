@@ -27,6 +27,10 @@
   CarrierEfficiencyFilters,
   DashboardSummaryResponse,
   DashboardTrendResponse,
+  Order,
+  OrderImportPreview,
+  OrderListResponse,
+  QuoteRound,
 } from "@/lib/types";
 
 export function getApiBaseUrl(envValue = process.env.NEXT_PUBLIC_API_URL): string {
@@ -86,15 +90,6 @@ async function requestMultipart<T>(path: string, formData: FormData, token: stri
 }
 
 export async function apiLogin(email: string, password: string) {
-  // Dev bypass — auto-login without backend
-  if (email === "dev@ilex.com" && password === "dev123") {
-    return {
-      access_token: "dev-token-bypass",
-      refresh_token: "dev-refresh-bypass",
-      token_type: "bearer",
-      roles: ["admin"] as UserRole[],
-    };
-  }
   return request<{ access_token: string; refresh_token: string; token_type: string; roles: UserRole[] }>("/auth/login", {
     method: "POST",
     body: JSON.stringify({ email, password }),
@@ -400,6 +395,102 @@ export async function getCarrierEfficiency(token: string, filters: CarrierEffici
   const query = searchParams.toString();
   return request<CarrierEfficiencyResponse>(`/shipments/analytics/carrier-efficiency${query ? `?${query}` : ""}`, {
     headers: { Authorization: `Bearer ${token}` },
+  });
+}
+
+export async function listOrders(
+  token: string,
+  filters: { page?: number; page_size?: number; status?: string; source?: string; external_number?: string } = {},
+): Promise<OrderListResponse> {
+  const params = new URLSearchParams();
+  Object.entries(filters).forEach(([key, value]) => {
+    if (value !== undefined && value !== "") params.set(key, String(value));
+  });
+  return request<OrderListResponse>(`/orders${params.size ? `?${params}` : ""}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+}
+
+export async function getOrder(token: string, orderId: number): Promise<Order> {
+  return request<Order>(`/orders/${orderId}`, { headers: { Authorization: `Bearer ${token}` } });
+}
+
+export async function previewOrderImport(token: string, file: File): Promise<OrderImportPreview> {
+  const form = new FormData();
+  form.append("file", file);
+  return requestMultipart<OrderImportPreview>("/orders/imports/preview", form, token);
+}
+
+export async function confirmOrderImport(token: string, importId: number) {
+  return request<{ id: number; imported_count: number; rejected_count: number; status: string }>(
+    "/orders/imports/confirm",
+    {
+      method: "POST",
+      headers: { Authorization: `Bearer ${token}` },
+      body: JSON.stringify({ import_id: importId }),
+    },
+  );
+}
+
+export async function listQuoteRounds(token: string, orderId: number): Promise<QuoteRound[]> {
+  return request<QuoteRound[]>(`/orders/${orderId}/quote-rounds`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+}
+
+export async function createQuoteRound(token: string, orderId: number): Promise<QuoteRound> {
+  return request<QuoteRound>(`/orders/${orderId}/quote-rounds`, {
+    method: "POST",
+    headers: { Authorization: `Bearer ${token}` },
+  });
+}
+
+export async function getQuoteRound(token: string, roundId: number): Promise<QuoteRound> {
+  return request<QuoteRound>(`/quote-rounds/${roundId}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+}
+
+export async function saveFreightQuote(
+  token: string,
+  roundId: number,
+  payload: { carrier_id: number; status: string; amount?: string; transit_days?: number; message?: string },
+): Promise<QuoteRound> {
+  return request<QuoteRound>(`/quote-rounds/${roundId}/quotes`, {
+    method: "POST",
+    headers: { Authorization: `Bearer ${token}` },
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function overrideFreightQuote(
+  token: string,
+  roundId: number,
+  quoteId: number,
+  reason: string,
+): Promise<QuoteRound> {
+  return request<QuoteRound>(`/quote-rounds/${roundId}/select/${quoteId}`, {
+    method: "POST",
+    headers: { Authorization: `Bearer ${token}` },
+    body: JSON.stringify({ reason }),
+  });
+}
+
+export async function previewQuoteImport(token: string, roundId: number, file: File) {
+  const form = new FormData();
+  form.append("file", file);
+  return requestMultipart<{ import_id: number; valid_rows: number; invalid_rows: number }>(
+    `/quote-rounds/${roundId}/quotes/import/preview`,
+    form,
+    token,
+  );
+}
+
+export async function confirmQuoteImport(token: string, roundId: number, importId: number): Promise<QuoteRound> {
+  return request<QuoteRound>(`/quote-rounds/${roundId}/quotes/import/confirm`, {
+    method: "POST",
+    headers: { Authorization: `Bearer ${token}` },
+    body: JSON.stringify({ import_id: importId }),
   });
 }
 

@@ -34,3 +34,7 @@ Toda issue/PR deve informar:
 ## Convencao de commits
 
 `<tipo>(infra): <ID> <resumo em pt-BR>`
+
+## Produção e continuidade
+
+Produção usa `docker-compose.prod.yml`, Caddy/TLS e redes privadas para PostgreSQL/Redis. Backup, restore, deploy e rollback estão descritos em `CONTINUITY.md`; os scripts correspondentes ficam em `infra/scripts/`.

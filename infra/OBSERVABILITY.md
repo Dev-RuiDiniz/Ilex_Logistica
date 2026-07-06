@@ -137,3 +137,14 @@ Os serviços usam driver `json-file` com rotação local:
 |---|---|
 | `max-size` | `10m` |
 | `max-file` | `3` |
+
+## Produção
+
+- `/api/v1/health/live` informa vida do processo.
+- `/api/v1/health/ready` verifica PostgreSQL e Redis e retorna `503` quando não está pronto.
+- `/metrics` existe somente na API/rede interna; Caddy não publica essa rota.
+- Logs são JSON e correlacionam request ID, método, template de rota, status e latência, sem token ou conteúdo de arquivo.
+- Prometheus, exporters e regras ficam em `docker-compose.prod.yml`, `prometheus.yml` e `prometheus-rules.yml`.
+- Procedimentos de incidente ficam em `RUNBOOKS.md`.
+
+O roteamento externo deve encaminhar `/api/*` e `/health*`, nunca `/metrics`. O acesso ao Prometheus ocorre por túnel/VPN administrativo, sem porta pública no Compose.

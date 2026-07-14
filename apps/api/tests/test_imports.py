@@ -1,6 +1,27 @@
 ﻿from io import BytesIO
 from zipfile import ZIP_DEFLATED, ZipFile
 
+import pytest
+from sqlalchemy.orm import Session
+
+from app.main import app
+from app.modules.auth.dependencies import get_current_user
+from app.modules.users.models import Role, User
+from conftest import create_user_with_roles
+
+
+@pytest.fixture(autouse=True)
+def _auth_admin(db_session: Session) -> None:
+    """Autentica todos os testes deste módulo como admin (endpoints exigem RBAC)."""
+    admin = create_user_with_roles(db_session, "admin_imports@ilex.com", "123456", ["admin"])
+
+    def _override() -> User:
+        return admin
+
+    app.dependency_overrides[get_current_user] = _override
+    yield
+    app.dependency_overrides.pop(get_current_user, None)
+
 
 def build_xlsx_bytes(duplicate_nf: bool = False) -> bytes:
     content_types = """<?xml version=\"1.0\" encoding=\"UTF-8\"?>

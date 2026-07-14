@@ -34,7 +34,7 @@ from app.modules.shipments.models import Shipment
 @pytest.fixture
 def db_session():
     """Get database session for testing using SQLite test database."""
-    from tests.conftest import TestingSessionLocal
+    from conftest import TestingSessionLocal
     db = TestingSessionLocal()
     try:
         db.commit()

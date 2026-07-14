@@ -4,6 +4,24 @@ import pytest
 from io import BytesIO
 from fastapi import UploadFile
 
+from app.main import app
+from app.modules.auth.dependencies import get_current_user
+from app.modules.users.models import User
+from conftest import create_user_with_roles
+
+
+@pytest.fixture(autouse=True)
+def _auth_admin(db_session):
+    """Autentica todos os testes deste módulo como admin (endpoints exigem RBAC)."""
+    admin = create_user_with_roles(db_session, "admin_csvval@ilex.com", "123456", ["admin"])
+
+    def _override() -> User:
+        return admin
+
+    app.dependency_overrides[get_current_user] = _override
+    yield
+    app.dependency_overrides.pop(get_current_user, None)
+
 
 def _create_upload_file(content: bytes, filename: str = "test.csv") -> UploadFile:
     """Helper to create an UploadFile for testing."""

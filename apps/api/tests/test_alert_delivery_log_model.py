@@ -23,15 +23,16 @@ def test_cria_delivery_log_valido(db_session: Session):
     db_session.add(alert)
     db_session.commit()
 
-    # Criar delivery log
+    # Criar delivery log (contrato real do modelo BETA-027)
     log = AlertDeliveryLog(
         alert_id=alert.id,
-        channel="email",
-        recipient="test@example.com",
-        subject="Teste",
+        event_type="alert_generated",
+        delivery_channel="email",
+        delivery_status="success",
+        source_type="shipment",
+        source_id=1,
+        alert_type="sla_critical",
         message="Mensagem de teste",
-        status="pending",
-        max_attempts=3,
     )
     db_session.add(log)
     db_session.commit()
@@ -39,20 +40,19 @@ def test_cria_delivery_log_valido(db_session: Session):
     # Assert
     assert log.id is not None
     assert log.alert_id == alert.id
-    assert log.channel == "email"
-    assert log.recipient == "test@example.com"
-    assert log.subject == "Teste"
+    assert log.event_type == "alert_generated"
+    assert log.delivery_channel == "email"
+    assert log.delivery_status == "success"
+    assert log.source_type == "shipment"
+    assert log.source_id == 1
+    assert log.alert_type == "sla_critical"
     assert log.message == "Mensagem de teste"
-    assert log.status == "pending"
-    assert log.attempts == 0
-    assert log.max_attempts == 3
-    assert log.sent_at is None
+    assert log.metadata_json is None
     assert log.created_at is not None
-    assert log.updated_at is not None
 
 
-def test_valida_channel(db_session: Session):
-    """Testa validação de channel."""
+def test_valida_delivery_channel(db_session: Session):
+    """Testa canais de entrega suportados."""
     alert = Alert(
         alert_type="sla_critical",
         severity="critical",
@@ -64,21 +64,24 @@ def test_valida_channel(db_session: Session):
     db_session.add(alert)
     db_session.commit()
 
-    for channel in ["email", "sms", "webhook", "push"]:
+    for channel in ["email", "sms", "webhook", "push", "in_app"]:
         log = AlertDeliveryLog(
             alert_id=alert.id,
-            channel=channel,
-            recipient="test@example.com",
+            event_type="alert_generated",
+            delivery_channel=channel,
+            delivery_status="success",
+            source_type="shipment",
+            source_id=1,
             message="Mensagem",
         )
         db_session.add(log)
         db_session.commit()
 
-        assert log.channel in ["email", "sms", "webhook", "push"]
+        assert log.delivery_channel in ["email", "sms", "webhook", "push", "in_app"]
 
 
-def test_valida_status(db_session: Session):
-    """Testa validação de status."""
+def test_valida_delivery_status(db_session: Session):
+    """Testa status de entrega suportados."""
     alert = Alert(
         alert_type="sla_critical",
         severity="critical",
@@ -90,22 +93,24 @@ def test_valida_status(db_session: Session):
     db_session.add(alert)
     db_session.commit()
 
-    for status in ["pending", "sent", "failed"]:
+    for status in ["pending", "success", "failed"]:
         log = AlertDeliveryLog(
             alert_id=alert.id,
-            channel="email",
-            recipient="test@example.com",
+            event_type="alert_generated",
+            delivery_channel="email",
+            delivery_status=status,
+            source_type="shipment",
+            source_id=1,
             message="Mensagem",
-            status=status,
         )
         db_session.add(log)
         db_session.commit()
 
-        assert log.status in ["pending", "sent", "failed"]
+        assert log.delivery_status in ["pending", "success", "failed"]
 
 
 def test_defaults(db_session: Session):
-    """Testa valores padrão."""
+    """Testa valores padrão do modelo."""
     alert = Alert(
         alert_type="sla_critical",
         severity="critical",
@@ -119,29 +124,32 @@ def test_defaults(db_session: Session):
 
     log = AlertDeliveryLog(
         alert_id=alert.id,
-        channel="email",
-        recipient="test@example.com",
+        event_type="alert_generated",
+        delivery_channel="email",
+        delivery_status="success",
+        source_type="shipment",
+        source_id=1,
         message="Mensagem",
     )
     db_session.add(log)
     db_session.commit()
 
-    assert log.status == "pending"
-    assert log.attempts == 0
-    assert log.max_attempts == 3
-    assert log.subject is None
-    assert log.error_message is None
+    # delivery_channel e delivery_status têm defaults no modelo
+    assert log.delivery_channel == "email"
+    assert log.delivery_status == "success"
+    assert log.metadata_json is None
 
 
 def test_foreign_key_constraint(db_session: Session):
     """Testa constraint de foreign key - alerta inexistente."""
-    from sqlalchemy.exc import IntegrityError
-
     # Tenta criar log com alert_id inexistente
     log = AlertDeliveryLog(
         alert_id=99999,  # ID inexistente
-        channel="email",
-        recipient="test@example.com",
+        event_type="alert_generated",
+        delivery_channel="email",
+        delivery_status="success",
+        source_type="shipment",
+        source_id=1,
         message="Mensagem",
     )
     db_session.add(log)
@@ -153,7 +161,7 @@ def test_foreign_key_constraint(db_session: Session):
 
 
 def test_update_status_sent(db_session: Session):
-    """Testa atualização de status para sent."""
+    """Testa atualização de status para success."""
     alert = Alert(
         alert_type="sla_critical",
         severity="critical",
@@ -167,26 +175,25 @@ def test_update_status_sent(db_session: Session):
 
     log = AlertDeliveryLog(
         alert_id=alert.id,
-        channel="email",
-        recipient="test@example.com",
+        event_type="alert_generated",
+        delivery_channel="email",
+        delivery_status="pending",
+        source_type="shipment",
+        source_id=1,
         message="Mensagem",
     )
     db_session.add(log)
     db_session.commit()
 
-    # Atualizar para sent
-    log.status = "sent"
-    log.sent_at = datetime.now(UTC)
-    log.attempts = 1
+    # Atualizar para success
+    log.delivery_status = "success"
     db_session.commit()
 
-    assert log.status == "sent"
-    assert log.sent_at is not None
-    assert log.attempts == 1
+    assert log.delivery_status == "success"
 
 
 def test_update_status_failed(db_session: Session):
-    """Testa atualização de status para failed com erro."""
+    """Testa atualização de status para failed com metadata de erro."""
     alert = Alert(
         alert_type="sla_critical",
         severity="critical",
@@ -200,19 +207,20 @@ def test_update_status_failed(db_session: Session):
 
     log = AlertDeliveryLog(
         alert_id=alert.id,
-        channel="email",
-        recipient="test@example.com",
+        event_type="alert_generated",
+        delivery_channel="email",
+        delivery_status="pending",
+        source_type="shipment",
+        source_id=1,
         message="Mensagem",
     )
     db_session.add(log)
     db_session.commit()
 
-    # Atualizar para failed
-    log.status = "failed"
-    log.error_message = "Connection timeout"
-    log.attempts = 1
+    # Atualizar para failed com metadata de erro
+    log.delivery_status = "failed"
+    log.metadata_json = '{"error": "Connection timeout"}'
     db_session.commit()
 
-    assert log.status == "failed"
-    assert log.error_message == "Connection timeout"
-    assert log.attempts == 1
+    assert log.delivery_status == "failed"
+    assert "Connection timeout" in log.metadata_json

@@ -47,21 +47,39 @@ def test_a03_migration_upgrade_downgrade_flow() -> None:
     if db_path.exists():
         db_path.unlink()
 
-    cfg = Config('alembic.ini')
-    cfg.set_main_option('script_location', 'migrations')
-    cfg.set_main_option('sqlalchemy.url', f"sqlite:///{db_path.resolve()}")
+    # env.py prioriza a URL de runtime (Settings), que lê ILEX_DATABASE_URL/DATABASE_URL.
+    # Sem isso, o upgrade seria aplicado no banco da Settings, não no db temporário.
+    test_db_url = f"sqlite:///{db_path.resolve()}"
+    original_ilex = os.environ.get("ILEX_DATABASE_URL")
+    original_db = os.environ.get("DATABASE_URL")
+    os.environ["ILEX_DATABASE_URL"] = test_db_url
+    os.environ["DATABASE_URL"] = test_db_url
+    try:
+        cfg = Config('alembic.ini')
+        cfg.set_main_option('script_location', 'migrations')
+        cfg.set_main_option('sqlalchemy.url', test_db_url)
 
-    command.upgrade(cfg, 'head')
-    engine = create_engine(f"sqlite:///{db_path.resolve()}")
-    inspector = inspect(engine)
-    assert 'users' in inspector.get_table_names()
+        command.upgrade(cfg, 'head')
+        engine = create_engine(test_db_url)
+        inspector = inspect(engine)
+        assert 'users' in inspector.get_table_names()
 
-    command.downgrade(cfg, 'base')
-    inspector = inspect(engine)
-    assert 'users' not in inspector.get_table_names()
+        command.downgrade(cfg, 'base')
+        inspector = inspect(engine)
+        assert 'users' not in inspector.get_table_names()
 
-    engine.dispose()
-    os.remove(db_path)
+        engine.dispose()
+    finally:
+        if original_ilex is None:
+            os.environ.pop("ILEX_DATABASE_URL", None)
+        else:
+            os.environ["ILEX_DATABASE_URL"] = original_ilex
+        if original_db is None:
+            os.environ.pop("DATABASE_URL", None)
+        else:
+            os.environ["DATABASE_URL"] = original_db
+        if db_path.exists():
+            os.remove(db_path)
 
 
 def _login_token(client: TestClient, email: str, password: str) -> str:

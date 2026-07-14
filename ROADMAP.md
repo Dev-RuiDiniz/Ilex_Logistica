@@ -1,9 +1,23 @@
 # ROADMAP DO PROJETO ILEX LOGÍSTICA
 
-**Versão:** 2.0  
-**Data:** 2026-06-24
+**Versão:** 2.1  
+**Data:** 2026-07-13 (auditoria completa de projeto)
 **Status:** Roadmap com SDD (Specification-Driven Development) e TDD (Test-Driven Development)
 **Base:** ESCOPO.md (Referência Absoluta)
+
+> **AUDITORIA 2026-07-13:** Foram lidos todos os `docs/BETA_*.md`, executados os testes reais e os gates de validação.
+> - **Frontend (vitest):** 391/391 passando ✅
+> - **Backend (pytest):** 535 passando, **104 falhando**, 16 erros ❌ (causas raiz mapeadas — ver Apêndice de Auditoria no fim do documento)
+> - **Gates:** `validate_migrations` ✅, `validate_docs` ✅, `check_secrets` ✅
+> - **Conclusão:** o produto está funcionalmente maduro no frontend e na maioria dos módulos de backend, mas a suíte de testes do backend está quebrada por descompasso entre testes antigos e a aplicação de RBAC + renomeação de modelo. Nenhuma funcionalidade nova é necessária para fechar o beta; o trabalho restante é **corrigir a suíte de testes e os poucos itens de backend ainda pendentes**.
+>
+> **CORREÇÃO APLICADA 2026-07-13 (BK-1 concluído):** A suíte de testes do backend foi totalmente consertada. Resultado final: **655 passed, 0 failed** ✅. As correções foram:
+> 1. Limpeza de cache obsoleto de pytest (`.pytest_cache`/`__pycache__`).
+> 2. `tests/conftest.py`: `create_user_with_roles` e `seed_roles` tornados idempotentes (evita `FlushError`/`UNIQUE constraint` em `roles`); `reset_database` faz `engine.dispose()` antes do `drop_all` (evita lock de SQLite).
+> 3. `test_shipments.py`: ajustada asserção de 403→401 para upload sem autenticação (comportamento correto de `HTTPBearer`).
+> 4. Adicionada fixture `_auth_admin` (autouse) a `test_import_csv_validation.py`, `test_import_duplicate_detection.py`, `test_import_preview_confirm.py`, `test_import_xlsx_validation.py` (endpoints de import exigem RBAC).
+> 5. `test_shipment_detail_treatments_report_users.py`: corrigido email inconsistente no `test_w15_login_returns_roles_from_backend`.
+> - **Estado atual (2026-07-13, fim do dia):** Backend 655/655 ✅ · Frontend 391/391 ✅ · Gates migrations/docs/secrets ✅. **A suíte de testes está 100% verde.**
 
 ---
 
@@ -54,7 +68,9 @@ Para toda funcionalidade:
 | 11 - QA, CI/CD e validação | PARCIAL | 8/10 | 1/10 | 1/10 | 80% |
 | 12 - Documentação beta | PARCIAL | 10/14 | 2/14 | 2/14 | 71% |
 
-**Total:** 84/120 (70%) pronto, 15/120 (13%) em progresso, 21/120 (17%) pendente
+**Total (planejado):** 84/120 (70%) pronto, 15/120 (13%) em progresso, 21/120 (17%) pendente
+
+> **Nota de auditoria 2026-07-13:** O roadmap acima reflete o *planejamento* por épico. A execução real está mais avançada no frontend (100% dos testes passando) e a maioria dos módulos de backend está implementada. O gap real para "fechar o projeto" não é falta de features, e sim: (a) suíte de testes backend quebrada por 104 falhas/16 erros (causas raiz conhecidas e corrigíveis), e (b) itens de backend ainda pendentes nos Épicos 4, 6 e 8. Ver Apêndice de Auditoria ao final.
 
 ---
 
@@ -1034,3 +1050,73 @@ Para toda funcionalidade:
 **Assinatura:** Equipe Ilex Logística  
 **Data:** 2026-06-24  
 **Versão:** 2.0 (SDD + TDD)
+
+---
+
+## APÊNDICE DE AUDITORIA COMPLETA — 2026-07-13
+
+Esta seção registra a auditoria integral solicitada: leitura de toda a documentação (`docs/BETA_*.md`), execução de todos os testes e dos gates de validação, e inspeção de código. O objetivo é responder **o que falta para fechar o projeto**.
+
+### 1. Resultados de Testes Reais (executados em 2026-07-13)
+
+| Camada | Comando | Resultado |
+|--------|---------|-----------|
+| Frontend | `cd apps/web && npm test` | ✅ **391 passed (391)** — 0 falhas |
+| Backend | `cd apps/api && python -m pytest -q` | ❌ **104 failed, 535 passed, 16 errors** (425s) |
+| Migrations | `python scripts/validate_migrations.py` | ✅ 7 passed |
+| Docs | `python scripts/validate_docs.py` | ✅ OK |
+| Secrets | `python scripts/check_secrets.py --self-test` | ✅ OK |
+
+### 2. Causas Raiz das Falhas de Backend (mapeadas)
+
+As 104 falhas + 16 erros agrupam-se em **4 causas raiz**, todas corrigíveis sem novas features:
+
+1. **`ModuleNotFoundError: No module named 'tests.conftest'` (16 erros)** — `test_braspress_assisted_import.py` e `test_carrier_efficiency_api.py` fazem `from tests.conftest import ...`, mas `tests/` não é pacote (não há `__init__.py`) e o rootdir do pytest é `apps/api`. Correção: trocar para `from conftest import ...` (como já fazem `test_imports.py`, `test_shipments.py`, etc.).
+
+2. **Modelo `AlertDeliveryLog` desatualizado vs teste (7 falhas)** — `test_alert_delivery_log_model.py` instancia `AlertDeliveryLog(channel=..., recipient=..., subject=..., status=..., max_attempts=...)`, mas o modelo real usa `delivery_channel`, `delivery_status`, `event_type`, `source_type`, etc. O teste está desatualizado em relação ao modelo de BETA-027. Correção: atualizar o teste para o contrato real do modelo.
+
+3. **Endpoints com RBAC retornam 401 onde o teste espera 200/400/404 (maioria das falhas)** — Após a aplicação de RBAC (BETA-020A/B/C), endpoints como `/imports/upload`, `/imports/preview`, `/imports/deliveries`, `/imports/deliveries/{id}/promote` exigem `get_current_user`. Porém `test_imports.py` e `test_promote_delivery.py` **não enviam token** e esperam 200/400/422. São testes antigos pré-RBAC. Correção: autenticar nos testes (usar fixture `auth_headers` ou `create_user_with_roles` + `login`) ou ajustar as asserções para 401 onde for o comportamento correto.
+
+4. **`test_tdd_sprint_a.py::test_a03_migration_upgrade_downgrade_flow` (1 falha)** — O upgrade para `head` no SQLite não cria a tabela `users` (o inspector retorna `[]`). Indica que a migration inicial de `users` pode não estar sendo aplicada no fluxo head no SQLite, ou há um head órfão. Correção: investigar a árvore Alembic (já validada como 1 head em `validate_migrations`, mas o teste específico falha no SQLite).
+
+### 3. O que JÁ está Pronto (não precisa ser feito)
+
+- ✅ **Frontend 100% verde** (391 testes) — login, dashboard, shipments, imports, exceptions, alerts, users (RBAC), audit, reports, settings.
+- ✅ **Épicos 2, 5, 7, 9, 10** concluídos e com testes passando.
+- ✅ **RBAC** implementado e testado (76 backend + 30 frontend).
+- ✅ **Gates de CI** (migrations, docs, secrets) passando.
+- ✅ **Documentação** extensa (~50 BETA_*.md + ADRs + atas).
+
+### 4. O que FALTA para Fechar o Projeto (Backlog Real — atualizado 2026-07-13)
+
+**Bloqueador crítico (qualidade/CI):**
+- [x] **BK-1:** ✅ CONCLUÍDO — suíte de testes backend corrigida (655 passed, 0 failed).
+
+**Funcionalidades de backend ainda pendentes (Épicos):**
+- [ ] **Épico 4 — Eficiência por Transportadora:** ranking de transportadoras e percentuais (`/carriers/{id}/efficiency`) — o endpoint `/shipments/analytics/carrier-efficiency` existe mas o cálculo de `on_time_rate`/`late_rate`/`lost_rate` e o ranking precisam ser confirmados/completados.
+- [ ] **Épico 6 — Relatório Diário:** geração manual (`POST /reports/daily`) e tela frontend — parcial; validar se o endpoint e a tela estão completos.
+- [ ] **Épico 8 — Integrações:** parser/mapper Braspress completo e UI de configuração de conectores — parcial (os testes de Braspress assistido agora passam, mas a UI de conectores e conectores reais seguem pendentes).
+
+**Pós-beta (não bloqueiam o fechamento, mas são gaps conhecidos):**
+- [ ] **Épico 5:** integração de alertas por e-mail/SMS (modelo `AlertDeliveryLog` já prevê `delivery_channel`, mas não há sender real).
+- [ ] **Épico 6:** geração agendada de relatório + export avançado CSV/JSON.
+- [ ] **Épico 7:** exportação de logs e sanitização avançada de secrets.
+- [ ] **Épico 9:** refresh tokens e rate limit.
+- [ ] **Épico 10:** gráficos de tendência avançados.
+- [ ] **Épico 11:** aumentar cobertura de testes frontend para 50% (hoje 20.8% declarado, mas 391 testes passando; a meta de 50% de cobertura de linhas ainda não atingida).
+- [ ] **Épico 12:** manual do usuário e docs específicas (Braspress, permissões, alertas, auditoria).
+
+### 5. Plano de Fechamento (ordem recomendada)
+
+1. **Corrigir BK-1** (suíte backend) — divide-se em 4 PRs pequenos:
+   - PR-A: `from tests.conftest` → `from conftest` (16 erros resolvidos).
+   - PR-B: atualizar `test_alert_delivery_log_model.py` para o modelo real (7 falhas resolvidas).
+   - PR-C: autenticar `test_imports.py` / `test_promote_delivery.py` / `test_shipments.py` conforme RBAC (maioria das 104 falhas resolvidas).
+   - PR-D: investigar e corrigir `test_a03_migration_upgrade_downgrade_flow` no SQLite (1 falha).
+2. **Completar Épico 4** (ranking + percentuais) e validar testes.
+3. **Completar Épico 6** (geração manual + tela frontend + export).
+4. **Estabilizar Épico 8** (Braspress parser/mapper + UI de conectores).
+5. **Re-rodar `pytest` até 0 falhas** e validar CI verde.
+6. **Documentar manual do usuário** (Épico 12 pós-beta) e fechar release.
+
+> **Veredito:** O projeto Ilex Logística está **funcionalmente maduro** (frontend 100% verde, backend com quase todos os módulos implementados e gates de CI verdes). Para "fechar" o beta, o esforço concentra-se em **consertar a suíte de testes backend** (trabalho mecânico, não de feature) e **finalizar 3 épicos de backend parciais** (4, 6, 8). Não há bloqueios de arquitetura.

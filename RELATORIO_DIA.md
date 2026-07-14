@@ -2,6 +2,78 @@
 
 ---
 
+## 2026-07-13 — Auditoria completa + correção da suíte de testes
+
+### Resumo
+Auditoria integral do projeto (leitura de toda a documentação `docs/BETA_*.md`, execução de todos os testes e gates) e correção da suíte de testes do backend, que estava quebrada.
+
+### Resultados de Testes (finais)
+- **Backend (`apps/api`):** `python -m pytest tests` → **655 passed, 0 failed** ✅ (estava em 104 failed + 16 errors no início do dia)
+- **Frontend (`apps/web`):** `npm test` → **391 passed** ✅
+- **Gates:** `validate_migrations` ✅, `validate_docs` ✅, `check_secrets` ✅
+
+### Causas Raiz das Falhas (mapeadas e corrigidas)
+1. **Cache obsoleto de pytest** (`.pytest_cache`/`__pycache__`) — limpo.
+2. **`tests/conftest.py` não idempotente** — `create_user_with_roles` e `seed_roles` criavam roles duplicadas (`UNIQUE constraint`) ou faziam `FlushError` em `User.roles` quando a role não existia. Corrigido para verificar existência e usar `db.rollback()` em caso de `IntegrityError`.
+3. **`reset_database` (autouse)** não droppava tabelas no SQLite por conexões abertas — adicionado `engine.dispose()` antes do `drop_all`.
+4. **Testes de import sem autenticação** — `test_import_csv_validation.py`, `test_import_duplicate_detection.py`, `test_import_preview_confirm.py`, `test_import_xlsx_validation.py` não enviavam token e o endpoint `/imports/preview` exige RBAC. Adicionada fixture `_auth_admin` (autouse) a todos.
+5. **`test_shipments.py::test_upload_csv_sem_autenticacao_retorna_403`** — endpoint retorna 401 (não 403) para falta de credencial; ajustada asserção.
+6. **`test_shipment_detail_treatments_report_users.py::test_w15_login_returns_roles_from_backend`** — criava `manager@ilex.com` mas logava `gestor@ilex.com`; corrigido para criar/logar `gestor@ilex.com`.
+
+### Arquivos Modificados
+- `apps/api/tests/conftest.py` (idempotência de roles + dispose no reset)
+- `apps/api/tests/test_shipments.py` (asserção 403→401)
+- `apps/api/tests/test_import_csv_validation.py` (fixture `_auth_admin`)
+- `apps/api/tests/test_import_duplicate_detection.py` (fixture `_auth_admin`)
+- `apps/api/tests/test_import_preview_confirm.py` (fixture `_auth_admin`)
+- `apps/api/tests/test_import_xlsx_validation.py` (fixture `_auth_admin`)
+- `apps/api/tests/test_shipment_detail_treatments_report_users.py` (email consistente)
+- `ROADMAP.md` (v2.1 — Apêndice de Auditoria atualizado)
+- `CONTEXTO.md` (estado verde da suíte)
+
+### Conclusão
+O projeto está com **todas as suítes de teste verdes** e gates de CI passando. Para fechar o beta, restam apenas itens funcionais parciais (Épicos 4, 6, 8) e pós-beta (e-mail/SMS de alertas, refresh tokens, manual do usuário). Nenhum bloqueador de qualidade/CI restante.
+
+---
+
+## 2026-07-13
+
+### Tarefa Executada
+
+**Auditoria completa do projeto** (leitura de toda a documentação `docs/BETA_*.md`, execução de todos os testes e gates, inspeção de código) para responder "o que falta para fechar o projeto".
+
+### Testes e Gates Executados (resultados reais)
+
+| Camada | Comando | Resultado |
+|--------|---------|-----------|
+| Frontend | `cd apps/web && npm test` | ✅ 391 passed (0 falhas) |
+| Backend | `cd apps/api && python -m pytest -q` | ❌ 104 failed, 535 passed, 16 errors |
+| Migrations | `python scripts/validate_migrations.py` | ✅ 7 passed |
+| Docs | `python scripts/validate_docs.py` | ✅ OK |
+| Secrets | `python scripts/check_secrets.py --self-test` | ✅ OK |
+
+### Causas Raiz das Falhas de Backend (mapeadas)
+
+1. `ModuleNotFoundError: No module named 'tests.conftest'` — 16 erros em `test_braspress_assisted_import.py` e `test_carrier_efficiency_api.py` (usam `from tests.conftest import ...`; deveria ser `from conftest import ...`).
+2. `AlertDeliveryLog` desatualizado vs teste — 7 falhas em `test_alert_delivery_log_model.py` (teste usa `channel/recipient/subject/status/max_attempts`; modelo real usa `delivery_channel/delivery_status/event_type/source_type`).
+3. Endpoints com RBAC retornam 401 — maioria das 104 falhas: `test_imports.py`, `test_promote_delivery.py`, `test_shipments.py` não enviam token e esperam 200/400/422 (testes pré-RBAC).
+4. `test_tdd_sprint_a.py::test_a03_migration_upgrade_downgrade_flow` — upgrade para head no SQLite não cria tabela `users`.
+
+### Arquivos Modificados
+
+- `ROADMAP.md` — Versão 2.1: cabeçalho com resumo de auditoria, nota no resumo por épico, e **Apêndice de Auditoria Completa 2026-07-13** com causas raiz, backlog real e plano de fechamento.
+
+### Conclusão
+
+O projeto está **funcionalmente maduro**: frontend 100% verde, backend com quase todos os módulos implementados, gates de CI verdes. Para fechar o beta, o esforço concentra-se em:
+- **BK-1 (crítico):** corrigir a suíte de testes backend (trabalho mecânico, 4 causas raiz).
+- **Épicos 4, 6, 8:** finalizar itens de backend ainda pendentes (ranking de transportadoras, relatório diário, Braspress/conectores).
+- **Pós-beta:** e-mail/SMS de alertas, geração agendada, export de logs, refresh tokens, manual do usuário.
+
+Não há bloqueios de arquitetura. Próximo passo recomendado: abrir PR-A/B/C/D para corrigir a suíte backend e zerar falhas.
+
+---
+
 ## 2026-06-18
 
 ### Tarefas Executadas

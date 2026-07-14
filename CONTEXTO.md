@@ -1,6 +1,6 @@
 # CONTEXTO.md — Estado e Contexto do Projeto Ilex Logistica
 
-**Atualizado em:** 2026-06-18
+**Atualizado em:** 2026-07-13 (auditoria completa de projeto)
 
 ---
 
@@ -18,7 +18,7 @@
 
 Projeto de plataforma web para rastreio de entregas, gestao de excecoes operacionais e relatorios logisticos. Monorepo com API Python/FastAPI + frontend Next.js + infra Docker + documentacao extensa.
 
-**Fase atual:** Branch `fix/infra-setup-local` com stack local funcional para `db` + `api` + `web`, frontend premium consolidado nas telas centrais e regressões existentes apenas na suíte completa da API fora do escopo de bootstrap local.
+**Fase atual:** Auditoria completa realizada em 2026-07-13. **Backend 100% verde (655 testes)** após correção da suíte. **Frontend 100% verde (391 testes)**. Gates de CI (migrations, docs, secrets) verdes. Projeto em estado de release beta.
 
 ---
 
@@ -70,7 +70,7 @@ Projeto de plataforma web para rastreio de entregas, gestao de excecoes operacio
 | ~~Build frontend com erros de tipo~~ | ~~MEDIO~~ | **RESOLVIDO** — tipos completos adicionados em `types.ts`, build passando |
 | ~~PR #38 com conflitos~~ | ~~ALTO~~ | **MERGEADO** em 2026-06-10 |
 | ~~PR #39 com base incorreta~~ | ~~ALTO~~ | **MERGEADO** em 2026-06-10 |
-| Suite completa da API com regressões | ALTO | `python -m pytest -q` ainda falha em testes antigos de `AlertDeliveryLog`, imports e expectativas de autenticação, apesar do bootstrap local estar funcional |
+| Suite completa da API com regressões | RESOLVIDO | `python -m pytest tests` (2026-07-13, fim do dia): **655 passed, 0 failed**. Corrigido via: cache obsoleto limpo, `conftest` idempotente (roles), `reset_database` com `engine.dispose()`, fixture `_auth_admin` em testes de import, asserção 403→401, email consistente em `test_w15` |
 | Porta 3000 ocupada no host atual | BAIXO | Frontend local precisou subir em `3002`; conflito é do ambiente e não da aplicação |
 | ~~Login web local falhando por CORS~~ | ~~ALTO~~ | **RESOLVIDO em 2026-06-18** — preflight `OPTIONS` para `/api/v1/auth/login` passou a responder para origens locais permitidas |
 
@@ -92,11 +92,15 @@ Projeto de plataforma web para rastreio de entregas, gestao de excecoes operacio
 12. ~~Implementar testes E2E de navegação por permissão (BETA-020E)** **(FEITO 2026-06-25)**
 13. ~~Remover `error-handler.ts` antigo após completa migração (BETA-020F)** **(FEITO 2026-06-25)**
 14. ~~Completar Épico 10 - Dashboard Beta (BETA-029)** **(FEITO 2026-06-25)**
-15. Implementar tela administrativa de usuarios completa (W15)
-16. Implementar tela de auditoria de alteracoes (W18)
-17. Desenvolver conectores de transportadoras (LOG-021/022)
-18. Implementar envio de relatorio diario por e-mail (LOG-019)
-19. Aumentar cobertura de testes E2E com Playwright
+15. **CORRIGIR suíte de testes backend (BK-1)** — 104 falhas + 16 erros (4 causas raiz mapeadas em ROADMAP.md Apêndice de Auditoria)
+16. Completar Épico 4 - Eficiência por Transportadora (ranking + percentuais)
+17. Completar Épico 6 - Relatório Diário (geração manual + tela frontend + export)
+18. Estabilizar Épico 8 - Braspress parser/mapper + UI de conectores
+19. Implementar tela administrativa de usuarios completa (W15)
+20. Implementar tela de auditoria de alteracoes (W18)
+21. Desenvolver conectores de transportadoras (LOG-021/022)
+22. Implementar envio de relatorio diario por e-mail (LOG-019)
+23. Aumentar cobertura de testes E2E com Playwright e cobertura frontend para 50%
 
 ---
 

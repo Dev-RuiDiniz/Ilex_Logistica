@@ -26,7 +26,11 @@ def upgrade() -> None:
         sa.Column('transit_days', sa.Integer(), nullable=False),
         sa.Column('warning_threshold_days', sa.Integer(), nullable=False),
         sa.Column('critical_delay_days', sa.Integer(), nullable=False),
+<<<<<<< HEAD
         sa.Column('is_active', sa.Boolean(), nullable=False, server_default=sa.true()),
+=======
+        sa.Column('is_active', sa.Boolean(), nullable=False, server_default=sa.text('true')),
+>>>>>>> fix/infra-setup-local
         sa.Column('created_at', sa.DateTime(), nullable=False),
         sa.Column('updated_at', sa.DateTime(), nullable=False),
         sa.ForeignKeyConstraint(['carrier_id'], ['carriers.id'], ),

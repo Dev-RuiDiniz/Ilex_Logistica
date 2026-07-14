@@ -7,6 +7,24 @@ import pytest
 def authenticated_requests(client, auth_headers):
     client.headers.update(auth_headers)
 
+from app.main import app
+from app.modules.auth.dependencies import get_current_user
+from app.modules.users.models import User
+from conftest import create_user_with_roles
+
+
+@pytest.fixture(autouse=True)
+def _auth_admin(db_session):
+    """Autentica todos os testes deste módulo como admin (endpoints exigem RBAC)."""
+    admin = create_user_with_roles(db_session, "admin_dupdet@ilex.com", "123456", ["admin"])
+
+    def _override() -> User:
+        return admin
+
+    app.dependency_overrides[get_current_user] = _override
+    yield
+    app.dependency_overrides.pop(get_current_user, None)
+
 
 def test_detect_duplicates_in_file_tracking_code():
     """Test detecting duplicates by tracking_code within file."""

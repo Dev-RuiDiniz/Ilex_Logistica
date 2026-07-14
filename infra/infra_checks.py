@@ -33,6 +33,64 @@ def compose_services_summary(path: Path) -> dict[str, dict[str, bool]]:
     return out
 
 
+def compose_build_config(path: Path) -> dict[str, dict[str, str]]:
+    lines = path.read_text(encoding="utf-8").splitlines()
+    in_services = False
+    current_service: str | None = None
+    in_build = False
+    out: dict[str, dict[str, str]] = {}
+
+    for raw in lines:
+        line = raw.rstrip("\n")
+        stripped = line.strip()
+        if stripped == "services:":
+            in_services = True
+            continue
+
+        if in_services and line and not line.startswith(" "):
+            break
+
+        if not in_services:
+            continue
+
+        if line.startswith("  ") and stripped.endswith(":") and not line.startswith("    "):
+            current_service = stripped[:-1]
+            in_build = False
+            continue
+
+        if current_service is None:
+            continue
+
+        if line.startswith("    build:"):
+            out[current_service] = {}
+            in_build = True
+            continue
+
+        if in_build and line.startswith("    ") and not line.startswith("      "):
+            in_build = False
+
+        if not in_build:
+            continue
+
+        if line.startswith("      ") and ":" in stripped:
+            key, value = stripped.split(":", 1)
+            out[current_service][key.strip()] = value.strip()
+
+    return out
+
+
+def dockerfile_copy_sources(path: Path) -> list[str]:
+    sources: list[str] = []
+    for raw in path.read_text(encoding="utf-8").splitlines():
+        stripped = raw.strip()
+        if not stripped.startswith("COPY "):
+            continue
+        parts = stripped.split()
+        if len(parts) >= 3:
+            sources.append(parts[1])
+    return sources
+
+
 def _read_env_keys(path: Path) -> set[str]:
     keys: set[str] = set()
     for raw in path.read_text(encoding="utf-8").splitlines():

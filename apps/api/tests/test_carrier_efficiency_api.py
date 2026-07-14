@@ -9,7 +9,7 @@ from app.modules.shipments.models import Shipment
 def test_analytics_endpoint_retorna_200_com_autenticacao(client: TestClient, db_session: Session, seed_roles):
     """Endpoint retorna 200 para usuário com autenticação."""
     # Criar usuário
-    from tests.conftest import create_user_with_roles
+    from conftest import create_user_with_roles
     create_user_with_roles(db_session, "admin@ilex.com", "123456", ["admin"])
 
     # Login
@@ -27,7 +27,7 @@ def test_analytics_endpoint_retorna_200_com_autenticacao(client: TestClient, db_
 
 def test_analytics_endpoint_retorna_payload_esperado(client: TestClient, db_session: Session, seed_roles):
     """Endpoint retorna payload esperado."""
-    from tests.conftest import create_user_with_roles
+    from conftest import create_user_with_roles
     create_user_with_roles(db_session, "admin@ilex.com", "123456", ["admin"])
 
     response = client.post("/api/v1/auth/login", json={"email": "admin@ilex.com", "password": "123456"})
@@ -46,7 +46,7 @@ def test_analytics_endpoint_retorna_payload_esperado(client: TestClient, db_sess
 
 def test_analytics_endpoint_aplica_query_params(client: TestClient, db_session: Session, seed_roles):
     """Endpoint aplica query params."""
-    from tests.conftest import create_user_with_roles
+    from conftest import create_user_with_roles
     create_user_with_roles(db_session, "admin@ilex.com", "123456", ["admin"])
 
     response = client.post("/api/v1/auth/login", json={"email": "admin@ilex.com", "password": "123456"})
@@ -61,7 +61,7 @@ def test_analytics_endpoint_aplica_query_params(client: TestClient, db_session: 
 
 def test_analytics_nao_conflita_com_rota_dinamica(client: TestClient, db_session: Session, seed_roles):
     """GET /shipments/analytics/carrier-efficiency não deve conflitar com /shipments/{id}."""
-    from tests.conftest import create_user_with_roles
+    from conftest import create_user_with_roles
     create_user_with_roles(db_session, "admin@ilex.com", "123456", ["admin"])
 
     response = client.post("/api/v1/auth/login", json={"email": "admin@ilex.com", "password": "123456"})

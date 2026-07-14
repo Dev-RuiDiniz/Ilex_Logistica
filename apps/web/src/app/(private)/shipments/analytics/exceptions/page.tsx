@@ -50,7 +50,7 @@ export default function ExceptionsPanelPage() {
     return (
       <div className="p-6">
         <h1 className="text-2xl font-bold mb-4">Painel de Exceções</h1>
-        <div className="text-gray-500">Carregando...</div>
+        <div className="text-slate-700">Carregando...</div>
       </div>
     );
   }
@@ -68,7 +68,7 @@ export default function ExceptionsPanelPage() {
     return (
       <div className="p-6">
         <h1 className="text-2xl font-bold mb-4">Painel de Exceções</h1>
-        <div className="text-gray-500">Sem dados</div>
+        <div className="text-slate-700">Sem dados</div>
       </div>
     );
   }
@@ -80,7 +80,7 @@ export default function ExceptionsPanelPage() {
       {/* Cards de Resumo */}
       <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-6">
         <div className="bg-white p-4 rounded-lg shadow">
-          <div className="text-sm text-gray-500">Total</div>
+          <div className="text-sm text-slate-700">Total</div>
           <div className="text-2xl font-bold">{data.summary.total_exceptions}</div>
         </div>
         <div className="bg-red-50 p-4 rounded-lg shadow border border-red-200">
@@ -96,8 +96,8 @@ export default function ExceptionsPanelPage() {
           <div className="text-2xl font-bold text-yellow-600">{data.summary.warning_count}</div>
         </div>
         <div className="bg-gray-50 p-4 rounded-lg shadow border border-gray-200">
-          <div className="text-sm text-gray-600">Sem SLA</div>
-          <div className="text-2xl font-bold text-gray-600">{data.summary.unknown_sla_count}</div>
+          <div className="text-sm text-slate-700">Sem SLA</div>
+          <div className="text-2xl font-bold text-slate-700">{data.summary.unknown_sla_count}</div>
         </div>
       </div>
 

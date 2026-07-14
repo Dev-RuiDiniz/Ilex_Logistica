@@ -1,5 +1,6 @@
 ﻿import logging
 
+<<<<<<< HEAD
 from time import perf_counter
 
 from fastapi import Depends, FastAPI, Request
@@ -9,6 +10,12 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.core.config import Settings, settings
 from app.core.rate_limit import RateLimiter, RedisRateLimiter, rate_limit_rule
 from app.core.observability import configure_json_logging, metrics, request_id_from_header
+=======
+from fastapi import FastAPI, Request
+from fastapi.middleware.cors import CORSMiddleware
+
+from app.core.config import settings
+>>>>>>> fix/infra-setup-local
 from app.core.errors import register_exception_handlers
 from app.modules.auth.router import router as auth_router
 from app.modules.audit.router import router as audit_router
@@ -37,6 +44,13 @@ def create_app(app_settings: Settings = settings, rate_limiter: RateLimiter | No
         docs_url=None if production else "/docs",
         redoc_url=None if production else "/redoc",
         openapi_url=None if production else "/openapi.json",
+    )
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=settings.cors_origins,
+        allow_credentials=False,
+        allow_methods=["*"],
+        allow_headers=["*"],
     )
 
     app.add_middleware(

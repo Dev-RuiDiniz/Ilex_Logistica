@@ -103,7 +103,7 @@ export default function ShipmentDetailPage({ params }: { params: Promise<{ id: s
     <section className="space-y-4">
       <header>
         <h2 className="text-xl font-semibold">Detalhe da Entrega</h2>
-        <p className="text-sm text-slate-600">{detail.tracking_code}</p>
+        <p className="text-sm text-slate-700">{detail.tracking_code}</p>
       </header>
       {error && <p className="rounded bg-red-50 px-3 py-2 text-sm text-red-700">{error}</p>}
       {success && <p className="rounded bg-emerald-50 px-3 py-2 text-sm text-emerald-700">{success}</p>}
@@ -156,7 +156,7 @@ export default function ShipmentDetailPage({ params }: { params: Promise<{ id: s
           </form>
         )}
         <ul className="space-y-2">
-          {treatments.length === 0 && <li className="text-sm text-slate-500">Sem tratativas registradas.</li>}
+          {treatments.length === 0 && <li className="text-sm text-slate-700">Sem tratativas registradas.</li>}
           {treatments.map((item) => (
             <li key={item.id} data-testid="treatment-item" className="rounded border px-3 py-2 text-sm">
               <div className="font-medium">{item.status}</div>

@@ -117,6 +117,7 @@ export default function AlertsPage() {
   }
 
   return (
+<<<<<<< HEAD
     <section className="space-y-6">
       {/* Header */}
       <header className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -167,13 +168,60 @@ export default function AlertsPage() {
       <div className="rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm">
         <p className="mb-3 text-[11px] font-semibold uppercase tracking-wide text-zinc-500">Filtros</p>
         <div className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-6">
+=======
+    <div className="page-stack">
+      <section className="page-hero">
+        <p className="page-kicker">Monitoramento ativo</p>
+        <h1 className="page-title !text-[clamp(1.65rem,1.3rem+0.8vw,2.4rem)]">Alertas</h1>
+        <p className="page-subtitle">Priorize ocorrências, acompanhe leitura e resolva desvios com contexto operacional.</p>
+      </section>
+
+      {/* Summary Cards */}
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-3 lg:grid-cols-6">
+        <div className="metric-card" data-tone="accent">
+          <div className="text-sm text-slate-700">Total</div>
+          <div className="text-2xl font-bold">{summary.total_alerts}</div>
+        </div>
+        <div className="metric-card" data-tone="accent">
+          <div className="text-sm text-slate-700">Ativos</div>
+          <div className="text-2xl font-bold text-blue-600">{summary.active_count}</div>
+        </div>
+        <div className="metric-card" data-tone="warning">
+          <div className="text-sm text-slate-700">Não Lidos</div>
+          <div className="text-2xl font-bold text-yellow-600">{summary.total_alerts - summary.read_count}</div>
+        </div>
+        <div className="metric-card" data-tone="success">
+          <div className="text-sm text-slate-700">Resolvidos</div>
+          <div className="text-2xl font-bold text-green-600">{summary.resolved_count}</div>
+        </div>
+        <div className="metric-card" data-tone="danger">
+          <div className="text-sm text-slate-700">Críticos</div>
+          <div className="text-2xl font-bold text-red-600">{summary.critical_count}</div>
+        </div>
+        <div className="metric-card" data-tone="warning">
+          <div className="text-sm text-slate-700">Warnings</div>
+          <div className="text-2xl font-bold text-orange-600">{summary.warning_count}</div>
+        </div>
+      </div>
+
+      {/* Filters */}
+      <div className="surface-panel p-4 md:p-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4">
+>>>>>>> fix/infra-setup-local
           <div>
             <label htmlFor="alert-status-filter" className="block text-[11px] font-semibold text-zinc-500">Status</label>
             <select
+<<<<<<< HEAD
               id="alert-status-filter"
               className={selectClass}
               value={filters.status || ""}
               onChange={(e) => handleFilterChange("status", e.target.value || undefined)}
+=======
+              id="status-filter"
+              className="field-select"
+              value={filters.status || ''}
+              onChange={(e) => handleFilterChange('status', e.target.value || undefined)}
+>>>>>>> fix/infra-setup-local
             >
               <option value="">Todos</option>
               <option value="active">Ativo</option>
@@ -184,10 +232,17 @@ export default function AlertsPage() {
           <div>
             <label htmlFor="alert-severity-filter" className="block text-[11px] font-semibold text-zinc-500">Severidade</label>
             <select
+<<<<<<< HEAD
               id="alert-severity-filter"
               className={selectClass}
               value={filters.severity || ""}
               onChange={(e) => handleFilterChange("severity", e.target.value || undefined)}
+=======
+              id="severity-filter"
+              className="field-select"
+              value={filters.severity || ''}
+              onChange={(e) => handleFilterChange('severity', e.target.value || undefined)}
+>>>>>>> fix/infra-setup-local
             >
               <option value="">Todas</option>
               <option value="critical">Crítico</option>
@@ -198,10 +253,17 @@ export default function AlertsPage() {
           <div>
             <label htmlFor="alert-type-filter" className="block text-[11px] font-semibold text-zinc-500">Tipo</label>
             <select
+<<<<<<< HEAD
               id="alert-type-filter"
               className={selectClass}
               value={filters.alert_type || ""}
               onChange={(e) => handleFilterChange("alert_type", e.target.value || undefined)}
+=======
+              id="type-filter"
+              className="field-select"
+              value={filters.alert_type || ''}
+              onChange={(e) => handleFilterChange('alert_type', e.target.value || undefined)}
+>>>>>>> fix/infra-setup-local
             >
               <option value="">Todos</option>
               <option value="sla_critical">SLA Crítico</option>
@@ -215,9 +277,16 @@ export default function AlertsPage() {
           <div>
             <label className="block text-[11px] font-semibold text-zinc-500">Lido</label>
             <select
+<<<<<<< HEAD
               className={selectClass}
               value={filters.is_read === undefined ? "" : String(filters.is_read)}
               onChange={(e) => handleFilterChange("is_read", e.target.value === "" ? undefined : e.target.value === "true")}
+=======
+              id="read-filter"
+              className="field-select"
+              value={filters.is_read === undefined ? '' : String(filters.is_read)}
+              onChange={(e) => handleFilterChange('is_read', e.target.value === '' ? undefined : e.target.value === 'true')}
+>>>>>>> fix/infra-setup-local
             >
               <option value="">Todos</option>
               <option value="true">Sim</option>
@@ -227,9 +296,16 @@ export default function AlertsPage() {
           <div>
             <label className="block text-[11px] font-semibold text-zinc-500">Resolvido</label>
             <select
+<<<<<<< HEAD
               className={selectClass}
               value={filters.is_resolved === undefined ? "" : String(filters.is_resolved)}
               onChange={(e) => handleFilterChange("is_resolved", e.target.value === "" ? undefined : e.target.value === "true")}
+=======
+              id="resolved-filter"
+              className="field-select"
+              value={filters.is_resolved === undefined ? '' : String(filters.is_resolved)}
+              onChange={(e) => handleFilterChange('is_resolved', e.target.value === '' ? undefined : e.target.value === 'true')}
+>>>>>>> fix/infra-setup-local
             >
               <option value="">Todos</option>
               <option value="true">Sim</option>
@@ -240,7 +316,11 @@ export default function AlertsPage() {
             <button
               data-testid="clear-filters-button"
               onClick={handleClearFilters}
+<<<<<<< HEAD
               className="w-full rounded-lg border border-zinc-200 bg-white px-4 py-2.5 text-sm font-semibold text-zinc-700 transition-all hover:border-zinc-300 hover:bg-zinc-50"
+=======
+              className="button-secondary w-full"
+>>>>>>> fix/infra-setup-local
             >
               Limpar Filtros
             </button>
@@ -248,6 +328,7 @@ export default function AlertsPage() {
         </div>
       </div>
 
+<<<<<<< HEAD
       {/* Loading */}
       {loading && (
         <div className="flex items-center justify-center rounded-2xl border border-zinc-200 bg-white p-12 shadow-sm">
@@ -255,6 +336,104 @@ export default function AlertsPage() {
             <div className="h-5 w-5 animate-spin rounded-full border-2 border-zinc-200 border-t-red-500" />
             <p className="text-sm font-medium text-zinc-500">Carregando alertas...</p>
           </div>
+=======
+      {/* Actions */}
+      <div>
+        <button
+          data-testid="generate-alerts-button"
+          onClick={handleGenerateAlerts}
+          className="button-primary"
+        >
+          Gerar Alertas
+        </button>
+      </div>
+
+      {/* Alerts List */}
+      {alerts.length === 0 ? (
+        <div className="empty-state surface-panel-strong text-slate-700">
+          Nenhum alerta encontrado
+        </div>
+      ) : (
+        <div className="table-shell overflow-hidden">
+          <table className="data-table w-full">
+            <thead className="bg-gray-50">
+              <tr>
+                <th className="px-4 py-3 text-left text-sm font-medium text-slate-800">Severidade</th>
+                <th className="px-4 py-3 text-left text-sm font-medium text-slate-800">Tipo</th>
+                <th className="px-4 py-3 text-left text-sm font-medium text-slate-800">Status</th>
+                <th className="px-4 py-3 text-left text-sm font-medium text-slate-800">Título</th>
+                <th className="px-4 py-3 text-left text-sm font-medium text-slate-800">Mensagem</th>
+                <th className="px-4 py-3 text-left text-sm font-medium text-slate-800">Origem</th>
+                <th className="px-4 py-3 text-left text-sm font-medium text-slate-800">Gerado em</th>
+                <th className="px-4 py-3 text-left text-sm font-medium text-slate-800">Ações</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-200">
+              {alerts.map((alert) => (
+                <tr key={alert.id} className={alert.is_resolved ? 'bg-gray-50' : ''}>
+                  <td className="px-4 py-3">
+                    <span
+                      className={`px-2 py-1 rounded text-xs font-medium ${
+                        alert.severity === 'critical'
+                          ? 'bg-red-100 text-red-800'
+                          : alert.severity === 'warning'
+                          ? 'bg-orange-100 text-orange-800'
+                          : 'bg-blue-100 text-blue-800'
+                      }`}
+                    >
+                      {alert.severity}
+                    </span>
+                  </td>
+                  <td className="px-4 py-3 text-sm">{alert.alert_type}</td>
+                  <td className="px-4 py-3">
+                    <span
+                      className={`px-2 py-1 rounded text-xs font-medium ${
+                        alert.status === 'active'
+                          ? 'bg-green-100 text-green-800'
+                          : alert.status === 'resolved'
+                          ? 'bg-gray-100 text-gray-800'
+                          : 'bg-blue-100 text-blue-800'
+                      }`}
+                    >
+                      {alert.status}
+                      {!alert.is_read && <span className="ml-1 text-yellow-600">• Não lido</span>}
+                    </span>
+                  </td>
+                  <td className="px-4 py-3 text-sm font-medium">{alert.title}</td>
+                  <td className="px-4 py-3 text-sm text-slate-700">{alert.message}</td>
+                  <td className="px-4 py-3 text-sm">
+                    {alert.source_type} {alert.source_id}
+                  </td>
+                  <td className="px-4 py-3 text-sm text-slate-700">
+                    {new Date(alert.generated_at).toLocaleString('pt-BR')}
+                  </td>
+                  <td className="px-4 py-3">
+                    <div className="flex gap-2">
+                      {!alert.is_read && (
+                        <button
+                          data-testid={`mark-read-button-${alert.id}`}
+                          onClick={() => handleMarkAsRead(alert.id)}
+                          className="text-blue-600 hover:text-blue-800 text-sm"
+                        >
+                          Marcar como lido
+                        </button>
+                      )}
+                      {!alert.is_resolved && (
+                        <button
+                          data-testid={`resolve-button-${alert.id}`}
+                          onClick={() => handleResolve(alert.id)}
+                          className="text-green-600 hover:text-green-800 text-sm"
+                        >
+                          Resolver
+                        </button>
+                      )}
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+>>>>>>> fix/infra-setup-local
         </div>
       )}
 

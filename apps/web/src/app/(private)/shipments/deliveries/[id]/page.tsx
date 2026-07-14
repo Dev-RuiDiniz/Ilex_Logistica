@@ -128,7 +128,7 @@ export default function DeliveryDetailPage({ params }: { params: Promise<{ id: s
   };
 
   if (loading) {
-    return <p className="text-sm text-slate-500">Carregando...</p>;
+    return <p className="text-sm text-slate-700">Carregando...</p>;
   }
 
   if (error) {
@@ -136,14 +136,14 @@ export default function DeliveryDetailPage({ params }: { params: Promise<{ id: s
   }
 
   if (!item) {
-    return <p className="text-sm text-slate-500">Entrega não encontrada.</p>;
+    return <p className="text-sm text-slate-700">Entrega não encontrada.</p>;
   }
 
   return (
     <section className="space-y-4">
       <header>
         <h2 className="text-xl font-semibold">Detalhe da Entrega</h2>
-        <p className="text-sm text-slate-600">Informações detalhadas da entrega.</p>
+        <p className="text-sm text-slate-700">Informações detalhadas da entrega.</p>
       </header>
 
       <div className="rounded border bg-white p-4 space-y-4">
@@ -204,7 +204,7 @@ export default function DeliveryDetailPage({ params }: { params: Promise<{ id: s
               <div>
                 <label className="block text-sm font-medium">Transportadora *</label>
                 {carriersLoading ? (
-                  <p className="mt-1 text-sm text-slate-500">Carregando transportadoras...</p>
+                  <p className="mt-1 text-sm text-slate-700">Carregando transportadoras...</p>
                 ) : carriersError ? (
                   <p className="mt-1 text-sm text-red-700">{carriersError}</p>
                 ) : (

@@ -1,11 +1,33 @@
 # LOG-021: Testes Red para promoção Delivery → Shipment
 
 import pytest
+<<<<<<< HEAD
 
 
 @pytest.fixture(autouse=True)
 def authenticated_requests(client, auth_headers):
     client.headers.update(auth_headers)
+=======
+from sqlalchemy.orm import Session
+
+from app.main import app
+from app.modules.auth.dependencies import get_current_user
+from app.modules.users.models import User
+from conftest import create_user_with_roles
+
+
+@pytest.fixture(autouse=True)
+def _auth_admin(db_session: Session) -> None:
+    """Autentica todos os testes deste módulo como admin (endpoints exigem RBAC)."""
+    admin = create_user_with_roles(db_session, "admin_promote@ilex.com", "123456", ["admin"])
+
+    def _override() -> User:
+        return admin
+
+    app.dependency_overrides[get_current_user] = _override
+    yield
+    app.dependency_overrides.pop(get_current_user, None)
+>>>>>>> fix/infra-setup-local
 
 
 def test_promote_delivery_cria_shipment_com_payload_completo(client, db_session) -> None:

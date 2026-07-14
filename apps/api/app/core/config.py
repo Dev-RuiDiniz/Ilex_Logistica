@@ -12,6 +12,7 @@ class Settings(BaseSettings):
     database_url: str = "sqlite:///./ilex.db"
     jwt_secret: str = DEV_JWT_SECRET
     jwt_algorithm: str = "HS256"
+<<<<<<< HEAD
     jwt_access_minutes: int = 15
     jwt_refresh_minutes: int = 60 * 24 * 7
     operational_timezone: str = "America/Sao_Paulo"
@@ -22,6 +23,18 @@ class Settings(BaseSettings):
     audit_retention_days: int = 5 * 365
     cors_allowed_origins: str = "http://localhost:3000,http://127.0.0.1:3000"
     redis_url: str | None = None
+=======
+    jwt_access_minutes: int = 30
+    jwt_refresh_minutes: int = 60 * 24
+    cors_allowed_origins: str = (
+        "http://localhost:3000,"
+        "http://localhost:3001,"
+        "http://localhost:3002,"
+        "http://127.0.0.1:3000,"
+        "http://127.0.0.1:3001,"
+        "http://127.0.0.1:3002"
+    )
+>>>>>>> fix/infra-setup-local
 
     model_config = SettingsConfigDict(env_file=".env", env_prefix="ILEX_")
 
@@ -29,6 +42,7 @@ class Settings(BaseSettings):
     def cors_origins(self) -> list[str]:
         return [origin.strip() for origin in self.cors_allowed_origins.split(",") if origin.strip()]
 
+<<<<<<< HEAD
     @model_validator(mode="after")
     def validate_production(self) -> "Settings":
         if self.environment.lower() != "production":
@@ -58,5 +72,7 @@ class Settings(BaseSettings):
             raise ValueError("; ".join(errors))
         return self
 
+=======
+>>>>>>> fix/infra-setup-local
 
 settings = Settings()

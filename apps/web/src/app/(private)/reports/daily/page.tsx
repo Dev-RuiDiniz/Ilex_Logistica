@@ -187,6 +187,7 @@ export default function DailyReportPage() {
   };
 
   return (
+<<<<<<< HEAD
     <section className="space-y-6">
       {/* Header */}
       <header className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -202,6 +203,24 @@ export default function DailyReportPage() {
             ← Voltar para Lista
           </button>
         )}
+=======
+    <section className="page-stack">
+      <header className="page-hero">
+        <p className="page-kicker">Leitura executiva</p>
+        <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+          <div>
+            <h2 className="page-title !text-[clamp(1.65rem,1.3rem+0.8vw,2.4rem)]">Relatório Diário</h2>
+            <p className="page-subtitle">Consolide operação, exceções e desempenho em um único resumo acionável.</p>
+          </div>
+        </div>
+        <button
+          className="button-secondary self-start !bg-white"
+          onClick={() => setSelectedReport(null)}
+          disabled={!selectedReport}
+        >
+          Voltar para Lista
+        </button>
+>>>>>>> fix/infra-setup-local
       </header>
 
       {/* Error */}
@@ -214,6 +233,7 @@ export default function DailyReportPage() {
       {!selectedReport ? (
         <>
           {/* Filters */}
+<<<<<<< HEAD
           <div className="rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm">
             <p className="mb-4 text-[11px] font-semibold uppercase tracking-wide text-zinc-500">Filtros</p>
             <div className="grid grid-cols-1 gap-3 md:grid-cols-4">
@@ -228,6 +248,36 @@ export default function DailyReportPage() {
               <div>
                 <label className="block text-[11px] font-semibold text-zinc-500">Status</label>
                 <select className={inputClass} value={status} onChange={(e) => setStatus(e.target.value as DailyReportStatus | "")}>
+=======
+          <div className="surface-panel p-4 md:p-6">
+            <h3 className="mb-3 text-base font-semibold">Filtros</h3>
+            <div className="grid gap-3 md:grid-cols-4">
+              <div>
+                <label className="mb-1 block text-sm font-medium">Data Inicial</label>
+                <input
+                  type="date"
+                  className="field"
+                  value={dateFrom}
+                  onChange={(e) => setDateFrom(e.target.value)}
+                />
+              </div>
+              <div>
+                <label className="mb-1 block text-sm font-medium">Data Final</label>
+                <input
+                  type="date"
+                  className="field"
+                  value={dateTo}
+                  onChange={(e) => setDateTo(e.target.value)}
+                />
+              </div>
+              <div>
+                <label className="mb-1 block text-sm font-medium">Status</label>
+                <select
+                  className="field-select"
+                  value={status}
+                  onChange={(e) => setStatus(e.target.value as DailyReportStatus | "")}
+                >
+>>>>>>> fix/infra-setup-local
                   <option value="">Todos</option>
                   <option value="generated">Gerado</option>
                   <option value="failed">Falhou</option>
@@ -236,13 +286,21 @@ export default function DailyReportPage() {
                 </select>
               </div>
               <div className="flex items-end">
+<<<<<<< HEAD
                 <button onClick={handleClearFilters} className={btnSecondary + " w-full"}>
+=======
+                <button
+                  className="button-secondary w-full"
+                  onClick={handleClearFilters}
+                >
+>>>>>>> fix/infra-setup-local
                   Limpar Filtros
                 </button>
               </div>
             </div>
           </div>
 
+<<<<<<< HEAD
           {/* Generate/Search */}
           <div className="rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm">
             <p className="mb-4 text-[11px] font-semibold uppercase tracking-wide text-zinc-500">Gerar ou Buscar Relatório</p>
@@ -250,9 +308,27 @@ export default function DailyReportPage() {
               <div>
                 <label className="block text-[11px] font-semibold text-zinc-500">Data</label>
                 <input type="date" className={inputClass} value={searchDate} onChange={(e) => setSearchDate(e.target.value)} />
+=======
+          {/* Generate/Search by Date */}
+          <div className="surface-panel p-4 md:p-6">
+            <h3 className="mb-3 text-base font-semibold">Gerar ou Buscar Relatório</h3>
+            <div className="grid gap-3 md:grid-cols-3">
+              <div>
+                <label className="mb-1 block text-sm font-medium">Data</label>
+                <input
+                  type="date"
+                  className="field"
+                  value={searchDate}
+                  onChange={(e) => setSearchDate(e.target.value)}
+                />
+>>>>>>> fix/infra-setup-local
               </div>
               <div className="flex items-end gap-2 md:col-span-2">
                 <button
+<<<<<<< HEAD
+=======
+                  className="button-primary flex-1"
+>>>>>>> fix/infra-setup-local
                   onClick={handleGenerateReport}
                   disabled={generating}
                   className={btnPrimary + " flex-1"}
@@ -260,6 +336,10 @@ export default function DailyReportPage() {
                   {generating ? "Gerando..." : "Gerar Relatório"}
                 </button>
                 <button
+<<<<<<< HEAD
+=======
+                  className="button-secondary flex-1"
+>>>>>>> fix/infra-setup-local
                   onClick={handleSearchByDate}
                   disabled={loading}
                   className={btnSecondary + " flex-1"}
@@ -268,14 +348,14 @@ export default function DailyReportPage() {
                 </button>
                 <div className="flex gap-2">
                   <button
-                    className="rounded bg-green-600 px-4 py-2 text-sm text-white hover:bg-green-700 disabled:opacity-50"
+                    className="button-primary !bg-[linear-gradient(135deg,#2f7a63_0%,#459277_100%)]"
                     onClick={() => handleExportReport("csv")}
                     disabled={exporting || reports.length === 0}
                   >
                     {exporting ? "Exportando..." : "Exportar CSV"}
                   </button>
                   <button
-                    className="rounded bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-700 disabled:opacity-50"
+                    className="button-primary !bg-[linear-gradient(135deg,#2e6a8e_0%,#3b83ae_100%)]"
                     onClick={() => handleExportReport("json")}
                     disabled={exporting || reports.length === 0}
                   >
@@ -295,6 +375,7 @@ export default function DailyReportPage() {
           </div>
 
           {/* Report List */}
+<<<<<<< HEAD
           <div className="rounded-2xl border border-zinc-200 bg-white shadow-sm">
             <div className="flex items-center justify-between border-b border-zinc-100 px-6 py-4">
               <p className="text-sm font-semibold text-zinc-700">
@@ -315,9 +396,17 @@ export default function DailyReportPage() {
                 </svg>
                 <p className="mt-3 text-sm font-medium text-zinc-500">Nenhum relatório encontrado</p>
               </div>
+=======
+          <div className="surface-panel p-4 md:p-6">
+            <h3 className="mb-3 text-base font-semibold">Histórico de Relatórios</h3>
+            {loading ? (
+              <p className="text-sm text-slate-700">Carregando...</p>
+            ) : reports.length === 0 ? (
+              <p className="text-sm text-slate-700">Nenhum relatório encontrado.</p>
+>>>>>>> fix/infra-setup-local
             ) : (
-              <div className="overflow-x-auto">
-                <table className="w-full text-sm">
+              <div className="table-shell overflow-x-auto">
+                <table className="data-table">
                   <thead>
                     <tr className="border-b border-zinc-100 bg-zinc-50/80">
                       <th className="px-6 py-3 text-left text-[11px] font-semibold uppercase tracking-wide text-zinc-500">Data</th>
@@ -355,6 +444,10 @@ export default function DailyReportPage() {
                           <td className="px-6 py-3 text-right font-mono font-medium text-zinc-600">{reportSummary?.exceptions_count || 0}</td>
                           <td className="px-6 py-3 text-right">
                             <button
+<<<<<<< HEAD
+=======
+                              className="button-secondary !px-3 !py-2 !text-xs"
+>>>>>>> fix/infra-setup-local
                               onClick={() => handleViewDetails(report.id)}
                               className="rounded-lg border border-zinc-200 bg-white px-3 py-1.5 text-xs font-semibold text-zinc-700 transition-all hover:border-zinc-300 hover:bg-zinc-50"
                             >
@@ -373,13 +466,23 @@ export default function DailyReportPage() {
       ) : (
         <>
           {/* Report Detail */}
+<<<<<<< HEAD
           <div className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm">
             <div className="flex items-start justify-between">
+=======
+          <div className="surface-panel p-4 md:p-6">
+            <div className="mb-4 flex items-center justify-between">
+>>>>>>> fix/infra-setup-local
               <div>
                 <h2 className="text-xl font-extrabold text-zinc-900">
                   Relatório de {new Date(selectedReport.report_date).toLocaleDateString("pt-BR")}
+<<<<<<< HEAD
                 </h2>
                 <p className="mt-1 text-sm text-zinc-500">
+=======
+                </h3>
+                <p className="text-sm text-slate-700">
+>>>>>>> fix/infra-setup-local
                   Gerado em {new Date(selectedReport.generated_at).toLocaleString("pt-BR")}
                 </p>
                 {selectedReport.period_start && selectedReport.period_end && (
@@ -393,11 +496,150 @@ export default function DailyReportPage() {
               </span>
             </div>
 
+<<<<<<< HEAD
+=======
+            {selectedReport.period_start && selectedReport.period_end && (
+              <p className="mb-4 text-sm text-slate-700">
+                Período: {new Date(selectedReport.period_start).toLocaleDateString("pt-BR")} a{" "}
+                {new Date(selectedReport.period_end).toLocaleDateString("pt-BR")}
+              </p>
+            )}
+
+>>>>>>> fix/infra-setup-local
             {selectedReport.notes && (
               <div className="mt-4 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm font-medium text-amber-700">
                 <strong>Nota:</strong> {selectedReport.notes}
               </div>
             )}
+<<<<<<< HEAD
+=======
+
+            {/* KPIs */}
+            {summary && kpis && (
+              <div className="mb-6 grid gap-3 md:grid-cols-4">
+                <div className="metric-card" data-tone="accent">
+                  <div className="text-sm text-slate-700">Total de Envios</div>
+                  <div className="text-2xl font-semibold">{summary.total_shipments}</div>
+                </div>
+                <div className="metric-card" data-tone="success">
+                  <div className="text-sm text-slate-700">No Prazo</div>
+                  <div className="text-2xl font-semibold text-green-600">{summary.on_time_count}</div>
+                </div>
+                <div className="metric-card" data-tone="warning">
+                  <div className="text-sm text-slate-700">Atrasadas</div>
+                  <div className="text-2xl font-semibold text-orange-600">{summary.late_count}</div>
+                </div>
+                <div className="metric-card" data-tone="danger">
+                  <div className="text-sm text-slate-700">Críticas</div>
+                  <div className="text-2xl font-semibold text-red-600">{summary.critical_count}</div>
+                </div>
+                <div className="metric-card" data-tone="accent">
+                  <div className="text-sm text-slate-700">Alertas Ativos</div>
+                  <div className="text-2xl font-semibold text-purple-600">{kpis.active_alerts_count ?? 0}</div>
+                </div>
+                <div className="metric-card" data-tone="accent">
+                  <div className="text-sm text-slate-700">Taxa de Entrega</div>
+                  <div className="text-2xl font-semibold">{((kpis.delivery_rate ?? 0) * 100).toFixed(1)}%</div>
+                </div>
+                <div className="metric-card" data-tone="warning">
+                  <div className="text-sm text-slate-700">Exceções</div>
+                  <div className="text-2xl font-semibold">{summary.exceptions_count}</div>
+                </div>
+                <div className="metric-card" data-tone="danger">
+                  <div className="text-sm text-slate-700">Falhas de Importação</div>
+                  <div className="text-2xl font-semibold">{importFailures?.rejected_count || 0}</div>
+                </div>
+              </div>
+            )}
+
+            {/* Exceptions */}
+            {exceptions.length > 0 && (
+              <div className="surface-muted mb-6 p-4">
+                <h4 className="mb-3 text-base font-semibold">Exceções Priorizadas</h4>
+                <div className="max-h-64 overflow-y-auto">
+                  <table className="w-full text-sm">
+                    <thead>
+                      <tr className="border-b">
+                        <th className="px-2 py-1 text-left">Tracking</th>
+                        <th className="px-2 py-1 text-left">Transportadora</th>
+                        <th className="px-2 py-1 text-left">Cliente</th>
+                        <th className="px-2 py-1 text-left">UF</th>
+                        <th className="px-2 py-1 text-left">Atraso (dias)</th>
+                        <th className="px-2 py-1 text-left">Tipo</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {exceptions.slice(0, 10).map((exc) => (
+                        <tr key={exc.shipment_id} className="border-b">
+                          <td className="px-2 py-1">{exc.tracking_code}</td>
+                          <td className="px-2 py-1">{exc.carrier_name || "-"}</td>
+                          <td className="px-2 py-1">{exc.customer_name || "-"}</td>
+                          <td className="px-2 py-1">{exc.destination_uf || "-"}</td>
+                          <td className="px-2 py-1">{exc.delay_days}</td>
+                          <td className="px-2 py-1">{exc.exception_type || "-"}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
+
+            {/* Alerts */}
+            {alerts.length > 0 && (
+              <div className="surface-muted mb-6 p-4">
+                <h4 className="mb-3 text-base font-semibold">Alertas Críticos/Ativos</h4>
+                <div className="max-h-64 overflow-y-auto space-y-2">
+                  {alerts.slice(0, 10).map((alert) => (
+                    <div
+                      key={alert.id}
+                      className={`rounded border p-2 text-sm ${
+                        alert.severity === "critical"
+                          ? "border-red-200 bg-red-50"
+                          : alert.severity === "high"
+                          ? "border-orange-200 bg-orange-50"
+                          : "border-gray-200 bg-gray-50"
+                      }`}
+                    >
+                      <div className="font-semibold">{alert.title}</div>
+                      <div className="text-slate-700">{alert.message}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Carrier Efficiency */}
+            {carrierEfficiency.length > 0 && (
+              <div className="surface-muted mb-6 p-4">
+                <h4 className="mb-3 text-base font-semibold">Top Transportadoras por Eficiência</h4>
+                <div className="max-h-64 overflow-y-auto">
+                  <table className="w-full text-sm">
+                    <thead>
+                      <tr className="border-b">
+                        <th className="px-2 py-1 text-left">Transportadora</th>
+                        <th className="px-2 py-1 text-left">Total</th>
+                        <th className="px-2 py-1 text-left">No Prazo</th>
+                        <th className="px-2 py-1 text-left">Atrasadas</th>
+                        <th className="px-2 py-1 text-left">Eficiência</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {carrierEfficiency.slice(0, 10).map((carrier) => (
+                        <tr key={carrier.carrier_id} className="border-b">
+                          <td className="px-2 py-1">{carrier.carrier_name}</td>
+                          <td className="px-2 py-1">{carrier.total_shipments}</td>
+                          <td className="px-2 py-1">{carrier.on_time_count}</td>
+                          <td className="px-2 py-1">{carrier.late_count}</td>
+                          <td className="px-2 py-1">{(carrier.efficiency_rate * 100).toFixed(1)}%</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
+>>>>>>> fix/infra-setup-local
           </div>
 
           {/* KPIs */}

@@ -78,7 +78,7 @@ export default function DeliveriesPage() {
     <section className="space-y-4">
       <header>
         <h2 className="text-xl font-semibold">Entregas Importadas</h2>
-        <p className="text-sm text-slate-600">Listagem de entregas importadas via CSV/Excel.</p>
+        <p className="text-sm text-slate-700">Listagem de entregas importadas via CSV/Excel.</p>
       </header>
 
       {error && <p className="rounded bg-red-50 px-3 py-2 text-sm text-red-700">{error}</p>}
@@ -149,9 +149,9 @@ export default function DeliveriesPage() {
           </thead>
           <tbody>
             {loading ? (
-              <tr><td className="px-3 py-3 text-slate-500" colSpan={5}>Carregando...</td></tr>
+              <tr><td className="px-3 py-3 text-slate-700" colSpan={5}>Carregando...</td></tr>
             ) : items.length === 0 ? (
-              <tr><td className="px-3 py-3 text-slate-500" colSpan={5}>Nenhuma entrega encontrada.</td></tr>
+              <tr><td className="px-3 py-3 text-slate-700" colSpan={5}>Nenhuma entrega encontrada.</td></tr>
             ) : (
               items.map((item) => (
                 <tr key={item.id} className="border-t">
@@ -174,7 +174,7 @@ export default function DeliveriesPage() {
       {/* Paginação */}
       {total > 0 && (
         <div className="flex items-center justify-between">
-          <p className="text-sm text-slate-600">
+          <p className="text-sm text-slate-700">
             Total: {total} | Página {page} de {totalPages}
           </p>
           <div className="flex gap-2">

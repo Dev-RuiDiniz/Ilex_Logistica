@@ -24,6 +24,9 @@ describe("Sidebar Navigation por Permissão", () => {
 
   it("admin vê itens protegidos", () => {
     renderWithAuth("admin");
+    expect(screen.getByText("Visão geral")).toBeInTheDocument();
+    expect(screen.getByText("Operação")).toBeInTheDocument();
+    expect(screen.getByText("Governança")).toBeInTheDocument();
     expect(screen.getByText("Dashboard")).toBeInTheDocument();
     expect(screen.getByText("Envios")).toBeInTheDocument();
     expect(screen.getByText("Importar Envios")).toBeInTheDocument();
@@ -48,6 +51,8 @@ describe("Sidebar Navigation por Permissão", () => {
   it("operator não vê auditoria", () => {
     renderWithAuth("operator");
     expect(screen.getByText("Dashboard")).toBeInTheDocument();
+    expect(screen.getByText("Operação")).toBeInTheDocument();
+    expect(screen.queryByText("Governança")).not.toBeInTheDocument();
     expect(screen.getByText("Envios")).toBeInTheDocument();
     expect(screen.getByText("Importar Envios")).toBeInTheDocument();
     expect(screen.queryByText("Transportadoras")).not.toBeInTheDocument();

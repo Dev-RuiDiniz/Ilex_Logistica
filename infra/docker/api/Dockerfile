@@ -18,7 +18,8 @@ COPY infra/docker/api/api-entrypoint.sh /usr/local/bin/api-entrypoint.sh
 RUN python -m pip install --no-cache-dir --upgrade pip \
     && python -m pip install --no-cache-dir -e .
 
-RUN chmod +x /usr/local/bin/api-entrypoint.sh
+RUN sed -i 's/\r$//' /usr/local/bin/api-entrypoint.sh \
+    && chmod +x /usr/local/bin/api-entrypoint.sh
 
 EXPOSE 8000
 

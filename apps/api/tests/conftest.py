@@ -23,8 +23,9 @@ TestingSessionLocal = sessionmaker(bind=engine, autoflush=False, autocommit=Fals
 
 @pytest.fixture(autouse=True)
 def reset_database() -> Generator[None, None, None]:
-    # Drop all tables safely
+    # Drop all tables safely (dispose connections to avoid SQLite lock)
     try:
+        engine.dispose()
         Base.metadata.drop_all(bind=engine)
     except Exception:
         # If drop fails, continue (tables may not exist)
@@ -36,6 +37,7 @@ def reset_database() -> Generator[None, None, None]:
 
     # Drop all tables safely
     try:
+        engine.dispose()
         Base.metadata.drop_all(bind=engine)
     except Exception:
         # If drop fails, continue (tables may not exist)
@@ -73,7 +75,9 @@ def client(db_session: Session) -> Generator[TestClient, None, None]:
 @pytest.fixture
 def seed_roles(db_session: Session) -> None:
     for role_name in ["admin", "logistica", "gestor", "auditoria", "manager", "operator", "viewer"]:
-        db_session.add(Role(name=role_name))
+        existing = db_session.query(Role).filter(Role.name == role_name).first()
+        if existing is None:
+            db_session.add(Role(name=role_name))
     db_session.commit()
     
     # Seed permissions
@@ -98,6 +102,15 @@ def create_user_with_roles(db: Session, email: str, password: str, roles: list[s
     db.commit()
     for role_name in roles:
         role = db.query(Role).filter(Role.name == role_name).first()
+        if role is None:
+            role = Role(name=role_name)
+            db.add(role)
+            try:
+                db.flush()
+            except Exception:
+                # Role pode já existir em outra sessão/conexão (SQLite compartilhado)
+                db.rollback()
+                role = db.query(Role).filter(Role.name == role_name).first()
         user.roles.append(role)
     db.commit()
     db.refresh(user)

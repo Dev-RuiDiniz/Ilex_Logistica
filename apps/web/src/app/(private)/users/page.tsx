@@ -109,6 +109,7 @@ export default function UsersPage() {
   const btnPrimary = "rounded-lg bg-zinc-900 px-4 py-2.5 text-sm font-semibold text-white transition-all hover:bg-zinc-800 disabled:opacity-50";
 
   return (
+<<<<<<< HEAD
     <section className="space-y-6">
       {/* Header */}
       <header className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
@@ -263,6 +264,71 @@ export default function UsersPage() {
             </table>
           </div>
         )}
+=======
+    <section className="page-stack">
+      <header className="page-hero">
+        <p className="page-kicker">Segurança e acesso</p>
+        <h2 className="page-title !text-[clamp(1.65rem,1.3rem+0.8vw,2.4rem)]">Usuários e Permissões</h2>
+        <p className="page-subtitle">Gerencie contas, papéis e governança de acesso com mais clareza operacional.</p>
+      </header>
+      {error && <p className="error-state">{error}</p>}
+      <form onSubmit={onCreate} className="surface-panel grid gap-3 p-5 md:grid-cols-4 md:p-6">
+        <input value={email} onChange={(e) => setEmail(e.target.value)} className="field" placeholder="E-mail" required />
+        <input value={fullName} onChange={(e) => setFullName(e.target.value)} className="field" placeholder="Nome completo" required />
+        <select value={selectedRole} onChange={(e) => setSelectedRole(e.target.value as UserRole)} className="field-select">
+          {roleOptions.map((item) => <option key={item} value={item}>{item}</option>)}
+        </select>
+        <button 
+          className={canWriteUsers(role) ? "button-primary" : "button-secondary cursor-not-allowed"} 
+          type="submit" 
+          disabled={!canWriteUsers(role)}
+        >
+          Criar
+        </button>
+      </form>
+      <div className="table-shell overflow-hidden">
+        <table className="data-table">
+          <thead className="text-left">
+            <tr>
+              <th className="px-3 py-2">E-mail</th>
+              <th className="px-3 py-2">Nome</th>
+              <th className="px-3 py-2">Perfil</th>
+              <th className="px-3 py-2">Status</th>
+              <th className="px-3 py-2">Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            {items.map((item) => (
+              <tr key={item.id}>
+                <td className="px-3 py-2">{item.email}</td>
+                <td className="px-3 py-2">{item.full_name}</td>
+                <td className="px-3 py-2">{item.roles.join(", ")}</td>
+                <td className="px-3 py-2">{item.is_active ? "Ativo" : "Inativo"}</td>
+                <td className="px-3 py-2">
+                  <div className="flex gap-2">
+                    <select
+                      className={`field-select !px-2 !py-1 text-xs ${canWriteUsers(role) ? "" : "bg-slate-100 text-slate-400 cursor-not-allowed"}`}
+                      defaultValue={item.roles[0] ?? "logistica"}
+                      onChange={(e) => void onPromote(item, e.target.value as UserRole)}
+                      disabled={!canWriteUsers(role)}
+                    >
+                      {roleOptions.map((roleItem) => <option key={roleItem} value={roleItem}>{roleItem}</option>)}
+                    </select>
+                    <button 
+                      className={canWriteUsers(role) ? "button-danger !px-3 !py-2 !text-xs" : "button-secondary cursor-not-allowed !px-3 !py-2 !text-xs"} 
+                      onClick={() => void onInactivate(item)} 
+                      type="button"
+                      disabled={!canWriteUsers(role)}
+                    >
+                      Inativar
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+>>>>>>> fix/infra-setup-local
       </div>
     </section>
   );

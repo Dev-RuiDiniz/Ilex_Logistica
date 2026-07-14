@@ -22,6 +22,36 @@ def get_alembic_config():
     return Config(str(alembic_ini))
 
 
+def test_migrations_env_uses_runtime_database_url():
+    """Testa que env.py sempre prioriza a URL de banco configurada em runtime."""
+    env_py = Path(__file__).parent.parent / "migrations" / "env.py"
+    text = env_py.read_text(encoding="utf-8")
+
+    assert 'config.set_main_option("sqlalchemy.url", runtime_settings.database_url)' in text
+    assert "runtime_settings = Settings()" in text
+    assert 'if not config.get_main_option("sqlalchemy.url")' not in text
+
+
+def test_migrations_use_postgres_safe_boolean_defaults():
+    """Testa que defaults booleanos em migrations usam literais compatíveis com Postgres."""
+    sla_migration = Path(__file__).parent.parent / "migrations" / "versions" / "20260615_01_create_sla_rules.py"
+    text = sla_migration.read_text(encoding="utf-8")
+
+    assert "server_default=sa.text('true')" in text
+    assert "server_default=sa.text('1')" not in text
+
+
+def test_migrations_include_role_description_column():
+    """Testa que a estrutura versionada inclui description na tabela roles."""
+    versions_dir = Path(__file__).parent.parent / "migrations" / "versions"
+    migration_text = "\n".join(
+        path.read_text(encoding="utf-8")
+        for path in sorted(versions_dir.glob("*.py"))
+    )
+
+    assert 'op.add_column("roles", sa.Column("description", sa.String(length=255), nullable=True))' in migration_text
+
+
 def test_migrations_import():
     """Testa que configuracao do Alembic pode ser importada."""
     config = get_alembic_config()

@@ -29,7 +29,7 @@ const COLORS = {
 
 export function CarrierEfficiencyCharts({ data }: CarrierEfficiencyChartsProps) {
   if (!data || data.length === 0) {
-    return <div className="text-center py-8 text-gray-500">Sem dados para exibir gráficos</div>;
+    return <div className="py-8 text-center text-slate-700">Sem dados para exibir gráficos</div>;
   }
 
   // Prepare data for charts

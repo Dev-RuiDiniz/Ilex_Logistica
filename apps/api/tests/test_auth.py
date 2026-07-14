@@ -27,6 +27,21 @@ def test_login_invalido_retorna_401(client: TestClient, db_session: Session, see
     assert response.status_code == 401
 
 
+def test_login_preflight_retorna_headers_cors(client: TestClient) -> None:
+    response = client.options(
+        "/api/v1/auth/login",
+        headers={
+            "Origin": "http://localhost:3002",
+            "Access-Control-Request-Method": "POST",
+            "Access-Control-Request-Headers": "content-type",
+        },
+    )
+
+    assert response.status_code == 200
+    assert response.headers["access-control-allow-origin"] == "http://localhost:3002"
+    assert "POST" in response.headers["access-control-allow-methods"]
+
+
 def test_token_expirado_e_recusado(client: TestClient, db_session: Session, seed_roles: None) -> None:
     user = create_user_with_roles(db_session, "audit@ilex.com", "123456", ["auditoria"])
     expired = jwt.encode(

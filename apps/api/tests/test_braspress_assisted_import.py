@@ -31,6 +31,21 @@ from app.modules.shipments.models import Shipment
 
 # Fixtures
 @pytest.fixture
+<<<<<<< HEAD
+=======
+def db_session():
+    """Get database session for testing using SQLite test database."""
+    from conftest import TestingSessionLocal
+    db = TestingSessionLocal()
+    try:
+        db.commit()
+        yield db
+    finally:
+        db.close()
+
+
+@pytest.fixture
+>>>>>>> fix/infra-setup-local
 def braspress_valid_csv():
     """Load valid Braspress CSV fixture."""
     fixture_path = Path(__file__).parent / "fixtures" / "imports" / "braspress_valid.csv"

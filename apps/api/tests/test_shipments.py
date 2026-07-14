@@ -1,15 +1,32 @@
 import io
 from datetime import datetime
 
+import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy.orm import Session
 
+from app.main import app
+from app.modules.auth.dependencies import get_current_user
+from app.modules.users.models import User
 from conftest import create_user_with_roles
 
 
 def login(client: TestClient, email: str, password: str) -> str:
     response = client.post("/api/v1/auth/login", json={"email": email, "password": password})
     return response.json()["access_token"]
+
+
+@pytest.fixture(autouse=True)
+def _auth_admin(db_session: Session) -> None:
+    """Autentica todos os testes deste módulo como admin (endpoints exigem RBAC)."""
+    admin = create_user_with_roles(db_session, "admin_shipments@ilex.com", "123456", ["admin"])
+
+    def _override() -> User:
+        return admin
+
+    app.dependency_overrides[get_current_user] = _override
+    yield
+    app.dependency_overrides.pop(get_current_user, None)
 
 
 def test_upload_csv_valido_retorna_validado(client: TestClient, db_session: Session, seed_roles: None) -> None:
@@ -45,6 +62,11 @@ TRK001,Transportes A,2026-06-01,João Silva,11999999999,Rua A SP,Rua B RJ"""
 
 
 def test_upload_csv_sem_autenticacao_retorna_401(client: TestClient) -> None:
+<<<<<<< HEAD
+=======
+    # Este teste valida o comportamento sem autenticação; remove o override do fixture autouse
+    app.dependency_overrides.pop(get_current_user, None)
+>>>>>>> fix/infra-setup-local
     csv_content = """tracking_code,carrier_name,estimated_delivery,recipient_name,recipient_phone,origin_address,destination_address
 TRK001,Transportes A,2026-06-01,João Silva,11999999999,Rua A SP,Rua B RJ"""
 
@@ -54,6 +76,10 @@ TRK001,Transportes A,2026-06-01,João Silva,11999999999,Rua A SP,Rua B RJ"""
         files={"file": ("test.csv", csv_file, "text/csv")},
     )
 
+<<<<<<< HEAD
+=======
+    # Sem credenciais, o HTTPBearer retorna 401 (não 403, que é para autenticado sem permissão)
+>>>>>>> fix/infra-setup-local
     assert response.status_code == 401
 
 

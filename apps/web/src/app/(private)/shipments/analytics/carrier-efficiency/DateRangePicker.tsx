@@ -73,7 +73,7 @@ export function DateRangePicker({
           />
           {showFrom && (
             <div className="absolute top-full left-0 right-0 mt-1 bg-white border rounded shadow-lg z-10 p-2">
-              <div className="text-xs text-gray-500 mb-1">Início do período</div>
+              <div className="mb-1 text-xs text-slate-700">Início do período</div>
             </div>
           )}
         </div>
@@ -91,7 +91,7 @@ export function DateRangePicker({
           />
           {showTo && (
             <div className="absolute top-full left-0 right-0 mt-1 bg-white border rounded shadow-lg z-10 p-2">
-              <div className="text-xs text-gray-500 mb-1">Fim do período</div>
+              <div className="mb-1 text-xs text-slate-700">Fim do período</div>
             </div>
           )}
         </div>

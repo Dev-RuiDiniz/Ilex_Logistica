@@ -21,7 +21,7 @@ class JsonFormatter(logging.Formatter):
             value = getattr(record, field, None)
             if value is not None:
                 payload[field] = value
-        return json.dumps(payload, ensure_ascii=False, separators=(",", ":"))
+        return json.dumps(payload, ensure_ascii=False, separators=(",", ":"), default=str)
 
 
 def configure_json_logging() -> None:

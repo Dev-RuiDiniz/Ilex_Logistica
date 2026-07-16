@@ -1,6 +1,16 @@
 # CONTEXTO.md — Estado Vivo do Ilex Logística
 
-**Atualizado em:** 2026-07-03
+**Atualizado em:** 2026-07-16
+
+## 2026-07-16 — SPEC-13: Integração WhatsApp (MCP) e rotina de cobrança
+
+- Implementada a rotina de cobrança de remessas atrasadas via MCP server de WhatsApp (LOG-042/043).
+- Backend: `app/integrations/mcp_whatsapp.py` (cliente HTTP com retry 3x + degradação), `app/modules/shipments/cobranca_service.py` (seleção, escalonamento 1–3/4–7/>7 dias, idempotência 24h), `router.py` (`POST /api/v1/shipments/cobranca/run` com `require_permission("shipments:write")`+`("shipments:read")`), `scheduler.py` (APScheduler, cron `ILEX_COBRANCA_CRON`, default desligado).
+- Canal `whatsapp` reutiliza `AlertDeliveryLog` (campo `channel` já livre); falha de MCP gera alerta interno `critical` e log `failed`.
+- Frontend: `ChargeDispatchModal` em shipments e carriers; tipos `ChargeDispatchRequest/Response` e `dispatchCharge` em `api.ts`.
+- Corrigido bug latente do `JsonFormatter` (observability) e validação de range movida para o router (HTTPException 422) para evitar serialização de `ValueError` no Starlette.
+- Gates verdes: API 783 testes, ruff limpo, Web 421 testes + lint + build, migrations 1 head, secrets OK.
+- SPEC-13 segue em "Implementado; UAT pendente".
 
 ## 2026-07-03 — Conclusão técnica de P1/P2
 

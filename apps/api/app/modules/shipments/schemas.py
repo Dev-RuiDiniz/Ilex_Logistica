@@ -157,3 +157,22 @@ class ShipmentTreatmentResponse(BaseModel):
     comment: str
     created_by: int
     created_at: datetime
+
+
+class CobrancaRunRequest(BaseModel):
+    carrier_id: int | None = Field(default=None, gt=0)
+    destination_uf: str | None = Field(default=None, max_length=2)
+    dias_min: int = Field(default=1, ge=1)
+    dias_max: int = Field(default=999, ge=1)
+
+    @field_validator("destination_uf")
+    @classmethod
+    def upper_uf(cls, v: str | None) -> str | None:
+        return v.upper() if v else v
+
+
+class CobrancaRunResult(BaseModel):
+    enviadas: int
+    puladas_sem_whatsapp: int
+    falhas: int
+    critico_escalonado: int

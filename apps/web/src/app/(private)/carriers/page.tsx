@@ -8,6 +8,7 @@ import { createCarrier, inactivateCarrier, listCarriers, updateCarrier } from "@
 import { canEditCarriers } from "@/lib/permissions";
 import type { Carrier } from "@/lib/types";
 import { useApiErrorHandler } from "@/lib/useApiErrorHandler";
+import ChargeDispatchModal from "../shipments/ChargeDispatchModal";
 
 type FormState = {
   id?: number;
@@ -45,6 +46,8 @@ export default function CarriersPage() {
   const [form, setForm] = useState<FormState>(initialForm);
   const [saving, setSaving] = useState(false);
   const [inactivatingId, setInactivatingId] = useState<number | null>(null);
+  const [showChargeModal, setShowChargeModal] = useState(false);
+  const [chargeCarrierId, setChargeCarrierId] = useState<number | null>(null);
   const [formError, setFormError] = useState("");
   const { accessDenied, accessDeniedMessage, handleApiError } = useApiErrorHandler();
 
@@ -245,6 +248,12 @@ export default function CarriersPage() {
                           >
                             {inactivatingId === item.id ? "Inativando..." : "Inativar"}
                           </button>
+                          <button
+                            onClick={() => { setChargeCarrierId(item.id); setShowChargeModal(true); }}
+                            className="rounded-lg border border-zinc-200 bg-white px-3 py-1.5 text-xs font-semibold text-zinc-700 transition-all hover:border-zinc-300 hover:bg-zinc-50"
+                          >
+                            Cobrar
+                          </button>
                         </div>
                       </td>
                     )}
@@ -328,6 +337,14 @@ export default function CarriersPage() {
             </button>
           </div>
         </form>
+      )}
+
+      {showChargeModal && (
+        <ChargeDispatchModal
+          carriers={items}
+          defaultCarrierId={chargeCarrierId}
+          onClose={() => { setShowChargeModal(false); setChargeCarrierId(null); }}
+        />
       )}
     </section>
   );

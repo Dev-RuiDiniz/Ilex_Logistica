@@ -559,6 +559,21 @@ export interface CarrierEfficiencyResponse {
   carriers: CarrierEfficiencyItem[];
 }
 
+// Cobrança WhatsApp (SPEC-13 / LOG-042-043)
+export interface ChargeDispatchRequest {
+  carrier_id?: number | null;
+  destination_uf?: string | null;
+  dias_min?: number;
+  dias_max?: number;
+}
+
+export interface ChargeDispatchResponse {
+  enviadas: number;
+  puladas_sem_whatsapp: number;
+  falhas: number;
+  critico_escalonado: number;
+}
+
 // Dashboard Filters types (BETA-016A)
 export interface DashboardFilters {
   estimated_delivery_from?: string;

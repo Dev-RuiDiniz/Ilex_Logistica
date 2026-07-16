@@ -7,6 +7,8 @@ from app.database.session import get_db
 from app.modules.auth.dependencies import require_permission
 from app.modules.users.models import User
 from app.modules.shipments.schemas import (
+    CobrancaRunRequest,
+    CobrancaRunResult,
     ImportConfirmRequest,
     ImportConfirmResponse,
     ShipmentCreate,
@@ -17,6 +19,7 @@ from app.modules.shipments.schemas import (
     UploadResponse,
 )
 from app.modules.shipments.analytics_schemas import CarrierEfficiencyResponse, ExceptionsPanelResponse
+from app.modules.shipments.cobranca_service import run_cobranca
 from app.modules.shipments.service import (
     create_shipment,
     create_treatment,
@@ -293,6 +296,25 @@ def list_shipment_treatments(
     current_user: User = Depends(require_permission("shipments:read")),
 ) -> list[ShipmentTreatmentResponse]:
     return [ShipmentTreatmentResponse(**item) for item in list_treatments(db, shipment_id)]
+
+
+@router.post("/cobranca/run", response_model=CobrancaRunResult, status_code=status.HTTP_200_OK)
+def run_cobranca_endpoint(
+    payload: CobrancaRunRequest,
+    db: Session = Depends(get_db),
+    _read: User = Depends(require_permission("shipments:read")),
+    _write: User = Depends(require_permission("shipments:write")),
+) -> CobrancaRunResult:
+    if payload.dias_max < payload.dias_min:
+        raise HTTPException(status_code=422, detail="dias_max deve ser maior ou igual a dias_min")
+    result = run_cobranca(
+        db,
+        carrier_id=payload.carrier_id,
+        destination_uf=payload.destination_uf,
+        dias_min=payload.dias_min,
+        dias_max=payload.dias_max,
+    )
+    return CobrancaRunResult(**result)
 
 
 @router.post("/{shipment_id}/treatments", response_model=ShipmentTreatmentResponse, status_code=status.HTTP_201_CREATED)

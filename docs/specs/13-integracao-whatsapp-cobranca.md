@@ -1,14 +1,15 @@
 # SPEC-13 — Integração WhatsApp (MCP) e Rotina de Cobrança de Remessas
 
-**Estado:** Planejado (sem implementação identificada)
+**Estado:** Em implementação (TDD em curso)
 **Criado em:** 2026-07-03
+**Atualizado em:** 2026-07-16
 **LOG-IDs:** LOG-042 (integração MCP WhatsApp), LOG-043 (rotina de cobrança)
 
 ## Objetivo e contexto
 
 Permitir que a Ilex Logística envie **mensagens WhatsApp** para transportadoras (usando o número `whatsapp` já cadastrado em `carriers`) quando uma **remessa (lote de envios) não foi entregue** dentro do prazo, e executar uma **rotina de cobrança** que escalona lembretes conforme a idade da pendência.
 
-Atualmente o modelo `Shipment` (`modules/shipments/models.py`) já possui `estimated_delivery`, `actual_delivery`, `status`, `delay_days`, `carrier_id` e `recipient_phone`. O modelo `Carrier` já possui `whatsapp`. O `AlertDeliveryLog` (`modules/alerts/models.py`) já registra canal/recipiente/status, mas **só suporta `channel="in_app"`/`recipient="internal"`** — precisa de novos canais (`whatsapp`).
+Atualmente o modelo `Shipment` (`modules/shipments/models.py`) já possui `estimated_delivery`, `actual_delivery`, `status`, `delay_days`, `carrier_id` e `recipient_phone`. O modelo `Carrier` já possui `whatsapp`. O `AlertDeliveryLog` (`modules/alerts/models.py`) já registra `channel`/`recipient`/`delivery_status` como `String` livres (não há enum no banco), então **o canal `whatsapp` é suportado sem migration de schema** — basta passar `channel="whatsapp"` em `create_delivery_log`.
 
 ## Decisão de arquitetura: usar um MCP server de WhatsApp
 
@@ -22,8 +23,8 @@ Em vez de acoplar a SDK da Meta/Twilio diretamente na API, a integração deve u
 
 - `Carrier.whatsapp`: `String(30)`, nullable (cadastrável na tela de transportadoras — já validado no navegador).
 - `Shipment`: campos de prazo/entrega/SLA presentes; `delay_days` calculado.
-- `AlertDeliveryLog`: `channel`, `recipient`, `delivery_status` — **limitado a `in_app` hoje**.
-- `alerts/service.py`: função `log_delivery(...)` aceita `channel`/`recipient` genéricos — **ponto de extensão natural**.
+- `AlertDeliveryLog`: `channel`, `recipient`, `delivery_status` — `String` livres; `create_delivery_log(db, alert_id, channel, recipient, message, ...)` aceita qualquer canal (ponto de extensão natural, sem migration).
+- `alerts/service.py`: `create_delivery_log` e `update_delivery_log_status` reutilizados para registrar envio WhatsApp e falha.
 
 ## Entradas, saídas e fluxo
 
@@ -34,7 +35,7 @@ Em vez de acoplar a SDK da Meta/Twilio diretamente na API, a integração deve u
 
 ### 13.2 Rotina de cobrança (batch)
 
-- *Entrada:* `POST /api/v1/shipments/cobranca/run` (ou `scheduler`) com filtro opcional por `carrier_id`, `uf`, `dias_min`, `dias_max`.
+- *Entrada:* `POST /api/v1/shipments/cobranca/run` (sob demanda) **e** `BackgroundScheduler` recorrente (cron `ILEX_COBRANCA_CRON`, default `0 9 * * *`, habilitado por `ILEX_COBRANCA_SCHEDULER_ENABLED`) com filtro opcional por `carrier_id`, `uf`, `dias_min`, `dias_max`.
 - *Regra de escalonamento:*
   - Atraso 1–3 dias → 1ª mensagem (aviso amigável).
   - Atraso 4–7 dias → 2ª mensagem (cobrança formal + prazo de resposta).
@@ -47,7 +48,7 @@ Em vez de acoplar a SDK da Meta/Twilio diretamente na API, a integração deve u
 - Mensagem **só é enviada se `Carrier.whatsapp` estiver preenchido**; caso contrário, o envio é pulado e contabilizado em `puladas_sem_whatsapp` (não quebra o batch).
 - **Sanitização:** números são normalizados para E.164 (`+55...`); template é servidor-side (nunca se monta Markdown livre com dados do envio — evita injeção).
 - **Retry controlado:** máx. 3 tentativas com backoff; após esgotamento, `delivery_status="failed"` e alerta interno `critical` (reusa infra de SPEC-09).
-- **RBAC:** `POST /cobranca/run` exige `canReadShipments` + `canWriteShipments` (ou perfil `admin`/`gestor`/`logistica`); consulta obedece `canReadShipments`.
+- **RBAC:** `POST /cobranca/run` exige `require_permission("shipments:write")` + `require_permission("shipments:read")` (strings de permissão do backend, em `modules/auth/dependencies.py`); o Web usa `canWriteShipments(role)` para exibir o botão.
 - **Auditoria:** cada envio WhatsApp gera `AuditLog` (canal, alvo, resultado) — sem dados pessoais além do necessário.
 - **Não automatizar captcha** nem contornar portal (AGENTS.md 7.2).
 

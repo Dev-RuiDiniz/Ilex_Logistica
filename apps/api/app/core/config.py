@@ -22,6 +22,13 @@ class Settings(BaseSettings):
     audit_retention_days: int = 5 * 365
     cors_allowed_origins: str = "http://localhost:3000,http://127.0.0.1:3000"
     redis_url: str | None = None
+    mcp_whatsapp_url: str | None = None
+    mcp_whatsapp_token: str | None = None
+    mcp_whatsapp_timeout: float = 10.0
+    cobranca_scheduler_enabled: bool = False
+    cobranca_cron: str = "0 9 * * *"
+    cobranca_dias_min: int = 1
+    cobranca_dias_max: int = 999
 
     model_config = SettingsConfigDict(env_file=".env", env_prefix="ILEX_")
 

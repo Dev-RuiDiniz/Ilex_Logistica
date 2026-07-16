@@ -1,5 +1,14 @@
 # RELATORIO.md — Registro de Trabalho
 
+## 2026-07-16 — SPEC-13: Integração WhatsApp (MCP) e rotina de cobrança
+
+- Criada `docs/specs/13-integracao-whatsapp-cobranca.md` (LOG-042/043) e tarefas no `ROADMAP.md` (P2.5).
+- Backend (TDD RED→GREEN): `app/integrations/mcp_whatsapp.py` (cliente MCP com retry 3x + degradação quando `ILEX_MCP_WHATSAPP_URL` ausente), `app/modules/shipments/cobranca_service.py` (seleção de atrasadas, escalonamento 1–3/4–7/>7 dias, idempotência 24h, alerta `critical` em falha), `router.py` (`POST /api/v1/shipments/cobranca/run` com RBAC `shipments:write`+`shipments:read`), `scheduler.py` (APScheduler, cron configurável, default desligado).
+- Frontend: `ChargeDispatchModal` (shipments + carriers), `dispatchCharge` e tipos em `api.ts`/`types.ts`.
+- Correções de contorno: `JsonFormatter` tolerante a objetos não-serializáveis; validação de range movida para o router (`HTTPException(422)`) para evitar `TypeError` do Starlette ao serializar `ValueError` no `ctx` do `RequestValidationError`.
+- Gates verdes: API **783 passed** + ruff limpo; Web **421 passed** + lint 0 erros + build OK; `validate_migrations.py` (1 head, 7 testes); `check_secrets.py --self-test` OK; `git diff --check` sem erros (apenas warnings CRLF).
+- SPEC-13: Implementado; UAT pendente.
+
 ## 2026-07-03 — Consolidação do ambiente e validação ponta a ponta
 
 - Resolvidos os artefatos remanescentes de conflito de merge no Web: `dashboard/page.tsx` (bloco duplicado de Top Transportadoras/Exceções e fechamento incorreto de `<section>`), `login/page.tsx` e `app-shell.tsx` (lado HEAD da resolução anterior manteve a versão simples em vez da premium esperada pelos testes).

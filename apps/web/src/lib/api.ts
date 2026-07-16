@@ -31,6 +31,8 @@
   OrderImportPreview,
   OrderListResponse,
   QuoteRound,
+  ChargeDispatchRequest,
+  ChargeDispatchResponse,
 } from "@/lib/types";
 
 export function getApiBaseUrl(envValue = process.env.NEXT_PUBLIC_API_URL): string {
@@ -167,6 +169,14 @@ export async function confirmShipmentsImport(token: string, importId: number): P
     method: "POST",
     headers: { Authorization: `Bearer ${token}` },
     body: JSON.stringify({ import_id: importId, confirm: true }),
+  });
+}
+
+export async function dispatchCharge(token: string, payload: ChargeDispatchRequest): Promise<ChargeDispatchResponse> {
+  return request<ChargeDispatchResponse>("/shipments/cobranca/run", {
+    method: "POST",
+    headers: { Authorization: `Bearer ${token}` },
+    body: JSON.stringify(payload),
   });
 }
 

@@ -10,6 +10,7 @@ import { buildGlobalSearchParams, monthYearToDateRange } from "@/lib/shipment-ut
 import { useAuth } from "@/features/auth/auth-provider";
 import { useApiErrorHandler } from "@/lib/useApiErrorHandler";
 import { AccessDenied } from "@/components/AccessDenied";
+import ChargeDispatchModal from "./ChargeDispatchModal";
 import type { Carrier, CreateShipmentRequest, Shipment, ShipmentListParams } from "@/lib/types";
 
 const STATUS_OPTIONS = [
@@ -84,6 +85,7 @@ function ShipmentsPageContent() {
   const [isLateFilter, setIsLateFilter] = useState("");
 
   const [showCreateModal, setShowCreateModal] = useState(false);
+  const [showChargeModal, setShowChargeModal] = useState(false);
   const [carriers, setCarriers] = useState<Carrier[]>([]);
   const [createLoading, setCreateLoading] = useState(false);
   const [createError, setCreateError] = useState("");
@@ -442,6 +444,11 @@ function ShipmentsPageContent() {
             Novo envio
           </button>
         )}
+        {canCreate && (
+          <button onClick={() => { void loadCarriers(); setShowChargeModal(true); }} className="btn-secondary flex items-center gap-2">
+            Disparar cobrança
+          </button>
+        )}
       </Header>
 
       {/* Search bar */}
@@ -690,6 +697,13 @@ function ShipmentsPageContent() {
           onClose={closeCreateModal}
           loading={createLoading}
           error={createError}
+        />
+      )}
+
+      {showChargeModal && (
+        <ChargeDispatchModal
+          carriers={carriers}
+          onClose={() => setShowChargeModal(false)}
         />
       )}
     </div>

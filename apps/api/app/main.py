@@ -138,6 +138,18 @@ def create_app(app_settings: Settings = settings, rate_limiter: RateLimiter | No
     app.include_router(orders_router, prefix="/api/v1")
     app.include_router(quotes_router, prefix="/api/v1")
     app.include_router(health_router)
+
+    # Scheduler de cobrança: import lazy para não exigir apscheduler em testes.
+    if settings.cobranca_scheduler_enabled:
+        from app.modules.shipments.scheduler import (
+            shutdown_cobranca_scheduler,
+            start_cobranca_scheduler,
+        )
+
+        start_cobranca_scheduler()
+        import atexit
+
+        atexit.register(shutdown_cobranca_scheduler)
     return app
 
 

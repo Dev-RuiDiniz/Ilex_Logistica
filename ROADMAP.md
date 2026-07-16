@@ -136,14 +136,15 @@
 
 ### P2.5 Cobrança WhatsApp de remessas — SPEC-13 / LOG-042–043  `[ ]`
 
-- [ ] **Spec:** criar `docs/specs/13-integracao-whatsapp-cobranca.md` (canal `whatsapp`, escalonamento 1–3 / 4–7 / >7 dias, idempotência 24h, RBAC, auditoria). _(criada em 2026-07-16)_
-- [ ] Estender `AlertDeliveryLog` para `channel="whatsapp"` e `recipient=<número E.164>` (migration + model + schema).
-- [ ] Criar cliente MCP `app/integrations/mcp_whatsapp.py` com `ILEX_MCP_WHATSAPP_URL`/`TOKEN`, timeout, retry e sanitização E.164.
-- [ ] `CobrancaService` em `modules/shipments/service.py`: varre envios atrasados, aplica patamares e dispara via MCP.
-- [ ] Endpoint `POST /api/v1/shipments/cobranca/run` com RBAC `canReadShipments`+`canWriteShipments` e resumo `{enviadas, puladas_sem_whatsapp, falhas, critico_escalonado}`.
-- [ ] TDD RED→GREEN: envio feliz, sem WhatsApp, escalonamento, idempotência, falha MCP→retry→critical, RBAC 403/200.
-- [ ] Web: exibir `whatsapp` em transportadoras e modal "Disparar cobrança" com filtros e resumo.
-- [ ] **Gate P2.5:** suíte API/Web verde, `validate_migrations.py` aprovado e UAT de disparo aprovado.
+- [x] **Spec:** criar `docs/specs/13-integracao-whatsapp-cobranca.md` (canal `whatsapp`, escalonamento 1–3 / 4–7 / >7 dias, idempotência 24h, RBAC, auditoria). _(criada em 2026-07-03; reconciliada em 2026-07-16)_
+- [x] `AlertDeliveryLog.channel` já é `String` livre — **sem migration de schema**; reutilizar `create_delivery_log(channel="whatsapp")`.
+- [ ] Criar cliente MCP `app/integrations/mcp_whatsapp.py` com `ILEX_MCP_WHATSAPP_URL`/`TOKEN`, timeout, retry 3x e sanitização E.164; degrada para log interno se URL ausente.
+- [ ] `CobrancaService` em `modules/shipments/cobranca_service.py`: varre envios atrasados, aplica patamares e dispara via MCP.
+- [ ] Endpoint `POST /api/v1/shipments/cobranca/run` com `require_permission("shipments:write")`+`("shipments:read")` e resumo `{enviadas, puladas_sem_whatsapp, falhas, critico_escalonado}`.
+- [ ] Scheduler recorrente (`BackgroundScheduler`, cron `ILEX_COBRANCA_CRON`, flag `ILEX_COBRANCA_SCHEDULER_ENABLED`) no lifespan do `main.py`.
+- [ ] TDD RED→GREEN: envio feliz, sem WhatsApp, escalonamento, idempotência, falha MCP→retry→critical, RBAC 403/200, scheduler tick.
+- [ ] Web: modal "Disparar cobrança" em shipments (header) e carriers (por transportadora) com filtros e resumo; RBAC `canWriteShipments`.
+- [ ] **Gate P2.5:** suíte API/Web verde, `validate_migrations.py` aprovado (1 head) e UAT de disparo aprovado.
 
 ## 6. P3 — MVP assistido de cotação LOG-036–040
 

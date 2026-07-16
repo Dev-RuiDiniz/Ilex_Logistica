@@ -1,10 +1,6 @@
 # CONTEXTO.md — Estado Vivo do Ilex Logística
 
-<<<<<<< HEAD
 **Atualizado em:** 2026-07-03
-=======
-**Atualizado em:** 2026-07-13 (auditoria completa de projeto)
->>>>>>> fix/infra-setup-local
 
 ## 2026-07-03 — Conclusão técnica de P1/P2
 
@@ -14,7 +10,6 @@
 - Senhas, expiração e rotação/revogação por versão foram endurecidas; políticas operacionais foram centralizadas.
 - UAT técnico está em `docs/uat/P1_P2_UAT.md`; E2E integrado e aceite humano permanecem pendentes por ausência de API/seed no ambiente Playwright local.
 
-<<<<<<< HEAD
 ## 2026-07-03 — Baseline técnico revalidado
 
 - Ruff foi corrigido em migrations e seed de demonstração, incluindo a separação de imports corrompida em `migrations/env.py`.
@@ -23,24 +18,9 @@
 - Evidências frescas desta sessão foram registradas em `RELATORIO.md`.
 
 ## 2026-07-02 — Estabilização técnica do P0
-=======
-**Atualizações recentes:**
-- **2026-06-18:** Login web local destravado no ambiente Docker com suporte de CORS no backend FastAPI. A API agora responde corretamente à preflight `OPTIONS` para origens locais do frontend (`localhost` e `127.0.0.1`, incluindo porta `3002`), eliminando o falso erro de credenciais inválidas no browser.
-- **2026-06-18:** Normalização global de legibilidade textual aplicada ao frontend inteiro. O `web` recebeu reforço de contraste em subtítulos, labels, estados vazios, tabelas e telas legadas como `audit`, `exceptions`, `shipments/import`, `deliveries` e `settings/sla`, mantendo a base clara das superfícies.
-- **2026-06-18:** Ajuste visual incremental aplicado ao frontend para remover o peso escuro das superfícies principais. `page-hero`, painéis, tabelas, cards e estados compartilhados ficaram mais claros, mantendo `header` e `sidebar` com a identidade premium escura.
-- **2026-06-17:** Frontend redesenhado com a direcao visual "Excecoes com Inteligencia". O `web` agora possui design system proprio, login premium, shell privado com navegacao por dominio e padroes consistentes para dashboard, filtros, tabelas e formularios nas telas centrais.
-- **2026-06-17:** Seed oficial de usuarios de desenvolvimento adicionado ao backend com script operacional em `scripts/seed_dev_users.py`, documentação registrada no README e migration incremental `20260627_02` para alinhar a coluna `roles.description` no PostgreSQL real da stack local.
-- **2026-06-17:** Setup local da stack corrigido no monorepo atual. Infra ajustada para usar caminhos `apps/api` e `infra/...` no Docker build, entrypoint normalizado para evitar falha por CRLF em Windows e `infra/LOCAL_SETUP.md` alinhado ao layout real do repositório.
-- **2026-06-17:** Bootstrap de migrations estabilizado para ambiente local. `apps/api/migrations/env.py` passou a priorizar a URL de banco em runtime, a árvore Alembic foi unificada em um único `head` com merge revision `20260627_01` e a migration `20260615_01` recebeu default booleano compatível com PostgreSQL.
-- **2026-06-17:** Ambiente local validado com `db` e `api` saudáveis via Docker Compose, migrations em PostgreSQL real, frontend com `npm test` (391/391) e `npm run build` passando. Neste host específico, o PostgreSQL do Ilex foi exposto em `5433` e o frontend dev subiu em `3002` por conflito com portas já ocupadas por outros projetos.
 
-Projeto de plataforma web para rastreio de entregas, gestao de excecoes operacionais e relatorios logisticos. Monorepo com API Python/FastAPI + frontend Next.js + infra Docker + documentacao extensa.
-
-**Fase atual:** Auditoria completa realizada em 2026-07-13. **Backend 100% verde (655 testes)** após correção da suíte. **Frontend 100% verde (391 testes)**. Gates de CI (migrations, docs, secrets) verdes. Projeto em estado de release beta.
->>>>>>> fix/infra-setup-local
-
-- Web confirmado com 393 testes, ESLint sem erros e build aprovado.
-- API confirmou 664/664 testes em 72,52s, com SQLite em memória isolado e execução concorrente ao roundtrip Alembic.
+- Web confirmado com 417 testes (46 arquivos), ESLint sem erros (0 erros, avisos não bloqueantes) e build aprovado (19 rotas).
+- API confirmou 761 testes em 72,54s, com SQLite em memória isolado e execução concorrente ao roundtrip Alembic.
 - Contratos de entrega de alertas foram unificados entre model, migration, serviço e API; ausência de credencial agora responde `401` e falta de permissão responde `403`.
 - Alembic possui uma única head e os testes de upgrade, downgrade e preservação de dados estão verdes.
 - Testes de infraestrutura são importáveis pela raiz; workflows separados de API, Web e governança foram adicionados.
@@ -49,7 +29,6 @@ Projeto de plataforma web para rastreio de entregas, gestao de excecoes operacio
 
 ## 2026-07-02 — Auditoria completa e redefinição do encerramento
 
-<<<<<<< HEAD
 ### Estado auditado
 
 - Projeto classificado como MVP avançado em estabilização, não pronto para produção.
@@ -60,28 +39,6 @@ Projeto de plataforma web para rastreio de entregas, gestao de excecoes operacio
 - Documentação e secret scan foram aprovados.
 
 ### Decisões
-=======
-### Backend (`apps/api`)
-- **Status:** API sobe localmente via Docker, com migrations aplicadas em PostgreSQL
-- **Modulos prontos:** auth, users, carriers, shipments, imports (CSV/XLSX), sla, alerts, reports, dashboard
-- **Migrations:** 11 versoes Alembic
-- **Seeds operacionais:** usuarios de desenvolvimento/homologacao padronizados e idempotentes
-- **Testes:** validações de migrations passando; suíte completa atual tem regressões fora do escopo de setup local
-- **Cobertura:** ~88% (declarado)
-
-### Frontend (`apps/web`)
-- **Status:** Build passando, frontend dev validado em porta alternativa quando `3000` estiver ocupada
-- **Telas prontas:** login, carriers, shipments, shipments/import, exceptions, reports/daily, alerts, users (com RBAC), settings (parcial)
-- **Sistema visual:** design system proprietario com hero de pagina, surfaces, metric cards, data tables e formularios padronizados; conteudo principal ajustado para base mais clara nas superfícies centrais e com contraste textual reforçado no frontend inteiro
-- **Testes:** Vitest unitario (391 testes passando) + Playwright E2E versionado
-- **Cobertura:** ~20.8%
-- **RBAC:** Tratamento de 401/403 implementado, helpers de permissões, sidebar condicional, componente AccessDenied
-
-### Infraestrutura
-- **Docker Compose:** PostgreSQL + API container + healthchecks, compatível com layout atual do monorepo
-- **CI/CD:** GitHub Actions workflow `beta-ci.yml` (conflitos resolvidos, CI deve funcionar)
-- **Scripts:** beta_validate, validate_migrations, check_secrets, validate_docs
->>>>>>> fix/infra-setup-local
 
 - O README raiz passa a ser exclusivamente comercial/executivo; achados técnicos ficam em `AUDITORIA.md`.
 - O marco de conclusão é o MVP assistido com cotação por CSV/XLSX, UAT e prontidão de produção.
@@ -102,21 +59,7 @@ Executar P0 na ordem: build/runtime Web, suíte/lint, migration única, API dete
 
 ## 2026-07-02 — Consolidação de governança
 
-<<<<<<< HEAD
 ### Estado atual
-=======
-| Bloqueio | Severidade | Descricao |
-|----------|-----------|-----------|
-| ~~Conflitos de merge nao resolvidos~~ | ~~CRITICO~~ | **RESOLVIDO** em 2026-06-10 |
-| ~~CI quebrado~~ | ~~CRITICO~~ | **RESOLVIDO** — workflow `beta-ci.yml` corrigido |
-| ~~Documentacao ilegivel~~ | ~~ALTO~~ | **RESOLVIDO** — 6 documentos BETA_*.md limpos |
-| ~~Build frontend com erros de tipo~~ | ~~MEDIO~~ | **RESOLVIDO** — tipos completos adicionados em `types.ts`, build passando |
-| ~~PR #38 com conflitos~~ | ~~ALTO~~ | **MERGEADO** em 2026-06-10 |
-| ~~PR #39 com base incorreta~~ | ~~ALTO~~ | **MERGEADO** em 2026-06-10 |
-| Suite completa da API com regressões | RESOLVIDO | `python -m pytest tests` (2026-07-13, fim do dia): **655 passed, 0 failed**. Corrigido via: cache obsoleto limpo, `conftest` idempotente (roles), `reset_database` com `engine.dispose()`, fixture `_auth_admin` em testes de import, asserção 403→401, email consistente em `test_w15` |
-| Porta 3000 ocupada no host atual | BAIXO | Frontend local precisou subir em `3002`; conflito é do ambiente e não da aplicação |
-| ~~Login web local falhando por CORS~~ | ~~ALTO~~ | **RESOLVIDO em 2026-06-18** — preflight `OPTIONS` para `/api/v1/auth/login` passou a responder para origens locais permitidas |
->>>>>>> fix/infra-setup-local
 
 - Monorepo com API FastAPI/SQLAlchemy/Alembic e Web Next.js/React.
 - Domínios presentes: autenticação, usuários/RBAC, transportadoras, entregas/importações, envios/tratativas, SLA, dashboard, alertas, relatórios e auditoria.
@@ -127,7 +70,6 @@ Executar P0 na ordem: build/runtime Web, suíte/lint, migration única, API dete
 
 ### Decisões
 
-<<<<<<< HEAD
 - Código, migrations e testes prevalecem sobre alegações históricas de documentação.
 - Requisitos do apêndice sem evidência ficam como planejados ou pendentes, nunca como concluídos.
 - Cotação de frete por pedido será tratada como evolução separada, iniciando por importação assistida.
@@ -136,31 +78,6 @@ Executar P0 na ordem: build/runtime Web, suíte/lint, migration única, API dete
 - Toda mudança funcional deve atualizar primeiro a spec do domínio e seus critérios de aceite antes do ciclo TDD.
 - O `AGENTS.md` v3 tornou obrigatório o fluxo inspeção → SDD → TDD → validação → documentação → commit local, com push somente mediante autorização explícita.
 - Instruções locais, como as regras de Next.js em `apps/web/AGENTS.md`, complementam a governança raiz sem reduzir seus gates.
-=======
-1. ~~Resolver todos os conflitos de merge nao resolvidos~~ **(FEITO 2026-06-10)**
-2. ~~Corrigir e consolidar CI/CD na raiz~~ **(FEITO 2026-06-10)**
-3. ~~Corrigir build do frontend — tipos incompletos em `types.ts`~~ **(FEITO 2026-06-10)**
-4. ~~Rodar suite completa de testes e gerar novo relatorio de cobertura~~ **(FEITO — 489 passed, 0 failed)**
-5. ~~Atualizar `BETA_FUNCTIONAL_EPIC_AUDIT.md`~~ **(FEITO 2026-06-10)**
-6. ~~Revisar e mergear PR #38 (BETA-019B — Frontend de Auditoria)~~ **(MERGEADO 2026-06-10)**
-7. ~~Revisar e mergear PR #39 (BETA-020A — Seguranca e RBAC)~~ **(MERGEADO 2026-06-10)**
-8. ~~Implementar BETA-020B (RBAC operational endpoints)~~ **(FEITO)**
-9. ~~Implementar BETA-020C (Frontend de Seguranca e RBAC)~~ **(FEITO 2026-06-24)**
-10. ~~Implementar BETA-027 (Alertas e Notificacoes)~~ **(FEITO 2026-06-17)**
-11. ~~Integrar tratamento de 401/403 em todas as páginas restantes (BETA-020D)** **(FEITO 2026-06-25)**
-12. ~~Implementar testes E2E de navegação por permissão (BETA-020E)** **(FEITO 2026-06-25)**
-13. ~~Remover `error-handler.ts` antigo após completa migração (BETA-020F)** **(FEITO 2026-06-25)**
-14. ~~Completar Épico 10 - Dashboard Beta (BETA-029)** **(FEITO 2026-06-25)**
-15. **CORRIGIR suíte de testes backend (BK-1)** — 104 falhas + 16 erros (4 causas raiz mapeadas em ROADMAP.md Apêndice de Auditoria)
-16. Completar Épico 4 - Eficiência por Transportadora (ranking + percentuais)
-17. Completar Épico 6 - Relatório Diário (geração manual + tela frontend + export)
-18. Estabilizar Épico 8 - Braspress parser/mapper + UI de conectores
-19. Implementar tela administrativa de usuarios completa (W15)
-20. Implementar tela de auditoria de alteracoes (W18)
-21. Desenvolver conectores de transportadoras (LOG-021/022)
-22. Implementar envio de relatorio diario por e-mail (LOG-019)
-23. Aumentar cobertura de testes E2E com Playwright e cobertura frontend para 50%
->>>>>>> fix/infra-setup-local
 
 ### Dependências e bloqueios
 
@@ -169,16 +86,7 @@ Executar P0 na ordem: build/runtime Web, suíte/lint, migration única, API dete
 - Regra operacional de SLA/no prazo/extravio: requer homologação do cliente.
 - Aderência integral dos filtros e métricas financeiras do Apêndice 1: requer teste funcional ponta a ponta.
 
-<<<<<<< HEAD
 ### Próximos passos
-=======
-- **Banco dev:** SQLite por padrao (`ilex.db`); PostgreSQL via Docker Compose para testes de integracao
-- **Auth:** JWT com refresh token; secret de fallback hardcoded em dev (requer env var em prod)
-- **RBAC:** 4 perfis (admin, logistica, gestor, auditoria)
-- **Acessos seed locais:** admin, manager, operator, viewer, logistica, gestor e auditoria com senha padrao documentada
-- **Importacao:** Parser CSV/XLSX com validacao linha a linha, deteccao de duplicidade, layout Braspress
-- **UX frontend:** paleta clara com azul profundo/grafite, sem dark mode neste ciclo e sem alteracao de contratos do backend
->>>>>>> fix/infra-setup-local
 
 1. Homologar LOG-027 a LOG-035 contra dados reais e fechar lacunas de filtros/indicadores.
 2. Especificar contrato mínimo de pedidos do ERP (LOG-038).
@@ -187,34 +95,7 @@ Executar P0 na ordem: build/runtime Web, suíte/lint, migration única, API dete
 
 ## Histórico preservado
 
-<<<<<<< HEAD
 ## 2026-07-03 — P3 pedidos ERP
-=======
-### 2026-06-18 (Ajuste claro das superfícies principais)
-- Clareadas superfícies compartilhadas do frontend sem alterar header e sidebar
-- Ajustado o showcase principal do login para composição mais luminosa
-- Validação do frontend concluída com `npm test` e `npm run build`
-
-### 2026-06-18 (Normalização global de contraste textual)
-- Reforçados tokens e classes de texto do design system em `globals.css`
-- Padronizada a legibilidade de labels, subtítulos, notas, tabelas e estados auxiliares
-- Ajustadas telas antigas do frontend para convergir com a nova hierarquia de leitura
-- Frontend validado novamente com `npm test` e `npm run build`
-
-### 2026-06-17 (BETA-030 - Redesign premium do frontend)
-- Criado design system visual proprio do `web` em `globals.css`
-- Redesenhados login, `AppShell`, dashboard e telas operacionais centrais
-- Padronizados botoes, formularios, filtros, metricas, tabelas e estados visuais
-- Suite `npm test` do frontend validada com 391/391 testes passando
-- Build de producao do `web` validado com sucesso
-
-### 2026-06-24 (Sessao de governanca)
-- Atualizacao de CONTEXTO.md com estado atual do projeto
-- BETA-020C (Frontend de Seguranca e RBAC) marcado como concluido
-- BETA-027 (Alertas e Notificacoes) marcado como concluido
-- Verificacao de estado: branch main limpo, testes backend passando
-- Proximos passos priorizados: integracao 401/403, conectores, E2E
->>>>>>> fix/infra-setup-local
 
 - SPEC-12 foi fixada com os contratos aprovados e permanece parcial.
 - `orders`, `quote_rounds` e `freight_quotes` foram criados por migration reversível, com valores monetários decimais e constraints de identidade.
@@ -242,22 +123,7 @@ Executar P0 na ordem: build/runtime Web, suíte/lint, migration única, API dete
 - Documentação de release candidata, implantação, treinamento, suporte e escalonamento foi preparada. A RC não foi tagueada/publicada porque P4 externo e UAT não passaram.
 - `release_gate.py` falha fechado enquanto P4, UAT e decisão GO não possuem marcadores explícitos. O manifesto de `v1.0.0-rc.1` permanece `blocked`, sem tag/publicação/deploy.
 
-<<<<<<< HEAD
 ### 2026-06-24 — Segurança e RBAC frontend
-=======
-### 2026-06-17 (Seeds de usuarios e README comercial)
-- Criado seed idempotente de usuarios locais em `apps/api/app/modules/users/seed_dev_users.py`
-- Criado script `scripts/seed_dev_users.py` com leitura automatica de `infra/.env`
-- Registrados 7 usuarios padrao para desenvolvimento e homologacao local
-- Adicionada migration `20260627_02_add_role_description.py` para alinhar schema real do Postgres com o modelo `Role`
-- README reestruturado com posicionamento comercial, fluxo operacional da plataforma e acessos de teste
-
-### 2026-06-10 (Continuacao — Correcao de PRs)
-- Analise de PRs abertas: #38 (BETA-019B) e #39 (BETA-020A)
-- PR #38: conflitos com `main` resolvidos via rebase manual (cherry-pick de 6 commits)
-- PR #39: base alterada de `feature/beta-019b` para `main`, conflitos resolvidos via cherry-pick
-- Resultado: ambas as PRs agora `mergeable` e prontas para revisao/merge
->>>>>>> fix/infra-setup-local
 
 Foi registrado tratamento de `401/403`, helpers de permissões, navegação condicional, componente `AccessDenied` e adaptação de páginas. O repositório atual contém testes de permissões, middleware, navegação e páginas privadas.
 

@@ -66,13 +66,8 @@ export default function CarriersPage() {
   }, [handleApiError, session]);
 
   useEffect(() => {
-<<<<<<< HEAD
     queueMicrotask(() => void load());
   }, [load]);
-=======
-    void load();
-  }, [session?.accessToken]); // eslint-disable-line react-hooks/exhaustive-deps
->>>>>>> fix/infra-setup-local
 
   const filtered = useMemo(() => filterCarriersByQuery(items, query), [items, query]);
 
@@ -149,7 +144,6 @@ export default function CarriersPage() {
   }
 
   return (
-<<<<<<< HEAD
     <section className="space-y-5">
       {/* Header */}
       <header className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -212,83 +206,6 @@ export default function CarriersPage() {
                       Carregando...
                     </div>
                   </td>
-=======
-    <section className="page-stack">
-      <header className="page-hero">
-        <p className="page-kicker">Rede de transporte</p>
-        <h2 className="page-title !text-[clamp(1.65rem,1.3rem+0.8vw,2.4rem)]">Transportadoras</h2>
-        <p className="page-subtitle">
-          Organize parceiros, códigos e metadados com uma visão clara da rede ativa e do
-          que exige manutenção.
-        </p>
-      </header>
-
-      <div className="surface-panel p-5 md:p-6">
-        <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-          <div>
-            <h3 className="section-title">Cadastro e acompanhamento</h3>
-            <p className="section-subtitle">Encontre rápido, edite com clareza e mantenha a base consistente.</p>
-          </div>
-          <input
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="Buscar por nome"
-            className="field md:w-72"
-          />
-        </div>
-      </div>
-
-      {error && <p className="error-state">{error}</p>}
-      {!editable && (
-        <p className="surface-muted px-4 py-3 text-sm text-amber-700">Perfil com permissao somente leitura.</p>
-      )}
-
-      <div className="table-shell">
-        <table className="data-table">
-          <thead className="text-left">
-            <tr>
-              <th className="px-3 py-2">Nome</th>
-              <th className="px-3 py-2">Codigo</th>
-              <th className="px-3 py-2">Status</th>
-              {editable && <th className="px-3 py-2">Acoes</th>}
-            </tr>
-          </thead>
-          <tbody>
-            {loading ? (
-              <tr>
-                <td colSpan={editable ? 4 : 3} className="px-3 py-3 text-slate-700">
-                  Carregando...
-                </td>
-              </tr>
-            ) : filtered.length === 0 ? (
-              <tr>
-                <td colSpan={editable ? 4 : 3} className="px-3 py-3 text-slate-700">
-                  Nenhuma transportadora encontrada.
-                </td>
-              </tr>
-            ) : (
-              filtered.map((item) => (
-                <tr key={item.id}>
-                  <td className="px-3 py-2">{item.name}</td>
-                  <td className="px-3 py-2">{item.external_code ?? "-"}</td>
-                  <td className="px-3 py-2">{item.is_active ? "Ativo" : "Inativo"}</td>
-                  {editable && (
-                    <td className="px-3 py-2">
-                      <div className="flex gap-2">
-                        <button onClick={() => onEdit(item)} className="button-secondary !px-3 !py-2">
-                          Editar
-                        </button>
-                        <button
-                          onClick={() => onInactivate(item)}
-                          className="button-danger !px-3 !py-2"
-                          disabled={inactivatingId === item.id}
-                        >
-                          {inactivatingId === item.id ? "Inativando..." : "Inativar"}
-                        </button>
-                      </div>
-                    </td>
-                  )}
->>>>>>> fix/infra-setup-local
                 </tr>
               ) : filtered.length === 0 ? (
                 <tr>
@@ -341,7 +258,6 @@ export default function CarriersPage() {
 
       {/* Form */}
       {editable && (
-<<<<<<< HEAD
         <form onSubmit={onSubmit} className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm">
           <h3 className="mb-4 text-base font-bold text-zinc-900">
             {form.id ? "Editar Transportadora" : "Nova Transportadora"}
@@ -408,37 +324,6 @@ export default function CarriersPage() {
               {saving ? "Salvando..." : form.id ? "Atualizar" : "Cadastrar"}
             </button>
             <button type="button" onClick={() => setForm(initialForm)} className={btnSecondary}>
-=======
-        <form onSubmit={onSubmit} className="surface-panel grid gap-3 p-5 md:grid-cols-2 md:p-6">
-          <h3 className="section-title md:col-span-2">
-            {form.id ? "Editar transportadora" : "Nova transportadora"}
-          </h3>
-          <input
-            value={form.name}
-            onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
-            placeholder="Nome"
-            required
-            minLength={2}
-            className="field"
-          />
-          <input
-            value={form.external_code}
-            onChange={(e) => setForm((f) => ({ ...f, external_code: e.target.value }))}
-            placeholder="Codigo externo"
-            className="field"
-          />
-          <textarea
-            value={form.metadata_json}
-            onChange={(e) => setForm((f) => ({ ...f, metadata_json: e.target.value }))}
-            className="field-textarea min-h-24 font-mono text-sm md:col-span-2"
-          />
-          {formError && <p className="error-state md:col-span-2">{formError}</p>}
-          <div className="flex gap-2 md:col-span-2">
-            <button type="submit" disabled={saving} className="button-primary">
-              {saving ? "Salvando..." : form.id ? "Atualizar" : "Cadastrar"}
-            </button>
-            <button type="button" onClick={() => setForm(initialForm)} className="button-ghost">
->>>>>>> fix/infra-setup-local
               Limpar
             </button>
           </div>

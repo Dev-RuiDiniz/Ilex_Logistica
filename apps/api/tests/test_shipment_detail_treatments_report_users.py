@@ -170,12 +170,6 @@ def test_w15_users_crud_and_roles(client: TestClient, db_session: Session, seed_
 
 
 def test_w15_login_returns_roles_from_backend(client: TestClient, db_session: Session, seed_roles: None) -> None:
-<<<<<<< HEAD
     create_user_with_roles(db_session, "manager@ilex.com", "123456", ["manager"])
     tokens = login(client, "manager@ilex.com", "123456")
     assert tokens["roles"] == ["manager"]
-=======
-    create_user_with_roles(db_session, "gestor@ilex.com", "123456", ["gestor"])
-    tokens = login(client, "gestor@ilex.com", "123456")
-    assert tokens["roles"] == ["gestor"]
->>>>>>> fix/infra-setup-local

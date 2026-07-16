@@ -1,6 +1,5 @@
 """Tests for AlertDeliveryLog model (BETA-027)."""
 
-from datetime import UTC, datetime
 from sqlalchemy.orm import Session
 
 from app.modules.alerts.models import AlertDeliveryLog, Alert
@@ -23,6 +22,8 @@ def test_cria_delivery_log_valido(db_session: Session):
     # Criar delivery log (contrato real do modelo BETA-027)
     log = AlertDeliveryLog(
         alert_id=alert.id,
+        channel="in_app",
+        recipient="internal",
         event_type="alert_generated",
         delivery_channel="email",
         delivery_status="success",
@@ -64,6 +65,8 @@ def test_valida_delivery_channel(db_session: Session):
     for channel in ["email", "sms", "webhook", "push", "in_app"]:
         log = AlertDeliveryLog(
             alert_id=alert.id,
+            channel="in_app",
+            recipient="internal",
             event_type="alert_generated",
             delivery_channel=channel,
             delivery_status="success",
@@ -93,6 +96,8 @@ def test_valida_delivery_status(db_session: Session):
     for status in ["pending", "success", "failed"]:
         log = AlertDeliveryLog(
             alert_id=alert.id,
+            channel="in_app",
+            recipient="internal",
             event_type="alert_generated",
             delivery_channel="email",
             delivery_status=status,
@@ -121,6 +126,8 @@ def test_defaults(db_session: Session):
 
     log = AlertDeliveryLog(
         alert_id=alert.id,
+        channel="in_app",
+        recipient="internal",
         event_type="alert_generated",
         delivery_channel="email",
         delivery_status="success",
@@ -139,13 +146,12 @@ def test_defaults(db_session: Session):
 
 def test_foreign_key_constraint(db_session: Session):
     """Testa constraint de foreign key - alerta inexistente."""
-<<<<<<< HEAD
 
-=======
->>>>>>> fix/infra-setup-local
     # Tenta criar log com alert_id inexistente
     log = AlertDeliveryLog(
         alert_id=99999,  # ID inexistente
+        channel="in_app",
+        recipient="internal",
         event_type="alert_generated",
         delivery_channel="email",
         delivery_status="success",
@@ -176,6 +182,8 @@ def test_update_status_sent(db_session: Session):
 
     log = AlertDeliveryLog(
         alert_id=alert.id,
+        channel="in_app",
+        recipient="internal",
         event_type="alert_generated",
         delivery_channel="email",
         delivery_status="pending",
@@ -208,6 +216,8 @@ def test_update_status_failed(db_session: Session):
 
     log = AlertDeliveryLog(
         alert_id=alert.id,
+        channel="in_app",
+        recipient="internal",
         event_type="alert_generated",
         delivery_channel="email",
         delivery_status="pending",

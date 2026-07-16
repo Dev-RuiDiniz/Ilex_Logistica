@@ -2,15 +2,15 @@
 
 import pytest
 
-
-@pytest.fixture(autouse=True)
-def authenticated_requests(client, auth_headers):
-    client.headers.update(auth_headers)
-
 from app.main import app
 from app.modules.auth.dependencies import get_current_user
 from app.modules.users.models import User
 from conftest import create_user_with_roles
+
+
+@pytest.fixture(autouse=True)
+def authenticated_requests(client, auth_headers):
+    client.headers.update(auth_headers)
 
 
 @pytest.fixture(autouse=True)

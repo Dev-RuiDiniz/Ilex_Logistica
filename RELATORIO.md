@@ -1,5 +1,14 @@
 # RELATORIO.md — Registro de Trabalho
 
+## 2026-07-03 — Consolidação do ambiente e validação ponta a ponta
+
+- Resolvidos os artefatos remanescentes de conflito de merge no Web: `dashboard/page.tsx` (bloco duplicado de Top Transportadoras/Exceções e fechamento incorreto de `<section>`), `login/page.tsx` e `app-shell.tsx` (lado HEAD da resolução anterior manteve a versão simples em vez da premium esperada pelos testes).
+- `dashboard/page.tsx` restaurado para a versão com `page-hero`/"Painel de controle" (esperada pelos testes); `login/page.tsx` restaurado com estrutura premium (`login-showcase`); `app-shell.tsx` restaurado com `getNavigationSections` e acrescentado o item "Pedidos e Cotações" (visível para quem tem `orders:read`) para satisfazer o contrato de teste.
+- Corrigida codificação UTF-8 (sem BOM) dos arquivos restaurados via `git checkout` dos parents corretos.
+- Portões executados na raiz: `validate_migrations.py` (1 head, 7 testes OK), `validate_docs.py` (21 docs, LOG-027–041 OK), `check_secrets.py --self-test` (OK).
+- API: `pytest` **761 passed**; Web: `npm test` **417 passed** (46 arquivos), `npm run lint` **0 erros**, `npm run build` **compilado com sucesso** (19 rotas).
+- Sistema validado ponta a ponta: API verde, Web verde (lint/test/build), migrações e documentação consistentes.
+
 ## 2026-07-03 — P1/P2 técnico
 
 - Reconciliados KPIs e eficiência com filtros comuns e dataset controlado.

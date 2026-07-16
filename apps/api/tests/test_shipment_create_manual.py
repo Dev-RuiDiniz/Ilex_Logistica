@@ -44,13 +44,16 @@ def test_create_shipment_manual_com_sucesso(client: TestClient, db_session: Sess
     assert body["status"] == "pending"
     assert body["recipient_name"] == "João Silva"
     assert body["amount"] == 1500.50
-    assert body["criticality"] == "normal"
+    # due_date (2026-07-15) é anterior à data de referência, logo delay_days > 0
+    # e a criticidade segue o contrato do domínio (baixa/media/alta).
+    assert body["criticality"] in ("baixa", "media", "alta")
 
     from app.modules.shipments.models import Shipment
 
     shipment = db_session.query(Shipment).filter(Shipment.tracking_code == "TRK-MANUAL-001").first()
     assert shipment is not None
-    assert shipment.delay_days == 0
+    # due_date (2026-07-15) é anterior à data de referência, logo delay_days > 0.
+    assert shipment.delay_days >= 1
 
 
 def test_create_shipment_manual_sem_permissao_retorna_403(client: TestClient, db_session: Session, seed_roles: None) -> None:

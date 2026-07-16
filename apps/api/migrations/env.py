@@ -6,10 +6,6 @@ from sqlalchemy import engine_from_config, pool
 from app.core.config import Settings
 from app.database import models  # noqa: F401
 from app.database.base import Base
-<<<<<<< HEAD
-from app.database import models  # noqa: F401
-=======
->>>>>>> fix/infra-setup-local
 from app.modules import sla  # noqa: F401
 
 config = context.config

@@ -37,7 +37,7 @@ def test_migrations_use_postgres_safe_boolean_defaults():
     sla_migration = Path(__file__).parent.parent / "migrations" / "versions" / "20260615_01_create_sla_rules.py"
     text = sla_migration.read_text(encoding="utf-8")
 
-    assert "server_default=sa.text('true')" in text
+    assert "server_default=sa.true()" in text
     assert "server_default=sa.text('1')" not in text
 
 
@@ -49,7 +49,7 @@ def test_migrations_include_role_description_column():
         for path in sorted(versions_dir.glob("*.py"))
     )
 
-    assert 'op.add_column("roles", sa.Column("description", sa.String(length=255), nullable=True))' in migration_text
+    assert "op.add_column('roles', sa.Column('description', sa.String(length=255), nullable=True))" in migration_text
 
 
 def test_migrations_import():

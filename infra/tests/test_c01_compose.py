@@ -1,10 +1,6 @@
 from pathlib import Path
 
-<<<<<<< HEAD
 from infra.infra_checks import compose_services_summary
-=======
-from infra_checks import compose_build_config, compose_services_summary, dockerfile_copy_sources
->>>>>>> fix/infra-setup-local
 
 
 def test_c01_compose_has_db_api_and_healthchecks():

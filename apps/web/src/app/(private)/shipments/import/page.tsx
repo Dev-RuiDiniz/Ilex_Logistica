@@ -140,7 +140,6 @@ export default function ShipmentsImportPage() {
   }
 
   return (
-<<<<<<< HEAD
     <section className="space-y-5">
       {/* Header */}
       <header className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
@@ -148,12 +147,6 @@ export default function ShipmentsImportPage() {
           <h1 className="text-2xl font-extrabold tracking-tight text-zinc-900">Importar Envios</h1>
           <p className="mt-1 text-sm font-medium text-zinc-500">Upload de arquivo CSV ou XLSX para importação em lote</p>
         </div>
-=======
-    <section className="space-y-4">
-      <header>
-        <h2 className="text-xl font-semibold">Importar Envios</h2>
-        <p className="text-sm text-slate-700">Upload de arquivo CSV ou XLSX para importação em lote de envios.</p>
->>>>>>> fix/infra-setup-local
       </header>
 
       {!editable && (
@@ -162,7 +155,6 @@ export default function ShipmentsImportPage() {
         </div>
       )}
 
-<<<<<<< HEAD
       {/* Upload Card - idle state */}
       {state === "idle" && (
         <div className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm">
@@ -198,12 +190,6 @@ export default function ShipmentsImportPage() {
                 {fileName && <span className="text-sm text-zinc-500">{fileName}</span>}
               </div>
             </div>
-=======
-      {state === "file_selected" && (
-        <div className="rounded border bg-white p-4 space-y-4">
-          <div>
-            <p className="text-sm text-slate-700">Arquivo selecionado: {fileName}</p>
->>>>>>> fix/infra-setup-local
           </div>
           {error && (
             <div className="mt-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-600">
@@ -238,7 +224,6 @@ export default function ShipmentsImportPage() {
         </div>
       )}
 
-<<<<<<< HEAD
       {/* Loading states */}
       {(state === "preview_loading" || state === "confirm_loading") && (
         <div className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm">
@@ -247,20 +232,12 @@ export default function ShipmentsImportPage() {
             <p className="text-sm font-medium text-zinc-600">
               {state === "preview_loading" ? "Validando arquivo..." : "Processando importação..."}
             </p>
-=======
-      {state === "preview_loading" && (
-        <div className="rounded border bg-white p-4">
-          <div className="flex items-center gap-2">
-            <div className="h-4 w-4 animate-spin rounded-full border-2 border-slate-900 border-t-transparent" />
-            <p className="text-sm text-slate-700">Validando arquivo...</p>
->>>>>>> fix/infra-setup-local
           </div>
         </div>
       )}
 
       {/* Preview results */}
       {(state === "preview_success" || state === "preview_with_errors") && previewResponse && (
-<<<<<<< HEAD
         <div className="space-y-4">
           {/* Summary */}
           <div className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm">
@@ -281,27 +258,6 @@ export default function ShipmentsImportPage() {
               <div className="rounded-xl border border-amber-100 bg-amber-50 p-4 text-center">
                 <p className="text-2xl font-extrabold tabular-nums text-amber-600">{previewResponse.duplicate_rows}</p>
                 <p className="mt-1 text-[11px] font-semibold uppercase tracking-wide text-amber-600/70">Duplicatas</p>
-=======
-        <div className="rounded border bg-white p-4 space-y-4">
-          <div>
-            <h3 className="text-base font-semibold">Resumo da Validação</h3>
-            <div className="mt-2 grid grid-cols-4 gap-4 text-sm">
-              <div>
-                <span className="text-slate-700">Total de linhas:</span>
-                <span className="ml-2 font-semibold">{previewResponse.total_rows}</span>
-              </div>
-              <div>
-                <span className="text-slate-700">Linhas válidas:</span>
-                <span className="ml-2 font-semibold text-green-700">{previewResponse.valid_rows}</span>
-              </div>
-              <div>
-                <span className="text-slate-700">Linhas inválidas:</span>
-                <span className="ml-2 font-semibold text-red-700">{previewResponse.invalid_rows}</span>
-              </div>
-              <div>
-                <span className="text-slate-700">Duplicatas:</span>
-                <span className="ml-2 font-semibold text-amber-700">{previewResponse.duplicate_rows}</span>
->>>>>>> fix/infra-setup-local
               </div>
             </div>
           </div>
@@ -433,30 +389,16 @@ export default function ShipmentsImportPage() {
             </div>
           )}
 
-<<<<<<< HEAD
           {error && (
             <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-600">
               {error}
             </div>
           )}
-=======
-          {error && <p className="rounded bg-red-50 px-3 py-2 text-sm text-red-700">{error}</p>}
-        </div>
-      )}
-
-      {state === "confirm_loading" && (
-        <div className="rounded border bg-white p-4">
-          <div className="flex items-center gap-2">
-            <div className="h-4 w-4 animate-spin rounded-full border-2 border-slate-900 border-t-transparent" />
-            <p className="text-sm text-slate-700">Processando importação...</p>
-          </div>
->>>>>>> fix/infra-setup-local
         </div>
       )}
 
       {/* Confirm success */}
       {state === "confirm_success" && confirmResponse && (
-<<<<<<< HEAD
         <div className="rounded-2xl border border-emerald-200 bg-emerald-50/50 p-6 shadow-sm">
           <div className="flex items-center gap-3">
             <div className="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-100">
@@ -485,28 +427,6 @@ export default function ShipmentsImportPage() {
             <div className="rounded-xl bg-white p-4 text-center shadow-sm">
               <p className="text-2xl font-extrabold tabular-nums text-amber-600">{confirmResponse.duplicates_count}</p>
               <p className="mt-1 text-[11px] font-semibold uppercase tracking-wide text-amber-600/70">Duplicatas</p>
-=======
-        <div className="rounded border bg-white p-4 space-y-4">
-          <div>
-            <h3 className="text-base font-semibold text-green-700">Importação Concluída</h3>
-            <div className="mt-2 grid grid-cols-4 gap-4 text-sm">
-              <div>
-                <span className="text-slate-700">Total de linhas:</span>
-                <span className="ml-2 font-semibold">{confirmResponse.total_rows}</span>
-              </div>
-              <div>
-                <span className="text-slate-700">Importados:</span>
-                <span className="ml-2 font-semibold text-green-700">{confirmResponse.imported_count}</span>
-              </div>
-              <div>
-                <span className="text-slate-700">Rejeitados:</span>
-                <span className="ml-2 font-semibold text-red-700">{confirmResponse.rejected_count}</span>
-              </div>
-              <div>
-                <span className="text-slate-700">Duplicatas:</span>
-                <span className="ml-2 font-semibold text-amber-700">{confirmResponse.duplicates_count}</span>
-              </div>
->>>>>>> fix/infra-setup-local
             </div>
           </div>
 
@@ -533,7 +453,6 @@ export default function ShipmentsImportPage() {
 
       {/* Confirm error */}
       {state === "confirm_error" && (
-<<<<<<< HEAD
         <div className="rounded-2xl border border-red-200 bg-red-50/50 p-6 shadow-sm">
           <div className="flex items-center gap-3">
             <div className="flex h-10 w-10 items-center justify-center rounded-full bg-red-100">
@@ -549,31 +468,6 @@ export default function ShipmentsImportPage() {
                 </p>
               )}
             </div>
-=======
-        <div className="rounded border bg-white p-4 space-y-4">
-          <div>
-            <h3 className="text-base font-semibold text-red-700">Importação Falhou</h3>
-            {confirmResponse && (
-              <div className="mt-2 grid grid-cols-4 gap-4 text-sm">
-                <div>
-                  <span className="text-slate-700">Total de linhas:</span>
-                  <span className="ml-2 font-semibold">{confirmResponse.total_rows}</span>
-                </div>
-                <div>
-                  <span className="text-slate-700">Importados:</span>
-                  <span className="ml-2 font-semibold text-green-700">{confirmResponse.imported_count}</span>
-                </div>
-                <div>
-                  <span className="text-slate-700">Rejeitados:</span>
-                  <span className="ml-2 font-semibold text-red-700">{confirmResponse.rejected_count}</span>
-                </div>
-                <div>
-                  <span className="text-slate-700">Duplicatas:</span>
-                  <span className="ml-2 font-semibold text-amber-700">{confirmResponse.duplicates_count}</span>
-                </div>
-              </div>
-            )}
->>>>>>> fix/infra-setup-local
           </div>
 
           {(confirmResponse?.errors?.length ?? 0) > 0 && (

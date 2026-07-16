@@ -62,11 +62,12 @@ TRK001,Transportes A,2026-06-01,João Silva,11999999999,Rua A SP,Rua B RJ"""
 
 
 def test_upload_csv_sem_autenticacao_retorna_401(client: TestClient) -> None:
-<<<<<<< HEAD
-=======
-    # Este teste valida o comportamento sem autenticação; remove o override do fixture autouse
+    # Este módulo sobrescreve get_current_user via fixture autouse _auth_admin;
+    # para validar o contrato 401 de autenticação ausente, removemos a override.
+    from app.modules.auth.dependencies import get_current_user
+
     app.dependency_overrides.pop(get_current_user, None)
->>>>>>> fix/infra-setup-local
+
     csv_content = """tracking_code,carrier_name,estimated_delivery,recipient_name,recipient_phone,origin_address,destination_address
 TRK001,Transportes A,2026-06-01,João Silva,11999999999,Rua A SP,Rua B RJ"""
 
@@ -76,10 +77,6 @@ TRK001,Transportes A,2026-06-01,João Silva,11999999999,Rua A SP,Rua B RJ"""
         files={"file": ("test.csv", csv_file, "text/csv")},
     )
 
-<<<<<<< HEAD
-=======
-    # Sem credenciais, o HTTPBearer retorna 401 (não 403, que é para autenticado sem permissão)
->>>>>>> fix/infra-setup-local
     assert response.status_code == 401
 
 

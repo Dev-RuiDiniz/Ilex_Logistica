@@ -15,6 +15,7 @@ import {
 import { DateRangePicker } from "@/app/(private)/shipments/analytics/carrier-efficiency/DateRangePicker";
 import { AccessDenied } from "@/components/AccessDenied";
 import { getDashboardSummary, getDashboardTrend } from "@/lib/dashboard-api";
+import { getAccessToken } from "@/lib/session";
 import type {
   DashboardFilters,
   DashboardSummaryResponse,
@@ -51,13 +52,13 @@ export default function DashboardPage() {
   const [filters, setFilters] = useState<DashboardFilters>({});
   const [trendFilters, setTrendFilters] = useState<DashboardTrendFilters>({});
   const { accessDenied, accessDeniedMessage, handleApiError } = useApiErrorHandler();
+  const token = getAccessToken();
 
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
       setError(null);
       try {
-        const token = localStorage.getItem("accessToken") || "";
         const result = await getDashboardSummary(token, filters);
         setData(result);
       } catch (err) {
@@ -69,13 +70,12 @@ export default function DashboardPage() {
     };
 
     fetchData();
-  }, [filters, handleApiError]);
+  }, [filters, token, handleApiError]);
 
   useEffect(() => {
     const fetchTrendData = async () => {
       setTrendLoading(true);
       try {
-        const token = localStorage.getItem("accessToken") || "";
         const result = await getDashboardTrend(token, trendFilters);
         setTrendData(result);
       } catch (err) {
@@ -86,7 +86,7 @@ export default function DashboardPage() {
     };
 
     fetchTrendData();
-  }, [trendFilters, handleApiError]);
+  }, [trendFilters, token, handleApiError]);
 
   const handleFilterChange = (key: keyof DashboardFilters, value: string | number | boolean | undefined) => {
     setFilters((prev) => ({

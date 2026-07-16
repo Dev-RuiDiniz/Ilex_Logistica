@@ -28,3 +28,7 @@ export function clearSession(): void {
   localStorage.removeItem(SESSION_KEY);
   document.cookie = "ilex_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
 }
+
+export function getAccessToken(): string {
+  return getSession()?.accessToken ?? "";
+}

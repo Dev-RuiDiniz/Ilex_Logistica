@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { getExceptionsPanel, type ExceptionsPanelResponse, type ExceptionsPanelFilters } from "@/lib/exceptions-api";
 import { useApiErrorHandler } from "@/lib/useApiErrorHandler";
 import { AccessDenied } from "@/components/AccessDenied";
+import { getAccessToken } from "@/lib/session";
 
 export default function ExceptionsPanelPage() {
   const [data, setData] = useState<ExceptionsPanelResponse | null>(null);
@@ -11,13 +12,13 @@ export default function ExceptionsPanelPage() {
   const [error, setError] = useState<string | null>(null);
   const [filters, setFilters] = useState<ExceptionsPanelFilters>({});
   const { accessDenied, accessDeniedMessage, handleApiError } = useApiErrorHandler();
+  const token = getAccessToken();
 
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
       setError(null);
       try {
-        const token = localStorage.getItem("accessToken") || "";
         const result = await getExceptionsPanel(token, filters);
         setData(result);
       } catch (err) {
@@ -29,7 +30,7 @@ export default function ExceptionsPanelPage() {
     };
 
     fetchData();
-  }, [filters, handleApiError]);
+  }, [filters, token, handleApiError]);
 
   const handleFilterChange = (key: keyof ExceptionsPanelFilters, value: string | number | boolean | undefined) => {
     setFilters((prev) => ({

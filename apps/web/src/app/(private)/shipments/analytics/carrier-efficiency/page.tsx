@@ -7,6 +7,7 @@ import { CarrierEfficiencyCharts } from "./CarrierEfficiencyCharts";
 import { DateRangePicker } from "./DateRangePicker";
 import { useApiErrorHandler } from "@/lib/useApiErrorHandler";
 import { AccessDenied } from "@/components/AccessDenied";
+import { getAccessToken } from "@/lib/session";
 
 export default function CarrierEfficiencyPage() {
   const [data, setData] = useState<CarrierEfficiencyResponse | null>(null);
@@ -17,12 +18,12 @@ export default function CarrierEfficiencyPage() {
     estimated_delivery_to?: string;
   }>({});
   const { accessDenied, accessDeniedMessage, handleApiError } = useApiErrorHandler();
+  const token = getAccessToken();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const token = localStorage.getItem("accessToken") || "";
         const result = await getCarrierEfficiency(token, filters);
         setData(result);
         setError(null);
@@ -35,7 +36,7 @@ export default function CarrierEfficiencyPage() {
     };
 
     fetchData();
-  }, [filters, handleApiError]);
+  }, [filters, token, handleApiError]);
 
   const handleFilterChange = (key: keyof CarrierEfficiencyFilters, value: string | number | boolean | undefined) => {
     setFilters((prev) => ({

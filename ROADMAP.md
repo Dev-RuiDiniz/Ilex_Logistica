@@ -134,6 +134,17 @@
 
 > **Evidência atual:** módulos de alertas, relatórios e auditoria implementados com testes; canais externos e retenção pendentes; UAT não realizado (SPEC-09 "Confirmado/Parcial", SPEC-10/11 "Implementado; UAT pendente").
 
+### P2.5 Cobrança WhatsApp de remessas — SPEC-13 / LOG-042–043  `[ ]`
+
+- [ ] **Spec:** criar `docs/specs/13-integracao-whatsapp-cobranca.md` (canal `whatsapp`, escalonamento 1–3 / 4–7 / >7 dias, idempotência 24h, RBAC, auditoria). _(criada em 2026-07-16)_
+- [ ] Estender `AlertDeliveryLog` para `channel="whatsapp"` e `recipient=<número E.164>` (migration + model + schema).
+- [ ] Criar cliente MCP `app/integrations/mcp_whatsapp.py` com `ILEX_MCP_WHATSAPP_URL`/`TOKEN`, timeout, retry e sanitização E.164.
+- [ ] `CobrancaService` em `modules/shipments/service.py`: varre envios atrasados, aplica patamares e dispara via MCP.
+- [ ] Endpoint `POST /api/v1/shipments/cobranca/run` com RBAC `canReadShipments`+`canWriteShipments` e resumo `{enviadas, puladas_sem_whatsapp, falhas, critico_escalonado}`.
+- [ ] TDD RED→GREEN: envio feliz, sem WhatsApp, escalonamento, idempotência, falha MCP→retry→critical, RBAC 403/200.
+- [ ] Web: exibir `whatsapp` em transportadoras e modal "Disparar cobrança" com filtros e resumo.
+- [ ] **Gate P2.5:** suíte API/Web verde, `validate_migrations.py` aprovado e UAT de disparo aprovado.
+
 ## 6. P3 — MVP assistido de cotação LOG-036–040
 
 ### P3.1 Contrato e dados — SPEC-12  `[x]`
@@ -194,6 +205,7 @@
 - Integração automática com ERP.
 - APIs de cotação/rastreio de transportadoras.
 - Regras avançadas por prazo, eficiência, restrição e múltiplas moedas.
+- **Cobrança WhatsApp de remessas (SPEC-13 / LOG-042–043):** depende de MCP server de WhatsApp configurado (`ILEX_MCP_WHATSAPP_URL`) e templates Meta aprovados; opera em modo "só registro interno" se o MCP estiver ausente.
 - Automação externa somente com contrato, sandbox, credenciais seguras e SLA do fornecedor.
 
 ## 10. Definition of Done do projeto

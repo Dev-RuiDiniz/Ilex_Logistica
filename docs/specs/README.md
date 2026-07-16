@@ -31,6 +31,7 @@ Estas specs definem o comportamento esperado antes da implementação. Para cada
 | SPEC-10 | [Relatórios](10-relatorios-exportacoes.md) | Implementado; UAT pendente |
 | SPEC-11 | [Auditoria](11-auditoria-historico.md) | Implementado; UAT pendente |
 | SPEC-12 | [Pedidos e cotações](12-pedidos-cotacao-frete.md) | Confirmado tecnicamente; UAT humano pendente |
+| SPEC-13 | [Integração WhatsApp (MCP) e cobrança](13-integracao-whatsapp-cobranca.md) | Planejado |
 
 ## Rastreabilidade LOG-027 a LOG-041
 
@@ -51,6 +52,8 @@ Estas specs definem o comportamento esperado antes da implementação. Para cada
 | LOG-039 | SPEC-12 | motor comparativo por pedido |
 | LOG-040 | SPEC-12 | melhor opção por regra configurável |
 | LOG-041 | SPEC-03 | fluxo Braspress sem credenciais |
+| LOG-042 | SPEC-13 | integração MCP server de WhatsApp (canal `whatsapp` no `AlertDeliveryLog`) |
+| LOG-043 | SPEC-13 | rotina de cobrança em batch com escalonamento por dias de atraso |
 
 ## Cobertura de implementação
 
